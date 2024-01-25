@@ -9,7 +9,6 @@ public class Player : MonoBehaviour
 	public const string OBJECT_WEAPON_TAG = "ObjectWeapon";
 	public const string EQUIPPED_WEAPON_TAG = "EquippedWeapon";
 
-	private float moveCamInput;
 	private Vector2 moveInput;
 	private Vector2 oldMoveInput;
 	private float currentSpeed;
@@ -21,7 +20,6 @@ public class Player : MonoBehaviour
 	private float speedCheck;
 
 	private ActorScriptable playerData;
-	private Vector2 pointerPos;
 
 	private float interactInput;
 	private float lastInteractInput;
@@ -29,21 +27,32 @@ public class Player : MonoBehaviour
 	private float throwInput;
 	private float lastThrowInput;
 
-	public CameraHandler camHandler;
+	private Vector2 pointerPos;
+
+	private ushort inputMatrix = 0x0000;
+
+
 	public Actor actor;
 
 	public LayerMask enemyLayer;
 	public LayerMask weaponLayer;
 
+
 	[SerializeField]
-	private InputActionReference move, moveCam, pointer, attack, interact, throwAction;
+	private InputActionReference move, attack, interact, pointer, throwAction;
 
 	private void Start()
 	{
+		GameObject fistPrefab = (GameObject)Instantiate(Resources.Load("Weapons/Fists"), new Vector3(0, 0, 0), Quaternion.identity);
+		fistPrefab.transform.parent = transform;
+		fistPrefab.transform.position = new Vector3(0.25F, 0.25F, 0);
+
 		playerData = actor.actorData;
 		currentSpeed = 0;
 		speedCheck = 0;
 		lastInteractInput = 0;
+
+		equip(fistPrefab.transform.GetChild(0).gameObject);
 	}
 
 	private void Update()
@@ -75,25 +84,6 @@ public class Player : MonoBehaviour
 		Vector2 mousePos = pointer.action.ReadValue<Vector2>();
 		pointerPos = Camera.main.ScreenToWorldPoint(mousePos);
 		moveInput = move.action.ReadValue<Vector2>();
-		moveCamInput = moveCam.action.ReadValue<float>();
-	}
-
-	public void cameraInputs()
-	{
-		// camera logic for 'look' input
-		if (moveCamInput > 0)
-		{
-			camHandler.setCamFollowPlayer(false);
-		}
-		else
-		{
-			camHandler.setCamFollowPlayer(true);
-		}
-
-		// aim at pointer
-		Vector2 aimDir = pointerPos - actor.actorBody.position;
-		float aimAngle = (Mathf.Atan2(aimDir.y, aimDir.x) * Mathf.Rad2Deg) - 90F;
-		actor.actorBody.rotation = aimAngle;
 	}
 
 	private void attackInputs()

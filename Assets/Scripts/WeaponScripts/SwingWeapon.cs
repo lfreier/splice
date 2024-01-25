@@ -7,7 +7,6 @@ public class SwingWeapon : MonoBehaviour, WeaponInterface
 {
 	[SerializeField] public Animator anim;
 
-	public float throwHurtSpeed = 15;
 	LayerMask lastTargetLayer;
 	string id;
 
@@ -38,7 +37,7 @@ public class SwingWeapon : MonoBehaviour, WeaponInterface
 		if (lastThrowMovement.magnitude > 0)
 		{
 			/* if the throw should damage */ 
-			if (currentSpeed <= throwHurtSpeed)
+			if (currentSpeed <= weaponScriptable.throwHurtSpeed)
 			{
 				hitbox.enabled = false;
 			}

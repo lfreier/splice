@@ -10,10 +10,10 @@ public class WeaponScriptable : ScriptableObject
 	 * Or alt fire stab weapons
 	 * Bullet spread arc for guns
 	 */
-	public float arc { get; private set; } = 40F;
+	public float arc { get; private set; } = 135F;
 
 	[field: SerializeField]
-	public float atkSpeed { get; private set; } = 0.6F;
+	public float atkSpeed { get; private set; } = 0.25F;
 
 	[field: SerializeField]
 	public float damage { get; private set; } = 2F;
@@ -26,11 +26,15 @@ public class WeaponScriptable : ScriptableObject
 
 	/* Higher throw speed means more throw range. */
 	[field: SerializeField]
-	public float throwSpeed { get; private set; } = 20F;
+	public float throwSpeed { get; private set; } = 50F;
 
 	/* How fast the throw will slow down after the initial speed. */
 	[field: SerializeField]
 	public float throwWeight { get; private set; } = 1F;
+
+	/* Higher throw speed means more throw range. */
+	[field: SerializeField]
+	public float throwHurtSpeed { get; private set; } = 15F;
 
 
 	[field: SerializeField]
