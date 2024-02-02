@@ -38,6 +38,6 @@ public class WeaponScriptable : ScriptableObject
 
 
 	[field: SerializeField]
-	public WeaponType weaponType { get; private set; }  = WeaponType.SWING;
+	public WeaponDefs weaponType { get; private set; }  = WeaponDefs.SWING;
 
 }

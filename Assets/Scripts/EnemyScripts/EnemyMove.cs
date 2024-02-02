@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 
 [RequireComponent(typeof(Controller2D))]
-public class EnemyMovement : MonoBehaviour
+public class EnemyMove : MonoBehaviour
 {
 	enum detectMode
 	{

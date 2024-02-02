@@ -4,16 +4,12 @@ using UnityEngine.InputSystem;
 
 public class PlayerCamera : MonoBehaviour
 {
-	private float moveCamInput;
-	private Vector2 pointerPos;
-
-
 	public Actor player;
 	public CameraHandler camHandler;
 
+	private float moveCamInput;
 
-	[SerializeField]
-	private InputActionReference moveCam, pointer;
+	public PlayerInputs inputs;
 
 	// Use this for initialization
 	void Start()
@@ -32,9 +28,7 @@ public class PlayerCamera : MonoBehaviour
 	}
 	public void cameraInputs()
 	{
-		Vector2 mousePos = pointer.action.ReadValue<Vector2>();
-		pointerPos = Camera.main.ScreenToWorldPoint(mousePos);
-		moveCamInput = moveCam.action.ReadValue<float>();
+		moveCamInput = inputs.moveCamInput();
 
 		// camera logic for 'look' input
 		if (moveCamInput > 0)
@@ -47,7 +41,7 @@ public class PlayerCamera : MonoBehaviour
 		}
 
 		// aim at pointer
-		Vector2 aimDir = pointerPos - player.actorBody.position;
+		Vector2 aimDir = inputs.pointerPos() - player.actorBody.position;
 		float aimAngle = (Mathf.Atan2(aimDir.y, aimDir.x) * Mathf.Rad2Deg) - 90F;
 		player.actorBody.rotation = aimAngle;
 	}
