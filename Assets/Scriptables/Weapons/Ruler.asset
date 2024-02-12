@@ -19,4 +19,5 @@ MonoBehaviour:
   <throwDamage>k__BackingField: 1
   <throwSpeed>k__BackingField: 50
   <throwWeight>k__BackingField: 2
-  <weaponType>k__BackingField: 0
+  <throwHurtSpeed>k__BackingField: 15
+  <weaponType>k__BackingField: 1

@@ -6,15 +6,11 @@ using UnityEngine.InputSystem.XR;
 
 public class PlayerMove : MonoBehaviour
 {
-
 	private float currentSpeed;
 
 	private ActorScriptable playerData;
 
 	public Actor player;
-
-	public LayerMask enemyLayer;
-	public LayerMask weaponLayer;
 
 	private Vector2 moveInput;
 	private Vector2 oldMoveInput;

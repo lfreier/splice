@@ -44,8 +44,8 @@ GameObject:
   - component: {fileID: 2658991806923027523}
   - component: {fileID: 1722529025439896153}
   - component: {fileID: 4430561409393562764}
-  - component: {fileID: 297858424669916158}
   - component: {fileID: 8181113457589132258}
+  - component: {fileID: 740460995545239096}
   m_Layer: 7
   m_Name: Enemy NPC
   m_TagString: Untagged
@@ -110,11 +110,11 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
-  m_Color: {r: 0.5566038, g: 0.03938234, b: 0.03938234, a: 1}
+  m_Sprite: {fileID: 21300000, guid: 6471ebb20ee70ca46a467b7594f06484, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
-  m_DrawMode: 0
+  m_DrawMode: 1
   m_Size: {x: 1, y: 1}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
@@ -186,10 +186,10 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1, y: 1}
+    oldSize: {x: 0.5, y: 0.5}
     newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5
-    drawMode: 0
+    drawMode: 1
     adaptiveTiling: 0
   m_AutoTiling: 0
   m_Size: {x: 1, y: 1}
@@ -208,26 +208,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   horizontalRayCount: 4
   verticalRayCount: 4
-  collider2DObj: {fileID: 0}
+  collider2DObj: {fileID: 1722529025439896153}
   collisionMask:
     serializedVersion: 2
     m_Bits: 64
---- !u!114 &297858424669916158
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7904725563872449456}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 53b4a4d5574d02f4fad0b8b465c00c4f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  attackPoint: {fileID: 285140439606563166}
-  playerLayer:
-    serializedVersion: 2
-    m_Bits: 32768
 --- !u!114 &8181113457589132258
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -240,6 +224,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ede27b5faa0e5d94e9a0903caf6d4cab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerBody: {fileID: 0}
+  actor: {fileID: 740460995545239096}
+  actorBody: {fileID: 2658991806923027523}
+  actorData: {fileID: 11400000, guid: cb5b7816b2070b143891c7c7dfbaee5b, type: 2}
+--- !u!114 &740460995545239096
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7904725563872449456}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 15fd7453a9e30e440b488bc93f515537, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  detection: 0
+  oldDetection: 0
+  actorData: {fileID: 11400000, guid: cb5b7816b2070b143891c7c7dfbaee5b, type: 2}
   controller: {fileID: 4430561409393562764}
-  enemyBody: {fileID: 2658991806923027523}
+  actorBody: {fileID: 2658991806923027523}
+  hitLayer:
+    serializedVersion: 2
+    m_Bits: 32768
+  pickupLayer:
+    serializedVersion: 2
+    m_Bits: 3072

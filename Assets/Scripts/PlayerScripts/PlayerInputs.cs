@@ -24,7 +24,7 @@ public class PlayerInputs: MonoBehaviour
 	private InputActionReference attack, move, moveCam, interact, pointer, throwVal;
 
 	public float attackInput() { return attackAction; }
-	public float moveCamInput() { return attackAction; }
+	public float moveCamInput() { return moveCamAction; }
 	public Vector2 pointerPos() { return pointerLoc; }
 	public Vector2 moveInput() { return moveAction; }
 	public float interactInput() { return interactAction; }
@@ -61,6 +61,9 @@ public class PlayerInputs: MonoBehaviour
 		//throw inputs
 		throwAction = throwVal.action.ReadValue<float>();
 
-		inputMatrix = (Fshort(attackAction)) | (Fshort(interactAction) * 2) | (Fshort(throwAction) * 4);
+		//camera inputs
+		moveCamAction = moveCam.action.ReadValue<float>();
+
+		//inputMatrix = (Fshort(attackAction)) | (Fshort(interactAction) * 2) | (Fshort(throwAction) * 4);
 	}
 }

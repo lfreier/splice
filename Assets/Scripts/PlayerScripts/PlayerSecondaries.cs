@@ -10,6 +10,8 @@ public class PlayerSecondaries : MonoBehaviour
 	private float _throwInput;
 	private float lastThrowInput;
 
+	private Vector2 _pointerPos;
+
 	// Update is called once per frame
 	void Update()
 	{
@@ -19,9 +21,10 @@ public class PlayerSecondaries : MonoBehaviour
 	void throwInputs()
 	{
 		_throwInput = inputs.throwInput();
+		_pointerPos = inputs.pointerPos();
 		if (_throwInput > 0 && lastThrowInput == 0)
 		{
-			player.throwWeapon();
+			player.throwWeapon(new Vector3(_pointerPos.x, _pointerPos.y, 0));
 		}
 
 		lastThrowInput = _throwInput;

@@ -16,7 +16,7 @@ public class PlayerInteract : MonoBehaviour
 	}
 	void Update()
 	{
-
+		InteractInputs();
 	}
 
 	void InteractInputs()
@@ -24,23 +24,22 @@ public class PlayerInteract : MonoBehaviour
 		_interactInput = inputs.interactInput();
 		if (_interactInput > 0 && lastInteractInput == 0)
 		{
-			Collider2D[] hitTargets = Physics2D.OverlapCircleAll(this.transform.position, 1F, weaponLayer);
+			Collider2D[] hitTargets = Physics2D.OverlapCircleAll(this.transform.position, 1F, player.pickupLayer);
 
 			foreach (Collider2D target in hitTargets)
 			{
-				if (target.tag.StartsWith("Object"))
+				/* Make sure to only pickup valid objects. This will be expanded on eventually */
+				if (target.tag.StartsWith("Object") && target.tag.Equals(WeaponDefs.OBJECT_WEAPON_TAG))
 				{
-					if (target.tag.Equals(WeaponDefs.OBJECT_WEAPON_TAG))
+					Debug.Log("Picking up: " + target.name);
+					if (player.equip(target.gameObject.transform.GetChild(0).gameObject))
 					{
-						Debug.Log("Picking up: " + target.name);
-						if (player.equip(target.gameObject.transform.GetChild(0).gameObject))
-						{
-							//Make sure to only pick up one weapon
-							break;
-						}
+						//Make sure to only pick up one weapon
+						break;
 					}
 				}
 			}
 		}
+		lastInteractInput = _interactInput;
 	}
 }

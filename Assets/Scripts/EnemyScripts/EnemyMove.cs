@@ -2,72 +2,107 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using static Actor;
 
+/* Includes logic for basic enemy movement.
+ * Also has to interact with 'AI' for detection and where to move.
+ */
 [RequireComponent(typeof(Controller2D))]
 public class EnemyMove : MonoBehaviour
 {
-	enum detectMode
-	{
-		hidden = 0,
-		suspicious = 1,
-		hostile = 2
-	};
+	public Actor actor;
+	public Rigidbody2D actorBody;
 
-	detectMode detected;
-
-	public Enemy enemyInst;
+	private detectMode _detection;
+	private detectMode _oldDetection;
 
 	float currentSpeed;
+	private float stateSpeedIncrease;
+	private float maxStateSpeed;
 
-	public Rigidbody2D playerBody;
-
-	private Vector2 destination;
+	private Vector2 moveTarget;
 
 	private Vector2 moveInput;
 	private Vector2 oldMoveInput;
 
-	private float idleTimer;
-
-	public Controller2D controller;
-	public Rigidbody2D enemyBody;
-
-	public  ActorScriptable enemyScriptable;
-	private float acceleration;
-	private float deceleration;
-	private float moveSpeed;
-	private float maxSpeed;
+	private ActorScriptable _actorData;
 
 	void Start()
 	{
-		enemyInst = new Enemy();
-
-		detected = detectMode.hostile;
-		//initialize the NPC AI
-		idleTimer = Random.Range(1F, 5F);
+		_detection = detectMode.idle;
+		_actorData = actor.actorData;
 	}
 
 	void Update()
 	{
+		_oldDetection = _detection;
+		
+		//functions for noticing hostiles
 
-		if (detected == detectMode.hostile)
+		/*  determine move speed based on current state */
+		if (_oldDetection != _detection)
+		{
+			stateSpeedIncrease = _actorData.acceleration * _actorData.moveSpeed;
+			maxStateSpeed = _actorData.maxSpeed;
+
+			switch (_detection)
+			{
+				case detectMode.idle:
+					stateSpeedIncrease /= 3;
+					maxStateSpeed /= 3;
+					break;
+				case detectMode.cautious:
+				case detectMode.suspicious:
+					stateSpeedIncrease /= 2;
+					maxStateSpeed /= 2;
+					break;
+				case detectMode.frightened:
+				case detectMode.hostile:
+					break;
+			}
+		}
+
+		/*  determine move target based on current state */
+		switch (_detection)
+		{
+			case detectMode.idle:
+				stateSpeedIncrease /= 3;
+				maxStateSpeed /= 3;
+				break;
+			case detectMode.cautious:
+			case detectMode.suspicious:
+				stateSpeedIncrease /= 2;
+				maxStateSpeed /= 2;
+				break;
+			case detectMode.frightened:
+			case detectMode.hostile:
+				break;
+		}
+
+		/* Make sure to save to the actor */
+		actor.detection = _detection;
+		actor.oldDetection = _oldDetection;
+
+		/*
+		if (detection == detectMode.hostile)
 		{
 			if (idleTimer > 0)
 			{
 				//when idle just ended
 				if ((idleTimer -= Time.deltaTime) <= 0)
 				{
-					Vector2 aimDir = playerBody.position - enemyBody.position;
+					Vector2 aimDir = playerBody.position - actorBody.position;
 					float aimAngle = (Mathf.Atan2(aimDir.y, aimDir.x) * Mathf.Rad2Deg) - 90F;
-					float difference = Vector2.Distance(playerBody.position, enemyBody.position);
-					enemyBody.rotation = aimAngle;
-					destination = Vector2.MoveTowards(enemyBody.position, playerBody.position, Random.Range(0.5F, difference));
+					float difference = Vector2.Distance(playerBody.position, actorBody.position);
+					actorBody.rotation = aimAngle;
+					destination = Vector2.MoveTowards(actorBody.position, playerBody.position, Random.Range(0.5F, difference));
 					idleTimer = 0;
 				}
 			}
 
 			if (idleTimer <= 0)
 			{
-				if (Vector2.Distance(enemyBody.position, destination) < 0.1F)
+				if (Vector2.Distance(actorBody.position, destination) < 0.1F)
 				{
 					//wait for a bit before moving again
 					idleTimer = 1F;
@@ -75,30 +110,35 @@ public class EnemyMove : MonoBehaviour
 				}
 				else
 				{
-					Vector2 aimDir = destination - enemyBody.position;
+					Vector2 aimDir = destination - actorBody.position;
 					float aimAngle = (Mathf.Atan2(aimDir.y, aimDir.x) * Mathf.Rad2Deg) - 90F;
-					moveInput = Vector2.MoveTowards(enemyBody.position, destination, 1F) - enemyBody.position;
+					moveInput = Vector2.MoveTowards(actorBody.position, destination, 1F) - actorBody.position;
 				}
 			}
-		}
+		}*/
 	}
 
     void FixedUpdate()
 	{
-		// move
 		if (moveInput.magnitude > 0)
 		{
 			oldMoveInput = moveInput;
-			currentSpeed += acceleration * moveSpeed;
+			currentSpeed += stateSpeedIncrease;
 		}
 		else
 		{
-			currentSpeed -= deceleration * moveSpeed;
+			currentSpeed -= _actorData.deceleration * _actorData.moveSpeed;
 		}
 
-		currentSpeed = Mathf.Clamp(currentSpeed, 0, maxSpeed);
 
-		controller.Move(new Vector3(oldMoveInput.x * currentSpeed * Time.deltaTime, oldMoveInput.y * currentSpeed * Time.deltaTime));
+		if (_detection != detectMode.frightened)
+		{
+			float aimAngle = (Mathf.Atan2(oldMoveInput.y, oldMoveInput.x) * Mathf.Rad2Deg) - 90F;
+			actorBody.rotation = aimAngle;
+		}
 
+		currentSpeed = Mathf.Clamp(currentSpeed, 0, maxStateSpeed);
+
+		actor.Move(new Vector3(oldMoveInput.x * currentSpeed * Time.deltaTime, oldMoveInput.y * currentSpeed * Time.deltaTime));
 	}
 }

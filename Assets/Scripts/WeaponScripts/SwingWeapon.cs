@@ -3,6 +3,9 @@ using UnityEditor;
 using UnityEngine;
 using static UnityEngine.GraphicsBuffer;
 
+[RequireComponent(typeof(Controller2D))]
+[RequireComponent(typeof(WeaponPhysics))]
+[RequireComponent(typeof(WeaponScriptable))]
 public class SwingWeapon : MonoBehaviour, WeaponInterface
 {
 	[SerializeField] public Animator anim;
@@ -18,53 +21,19 @@ public class SwingWeapon : MonoBehaviour, WeaponInterface
 	public CircleCollider2D arc;
 	public BoxCollider2D hitbox;
 
-	private Vector3 throwMovement;
-	private Vector3 lastThrowMovement;
-
-	private float currentSpeed;
-
-	public WeaponScriptable weaponScriptable;
+	public WeaponScriptable _weaponScriptable;
+	public WeaponPhysics _weaponPhysics;
 
 	void Start()
 	{
 		id = this.gameObject.name;
-		currentSpeed = 0;
-	}
-
-	void Update()
-	{
-		/* if currently being thrown... */
-		if (lastThrowMovement.magnitude > 0)
-		{
-			/* if the throw should damage */ 
-			if (currentSpeed <= weaponScriptable.throwHurtSpeed)
-			{
-				hitbox.enabled = false;
-			}
-			if (currentSpeed <= 0)
-			{
-				lastThrowMovement = new Vector3(0, 0, 0);
-				currentSpeed = 0;
-			}
-		}
+		_weaponPhysics.linkInterface(this);
 	}
 
 	void FixedUpdate()
 	{
 		// was just thrown, so give it initial speed
-		if (throwMovement.magnitude > 0)
-		{
-			lastThrowMovement = new Vector3(throwMovement.x, throwMovement.y, 0);
-			throwMovement = new Vector3(0, 0, 0);
-			currentSpeed = weaponScriptable.throwSpeed;
-		}
-		
-		if (lastThrowMovement.magnitude > 0)
-		{
-			currentSpeed -= weaponScriptable.throwWeight;
-			this.transform.parent.Rotate(new Vector3(0, 0, 100 * (currentSpeed / weaponScriptable.throwSpeed) * weaponScriptable.throwWeight * Time.deltaTime));
-			controller.MoveRect(new Vector3(lastThrowMovement.x * currentSpeed * Time.deltaTime, lastThrowMovement.y * currentSpeed * Time.deltaTime));
-		}
+		_weaponPhysics.calculateThrow();
 	}
 
 	public bool attack(LayerMask targetLayer)
@@ -74,16 +43,46 @@ public class SwingWeapon : MonoBehaviour, WeaponInterface
 		
 		return true;
 	}
+
+	public bool canBeDropped()
+	{
+		if (_weaponScriptable.weaponType == WeaponType.UNARMED)
+		{
+			return false;
+		}
+
+		return true;
+	}
+
+	public WeaponScriptable getScriptable()
+	{
+		return _weaponScriptable;
+	}
+
 	public float getSpeed()
 	{
-		return weaponScriptable.atkSpeed;
+		return _weaponScriptable.atkSpeed;
+	}
+
+	public WeaponType getType()
+	{
+		return _weaponScriptable.weaponType;
 	}
 
 	public bool isActive()
 	{
-		return (!anim.GetCurrentAnimatorStateInfo(0).IsTag("Idle") || lastThrowMovement.magnitude > 0);
+		return (!anim.GetCurrentAnimatorStateInfo(0).IsTag("Idle") || _weaponPhysics.isBeingThrown());
 	}
 
+	public void physicsMove(Vector3 velocity)
+	{
+		controller.MoveRect(velocity);
+	}
+
+	public void setHitbox(bool toggle)
+	{
+		hitbox.enabled = toggle;
+	}
 
 	public void setStartingPosition()
 	{
@@ -98,18 +97,8 @@ public class SwingWeapon : MonoBehaviour, WeaponInterface
 	/* Only deal with the movement of the throw */
 	public void throwWeapon(Vector3 target)
 	{
-		throwMovement = target;
+		_weaponPhysics.startThrow(target);
 		hitbox.enabled = true;
-	}
-
-	public bool canBeDropped()
-	{
-		if (id == "Unarmed")
-		{
-			return false;
-		}
-
-		return true;
 	}
 
 	public bool toggleCollider()
@@ -134,8 +123,8 @@ public class SwingWeapon : MonoBehaviour, WeaponInterface
 		Actor actorHit = collision.GetComponent<Actor>();
 		if (actorHit != null)
 		{
-			actorHit.takeDamage(weaponScriptable.damage);
-			Debug.Log("Hit: " + collision.name + " for " + weaponScriptable.damage + " damage");
+			actorHit.takeDamage(_weaponScriptable.damage);
+			Debug.Log("Hit: " + collision.name + " for " + _weaponScriptable.damage + " damage");
 		}
 		else
 		{

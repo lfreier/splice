@@ -11,14 +11,28 @@ using UnityEngine.InputSystem;
 
 public class Actor : MonoBehaviour
 {
+	public enum detectMode
+	{
+		idle = 0,
+		suspicious = 1,
+		hostile = 2,
+		frightened = 3,
+		cautious = 4
+	};
+
+	public detectMode detection;
+	public detectMode oldDetection;
+
 	public ActorScriptable actorData;
 	public Controller2D controller;
 	public Rigidbody2D actorBody;
 
 	public LayerMask hitLayer;
+	public LayerMask pickupLayer;
 
 	private GameObject equippedWeapon;
 	private WeaponInterface equippedWeaponInt;
+	private float speedCheck;
 
 	private float health;
 
@@ -32,6 +46,12 @@ public class Actor : MonoBehaviour
 	{
 		equipEmpty();
 		health = actorData.health;
+		speedCheck = 0;
+	}
+
+	public void FixedUpdate()
+	{
+		speedCheck -= Time.deltaTime;
 	}
 
 	public float takeDamage(float damage)
@@ -50,7 +70,11 @@ public class Actor : MonoBehaviour
 	{
 		if (equippedWeaponInt == null || !equippedWeaponInt.isActive())
 		{
-			equippedWeaponInt.attack(hitLayer);
+			if (speedCheck <= 0)
+			{
+				equippedWeaponInt.attack(hitLayer);
+				speedCheck = equippedWeaponInt.getSpeed();
+			}
 		}
 	}
 
@@ -60,19 +84,33 @@ public class Actor : MonoBehaviour
 	public bool equip(GameObject weaponToEquip)
 	{
 		WeaponInterface tempWeapInt = weaponToEquip.GetComponent<WeaponInterface>();
-		if (tempWeapInt != null)
-		{
-			drop();
-			equippedWeapon = weaponToEquip;
-			equippedWeaponInt = tempWeapInt;
-			weaponToEquip.transform.parent.SetParent(this.transform, true);
-			equippedWeaponInt.setStartingPosition();
-			equippedWeapon.tag = WeaponDefs.EQUIPPED_WEAPON_TAG;
 
-			return true;
+		if (tempWeapInt == null)
+		{
+			return false;
+		}
+		/*  */
+		if (equippedWeaponInt != null)
+		{
+			if (equippedWeaponInt.canBeDropped())
+			{
+				drop();
+			}
+			else if (equippedWeaponInt.getType() == WeaponType.UNARMED)
+			{
+				GameObject unarmedParent = equippedWeapon.transform.parent.gameObject;
+				Destroy(equippedWeapon);
+				Destroy(unarmedParent);
+			}
 		}
 
-		return false;
+		equippedWeapon = weaponToEquip;
+		equippedWeaponInt = tempWeapInt;
+		weaponToEquip.transform.parent.SetParent(this.transform, true);
+		equippedWeaponInt.setStartingPosition();
+		equippedWeapon.tag = WeaponDefs.EQUIPPED_WEAPON_TAG;
+
+		return true;
 	}
 
 	public void drop()
@@ -95,7 +133,11 @@ public class Actor : MonoBehaviour
 	public void throwWeapon()
 	{
 		Vector3 pointerPos = actorBody.transform.TransformDirection(Vector3.forward);
-		throwWeapon(pointerPos);
+
+		if (equippedWeaponInt.canBeDropped())
+		{
+			throwWeapon(pointerPos);
+		}
 	}
 
 	public void throwWeapon(Vector3 throwTargetPos)
@@ -122,6 +164,7 @@ public class Actor : MonoBehaviour
 		GameObject fistPrefab = (GameObject)Instantiate(Resources.Load("Weapons/Fists"), new Vector3(0, 0, 0), Quaternion.identity);
 		fistPrefab.transform.parent = transform;
 		fistPrefab.transform.position = new Vector3(0.25F, 0.25F, 0);
+		fistPrefab.tag = WeaponDefs.EQUIPPED_WEAPON_TAG;
 
 		equip(fistPrefab.transform.GetChild(0).gameObject);
 	}

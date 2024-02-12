@@ -137,6 +137,7 @@ GameObject:
   - component: {fileID: 6210392783176579490}
   - component: {fileID: 3442740799414355683}
   - component: {fileID: 5065859940470389920}
+  - component: {fileID: 8914532103297435241}
   - component: {fileID: 5382928410146962087}
   - component: {fileID: 6952204771483813939}
   - component: {fileID: 3246460088730923946}
@@ -230,7 +231,20 @@ MonoBehaviour:
   controller: {fileID: 7936500866230746785}
   arc: {fileID: 6952204771483813939}
   hitbox: {fileID: 3246460088730923946}
-  weaponScriptable: {fileID: 11400000, guid: dfea369de36cde048b3f951f08541d05, type: 2}
+  _weaponScriptable: {fileID: 11400000, guid: dfea369de36cde048b3f951f08541d05, type: 2}
+  _weaponPhysics: {fileID: 8914532103297435241}
+--- !u!114 &8914532103297435241
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1931358901001870893}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1b54339c0641c29478c56683e79b0c8f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!95 &5382928410146962087
 Animator:
   serializedVersion: 7
