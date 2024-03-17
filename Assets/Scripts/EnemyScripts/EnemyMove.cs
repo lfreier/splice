@@ -20,7 +20,9 @@ public class EnemyMove : MonoBehaviour
 	private float stateSpeedIncrease;
 	private float maxStateSpeed;
 
-	private Vector2 moveTarget;
+	/* moveTarget will always be where the actor moves. Takes priority over the actor's hostile target. */
+	private Vector3 moveTarget;
+	private Actor attackTargetActor;
 
 	private Vector2 moveInput;
 	private Vector2 oldMoveInput;
@@ -31,13 +33,18 @@ public class EnemyMove : MonoBehaviour
 	{
 		_detection = detectMode.idle;
 		_actorData = actor.actorData;
+		attackTargetActor = null;
 	}
 
 	void Update()
 	{
 		_oldDetection = _detection;
-		
+
 		//functions for noticing hostiles
+		if (attackTargetActor == null)
+		{
+			attackTargetActor = scanForHostile();
+		}
 
 		/*  determine move speed based on current state */
 		if (_oldDetection != _detection)
@@ -45,39 +52,39 @@ public class EnemyMove : MonoBehaviour
 			stateSpeedIncrease = _actorData.acceleration * _actorData.moveSpeed;
 			maxStateSpeed = _actorData.maxSpeed;
 
-			switch (_detection)
-			{
-				case detectMode.idle:
-					stateSpeedIncrease /= 3;
-					maxStateSpeed /= 3;
-					break;
-				case detectMode.cautious:
-				case detectMode.suspicious:
-					stateSpeedIncrease /= 2;
-					maxStateSpeed /= 2;
-					break;
-				case detectMode.frightened:
-				case detectMode.hostile:
-					break;
-			}
+			setStateMoveSpeed();
 		}
 
 		/*  determine move target based on current state */
-		switch (_detection)
+
+		if (_detection == detectMode.hostile || _detection == detectMode.suspicious)
 		{
-			case detectMode.idle:
-				stateSpeedIncrease /= 3;
-				maxStateSpeed /= 3;
-				break;
-			case detectMode.cautious:
-			case detectMode.suspicious:
-				stateSpeedIncrease /= 2;
-				maxStateSpeed /= 2;
-				break;
-			case detectMode.frightened:
-			case detectMode.hostile:
-				break;
+			/* first, pickup a weapon if needed */
+			if (actor.isUnarmed())
+			{
+				Collider2D weaponColl;
+				/* Then, move to it */
+				weaponColl = findNearestWeapon(_actorData.hearingRange);
+				if (weaponColl != null)
+				{
+					moveTarget = weaponColl.transform.position;
+					if (Vector3.Magnitude(moveTarget - this.transform.position) <= WeaponDefs.GLOBAL_PICKUP_RANGE)
+					{
+						actor.pickupItem();
+					}
+				}
+				else
+				{
+					moveTarget = new Vector3(attackTargetActor.transform.position.x, attackTargetActor.transform.position.y);
+				}
+			}
+			else
+			{
+				moveTarget = new Vector3(attackTargetActor.transform.position.x, attackTargetActor.transform.position.y);
+			}
 		}
+
+		/* Move to last known location if hostile is not detected */
 
 		/* Make sure to save to the actor */
 		actor.detection = _detection;
@@ -120,6 +127,8 @@ public class EnemyMove : MonoBehaviour
 
     void FixedUpdate()
 	{
+		calcMoveInput();
+
 		if (moveInput.magnitude > 0)
 		{
 			oldMoveInput = moveInput;
@@ -140,5 +149,66 @@ public class EnemyMove : MonoBehaviour
 		currentSpeed = Mathf.Clamp(currentSpeed, 0, maxStateSpeed);
 
 		actor.Move(new Vector3(oldMoveInput.x * currentSpeed * Time.deltaTime, oldMoveInput.y * currentSpeed * Time.deltaTime));
+	}
+
+	private void calcMoveInput()
+	{
+		if (moveTarget == null)
+		{
+			return;
+		}
+
+		moveInput = Vector2.ClampMagnitude(moveTarget - this.transform.position, 1F); 
+	}
+
+	private Collider2D findNearestWeapon(float withinRange)
+	{
+		Collider2D[] noticedWeapons = Physics2D.OverlapCircleAll(this.transform.position, withinRange, actor.pickupLayer);
+		foreach (Collider2D target in noticedWeapons)
+		{
+			if (WeaponDefs.canWeaponBePickedUp(target.gameObject))
+			{
+				return target;
+			}
+		}
+
+		return null;
+	}
+
+	private Actor scanForHostile()
+	{
+		Actor targetActor;
+		Collider2D[] noticedActors = Physics2D.OverlapCircleAll(this.transform.position, _actorData.hearingRange, LayerMask.NameToLayer(ActorDefs.actorLayer));
+		foreach (Collider2D target in noticedActors)
+		{
+			targetActor = target.GetComponent<Actor>();
+			if (actor.isTargetHostile(targetActor))
+			{
+				_detection = detectMode.hostile;
+				actor.setAttackTarget(targetActor);
+				return targetActor;
+			}
+		}
+
+		return null;
+	}
+
+	private void setStateMoveSpeed()
+	{
+		switch (_detection)
+		{
+			case detectMode.idle:
+				stateSpeedIncrease /= 3;
+				maxStateSpeed /= 3;
+				break;
+			case detectMode.cautious:
+			case detectMode.suspicious:
+				stateSpeedIncrease /= 2;
+				maxStateSpeed /= 2;
+				break;
+			case detectMode.frightened:
+			case detectMode.hostile:
+				break;
+		}
 	}
 }

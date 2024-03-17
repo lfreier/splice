@@ -17,3 +17,4 @@ MonoBehaviour:
   <moveSpeed>k__BackingField: 1.4
   <acceleration>k__BackingField: 0.5
   <deceleration>k__BackingField: 0.2
+  <hearingRange>k__BackingField: 4

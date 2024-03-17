@@ -1,11 +1,9 @@
 ﻿using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.UIElements;
 using static UnityEngine.GraphicsBuffer;
 
-[RequireComponent(typeof(Controller2D))]
-[RequireComponent(typeof(WeaponPhysics))]
-[RequireComponent(typeof(WeaponScriptable))]
 public class SwingWeapon : MonoBehaviour, WeaponInterface
 {
 	[SerializeField] public Animator anim;
@@ -16,6 +14,8 @@ public class SwingWeapon : MonoBehaviour, WeaponInterface
 	private const float equipPosX = 0.38F;
 	private const float equipPosY = 0.15F;
 	private const float equipRotZ = -67.5F;
+
+	private bool attackTriggered;
 
 	public Controller2D controller;
 	public CircleCollider2D arc;
@@ -40,7 +40,9 @@ public class SwingWeapon : MonoBehaviour, WeaponInterface
 	{
 		anim.SetTrigger("Attack");
 		lastTargetLayer = targetLayer;
-		
+		attackTriggered = true;
+
+
 		return true;
 	}
 
@@ -69,6 +71,11 @@ public class SwingWeapon : MonoBehaviour, WeaponInterface
 		return _weaponScriptable.weaponType;
 	}
 
+	public bool inRange(Vector3 target)
+	{
+		return Vector3.Distance(transform.position, target) <= arc.radius;
+	}
+
 	public bool isActive()
 	{
 		return (!anim.GetCurrentAnimatorStateInfo(0).IsTag("Idle") || _weaponPhysics.isBeingThrown());
@@ -86,12 +93,7 @@ public class SwingWeapon : MonoBehaviour, WeaponInterface
 
 	public void setStartingPosition()
 	{
-		Vector3 startPos;
-		Quaternion startRot;
-		startPos = new Vector3(equipPosX, equipPosY);
-		startRot = Quaternion.Euler(0, 0, equipRotZ);
-		this.gameObject.transform.parent.SetLocalPositionAndRotation(startPos, startRot);
-		//currParent.SetPositionAndRotation(currParent.TransformPoint(currParent.position), currParent.rotation);
+		transform.parent.SetLocalPositionAndRotation(new Vector3(equipPosX, equipPosY, 0), Quaternion.Euler(0, 0, equipRotZ));
 	}
 
 	/* Only deal with the movement of the throw */

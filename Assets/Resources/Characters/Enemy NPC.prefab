@@ -1,36 +1,5 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &3039410198556962386
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 285140439606563166}
-  m_Layer: 7
-  m_Name: Enemy Attack Point
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &285140439606563166
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3039410198556962386}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.5, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 4515851072354870145}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &7904725563872449456
 GameObject:
   m_ObjectHideFlags: 0
@@ -43,12 +12,14 @@ GameObject:
   - component: {fileID: 6162639131189426590}
   - component: {fileID: 2658991806923027523}
   - component: {fileID: 1722529025439896153}
+  - component: {fileID: 740460995545239096}
   - component: {fileID: 4430561409393562764}
   - component: {fileID: 8181113457589132258}
-  - component: {fileID: 740460995545239096}
+  - component: {fileID: 3066400801353164671}
+  - component: {fileID: 8936931521236048847}
   m_Layer: 7
   m_Name: Enemy NPC
-  m_TagString: Untagged
+  m_TagString: NPC
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -61,12 +32,11 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7904725563872449456}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 8.108392, y: -1.8755531, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 285140439606563166}
+  m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &6162639131189426590
@@ -194,6 +164,29 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!114 &740460995545239096
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7904725563872449456}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 15fd7453a9e30e440b488bc93f515537, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  detection: 0
+  oldDetection: 0
+  actorData: {fileID: 11400000, guid: cb5b7816b2070b143891c7c7dfbaee5b, type: 2}
+  controller: {fileID: 4430561409393562764}
+  actorBody: {fileID: 2658991806923027523}
+  hitLayer:
+    serializedVersion: 2
+    m_Bits: 32768
+  pickupLayer:
+    serializedVersion: 2
+    m_Bits: 6144
 --- !u!114 &4430561409393562764
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -226,8 +219,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   actor: {fileID: 740460995545239096}
   actorBody: {fileID: 2658991806923027523}
-  actorData: {fileID: 11400000, guid: cb5b7816b2070b143891c7c7dfbaee5b, type: 2}
---- !u!114 &740460995545239096
+--- !u!114 &3066400801353164671
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -236,17 +228,25 @@ MonoBehaviour:
   m_GameObject: {fileID: 7904725563872449456}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 15fd7453a9e30e440b488bc93f515537, type: 3}
+  m_Script: {fileID: 11500000, guid: b15cd33169dc58f4a903244618e280d7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  detection: 0
-  oldDetection: 0
-  actorData: {fileID: 11400000, guid: cb5b7816b2070b143891c7c7dfbaee5b, type: 2}
-  controller: {fileID: 4430561409393562764}
-  actorBody: {fileID: 2658991806923027523}
-  hitLayer:
+  horizontalRayCount: 4
+  verticalRayCount: 4
+  collider2DObj: {fileID: 1722529025439896153}
+  collisionMask:
     serializedVersion: 2
-    m_Bits: 32768
-  pickupLayer:
-    serializedVersion: 2
-    m_Bits: 3072
+    m_Bits: 64
+--- !u!114 &8936931521236048847
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7904725563872449456}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 35cb5a18410d14943889126bc9496fb3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  actor: {fileID: 740460995545239096}

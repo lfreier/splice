@@ -47,8 +47,9 @@ public class WeaponPhysics : MonoBehaviour
 		if (_lastThrowMove.magnitude > 0)
 		{
 			currentSpeed -= _weaponScriptable.throwWeight;
-			this.transform.parent.Rotate(new Vector3(0, 0, WeaponDefs.THROW_ROTATE_MID * (currentSpeed / _weaponScriptable.throwSpeed) * _weaponScriptable.throwWeight * Time.deltaTime));
+
 			_weapon.physicsMove(new Vector3(_lastThrowMove.x * currentSpeed * Time.deltaTime, _lastThrowMove.y * currentSpeed * Time.deltaTime));
+			this.transform.Rotate(new Vector3(0, 0, WeaponDefs.THROW_ROTATE_MID * (currentSpeed / _weaponScriptable.throwSpeed) * _weaponScriptable.throwWeight * Time.deltaTime));
 		}
 	}
 

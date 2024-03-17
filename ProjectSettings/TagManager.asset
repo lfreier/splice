@@ -6,6 +6,7 @@ TagManager:
   tags:
   - ObjectWeapon
   - EquippedWeapon
+  - NPC
   layers:
   - Default
   - TransparentFX

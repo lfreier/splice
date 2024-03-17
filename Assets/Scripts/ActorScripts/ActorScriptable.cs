@@ -20,4 +20,7 @@ public class ActorScriptable : ScriptableObject
 
 	[field: SerializeField]
 	public float deceleration { get; private set; } = 0.8F;
+
+	[field: SerializeField]
+	public float hearingRange { get; private set; } = 20F;
 }

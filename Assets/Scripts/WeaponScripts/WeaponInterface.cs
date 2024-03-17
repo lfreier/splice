@@ -12,6 +12,8 @@ public interface WeaponInterface
 	public float getSpeed();
 	public WeaponType getType();
 
+	public bool inRange(Vector3 target);
+
 	public bool isActive();
 
 	public void physicsMove(Vector3 velocity);
