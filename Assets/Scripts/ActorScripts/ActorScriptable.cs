@@ -23,4 +23,7 @@ public class ActorScriptable : ScriptableObject
 
 	[field: SerializeField]
 	public float hearingRange { get; private set; } = 20F;
+
+	[field: SerializeField]
+	public float sightRange { get; private set; } = 10F;
 }

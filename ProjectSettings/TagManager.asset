@@ -19,7 +19,7 @@ TagManager:
   - 
   - 
   - Object
-  - Object (Held)
+  - ObjectPickup
   - Damage
   - 
   - 
@@ -43,4 +43,10 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Ground
+    uniqueID: 850694283
+    locked: 0
+  - name: Chars
+    uniqueID: 919069219
     locked: 0

@@ -15,6 +15,7 @@ public class EnemyAttack : MonoBehaviour
 		Actor target = actor.getAttackTarget();
 		if (target != null && actor.inWeaponRange(target.transform.position))
 		{
+			//actor.setMoveSpeed(0);
 			actor.attack();
 		}
 	}

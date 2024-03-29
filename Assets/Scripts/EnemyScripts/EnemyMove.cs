@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -41,10 +42,8 @@ public class EnemyMove : MonoBehaviour
 		_oldDetection = _detection;
 
 		//functions for noticing hostiles
-		if (attackTargetActor == null)
-		{
-			attackTargetActor = scanForHostile();
-		}
+		attackTargetActor = attackTargetActor ? attackTargetActor : seeHostiles();
+		attackTargetActor = attackTargetActor ? attackTargetActor: hearHostiles();
 
 		/*  determine move speed based on current state */
 		if (_oldDetection != _detection)
@@ -175,7 +174,7 @@ public class EnemyMove : MonoBehaviour
 		return null;
 	}
 
-	private Actor scanForHostile()
+	private Actor hearHostiles()
 	{
 		Actor targetActor;
 		Collider2D[] noticedActors = Physics2D.OverlapCircleAll(this.transform.position, _actorData.hearingRange, LayerMask.NameToLayer(ActorDefs.actorLayer));
@@ -190,6 +189,11 @@ public class EnemyMove : MonoBehaviour
 			}
 		}
 
+		return null;
+	}
+
+	private Actor seeHostiles()
+	{
 		return null;
 	}
 

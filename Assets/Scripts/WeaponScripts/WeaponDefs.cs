@@ -17,3 +17,10 @@ public static class WeaponDefs
 		return target.tag.StartsWith("Object") && target.tag.Equals(WeaponDefs.OBJECT_WEAPON_TAG);
 	}
 }
+public enum WeaponType
+{
+	UNARMED,
+	SWING,
+	STAB,
+	SHOOT
+};

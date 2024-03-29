@@ -95,6 +95,7 @@ public class Actor : MonoBehaviour
 	{
 		GameObject tempWeaponToEquip;
 		WeaponInterface tempWeapInt = weaponToEquip.GetComponent<WeaponInterface>();
+		Transform childTransform;
 
 		/* This should make it so it doesn't matter if you equip the parent or child object */
 		if (tempWeapInt == null)
@@ -128,7 +129,11 @@ public class Actor : MonoBehaviour
 		equippedWeapon.transform.SetParent(this.transform, true);
 		equippedWeaponInt.setStartingPosition();
 		equippedWeapon.tag = WeaponDefs.EQUIPPED_WEAPON_TAG;
-		equippedWeapon.transform.GetChild(0).tag = WeaponDefs.EQUIPPED_WEAPON_TAG;
+		
+		for (childTransform = equippedWeapon.transform.GetChild(0); childTransform != null; childTransform = childTransform.GetChild(0))
+		{
+			childTransform.tag = WeaponDefs.EQUIPPED_WEAPON_TAG;
+		}
 
 		return true;
 	}
