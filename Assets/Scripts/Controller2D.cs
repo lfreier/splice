@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Controller2D : MonoBehaviour
@@ -7,9 +8,11 @@ public class Controller2D : MonoBehaviour
 	const float skinWidth = 0.015F;
 	public int horizontalRayCount = 4;
 	public int verticalRayCount = 4;
+	public int directionalRayCount = 4;
 
 	float horizontalRaySpacing;
 	float verticalRaySpacing;
+	float directionalRaySpacing;
 
 	public Collider2D collider2DObj;
 	public LayerMask collisionMask;
@@ -56,6 +59,12 @@ public class Controller2D : MonoBehaviour
 		{
 			VerticalCollisions(ref velocity);
 		}
+
+
+		if (velocity.x != 0 && velocity.y != 0)
+		{
+			DirectionalCollisions(ref velocity);
+		}
 	}
 
 	private void CheckCollisionsRect(Vector3 velocity)
@@ -71,6 +80,11 @@ public class Controller2D : MonoBehaviour
 		if (velocity.y != 0)
 		{
 			VerticalCollisions(ref velocity);
+		}
+
+		if (velocity.x != 0 && velocity.y != 0)
+		{
+			DirectionalCollisions(ref velocity);
 		}
 	}
 
@@ -124,10 +138,100 @@ public class Controller2D : MonoBehaviour
 		}
 	}
 
+	void DirectionalCollisions(ref Vector3 movement)
+	{
+		int i = 0;
+		float directionY = Mathf.Sign(movement.y);
+		float directionX = Mathf.Sign(movement.x);
+		float rayLength = Mathf.Abs(movement.magnitude) + skinWidth;
+
+		Vector2 rayOrigin;
+		Vector2 directionVector;
+
+		bool collided = false;
+
+		/* This is dumb but whatever */
+		if (directionY < 0)
+		{
+			if (directionX < 0)
+			{
+				rayOrigin = raycastOrigins.bottomLeft;
+				directionVector = Vector2.left + Vector2.down;
+			}
+			else
+			{
+				rayOrigin = raycastOrigins.bottomRight;
+				directionVector = Vector2.right + Vector2.down;
+			}
+		}
+		else
+		{
+			if (directionX < 0)
+			{
+				rayOrigin = raycastOrigins.topLeft;
+				directionVector = Vector2.left + Vector2.up;
+			}
+			else
+			{
+				rayOrigin = raycastOrigins.topRight;
+				directionVector = Vector2.right + Vector2.up;
+			}
+		}
+
+		rayOrigin -= directionVector.Perpendicular1() * (directionalRaySpacing * (((float)directionalRayCount / 2F) + 0.5F));
+
+		for (i = 0; i < directionalRayCount; i++)
+		{
+			rayOrigin += directionVector.Perpendicular1() * directionalRaySpacing;
+			RaycastHit2D hit = Physics2D.Raycast(rayOrigin, directionVector, rayLength, collisionMask);
+
+			Debug.DrawRay(rayOrigin, directionVector);
+
+			if (hit)
+			{
+				movement.y = (hit.distance - skinWidth) * directionY;
+				rayLength = hit.distance;
+				collided = true;
+			}
+		}
+
+		if (collided)
+		{
+			if (directionY < 0)
+			{
+				if (directionX < 0)
+				{
+					collisionData.left = true;
+					collisionData.below = true;
+
+				}
+				else
+				{
+					collisionData.right = true;
+					collisionData.below = true;
+				}
+			}
+			else
+			{
+				if (directionX < 0)
+				{
+					collisionData.left = true;
+					collisionData.above = true;
+				}
+				else
+				{
+					collisionData.right = true;
+					collisionData.above = true;
+				}
+			}
+		}
+	}
+
 	void UpdateRaycastOrigins()
 	{
 		Bounds bounds = collider2DObj.bounds;
-		bounds.Expand(skinWidth * -4);
+		/* Increase bounds by 4, but minus 0.8 to stop weird clipping */
+		bounds.Expand(skinWidth * -3.2F);
 		raycastOrigins.topRight = new Vector2(bounds.max.x, bounds.max.y);
 		raycastOrigins.topLeft = new Vector2(bounds.min.x, bounds.max.y);
 		raycastOrigins.bottomRight = new Vector2(bounds.max.x, bounds.min.y);
@@ -138,7 +242,8 @@ public class Controller2D : MonoBehaviour
 	{
 		Bounds bounds = collider2DObj.bounds;
 		float maxX, minX, maxY, minY;
-		bounds.Expand(skinWidth * -4);
+		/* Increase bounds by 4, but minus 0.8 to stop weird clipping */
+		bounds.Expand(skinWidth * -3.2F);
 		maxX = bounds.max.y > bounds.max.x ? bounds.max.y : bounds.max.x;
 		minX = bounds.min.y < bounds.min.x ? bounds.min.y : bounds.min.x;
 		maxY = bounds.max.x > bounds.max.y ? bounds.max.x : bounds.max.y;
@@ -160,6 +265,7 @@ public class Controller2D : MonoBehaviour
 
 		horizontalRaySpacing = bounds.size.y / (horizontalRayCount - 1);
 		verticalRaySpacing = bounds.size.x / (verticalRayCount - 1);
+		directionalRaySpacing = bounds.size.x /  (directionalRayCount - 1);
 	}
 
 	struct RaycastOrigins

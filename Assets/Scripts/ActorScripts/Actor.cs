@@ -35,6 +35,11 @@ public class Actor : MonoBehaviour
 	public LayerMask hitLayer;
 	public LayerMask pickupLayer;
 
+	public GameObject mutationHolder;
+	public GameObject effectHolder;
+
+	public GameManager gameManager;
+
 	private GameObject equippedWeapon;
 	private WeaponInterface equippedWeaponInt;
 	private float speedCheck;
@@ -49,10 +54,20 @@ public class Actor : MonoBehaviour
 
 	public void Start()
 	{
-		equipEmpty();
 		health = actorData.health;
 		speedCheck = 0;
 		attackTarget = null;
+		GameManager manager = GameManager.Instance;
+	}
+
+	public void Update()
+	{
+		/* TODO: if game manager is null, just don't bother equipping fists.
+		   But it shouldn't work like that, gameManager should be singleton*/
+		if (gameManager != null && (equippedWeapon == null || equippedWeaponInt == null))
+		{
+			equipEmpty();
+		}
 	}
 
 	public void FixedUpdate()
@@ -95,7 +110,6 @@ public class Actor : MonoBehaviour
 	{
 		GameObject tempWeaponToEquip;
 		WeaponInterface tempWeapInt = weaponToEquip.GetComponent<WeaponInterface>();
-		Transform childTransform;
 
 		/* This should make it so it doesn't matter if you equip the parent or child object */
 		if (tempWeapInt == null)
@@ -120,7 +134,14 @@ public class Actor : MonoBehaviour
 			{
 				drop();
 			}
-			Destroy(equippedWeapon);
+			else if (equippedWeaponInt.getType() == WeaponType.UNARMED)
+			{
+				Destroy(equippedWeapon);
+			}
+			else
+			{
+				return false;
+			}
 		}
 
 		equippedWeapon = tempWeaponToEquip;
@@ -128,12 +149,10 @@ public class Actor : MonoBehaviour
 
 		equippedWeapon.transform.SetParent(this.transform, true);
 		equippedWeaponInt.setStartingPosition();
-		equippedWeapon.tag = WeaponDefs.EQUIPPED_WEAPON_TAG;
-		
-		for (childTransform = equippedWeapon.transform.GetChild(0); childTransform != null; childTransform = childTransform.GetChild(0))
-		{
-			childTransform.tag = WeaponDefs.EQUIPPED_WEAPON_TAG;
-		}
+
+		setWeaponTag(equippedWeapon, WeaponDefs.EQUIPPED_WEAPON_TAG);
+
+		equippedWeaponInt.setActorToHold(this);
 
 		return true;
 	}
@@ -148,8 +167,23 @@ public class Actor : MonoBehaviour
 		return attackTarget;
 	}
 
+	public GameObject instantiateWeapon(GameObject prefab)
+	{
+		GameObject weaponPrefab = Instantiate(prefab, new Vector3(0, 0, 0), Quaternion.identity);
+
+		weaponPrefab.transform.SetParent(this.gameObject.transform, true);
+		weaponPrefab.transform.position = new Vector3(0.25F, 0.25F, 0);
+		setWeaponTag(weaponPrefab, WeaponDefs.EQUIPPED_WEAPON_TAG);
+
+		return weaponPrefab;
+	}
+
 	public bool inWeaponRange(Vector3 target)
 	{
+		if (equippedWeaponInt == null)
+		{
+			return false;
+		}
 		return equippedWeaponInt.inRange(target);
 	}
 
@@ -170,11 +204,16 @@ public class Actor : MonoBehaviour
 
 	public bool isUnarmed()
 	{
+		if (equippedWeaponInt == null)
+		{
+			return true;
+		}
 		return this.equippedWeaponInt.getType() == WeaponType.UNARMED;
 	}
 
 	public void kill()
 	{
+		drop();
 		//TODO: spawn replacement sprite
 		Destroy(transform.gameObject);
 	}
@@ -200,12 +239,41 @@ public class Actor : MonoBehaviour
 					break;
 				}
 			}
+			else if (MutationDefs.isMutationSelect(target.gameObject))
+			{
+				//TODO: implement mutation selection
+
+				var mutationList = target.gameObject.GetComponents<MutationInterface>();
+
+				foreach (MutationInterface mut in mutationList)
+				{
+					mutationHolder.AddComponent(mut.GetType());
+					if (mut.mEquip(this))
+					{
+						break;
+					}
+				}
+
+			}
 		}
 	}
 
 	public void setAttackTarget(Actor targetActor)
 	{
 		attackTarget = targetActor;
+	}
+
+	private static void setWeaponTag(GameObject weapon, string newTag)
+	{
+		weapon.tag = newTag;
+		foreach (Transform child in weapon.transform)
+		{
+			child.tag = newTag;
+			foreach (Transform secChild in child)
+			{
+				secChild.tag = newTag;
+			}
+		}
 	}
 
 	public float takeDamage(float damage)
@@ -223,26 +291,38 @@ public class Actor : MonoBehaviour
 	public void throwWeapon()
 	{
 		Vector3 pointerPos = actorBody.transform.TransformDirection(Vector3.forward);
-
-		if (equippedWeaponInt.canBeDropped())
-		{
-			throwWeapon(pointerPos);
-		}
+		throwWeapon(pointerPos);
 	}
 
 	public void throwWeapon(Vector3 throwTargetPos)
 	{
+		if (!equippedWeaponInt.canBeDropped())
+		{
+			return;
+		}
+
 		Vector3 aimDir = new Vector3(throwTargetPos.x, throwTargetPos.y, 0) - this.transform.position;
 
-		equippedWeaponInt.throwWeapon(Vector3.ClampMagnitude(aimDir, 1F));
-
 		resetEquip();
+	}
+
+	public void triggerDamageEffects(Actor target)
+	{
+		var mutationList = mutationHolder.GetComponents<MonoBehaviour>();
+
+		foreach (MutationInterface mutation in mutationList)
+		{
+			if (mutation.getMutationType() == mutationTrigger.DAMAGE_GIVEN)
+			{
+				mutation.trigger(target);
+			}
+		}
 	}
 
 	private void resetEquip()
 	{
 		equippedWeapon.transform.SetParent(null, true);
-		equippedWeapon.tag = WeaponDefs.OBJECT_WEAPON_TAG;
+		setWeaponTag(equippedWeapon, WeaponDefs.OBJECT_WEAPON_TAG);
 
 		equippedWeapon = null;
 		equippedWeaponInt = null;
@@ -251,10 +331,7 @@ public class Actor : MonoBehaviour
 	}
 	private void equipEmpty()
 	{
-		GameObject fistPrefab = (GameObject)Instantiate(Resources.Load("Weapons/Fists"), new Vector3(0, 0, 0), Quaternion.identity);
-		fistPrefab.transform.SetParent(this.gameObject.transform, true);
-		fistPrefab.transform.position = new Vector3(0.25F, 0.25F, 0);
-		fistPrefab.tag = WeaponDefs.EQUIPPED_WEAPON_TAG;
+		GameObject fistPrefab = instantiateWeapon(gameManager.weapPFist);
 
 		equip(fistPrefab.transform.gameObject);
 	}

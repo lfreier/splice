@@ -16,8 +16,12 @@ public class WeaponScriptable : ScriptableObject
 	public float atkSpeed { get; private set; } = 0.25F;
 
 	[field: SerializeField]
+	public bool canBeDropped { get; private set; } = true;
+
+	[field: SerializeField]
 	public float damage { get; private set; } = 2F;
 
+	[field: SerializeField]
 	public int durability = 2;
 
 	/* Throwing fields */  
@@ -39,5 +43,9 @@ public class WeaponScriptable : ScriptableObject
 
 	[field: SerializeField]
 	public WeaponType weaponType { get; private set; }  = WeaponType.SWING;
+
+	public float equipPosX = 0.38F;
+	public float equipPosY = 0.15F;
+	public float equipRotZ = -67.5F;
 
 }

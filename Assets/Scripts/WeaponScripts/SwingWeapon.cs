@@ -11,15 +11,14 @@ public class SwingWeapon : MonoBehaviour, WeaponInterface
 	LayerMask lastTargetLayer;
 	string id;
 
-	private const float equipPosX = 0.38F;
-	private const float equipPosY = 0.15F;
-	private const float equipRotZ = -67.5F;
-
 	private bool attackTriggered;
 
 	public Controller2D controller;
 	public CircleCollider2D arc;
 	public BoxCollider2D hitbox;
+	public BoxCollider2D throwBox;
+
+	public Actor actorWielder;
 
 	public WeaponScriptable _weaponScriptable;
 	public WeaponPhysics _weaponPhysics;
@@ -48,7 +47,7 @@ public class SwingWeapon : MonoBehaviour, WeaponInterface
 
 	public bool canBeDropped()
 	{
-		if (_weaponScriptable.weaponType == WeaponType.UNARMED)
+		if (_weaponScriptable.weaponType == WeaponType.UNARMED || !_weaponScriptable.canBeDropped)
 		{
 			return false;
 		}
@@ -85,6 +84,10 @@ public class SwingWeapon : MonoBehaviour, WeaponInterface
 	{
 		controller.MoveRect(velocity);
 	}
+	public void setActorToHold(Actor actor)
+	{
+		actorWielder = actor;
+	}
 
 	public void setHitbox(bool toggle)
 	{
@@ -93,7 +96,7 @@ public class SwingWeapon : MonoBehaviour, WeaponInterface
 
 	public void setStartingPosition()
 	{
-		transform.parent.SetLocalPositionAndRotation(new Vector3(equipPosX, equipPosY, 0), Quaternion.Euler(0, 0, equipRotZ));
+		transform.parent.SetLocalPositionAndRotation(new Vector3(_weaponScriptable.equipPosX, _weaponScriptable.equipPosY, 0), Quaternion.Euler(0, 0, _weaponScriptable.equipRotZ));
 	}
 
 	/* Only deal with the movement of the throw */
@@ -105,7 +108,7 @@ public class SwingWeapon : MonoBehaviour, WeaponInterface
 
 	public bool toggleCollider()
 	{
-		return arc.enabled = !arc.enabled;
+		return hitbox.enabled = !hitbox.enabled;
 	}
 
 	private void OnTriggerEnter2D(Collider2D collision)
@@ -125,6 +128,7 @@ public class SwingWeapon : MonoBehaviour, WeaponInterface
 		Actor actorHit = collision.GetComponent<Actor>();
 		if (actorHit != null)
 		{
+			actorWielder.triggerDamageEffects(actorHit);
 			actorHit.takeDamage(_weaponScriptable.damage);
 			Debug.Log("Hit: " + collision.name + " for " + _weaponScriptable.damage + " damage");
 		}

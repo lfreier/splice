@@ -18,6 +18,8 @@ public interface WeaponInterface
 
 	public void physicsMove(Vector3 velocity);
 
+	public void setActorToHold(Actor actor);
+
 	public void setHitbox(bool toggle);
 
 	public void setStartingPosition();
