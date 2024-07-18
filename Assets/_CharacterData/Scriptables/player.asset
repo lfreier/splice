@@ -13,7 +13,9 @@ MonoBehaviour:
   m_Name: player
   m_EditorClassIdentifier: 
   <health>k__BackingField: 2
-  <maxSpeed>k__BackingField: 12
-  <moveSpeed>k__BackingField: 2.2
+  <maxSpeed>k__BackingField: 10
+  <moveSpeed>k__BackingField: 2
   <acceleration>k__BackingField: 0.5
   <deceleration>k__BackingField: 0.8
+  <hearingRange>k__BackingField: 20
+  <sightRange>k__BackingField: 10

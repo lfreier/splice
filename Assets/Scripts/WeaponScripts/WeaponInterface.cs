@@ -16,8 +16,6 @@ public interface WeaponInterface
 
 	public bool isActive();
 
-	public void physicsMove(Vector3 velocity);
-
 	public void setActorToHold(Actor actor);
 
 	public void setHitbox(bool toggle);

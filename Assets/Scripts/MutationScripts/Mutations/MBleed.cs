@@ -26,9 +26,18 @@ public class MBleed : MonoBehaviour, MutationInterface
 		newBleed.start(actorTarget);
 	}
 
-	public bool mEquip(Actor actor)
+	public MutationInterface mEquip(Actor actor)
 	{
 
-		return true;
+		return this;
+	}
+	public void setStartingPosition()
+	{
+
+	}
+
+	public void setWielder(Actor wielder)
+	{
+
 	}
 }

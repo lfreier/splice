@@ -11,8 +11,6 @@ public class SwingWeapon : MonoBehaviour, WeaponInterface
 	LayerMask lastTargetLayer;
 	string id;
 
-	private bool attackTriggered;
-
 	public Controller2D controller;
 	public CircleCollider2D arc;
 	public BoxCollider2D hitbox;
@@ -39,8 +37,6 @@ public class SwingWeapon : MonoBehaviour, WeaponInterface
 	{
 		anim.SetTrigger("Attack");
 		lastTargetLayer = targetLayer;
-		attackTriggered = true;
-
 
 		return true;
 	}
@@ -82,7 +78,7 @@ public class SwingWeapon : MonoBehaviour, WeaponInterface
 
 	public void physicsMove(Vector3 velocity)
 	{
-		controller.MoveRect(velocity);
+		controller.transform.Translate(velocity);
 	}
 	public void setActorToHold(Actor actor)
 	{
@@ -102,8 +98,7 @@ public class SwingWeapon : MonoBehaviour, WeaponInterface
 	/* Only deal with the movement of the throw */
 	public void throwWeapon(Vector3 target)
 	{
-		_weaponPhysics.startThrow(target);
-		hitbox.enabled = true;
+		_weaponPhysics.startThrow(target, actorWielder);
 	}
 
 	public bool toggleCollider()
@@ -114,10 +109,12 @@ public class SwingWeapon : MonoBehaviour, WeaponInterface
 	private void OnTriggerEnter2D(Collider2D collision)
 	{
 		//TODO: deal with layermasks in a way that actually makes sense later
+		//TODO: put this somewhere else that's not specific for the weapon?
 		Transform currParent = this.gameObject.transform;
 		while(currParent != null)
 		{
-			if (collision.name == currParent.name)
+			if (collision.name == currParent.name
+				|| (_weaponPhysics.throwingActor != null && collision.name == _weaponPhysics.throwingActor.name))
 			{
 				Debug.Log("Stop hitting yourself");
 				return;

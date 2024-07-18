@@ -10,12 +10,16 @@ public class PlayerSecondaries : MonoBehaviour
 	private float _throwInput;
 	private float lastThrowInput;
 
+	private float[] _specialActions = new float[MutationDefs.MAX_SLOTS];
+	private float[] _lastSpecialActions = new float[MutationDefs.MAX_SLOTS];
+
 	private Vector2 _pointerPos;
 
 	// Update is called once per frame
 	void Update()
 	{
 		throwInputs();
+		activeInputs();
 	}
 
 	void throwInputs()
@@ -28,5 +32,21 @@ public class PlayerSecondaries : MonoBehaviour
 		}
 
 		lastThrowInput = _throwInput;
+	}
+
+	void activeInputs()
+	{
+		_specialActions = inputs.actionInputs();
+
+		short i = 0;
+		foreach (var action in _specialActions)
+		{
+			if (_specialActions[i] > 0 && _lastSpecialActions[i] == 0)
+			{
+				player.useAction(i);
+			}
+			_lastSpecialActions[i] = action;
+			i++;
+		}
 	}
 }

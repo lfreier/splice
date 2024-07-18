@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: scientist
   m_EditorClassIdentifier: 
   <health>k__BackingField: 6
-  <maxSpeed>k__BackingField: 12
-  <moveSpeed>k__BackingField: 1.4
+  <maxSpeed>k__BackingField: 9
+  <moveSpeed>k__BackingField: 0.4
   <acceleration>k__BackingField: 0.5
   <deceleration>k__BackingField: 0.2
   <hearingRange>k__BackingField: 4

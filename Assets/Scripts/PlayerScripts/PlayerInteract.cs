@@ -6,6 +6,8 @@ public class PlayerInteract : MonoBehaviour
 	private float _interactInput;
 	private float lastInteractInput;
 
+	public short numActions = MutationDefs.MAX_SLOTS;
+
 	public Actor player;
 
 	public PlayerInputs inputs;

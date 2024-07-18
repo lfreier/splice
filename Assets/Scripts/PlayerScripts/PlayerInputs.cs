@@ -4,8 +4,6 @@ using UnityEngine.InputSystem;
 
 public class PlayerInputs: MonoBehaviour
 {
-	private ushort inputMatrix = 0x0000;
-
 	private float attackAction;
 
 	private float moveCamAction;
@@ -20,8 +18,11 @@ public class PlayerInputs: MonoBehaviour
 	private float throwAction;
 	private float lastThrowAction;
 
+	private float[] specialActions = new float[MutationDefs.MAX_SLOTS];
+	private float[] lastSpecialActions = new float[MutationDefs.MAX_SLOTS];
+
 	[SerializeField]
-	private InputActionReference attack, move, moveCam, interact, pointer, throwVal;
+	private InputActionReference attack, move, moveCam, interact, pointer, throwVal, action1, action2;
 
 	public float attackInput() { return attackAction; }
 	public float moveCamInput() { return moveCamAction; }
@@ -29,6 +30,8 @@ public class PlayerInputs: MonoBehaviour
 	public Vector2 moveInput() { return moveAction; }
 	public float interactInput() { return interactAction; }
 	public float throwInput() { return throwAction; }
+
+	public float[] actionInputs() { return specialActions; }
 
 	public static short Fshort(float value)
 	{
@@ -64,6 +67,14 @@ public class PlayerInputs: MonoBehaviour
 		//camera inputs
 		moveCamAction = moveCam.action.ReadValue<float>();
 
-		//inputMatrix = (Fshort(attackAction)) | (Fshort(interactAction) * 2) | (Fshort(throwAction) * 4);
+		short i = 0;
+		foreach (var action in specialActions)
+		{
+			lastSpecialActions[i] = action;
+			i++;
+		}
+		//I don't think there's a way around hard coding this but w/e
+		specialActions[0] = action1.action.ReadValue<float>();
+		specialActions[1] = action2.action.ReadValue<float>();
 	}
 }

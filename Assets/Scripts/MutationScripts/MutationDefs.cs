@@ -6,7 +6,7 @@ public static class MutationDefs
 {
 	public static string MUTATION_SELECT_TAG = "MutationSelect";
 
-	public static string BLEED_EFFECT_1 = "";
+	public static short MAX_SLOTS = 2;
 
 	public static bool isMutationSelect(GameObject target)
 	{
@@ -20,5 +20,6 @@ public enum mutationTrigger
 	PRIMARY_ATTACK,
 	SECONDARY_ATTACK,
 	DAMAGE_TAKEN,
-	DAMAGE_GIVEN
+	DAMAGE_GIVEN,
+	ACTIVE_SLOT
 };

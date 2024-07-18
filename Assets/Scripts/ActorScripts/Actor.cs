@@ -26,7 +26,6 @@ public class Actor : MonoBehaviour
 	public detectMode oldDetection;
 
 	public ActorScriptable actorData;
-	public Controller2D controller;
 	public Rigidbody2D actorBody;
 
 	private Actor attackTarget;
@@ -37,6 +36,8 @@ public class Actor : MonoBehaviour
 
 	public GameObject mutationHolder;
 	public GameObject effectHolder;
+
+	public MutationInterface[] activeSlots;
 
 	public GameManager gameManager;
 
@@ -50,6 +51,7 @@ public class Actor : MonoBehaviour
 	{
 		actorData = actorScriptable;
 		health = actorData.health;
+		activeSlots = new MutationInterface[MutationDefs.MAX_SLOTS];
 	}
 
 	public void Start()
@@ -58,6 +60,7 @@ public class Actor : MonoBehaviour
 		speedCheck = 0;
 		attackTarget = null;
 		GameManager manager = GameManager.Instance;
+		activeSlots = new MutationInterface[MutationDefs.MAX_SLOTS];
 	}
 
 	public void Update()
@@ -101,6 +104,18 @@ public class Actor : MonoBehaviour
 		equippedWeapon.transform.Rotate(new Vector3(0, 0, Random.Range(-45, 45)), Space.Self);
 
 		resetEquip();
+	}
+
+	/* 
+	 * @param weaponToEquip
+	 */
+	public bool equipActive(GameObject activeToEquip)
+	{
+		/* TODO: more than blindly equip */
+
+
+
+		return true;
 	}
 
 	/* 
@@ -166,6 +181,17 @@ public class Actor : MonoBehaviour
 	{
 		return attackTarget;
 	}
+	public GameObject instantiateActive(GameObject prefab)
+	{
+		GameObject activePrefab = Instantiate(prefab, new Vector3(0, 0, 0), Quaternion.identity);
+		MutationInterface mutScript = activePrefab.GetComponentInChildren<MutationInterface>();
+
+		activePrefab.transform.SetParent(this.gameObject.transform, false);
+		mutScript.setStartingPosition();
+		setWeaponTag(activePrefab, WeaponDefs.EQUIPPED_ACTIVE_TAG);
+
+		return activePrefab;
+	}
 
 	public GameObject instantiateWeapon(GameObject prefab)
 	{
@@ -220,7 +246,7 @@ public class Actor : MonoBehaviour
 
 	public void Move(Vector3 moveVector)
 	{
-		controller.Move(moveVector);
+		actorBody.MovePosition(actorBody.transform.position + moveVector);
 	}
 
 	public void pickupItem()
@@ -247,12 +273,27 @@ public class Actor : MonoBehaviour
 
 				foreach (MutationInterface mut in mutationList)
 				{
-					mutationHolder.AddComponent(mut.GetType());
-					if (mut.mEquip(this))
+					var existingMuts = mutationHolder.GetComponents(mut.GetType());
+					if (existingMuts.Length > 0)
 					{
+						continue;
+					}
+					MutationInterface newMut = (MutationInterface)mutationHolder.AddComponent(mut.GetType());
+					if (null != (newMut = newMut.mEquip(this)))
+					{
+						if (newMut.getMutationType() == mutationTrigger.ACTIVE_SLOT)
+						{
+							if (activeSlots[0] == null)
+							{
+								activeSlots[0] = newMut;
+							}
+						}
 						break;
 					}
 				}
+			}
+			else if (PickupDefs.canBePickedUp(target.gameObject))
+			{
 
 			}
 		}
@@ -302,6 +343,8 @@ public class Actor : MonoBehaviour
 		}
 
 		Vector3 aimDir = new Vector3(throwTargetPos.x, throwTargetPos.y, 0) - this.transform.position;
+		
+		this.equippedWeaponInt.throwWeapon(Vector3.ClampMagnitude(aimDir, 1));
 
 		resetEquip();
 	}
@@ -316,6 +359,14 @@ public class Actor : MonoBehaviour
 			{
 				mutation.trigger(target);
 			}
+		}
+	}
+
+	public void useAction(short index)
+	{
+		if (activeSlots[index] != null)
+		{
+			activeSlots[index].trigger(this);
 		}
 	}
 

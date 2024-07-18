@@ -13,12 +13,19 @@ public class MBladeArm : MonoBehaviour, MutationInterface
 
 	}
 
-	public bool mEquip(Actor actor)
+	public MutationInterface mEquip(Actor actor)
 	{
 		/* Instantiate the weapon prefab, then equip it. */
 		GameObject bladeArmPrefab = actor.instantiateWeapon(actor.gameManager.weapPBladeArm);
 		actor.equip(bladeArmPrefab);
 
-		return true;
+		return this;
+	}
+	public void setStartingPosition()
+	{
+	}
+
+	public void setWielder(Actor wielder)
+	{
 	}
 }

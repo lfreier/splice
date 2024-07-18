@@ -7,6 +7,8 @@ public class GameManager : MonoBehaviour
 {
 	private static GameManager instance = null;
 
+	public GameObject mutPLimb;
+
 	public GameObject weapPBladeArm;
 	public GameObject weapPFist;
 	public GameObject weapPRuler;

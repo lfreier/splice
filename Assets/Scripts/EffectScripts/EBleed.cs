@@ -51,6 +51,8 @@ public class EBleed : MonoBehaviour, EffectInterface
 		attachedActor.takeDamage(bleedDamage);
 		tickTimer = effectScriptable.tickLength;
 
+		Debug.Log(attachedActor.name + "bleeds for " + bleedDamage + " damage");
+
 		if (timer <= 0)
 		{
 			Destroy(this);

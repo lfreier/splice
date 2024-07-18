@@ -50,14 +50,13 @@ public class CameraHandler : MonoBehaviour
 
 	void camFollowPlayer()
 	{
-		float newXPos = (player.transform.position.x + pointerPos.x * 0.5F) / 2F;
-		float newYPos = (player.transform.position.y + pointerPos.y * 0.5F) / 2F;
+		float newXPos = (3 * player.transform.position.x + pointerPos.x) / 4F;
+		float newYPos = (3 * player.transform.position.y + pointerPos.y) / 4F;
 		//Keep camera's z position
 		Vector3 newPos = new Vector3(
-			Mathf.Clamp(newXPos, player.transform.position.x - (horExtent / 3F), player.transform.position.x + (horExtent / 3F)), 
-			Mathf.Clamp(newYPos, player.transform.position.y - (verExtent / 3F), player.transform.position.y + (verExtent / 3F)), 
+			Mathf.Clamp(newXPos, player.transform.position.x - horExtent, player.transform.position.x + horExtent), 
+			Mathf.Clamp(newYPos, player.transform.position.y - verExtent, player.transform.position.y + verExtent), 
 			this.transform.position.z);
-
 		this.transform.position = Vector3.Lerp(this.transform.position, newPos, cameraSmoothing);
 	}
 

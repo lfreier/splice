@@ -7,5 +7,10 @@ public interface MutationInterface
 	public void trigger(Actor actorTarget);
 
 	/* Create a new instance of the mutation and equip it to the actor player */
-	public bool mEquip(Actor actor);
+	public MutationInterface mEquip(Actor actor);
+
+	public void setStartingPosition();
+
+	public void setWielder(Actor wielder);
+
 }

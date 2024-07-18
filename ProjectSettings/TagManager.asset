@@ -8,6 +8,7 @@ TagManager:
   - EquippedWeapon
   - NPC
   - MutationSelect
+  - EquippedActive
   layers:
   - Default
   - TransparentFX

@@ -12,6 +12,11 @@ public class WeaponPhysics : MonoBehaviour
 	private Vector3 _throwMove;
 	private Vector3 _lastThrowMove;
 
+	public Actor throwingActor;
+
+	public Rigidbody2D weaponBody;
+	public Collider2D parentCollider;
+
 	void Start()
 	{
 		currentSpeed = 0;
@@ -25,6 +30,8 @@ public class WeaponPhysics : MonoBehaviour
 			/* if the throw should damage */
 			if (currentSpeed <= _weaponScriptable.throwHurtSpeed)
 			{
+				weaponBody.bodyType = RigidbodyType2D.Kinematic;
+				parentCollider.enabled = false;
 				_weapon.setHitbox(false);
 			}
 			if (currentSpeed <= 0)
@@ -48,8 +55,12 @@ public class WeaponPhysics : MonoBehaviour
 		{
 			currentSpeed -= _weaponScriptable.throwWeight;
 
-			_weapon.physicsMove(new Vector3(_lastThrowMove.x * currentSpeed * Time.deltaTime, _lastThrowMove.y * currentSpeed * Time.deltaTime));
+			weaponBody.MovePosition(weaponBody.transform.position + new Vector3(_lastThrowMove.x * currentSpeed * Time.deltaTime, _lastThrowMove.y * currentSpeed * Time.deltaTime));
 			this.transform.Rotate(new Vector3(0, 0, WeaponDefs.THROW_ROTATE_MID * (currentSpeed / _weaponScriptable.throwSpeed) * _weaponScriptable.throwWeight * Time.deltaTime));
+		}
+		else
+		{
+			throwingActor = null;
 		}
 	}
 
@@ -65,8 +76,12 @@ public class WeaponPhysics : MonoBehaviour
 		_weaponScriptable = _weapon.getScriptable();
 	}
 
-	public void startThrow(Vector3 target)
+	public void startThrow(Vector3 target, Actor throwingActor)
 	{
 		_throwMove = target;
+		_weapon.setHitbox(true);
+		weaponBody.bodyType = RigidbodyType2D.Dynamic;
+		this.throwingActor = throwingActor;
+		parentCollider.enabled = true;
 	}
 }

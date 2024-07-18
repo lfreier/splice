@@ -60,6 +60,15 @@
                     "initialStateCheck": false
                 },
                 {
+                    "name": "Special2",
+                    "type": "Button",
+                    "id": "d041d3d5-579c-4b38-aee2-9bd209499583",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
                     "name": "Pointer",
                     "type": "Value",
                     "id": "3b49bd55-4533-4997-8321-19b3bba01f4b",
@@ -472,6 +481,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "Special1",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "49b797fe-9635-41f5-a395-987e613868e4",
+                    "path": "<Keyboard>/r",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Special2",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
