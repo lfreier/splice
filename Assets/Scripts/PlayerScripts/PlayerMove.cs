@@ -3,12 +3,13 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.XR;
+using static Actor;
 
 public class PlayerMove : MonoBehaviour
 {
 	private float currentSpeed;
 
-	private ActorScriptable playerData;
+	private ActorData playerData;
 
 	public Actor player;
 
@@ -26,6 +27,7 @@ public class PlayerMove : MonoBehaviour
 
 	private void Update()
 	{
+		playerData = player.actorData;
 		moveInput = inputs.moveInput();
 	}
 

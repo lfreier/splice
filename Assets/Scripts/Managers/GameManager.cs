@@ -13,6 +13,8 @@ public class GameManager : MonoBehaviour
 	public GameObject weapPFist;
 	public GameObject weapPRuler;
 
+	public LayerMask actorLayers;
+
 	public static string CHAR_SCRIP_ID_SCIENTIST = "scientist";
 
 	public static string EFCT_SCRIP_ID_BLEED1 = "bleed1";

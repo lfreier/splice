@@ -24,7 +24,10 @@ public class WeaponScriptable : ScriptableObject
 	[field: SerializeField]
 	public int durability = 2;
 
-	/* Throwing fields */  
+	[field: SerializeField]
+	public float npcAttackRange { get; private set; } = 2F;
+
+	/* Throwing fields */
 	[field: SerializeField]
 	public float throwDamage { get; private set; } = 1F;
 

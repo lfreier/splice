@@ -44,7 +44,7 @@ public class MLimb : MonoBehaviour, MutationInterface, MultiBoxCollider
 	}
 	public void setStartingPosition()
 	{
-		this.transform.parent.SetLocalPositionAndRotation(new Vector3(0.621F, 0.28F, 0), Quaternion.Euler(0, 0, 7));
+		this.transform.parent.SetLocalPositionAndRotation(mutationScriptable.startingPosition, Quaternion.Euler(0, 0, mutationScriptable.startingRotation));
 	}
 
 	public void setWielder(Actor wielder)

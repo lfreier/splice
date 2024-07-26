@@ -68,7 +68,7 @@ public class SwingWeapon : MonoBehaviour, WeaponInterface
 
 	public bool inRange(Vector3 target)
 	{
-		return Vector3.Distance(transform.position, target) <= arc.radius;
+		return Vector3.Distance(transform.position, target) <= _weaponScriptable.npcAttackRange;
 	}
 
 	public bool isActive()
@@ -93,6 +93,15 @@ public class SwingWeapon : MonoBehaviour, WeaponInterface
 	public void setStartingPosition()
 	{
 		transform.parent.SetLocalPositionAndRotation(new Vector3(_weaponScriptable.equipPosX, _weaponScriptable.equipPosY, 0), Quaternion.Euler(0, 0, _weaponScriptable.equipRotZ));
+	}
+
+	public void slowWielder(float percentage)
+	{
+		if (actorWielder != null)
+		{
+			float slowedSpeed = actorWielder.actorData.maxSpeed * percentage;
+			actorWielder.setSpeed(slowedSpeed);
+		}
 	}
 
 	/* Only deal with the movement of the throw */

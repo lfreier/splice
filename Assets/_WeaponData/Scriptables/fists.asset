@@ -17,6 +17,7 @@ MonoBehaviour:
   <canBeDropped>k__BackingField: 0
   <damage>k__BackingField: 1
   durability: 0
+  <npcAttackRange>k__BackingField: -1
   <throwDamage>k__BackingField: 0
   <throwSpeed>k__BackingField: 0
   <throwWeight>k__BackingField: 0

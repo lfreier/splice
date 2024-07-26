@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f695e0652b30c1047ae87fa8be4f8912, type: 3}
   m_Name: scientist
   m_EditorClassIdentifier: 
-  <health>k__BackingField: 6
+  <health>k__BackingField: 4
   <maxSpeed>k__BackingField: 9
   <moveSpeed>k__BackingField: 0.4
   <acceleration>k__BackingField: 0.5
   <deceleration>k__BackingField: 0.2
-  <hearingRange>k__BackingField: 4
-  <sightRange>k__BackingField: 10
+  <hearingRange>k__BackingField: 12
+  <sightRange>k__BackingField: 8

@@ -13,19 +13,35 @@ using UnityEngine.InputSystem;
 
 public class Actor : MonoBehaviour
 {
+	public struct ActorData
+	{
+		public float health;
+
+		public float maxSpeed;
+		public float moveSpeed;
+
+		public float acceleration;
+		public float deceleration;
+
+		public float hearingRange;
+		public float sightRange;
+	};
+
 	public enum detectMode
 	{
 		idle = 0,
 		suspicious = 1,
 		hostile = 2,
 		frightened = 3,
-		cautious = 4
+		cautious = 4,
+		getWeapon = 5
 	};
 
 	public detectMode detection;
 	public detectMode oldDetection;
 
-	public ActorScriptable actorData;
+	public ActorScriptable _actorScriptable;
+	public ActorData actorData;
 	public Rigidbody2D actorBody;
 
 	private Actor attackTarget;
@@ -43,20 +59,12 @@ public class Actor : MonoBehaviour
 
 	private GameObject equippedWeapon;
 	private WeaponInterface equippedWeaponInt;
+
 	private float speedCheck;
-
-	private float health;
-
-	public Actor(ActorScriptable actorScriptable)
-	{
-		actorData = actorScriptable;
-		health = actorData.health;
-		activeSlots = new MutationInterface[MutationDefs.MAX_SLOTS];
-	}
 
 	public void Start()
 	{
-		health = actorData.health;
+		initActorData();
 		speedCheck = 0;
 		attackTarget = null;
 		GameManager manager = GameManager.Instance;
@@ -76,6 +84,19 @@ public class Actor : MonoBehaviour
 	public void FixedUpdate()
 	{
 		speedCheck -= Time.deltaTime;
+	}
+
+	private void initActorData()
+	{
+		actorData.health		= _actorScriptable.health;
+
+		actorData.maxSpeed		= _actorScriptable.maxSpeed;
+		actorData.moveSpeed		= _actorScriptable.moveSpeed;
+		actorData.acceleration	= _actorScriptable.acceleration;
+		actorData.deceleration	= _actorScriptable.deceleration;
+
+		actorData.hearingRange	= _actorScriptable.hearingRange;
+		actorData.sightRange	= _actorScriptable.sightRange;
 	}
 
 	public void attack()
@@ -265,36 +286,41 @@ public class Actor : MonoBehaviour
 					break;
 				}
 			}
-			else if (MutationDefs.isMutationSelect(target.gameObject))
+
+			/* TODO: Probably a better way to do this */
+			if (this.tag == ActorDefs.playerTag)
 			{
-				//TODO: implement mutation selection
-
-				var mutationList = target.gameObject.GetComponents<MutationInterface>();
-
-				foreach (MutationInterface mut in mutationList)
+				if (MutationDefs.isMutationSelect(target.gameObject))
 				{
-					var existingMuts = mutationHolder.GetComponents(mut.GetType());
-					if (existingMuts.Length > 0)
+					//TODO: implement mutation selection
+
+					var mutationList = target.gameObject.GetComponents<MutationInterface>();
+
+					foreach (MutationInterface mut in mutationList)
 					{
-						continue;
-					}
-					MutationInterface newMut = (MutationInterface)mutationHolder.AddComponent(mut.GetType());
-					if (null != (newMut = newMut.mEquip(this)))
-					{
-						if (newMut.getMutationType() == mutationTrigger.ACTIVE_SLOT)
+						var existingMuts = mutationHolder.GetComponents(mut.GetType());
+						if (existingMuts.Length > 0)
 						{
-							if (activeSlots[0] == null)
-							{
-								activeSlots[0] = newMut;
-							}
+							continue;
 						}
-						break;
+						MutationInterface newMut = (MutationInterface)mutationHolder.AddComponent(mut.GetType());
+						if (null != (newMut = newMut.mEquip(this)))
+						{
+							if (newMut.getMutationType() == mutationTrigger.ACTIVE_SLOT)
+							{
+								if (activeSlots[0] == null)
+								{
+									activeSlots[0] = newMut;
+								}
+							}
+							break;
+						}
 					}
 				}
-			}
-			else if (PickupDefs.canBePickedUp(target.gameObject))
-			{
+				else if (PickupDefs.canBePickedUp(target.gameObject))
+				{
 
+				}
 			}
 		}
 	}
@@ -302,6 +328,22 @@ public class Actor : MonoBehaviour
 	public void setAttackTarget(Actor targetActor)
 	{
 		attackTarget = targetActor;
+	}
+
+	/* Changes the actor's max speed to the given value.
+	 * If changedSpeed is negative, will reset to the actor's base speed.
+	 */
+	public void setSpeed(float changedSpeed)
+	{
+		if (changedSpeed < 0)
+		{
+			/* Reset max speed */
+			actorData.maxSpeed = _actorScriptable.maxSpeed;
+		}
+		else
+		{
+			actorData.maxSpeed = changedSpeed;
+		}
 	}
 
 	private static void setWeaponTag(GameObject weapon, string newTag)
@@ -319,14 +361,14 @@ public class Actor : MonoBehaviour
 
 	public float takeDamage(float damage)
 	{
-		health -= damage;
-		health = health < 0 ? 0 : health;
+		actorData.health -= damage;
+		actorData.health = actorData.health < 0 ? 0 : actorData.health;
 
-		if (health <= 0.0F)
+		if (actorData.health <= 0.0F)
 		{
 			this.kill();
 		}
-		return health;
+		return actorData.health;
 	}
 
 	public void throwWeapon()

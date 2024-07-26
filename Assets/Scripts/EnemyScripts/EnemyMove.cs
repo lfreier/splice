@@ -23,27 +23,31 @@ public class EnemyMove : MonoBehaviour
 
 	/* moveTarget will always be where the actor moves. Takes priority over the actor's hostile target. */
 	private Vector3 moveTarget;
+	private Vector3 attackTarget;
 	private Actor attackTargetActor;
 
 	private Vector2 moveInput;
 	private Vector2 oldMoveInput;
 
-	private ActorScriptable _actorData;
+	private ActorData _actorData;
+
+	public GameManager gameManager;
 
 	void Start()
 	{
+		gameManager = GameManager.Instance;
 		_detection = detectMode.idle;
-		_actorData = actor.actorData;
 		attackTargetActor = null;
 	}
 
 	void Update()
 	{
+		_actorData = actor.actorData;
 		_oldDetection = _detection;
 
 		//functions for noticing hostiles
-		attackTargetActor = attackTargetActor ? attackTargetActor : seeHostiles();
-		attackTargetActor = attackTargetActor ? attackTargetActor: hearHostiles();
+		attackTargetActor = seeHostiles();
+		attackTargetActor = hearHostiles();
 
 		/*  determine move speed based on current state */
 		if (_oldDetection != _detection)
@@ -63,23 +67,29 @@ public class EnemyMove : MonoBehaviour
 			{
 				Collider2D weaponColl;
 				/* Then, move to it */
-				weaponColl = findNearestWeapon(_actorData.hearingRange);
+				weaponColl = findNearestWeapon(_actorData.sightRange);
 				if (weaponColl != null)
 				{
 					moveTarget = weaponColl.transform.position;
-					if (Vector3.Magnitude(moveTarget - this.transform.position) <= WeaponDefs.GLOBAL_PICKUP_RANGE)
-					{
-						actor.pickupItem();
-					}
+					_detection = detectMode.getWeapon;
 				}
 				else
 				{
-					moveTarget = new Vector3(attackTargetActor.transform.position.x, attackTargetActor.transform.position.y);
+					moveTarget = new Vector3(attackTarget.x, attackTarget.y);
 				}
 			}
 			else
 			{
-				moveTarget = new Vector3(attackTargetActor.transform.position.x, attackTargetActor.transform.position.y);
+				moveTarget = new Vector3(attackTarget.x, attackTarget.y);
+			}
+		}
+
+		if (_detection == detectMode.getWeapon)
+		{
+			if (Vector3.Magnitude(moveTarget - this.transform.position) <= WeaponDefs.GLOBAL_PICKUP_RANGE)
+			{
+				actor.pickupItem();
+				_detection = detectMode.hostile;
 			}
 		}
 
@@ -162,12 +172,12 @@ public class EnemyMove : MonoBehaviour
 
 	private Collider2D findNearestWeapon(float withinRange)
 	{
-		Collider2D[] noticedWeapons = Physics2D.OverlapCircleAll(this.transform.position, withinRange, actor.pickupLayer);
-		foreach (Collider2D target in noticedWeapons)
+		RaycastHit2D[] noticedWeapons = Physics2D.CircleCastAll(new Vector2(this.transform.position.x, this.transform.position.y), withinRange, Vector2.zero, withinRange, actor.pickupLayer);
+		foreach (RaycastHit2D target in noticedWeapons)
 		{
-			if (WeaponDefs.canWeaponBePickedUp(target.gameObject))
+			if (WeaponDefs.canWeaponBePickedUp(target.transform.gameObject))
 			{
-				return target;
+				return target.collider;
 			}
 		}
 
@@ -176,15 +186,16 @@ public class EnemyMove : MonoBehaviour
 
 	private Actor hearHostiles()
 	{
-		Actor targetActor;
-		Collider2D[] noticedActors = Physics2D.OverlapCircleAll(this.transform.position, _actorData.hearingRange, LayerMask.NameToLayer(ActorDefs.actorLayer));
-		foreach (Collider2D target in noticedActors)
+		RaycastHit2D[] noticedActors = Physics2D.CircleCastAll(new Vector2(this.transform.position.x, this.transform.position.y), _actorData.hearingRange, Vector2.zero, _actorData.hearingRange, gameManager.actorLayers);
+
+		foreach (RaycastHit2D target in noticedActors)
 		{
-			targetActor = target.GetComponent<Actor>();
+			Actor targetActor = target.transform.gameObject.GetComponent<Actor>();
 			if (actor.isTargetHostile(targetActor))
 			{
 				_detection = detectMode.hostile;
 				actor.setAttackTarget(targetActor);
+				attackTarget = targetActor.transform.position;
 				return targetActor;
 			}
 		}

@@ -180,8 +180,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   detection: 0
   oldDetection: 0
-  actorData: {fileID: 11400000, guid: cb5b7816b2070b143891c7c7dfbaee5b, type: 2}
-  controller: {fileID: 4430561409393562764}
+  _actorScriptable: {fileID: 11400000, guid: cb5b7816b2070b143891c7c7dfbaee5b, type: 2}
   actorBody: {fileID: 2658991806923027523}
   hitLayer:
     serializedVersion: 2
@@ -206,6 +205,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   horizontalRayCount: 4
   verticalRayCount: 4
+  directionalRayCount: 4
   collider2DObj: {fileID: 1722529025439896153}
   collisionMask:
     serializedVersion: 2
@@ -238,6 +238,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   horizontalRayCount: 4
   verticalRayCount: 4
+  directionalRayCount: 4
   collider2DObj: {fileID: 1722529025439896153}
   collisionMask:
     serializedVersion: 2

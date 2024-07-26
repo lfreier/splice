@@ -13,4 +13,10 @@ public class MutationScriptable : ScriptableObject
 
 	[field: SerializeField]
 	public EffectScriptable effectScriptable { get; private set; } = null;
+
+	[field: SerializeField]
+	public Vector2 startingPosition { get; private set; } = new Vector2(-0.621F, 0.28F);
+
+	[field: SerializeField]
+	public float startingRotation { get; private set; } = 7F;
 }
