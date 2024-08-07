@@ -8,6 +8,8 @@ public class SwingWeapon : MonoBehaviour, WeaponInterface
 {
 	[SerializeField] public Animator anim;
 
+	public ActionInterface secondaryAction;
+
 	LayerMask lastTargetLayer;
 	string id;
 
@@ -16,14 +18,25 @@ public class SwingWeapon : MonoBehaviour, WeaponInterface
 	public BoxCollider2D hitbox;
 	public BoxCollider2D throwBox;
 
+	public SpriteRenderer sprite;
+	public Sprite damagedSprite;
+
 	public Actor actorWielder;
 
 	public WeaponScriptable _weaponScriptable;
 	public WeaponPhysics _weaponPhysics;
 
+	private int durability;
+
 	void Start()
 	{
+		durability = _weaponScriptable.durability;
 		id = this.gameObject.name;
+		secondaryAction = GetComponent<ActionInterface>();
+		if (secondaryAction == null)
+		{
+			secondaryAction = GetComponentInChildren<ActionInterface>();
+		}
 		_weaponPhysics.linkInterface(this);
 	}
 
@@ -41,6 +54,14 @@ public class SwingWeapon : MonoBehaviour, WeaponInterface
 		return true;
 	}
 
+	public void attackSecondary()
+	{
+		if (secondaryAction != null)
+		{
+			secondaryAction.action();
+		}
+	}
+
 	public bool canBeDropped()
 	{
 		if (_weaponScriptable.weaponType == WeaponType.UNARMED || !_weaponScriptable.canBeDropped)
@@ -54,6 +75,11 @@ public class SwingWeapon : MonoBehaviour, WeaponInterface
 	public WeaponScriptable getScriptable()
 	{
 		return _weaponScriptable;
+	}
+
+	public Actor getActorWielder()
+	{
+		return actorWielder;
 	}
 
 	public float getSpeed()
@@ -80,9 +106,35 @@ public class SwingWeapon : MonoBehaviour, WeaponInterface
 	{
 		controller.transform.Translate(velocity);
 	}
+
+	private void reduceDurability(int reduction)
+	{
+		if (durability < 0)
+		{
+			return;
+		}
+
+		durability -= reduction;
+
+		if (durability <= (_weaponScriptable.durability / 2) && damagedSprite != null)
+		{
+			//set to damaged sprite
+			sprite.sprite = damagedSprite;
+		}
+
+		if (durability <= 0)
+		{
+			this.actorWielder.drop();
+			Destroy(this.transform.parent.gameObject);
+		}
+	}
 	public void setActorToHold(Actor actor)
 	{
 		actorWielder = actor;
+		if (secondaryAction != null)
+		{
+			secondaryAction.setActorToHold(actor);
+		}
 	}
 
 	public void setHitbox(bool toggle)
@@ -115,6 +167,16 @@ public class SwingWeapon : MonoBehaviour, WeaponInterface
 		return hitbox.enabled = !hitbox.enabled;
 	}
 
+	public bool toggleSecondaryCollider()
+	{
+		return secondaryAction.toggleHitbox();
+	}
+	public bool toggleStun()
+	{
+
+		return true;
+	}
+
 	private void OnTriggerEnter2D(Collider2D collision)
 	{
 		//TODO: deal with layermasks in a way that actually makes sense later
@@ -132,15 +194,16 @@ public class SwingWeapon : MonoBehaviour, WeaponInterface
 		}
 
 		Actor actorHit = collision.GetComponent<Actor>();
-		if (actorHit != null)
+		if (actorHit != null && actorWielder.isTargetHostile(actorHit))
 		{
 			actorWielder.triggerDamageEffects(actorHit);
 			actorHit.takeDamage(_weaponScriptable.damage);
+			reduceDurability(1);
 			Debug.Log("Hit: " + collision.name + " for " + _weaponScriptable.damage + " damage");
 		}
 		else
 		{
-			Debug.Log("Hit: " + collision.name);
+			Debug.Log("Hit: " + collision.name + " for no damage");
 		}
 	}
 }

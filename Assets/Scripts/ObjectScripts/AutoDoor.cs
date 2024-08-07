@@ -6,8 +6,10 @@ using UnityEngine;
 public class AutoDoor : MonoBehaviour
 {
 	private bool open;
-	private bool locked;
+	public bool locked;
 	public SpriteRenderer lockSprite;
+
+	public PickupDefs.keycardType lockType;
 
 	public Animator doorAnimator;
 
@@ -18,7 +20,10 @@ public class AutoDoor : MonoBehaviour
 	private void Start()
 	{
 		open = false;
-		locked = false;
+		if (locked)
+		{
+			doorLock();
+		}
 		gameManager = GameManager.Instance;
 	}
 

@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using UnityEngine;
 
-public class MLimb : MonoBehaviour, MutationInterface, MultiBoxCollider
+public class MLimb : MonoBehaviour, MutationInterface
 {
 	Actor actorWielder;
 
@@ -12,7 +12,7 @@ public class MLimb : MonoBehaviour, MutationInterface, MultiBoxCollider
 
 	[SerializeField] public MutationScriptable mutationScriptable;
 
-	public void colliderEnter(Collider2D collision, MultiBoxCollider childScript)
+	public void colliderEnter(Collider2D collision)
 	{
 		this.OnTriggerEnter2D(collision);
 	}

@@ -17,7 +17,7 @@ GameObject:
   - component: {fileID: 8181113457589132258}
   - component: {fileID: 3066400801353164671}
   - component: {fileID: 8936931521236048847}
-  m_Layer: 7
+  m_Layer: 8
   m_Name: scientist
   m_TagString: NPC
   m_Icon: {fileID: 0}
@@ -105,9 +105,9 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 20
-  m_LinearDrag: 0
-  m_AngularDrag: 0
+  m_Mass: 1
+  m_LinearDrag: 8
+  m_AngularDrag: 8
   m_GravityScale: 0
   m_Material: {fileID: 0}
   m_IncludeLayers:
@@ -154,7 +154,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: 0, y: 0.065}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -164,7 +164,7 @@ BoxCollider2D:
     drawMode: 1
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 1, y: 0.57}
   m_EdgeRadius: 0
 --- !u!114 &740460995545239096
 MonoBehaviour:
@@ -182,12 +182,11 @@ MonoBehaviour:
   oldDetection: 0
   _actorScriptable: {fileID: 11400000, guid: cb5b7816b2070b143891c7c7dfbaee5b, type: 2}
   actorBody: {fileID: 2658991806923027523}
-  hitLayer:
-    serializedVersion: 2
-    m_Bits: 32768
+  currMoveVector: {x: 0, y: 0, z: 0}
   pickupLayer:
     serializedVersion: 2
     m_Bits: 6144
+  behaviorList: []
   mutationHolder: {fileID: 8081907558892302357}
   effectHolder: {fileID: 8153268800123022767}
   gameManager: {fileID: 0}
@@ -224,6 +223,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   actor: {fileID: 740460995545239096}
   actorBody: {fileID: 2658991806923027523}
+  moveTargetError: 0.2
+  gameManager: {fileID: 0}
 --- !u!114 &3066400801353164671
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -265,7 +266,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5190516328961396267}
-  m_Layer: 7
+  m_Layer: 8
   m_Name: MutationHolder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -296,7 +297,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1639395642074735555}
-  m_Layer: 7
+  m_Layer: 8
   m_Name: EffectHolder
   m_TagString: Untagged
   m_Icon: {fileID: 0}

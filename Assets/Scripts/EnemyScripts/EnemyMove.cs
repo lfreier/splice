@@ -14,6 +14,8 @@ public class EnemyMove : MonoBehaviour
 	public Actor actor;
 	public Rigidbody2D actorBody;
 
+	public float moveTargetError;
+
 	private detectMode _detection;
 	private detectMode _oldDetection;
 
@@ -47,7 +49,7 @@ public class EnemyMove : MonoBehaviour
 
 		//functions for noticing hostiles
 		attackTargetActor = seeHostiles();
-		attackTargetActor = hearHostiles();
+		attackTargetActor = attackTargetActor ? attackTargetActor : hearHostiles();
 
 		/*  determine move speed based on current state */
 		if (_oldDetection != _detection)
@@ -75,6 +77,7 @@ public class EnemyMove : MonoBehaviour
 				}
 				else
 				{
+					_detection = detectMode.frightened;
 					moveTarget = new Vector3(attackTarget.x, attackTarget.y);
 				}
 			}
@@ -86,10 +89,29 @@ public class EnemyMove : MonoBehaviour
 
 		if (_detection == detectMode.getWeapon)
 		{
-			if (Vector3.Magnitude(moveTarget - this.transform.position) <= WeaponDefs.GLOBAL_PICKUP_RANGE)
+			if (Vector3.Magnitude(moveTarget - this.transform.position) <= ActorDefs.GLOBAL_PICKUP_RANGE)
 			{
 				actor.pickupItem();
 				_detection = detectMode.hostile;
+			}
+		}
+
+		if (_detection == detectMode.frightened)
+		{
+			if (attackTargetActor != null && Vector3.Magnitude(actor.transform.position - attackTargetActor.transform.position) < _actorData.frightenedDistance)
+			{
+				/* face target of fright */
+				float aimAngle = (Mathf.Atan2((attackTargetActor.transform.position - actor.transform.position).y, (attackTargetActor.transform.position - actor.transform.position).x) * Mathf.Rad2Deg) - 90F;
+				actorBody.rotation = aimAngle;
+
+				/* move away from target */
+				moveTarget = attackTargetActor.transform.position - (actor.transform.up * _actorData.frightenedDistance);
+				Vector3 clamped = Vector3.ClampMagnitude(moveTarget - actor.transform.position, _actorData.frightenedDistance);
+				moveTarget = clamped + actor.transform.position;
+			}
+			else
+			{
+				moveTarget = actor.transform.position;
 			}
 		}
 
@@ -167,7 +189,8 @@ public class EnemyMove : MonoBehaviour
 			return;
 		}
 
-		moveInput = Vector2.ClampMagnitude(moveTarget - this.transform.position, 1F); 
+		Vector2 diff = moveTarget - this.transform.position;
+		moveInput = Vector2.ClampMagnitude(diff, 1F); 
 	}
 
 	private Collider2D findNearestWeapon(float withinRange)

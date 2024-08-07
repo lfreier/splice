@@ -5,6 +5,7 @@ using UnityEngine.InputSystem;
 public class PlayerInputs: MonoBehaviour
 {
 	private float attackAction;
+	private float secondaryAttackAction;
 
 	private float moveCamAction;
 	private Vector2 pointerLoc;
@@ -22,9 +23,10 @@ public class PlayerInputs: MonoBehaviour
 	private float[] lastSpecialActions = new float[MutationDefs.MAX_SLOTS];
 
 	[SerializeField]
-	private InputActionReference attack, move, moveCam, interact, pointer, throwVal, action1, action2;
+	private InputActionReference attack, secondaryAttack, move, moveCam, interact, pointer, throwVal, action1, action2;
 
 	public float attackInput() { return attackAction; }
+	public float secondaryAttackInput() { return secondaryAttackAction; }
 	public float moveCamInput() { return moveCamAction; }
 	public Vector2 pointerPos() { return pointerLoc; }
 	public Vector2 moveInput() { return moveAction; }
@@ -49,6 +51,7 @@ public class PlayerInputs: MonoBehaviour
 	{
 		//attack inputs
 		attackAction = attack.action.ReadValue<float>();
+		secondaryAttackAction = secondaryAttack.action.ReadValue<float>();
 
 		//mouse inputs
 		Vector2 mousePos = pointer.action.ReadValue<Vector2>();

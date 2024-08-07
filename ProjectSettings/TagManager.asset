@@ -9,6 +9,7 @@ TagManager:
   - NPC
   - MutationSelect
   - EquippedActive
+  - ObjectPickup
   layers:
   - Default
   - TransparentFX
@@ -17,16 +18,16 @@ TagManager:
   - Water
   - UI
   - Collision
+  - CollisionActor
   - Actor
-  - 
   - 
   - Object
   - ObjectPickup
+  - ObjectInteract
+  - 
+  - 
   - Damage
-  - 
-  - 
-  - 
-  - 
+  - Parry
   - 
   - 
   - 

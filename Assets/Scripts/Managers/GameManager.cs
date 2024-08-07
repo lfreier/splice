@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -19,9 +20,13 @@ public class GameManager : MonoBehaviour
 
 	public static string EFCT_SCRIP_ID_BLEED1 = "bleed1";
 
+	public static string EFCT_SCRIP_ID_STUN1 = "stun1";
+
 	public static string WEAP_SCRIP_ID_BLADEARM = "bladeArm";
 	public static string WEAP_SCRIP_ID_FISTS = "fists";
 	public static string WEAP_SCRIP_ID_RULER = "ruler";
+
+	public List<Type> actorBehaviors = new List<Type>();
 
 	private Dictionary<string, ActorScriptable> actorScriptables = new Dictionary<string, ActorScriptable>();
 	private Dictionary<string, EffectScriptable> effectScriptables = new Dictionary<string, EffectScriptable>();
@@ -72,6 +77,15 @@ public class GameManager : MonoBehaviour
 		{
 			weaponScriptables.Add(weapon.name, weapon);
 		}
+
+		actorBehaviors.Add(Type.GetType("PlayerAttack"));
+		actorBehaviors.Add(Type.GetType("PlayerCamera"));
+		actorBehaviors.Add(Type.GetType("PlayerInputs"));
+		actorBehaviors.Add(Type.GetType("PlayerInteract"));
+		actorBehaviors.Add(Type.GetType("PlayerMove"));
+		actorBehaviors.Add(Type.GetType("PlayerSecondaries"));
+		actorBehaviors.Add(Type.GetType("EnemyAttack"));
+		actorBehaviors.Add(Type.GetType("EnemyMove"));
 	}
 
 	// Update is called once per frame

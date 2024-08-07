@@ -1,9 +1,11 @@
 ﻿using JetBrains.Annotations;
 using System.Collections;
+using System.Collections.Generic;
 using System.ComponentModel;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.U2D;
 
 /*
  * Actor class:
@@ -25,6 +27,8 @@ public class Actor : MonoBehaviour
 
 		public float hearingRange;
 		public float sightRange;
+
+		public float frightenedDistance;
 	};
 
 	public enum detectMode
@@ -46,9 +50,11 @@ public class Actor : MonoBehaviour
 
 	private Actor attackTarget;
 	private Vector3 moveTarget;
+	public Vector3 currMoveVector;
 
-	public LayerMask hitLayer;
 	public LayerMask pickupLayer;
+
+	public List<MonoBehaviour> behaviorList = new List<MonoBehaviour>();
 
 	public GameObject mutationHolder;
 	public GameObject effectHolder;
@@ -60,15 +66,17 @@ public class Actor : MonoBehaviour
 	private GameObject equippedWeapon;
 	private WeaponInterface equippedWeaponInt;
 
+	private SpriteRenderer sprite;
+
 	private float speedCheck;
 
 	public void Start()
 	{
-		initActorData();
 		speedCheck = 0;
 		attackTarget = null;
-		GameManager manager = GameManager.Instance;
+		gameManager = GameManager.Instance;
 		activeSlots = new MutationInterface[MutationDefs.MAX_SLOTS];
+		initActorData();
 	}
 
 	public void Update()
@@ -88,15 +96,35 @@ public class Actor : MonoBehaviour
 
 	private void initActorData()
 	{
-		actorData.health		= _actorScriptable.health;
+		actorData.health = _actorScriptable.health;
 
-		actorData.maxSpeed		= _actorScriptable.maxSpeed;
-		actorData.moveSpeed		= _actorScriptable.moveSpeed;
-		actorData.acceleration	= _actorScriptable.acceleration;
-		actorData.deceleration	= _actorScriptable.deceleration;
+		actorData.maxSpeed = _actorScriptable.maxSpeed;
+		actorData.moveSpeed = _actorScriptable.moveSpeed;
+		actorData.acceleration = _actorScriptable.acceleration;
+		actorData.deceleration = _actorScriptable.deceleration;
 
-		actorData.hearingRange	= _actorScriptable.hearingRange;
-		actorData.sightRange	= _actorScriptable.sightRange;
+		actorData.hearingRange = _actorScriptable.hearingRange;
+		actorData.sightRange = _actorScriptable.sightRange;
+
+		actorData.frightenedDistance = _actorScriptable.frightenedDistance;
+
+		for (int i = 0; i < gameObject.transform.childCount; i++)
+		{
+			Transform child = this.gameObject.transform.GetChild(i);
+			if (child != null && child.tag == WeaponDefs.OBJECT_WEAPON_TAG)
+			{
+				this.equip(child.gameObject);
+			}
+		}
+
+		MonoBehaviour[] foundScripts = GetComponents<MonoBehaviour>();
+		foreach (MonoBehaviour foundScript in foundScripts)
+		{
+			if (gameManager.actorBehaviors.Contains(foundScript.GetType()))
+			{
+				this.behaviorList.Add(foundScript);
+			}
+		}
 	}
 
 	public void attack()
@@ -105,7 +133,19 @@ public class Actor : MonoBehaviour
 		{
 			if (speedCheck <= 0)
 			{
-				equippedWeaponInt.attack(hitLayer);
+				equippedWeaponInt.attack(gameManager.actorLayers);
+				speedCheck = equippedWeaponInt.getSpeed();
+			}
+		}
+	}
+
+	public void attackSecondary()
+	{
+		if (equippedWeaponInt == null || !equippedWeaponInt.isActive())
+		{
+			if (speedCheck <= 0)
+			{
+				equippedWeaponInt.attackSecondary();
 				speedCheck = equippedWeaponInt.getSpeed();
 			}
 		}
@@ -113,9 +153,9 @@ public class Actor : MonoBehaviour
 
 	public void drop()
 	{
-		if (equippedWeaponInt == null || equippedWeaponInt.canBeDropped()) { return; }
+		if (equippedWeaponInt == null || !equippedWeaponInt.canBeDropped()) { return; }
 
-		Vector3 pointerPos = actorBody.transform.TransformDirection(Vector3.forward);
+		Vector3 pointerPos = actorBody.transform.TransformDirection(transform.up);
 
 		/* Literally just getting positive/negatives */
 		Vector3 aimDir = new Vector3(pointerPos.x, pointerPos.y, 0) - this.transform.position;
@@ -123,6 +163,7 @@ public class Actor : MonoBehaviour
 
 		equippedWeapon.transform.Translate(translate, Space.World);
 		equippedWeapon.transform.Rotate(new Vector3(0, 0, Random.Range(-45, 45)), Space.Self);
+		sprite.sortingLayerName = WeaponDefs.SORT_LAYER_GROUND;
 
 		resetEquip();
 	}
@@ -184,6 +225,8 @@ public class Actor : MonoBehaviour
 		equippedWeaponInt = tempWeapInt;
 
 		equippedWeapon.transform.SetParent(this.transform, true);
+		sprite = equippedWeapon.GetComponentInChildren<SpriteRenderer>();
+		sprite.sortingLayerName = WeaponDefs.SORT_LAYER_CHARS;
 		equippedWeaponInt.setStartingPosition();
 
 		setWeaponTag(equippedWeapon, WeaponDefs.EQUIPPED_WEAPON_TAG);
@@ -227,7 +270,7 @@ public class Actor : MonoBehaviour
 
 	public bool inWeaponRange(Vector3 target)
 	{
-		if (equippedWeaponInt == null)
+		if (equippedWeaponInt == null || equippedWeapon == null)
 		{
 			return false;
 		}
@@ -241,7 +284,8 @@ public class Actor : MonoBehaviour
 			return false;
 		}
 
-		if (this.tag.Equals(ActorDefs.npcTag) && targetActor.tag.Equals(ActorDefs.playerTag))
+		if (this.tag.Equals(ActorDefs.npcTag) && targetActor.tag.Equals(ActorDefs.playerTag)
+			|| this.tag.Equals(ActorDefs.playerTag) && targetActor.tag.Equals(ActorDefs.npcTag))
 		{
 			return true;
 		}
@@ -267,12 +311,17 @@ public class Actor : MonoBehaviour
 
 	public void Move(Vector3 moveVector)
 	{
+		currMoveVector = new Vector3(moveVector.x, moveVector.y, moveVector.z);
 		actorBody.MovePosition(actorBody.transform.position + moveVector);
 	}
 
 	public void pickupItem()
 	{
-		Collider2D[] hitTargets = Physics2D.OverlapCircleAll(this.transform.position, WeaponDefs.GLOBAL_PICKUP_RANGE, this.pickupLayer);
+		Collider2D[] hitTargets1 = Physics2D.OverlapCircleAll(this.transform.position + (transform.up * ActorDefs.GLOBAL_PICKUP_OFFSET), ActorDefs.GLOBAL_PICKUP_RANGE, this.pickupLayer);
+		Collider2D[] hitTargets2 = Physics2D.OverlapCircleAll(this.transform.position, ActorDefs.GLOBAL_PICKUP_RANGE, this.pickupLayer);
+		Collider2D[] hitTargets = new Collider2D[hitTargets1.Length + hitTargets2.Length];
+		hitTargets1.CopyTo(hitTargets, 0);
+		hitTargets2.CopyTo(hitTargets, hitTargets1.Length);
 
 		foreach (Collider2D target in hitTargets)
 		{
@@ -319,7 +368,12 @@ public class Actor : MonoBehaviour
 				}
 				else if (PickupDefs.canBePickedUp(target.gameObject))
 				{
-
+					Debug.Log("Picking up: " + target.gameObject.transform.parent.gameObject.name);
+					PickupInterface pickup = target.gameObject.transform.parent.gameObject.GetComponent<PickupInterface>();
+					if (pickup != null)
+					{
+						pickup.pickup(this);
+					}
 				}
 			}
 		}
@@ -373,7 +427,9 @@ public class Actor : MonoBehaviour
 
 	public void throwWeapon()
 	{
-		Vector3 pointerPos = actorBody.transform.TransformDirection(Vector3.forward);
+		drop();
+		return;
+		Vector3 pointerPos = actorBody.transform.TransformDirection(transform.up);
 		throwWeapon(pointerPos);
 	}
 
@@ -384,6 +440,8 @@ public class Actor : MonoBehaviour
 			return;
 		}
 
+		drop();
+		return;
 		Vector3 aimDir = new Vector3(throwTargetPos.x, throwTargetPos.y, 0) - this.transform.position;
 		
 		this.equippedWeaponInt.throwWeapon(Vector3.ClampMagnitude(aimDir, 1));
@@ -401,6 +459,14 @@ public class Actor : MonoBehaviour
 			{
 				mutation.trigger(target);
 			}
+		}
+	}
+
+	public void setStun(bool stun)
+	{
+		foreach (MonoBehaviour script in behaviorList)
+		{
+			script.enabled = !stun;
 		}
 	}
 
