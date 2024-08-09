@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 3398982447540545742}
   - component: {fileID: 1630916773381673146}
   - component: {fileID: 2175357256695995880}
+  - component: {fileID: 2539849135012674436}
   - component: {fileID: 5168576159283970348}
   m_Layer: 10
   m_Name: ruler
@@ -48,8 +49,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   throwingActor: {fileID: 0}
-  weaponBody: {fileID: 0}
-  parentCollider: {fileID: 0}
+  weaponBody: {fileID: 2539849135012674436}
+  throwCollider: {fileID: 5168576159283970348}
+  pickupCollider: {fileID: 2666023793495350712}
 --- !u!114 &2175357256695995880
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -69,6 +71,33 @@ MonoBehaviour:
   collisionMask:
     serializedVersion: 2
     m_Bits: 64
+--- !u!50 &2539849135012674436
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1192526033329145194}
+  m_BodyType: 1
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_Interpolate: 2
+  m_SleepingMode: 1
+  m_CollisionDetection: 1
+  m_Constraints: 0
 --- !u!61 &5168576159283970348
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -99,7 +128,7 @@ BoxCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using static Actor;
@@ -15,6 +16,8 @@ public class EnemyMove : MonoBehaviour
 	public Rigidbody2D actorBody;
 
 	public float moveTargetError;
+
+	private Vector2 eyeStart;
 
 	private detectMode _detection;
 	private detectMode _oldDetection;
@@ -46,10 +49,17 @@ public class EnemyMove : MonoBehaviour
 	{
 		_actorData = actor.actorData;
 		_oldDetection = _detection;
+		attackTargetActor = null;
+		eyeStart = transform.position + transform.up * 0.5F;
 
 		//functions for noticing hostiles
+		/* IMPORTANT NOTE: 
+		 *
+		 * attackTargetActor is going to be null if the target can no longer be detected, e.g. the player moves out of sight range
+		 * Then the NPC should move to the last known location
+		 */
 		attackTargetActor = seeHostiles();
-		attackTargetActor = attackTargetActor ? attackTargetActor : hearHostiles();
+		attackTargetActor = attackTargetActor != null ? attackTargetActor : hearHostiles();
 
 		/*  determine move speed based on current state */
 		if (_oldDetection != _detection)
@@ -62,7 +72,7 @@ public class EnemyMove : MonoBehaviour
 
 		/*  determine move target based on current state */
 
-		if (_detection == detectMode.hostile || _detection == detectMode.suspicious)
+		if (_detection != detectMode.idle)
 		{
 			/* first, pickup a weapon if needed */
 			if (actor.isUnarmed())
@@ -72,18 +82,30 @@ public class EnemyMove : MonoBehaviour
 				weaponColl = findNearestWeapon(_actorData.sightRange);
 				if (weaponColl != null)
 				{
-					moveTarget = weaponColl.transform.position;
 					_detection = detectMode.getWeapon;
+					moveTarget = weaponColl.transform.position;
+					actorBody.rotation = aimAngle(moveTarget);
 				}
 				else
 				{
 					_detection = detectMode.frightened;
-					moveTarget = new Vector3(attackTarget.x, attackTarget.y);
 				}
 			}
 			else
 			{
-				moveTarget = new Vector3(attackTarget.x, attackTarget.y);
+				if (_detection == detectMode.hostile)
+				{
+					moveTarget = attackTarget;
+					actorBody.rotation = aimAngle(moveTarget);
+				}
+				else if (_detection == detectMode.suspicious || _detection == detectMode.seeking)
+				{
+					actorBody.rotation = aimAngle(attackTarget);
+				}
+				else
+				{
+					moveTarget = actor.transform.position;
+				}
 			}
 		}
 
@@ -93,21 +115,29 @@ public class EnemyMove : MonoBehaviour
 			{
 				actor.pickupItem();
 				_detection = detectMode.hostile;
+				/* face attack target */
+				actorBody.rotation = aimAngle(attackTarget);
 			}
 		}
 
 		if (_detection == detectMode.frightened)
 		{
-			if (attackTargetActor != null && Vector3.Magnitude(actor.transform.position - attackTargetActor.transform.position) < _actorData.frightenedDistance)
+			if (attackTargetActor != null)
 			{
 				/* face target of fright */
-				float aimAngle = (Mathf.Atan2((attackTargetActor.transform.position - actor.transform.position).y, (attackTargetActor.transform.position - actor.transform.position).x) * Mathf.Rad2Deg) - 90F;
-				actorBody.rotation = aimAngle;
+				actorBody.rotation = aimAngle(attackTargetActor.transform.position);
 
 				/* move away from target */
-				moveTarget = attackTargetActor.transform.position - (actor.transform.up * _actorData.frightenedDistance);
-				Vector3 clamped = Vector3.ClampMagnitude(moveTarget - actor.transform.position, _actorData.frightenedDistance);
-				moveTarget = clamped + actor.transform.position;
+				if (_actorData.frightenedDistance > (attackTargetActor.transform.position - actor.transform.position).magnitude)
+				{
+					Vector3 backupTarget = attackTargetActor.transform.position - (actor.transform.up * _actorData.frightenedDistance);
+					Vector3 clamped = Vector3.ClampMagnitude(backupTarget - actor.transform.position, _actorData.frightenedDistance);
+					moveTarget = clamped + actor.transform.position;
+				}
+				else
+				{
+					moveTarget = actor.transform.position;
+				}
 			}
 			else
 			{
@@ -115,48 +145,19 @@ public class EnemyMove : MonoBehaviour
 			}
 		}
 
+		if (_detection == detectMode.idle)
+		{
+			moveTarget = actor.transform.position;
+		}
+
 		/* Move to last known location if hostile is not detected */
 
 		/* Make sure to save to the actor */
 		actor.detection = _detection;
 		actor.oldDetection = _oldDetection;
-
-		/*
-		if (detection == detectMode.hostile)
-		{
-			if (idleTimer > 0)
-			{
-				//when idle just ended
-				if ((idleTimer -= Time.deltaTime) <= 0)
-				{
-					Vector2 aimDir = playerBody.position - actorBody.position;
-					float aimAngle = (Mathf.Atan2(aimDir.y, aimDir.x) * Mathf.Rad2Deg) - 90F;
-					float difference = Vector2.Distance(playerBody.position, actorBody.position);
-					actorBody.rotation = aimAngle;
-					destination = Vector2.MoveTowards(actorBody.position, playerBody.position, Random.Range(0.5F, difference));
-					idleTimer = 0;
-				}
-			}
-
-			if (idleTimer <= 0)
-			{
-				if (Vector2.Distance(actorBody.position, destination) < 0.1F)
-				{
-					//wait for a bit before moving again
-					idleTimer = 1F;
-					moveInput = new Vector2(0, 0);
-				}
-				else
-				{
-					Vector2 aimDir = destination - actorBody.position;
-					float aimAngle = (Mathf.Atan2(aimDir.y, aimDir.x) * Mathf.Rad2Deg) - 90F;
-					moveInput = Vector2.MoveTowards(actorBody.position, destination, 1F) - actorBody.position;
-				}
-			}
-		}*/
 	}
 
-    void FixedUpdate()
+	void FixedUpdate()
 	{
 		calcMoveInput();
 
@@ -170,16 +171,14 @@ public class EnemyMove : MonoBehaviour
 			currentSpeed -= _actorData.deceleration * _actorData.moveSpeed;
 		}
 
-
-		if (_detection != detectMode.frightened)
-		{
-			float aimAngle = (Mathf.Atan2(oldMoveInput.y, oldMoveInput.x) * Mathf.Rad2Deg) - 90F;
-			actorBody.rotation = aimAngle;
-		}
-
 		currentSpeed = Mathf.Clamp(currentSpeed, 0, maxStateSpeed);
 
 		actor.Move(new Vector3(oldMoveInput.x * currentSpeed * Time.deltaTime, oldMoveInput.y * currentSpeed * Time.deltaTime));
+	}
+
+	private float aimAngle(Vector2 aimTarget)
+	{
+		return (Mathf.Atan2((aimTarget - (Vector2)actor.transform.position).y, (aimTarget - (Vector2)actor.transform.position).x) * Mathf.Rad2Deg) - 90F;
 	}
 
 	private void calcMoveInput()
@@ -214,9 +213,29 @@ public class EnemyMove : MonoBehaviour
 		foreach (RaycastHit2D target in noticedActors)
 		{
 			Actor targetActor = target.transform.gameObject.GetComponent<Actor>();
-			if (actor.isTargetHostile(targetActor))
+			if (targetActor != null && actor.isTargetHostile(targetActor))
 			{
-				_detection = detectMode.hostile;
+				/* If they can go through a door, go through it */
+				RaycastHit2D rayHit = Physics2D.Raycast(eyeStart, targetActor.transform.position - transform.position, actor.actorData.sightRange, gameManager.lineOfSightLayers);
+				//Debug.DrawRay(eyeStart, targetActor.transform.position - transform.position);
+				if (rayHit.collider != null && rayHit.collider.gameObject.transform.parent != null)
+				{
+					AutoDoor door = rayHit.collider.gameObject.GetComponentInParent<AutoDoor>();
+					if (door != null && !door.locked)
+					{
+						_detection = detectMode.seeking;
+						moveTarget = targetActor.transform.position;
+					}
+				}
+
+				if (_detection == detectMode.idle || _detection == detectMode.suspicious)
+				{
+					_detection = detectMode.suspicious;
+				}
+				else if (_detection == detectMode.hostile)
+				{
+					_detection = detectMode.hostile;
+				}
 				actor.setAttackTarget(targetActor);
 				attackTarget = targetActor.transform.position;
 				return targetActor;
@@ -228,6 +247,29 @@ public class EnemyMove : MonoBehaviour
 
 	private Actor seeHostiles()
 	{
+		Vector2 center = transform.up * _actorData.sightRange;
+		float degrees = _actorData.sightRange > 12F ? 2.5F : 5F;
+		float increment = Math.Abs((float)Math.Tan(degrees * Math.PI / 180) * _actorData.sightRange);
+		float numIncrements = _actorData.sightAngle / degrees;
+		float maxLength = numIncrements * increment / 2;
+
+		for (float i= 0; i < numIncrements + 1; i ++)
+		{
+			RaycastHit2D rayHit = Physics2D.Raycast(eyeStart, center - (Vector2)((maxLength - (i * increment)) * transform.right), actor.actorData.sightRange, gameManager.lineOfSightLayers);
+			Debug.DrawRay(eyeStart, center - (Vector2)((maxLength - (i * increment)) * transform.right));
+
+			if (rayHit.rigidbody != null)
+			{
+				Actor targetActor = rayHit.rigidbody.gameObject.GetComponent<Actor>();
+				if (targetActor != null && actor.isTargetHostile(targetActor))
+				{
+					_detection = detectMode.hostile;
+					actor.setAttackTarget(targetActor);
+					attackTarget = targetActor.transform.position;
+					return targetActor;
+				}
+			}
+		}
 		return null;
 	}
 
@@ -239,13 +281,14 @@ public class EnemyMove : MonoBehaviour
 				stateSpeedIncrease /= 3;
 				maxStateSpeed /= 3;
 				break;
-			case detectMode.cautious:
+			case detectMode.seeking:
 			case detectMode.suspicious:
 				stateSpeedIncrease /= 2;
 				maxStateSpeed /= 2;
 				break;
 			case detectMode.frightened:
 			case detectMode.hostile:
+			default:
 				break;
 		}
 	}

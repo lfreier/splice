@@ -22,7 +22,7 @@ public class WeaponScriptable : ScriptableObject
 	public float damage { get; private set; } = 2F;
 
 	[field: SerializeField]
-	public int durability = 2;
+	public float durability { get; private set; } = 2F;
 
 	[field: SerializeField]
 	public float npcAttackRange { get; private set; } = 2F;
@@ -30,6 +30,9 @@ public class WeaponScriptable : ScriptableObject
 	/* Throwing fields */
 	[field: SerializeField]
 	public float throwDamage { get; private set; } = 1F;
+
+	[field: SerializeField]
+	public float throwDurabilityDamage { get; private set; } = 0.5F;
 
 	/* Higher throw speed means more throw range. */
 	[field: SerializeField]

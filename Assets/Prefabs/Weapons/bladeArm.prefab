@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 3398982447540545742}
   - component: {fileID: 1630916773381673146}
   - component: {fileID: 2175357256695995880}
+  - component: {fileID: 1232143006935567552}
   - component: {fileID: 5168576159283970348}
   m_Layer: 10
   m_Name: bladeArm
@@ -47,6 +48,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1b54339c0641c29478c56683e79b0c8f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  throwingActor: {fileID: 0}
+  weaponBody: {fileID: 1232143006935567552}
+  throwCollider: {fileID: 5168576159283970348}
+  pickupCollider: {fileID: 2666023793495350712}
 --- !u!114 &2175357256695995880
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -61,10 +66,38 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   horizontalRayCount: 4
   verticalRayCount: 4
+  directionalRayCount: 4
   collider2DObj: {fileID: 5168576159283970348}
   collisionMask:
     serializedVersion: 2
     m_Bits: 64
+--- !u!50 &1232143006935567552
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1192526033329145194}
+  m_BodyType: 1
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_Interpolate: 2
+  m_SleepingMode: 1
+  m_CollisionDetection: 1
+  m_Constraints: 0
 --- !u!61 &5168576159283970348
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -125,7 +158,7 @@ GameObject:
   - component: {fileID: 7354708917907336272}
   - component: {fileID: 6110609152592325587}
   - component: {fileID: 6376094926111057244}
-  m_Layer: 12
+  m_Layer: 15
   m_Name: BladeArmData
   m_TagString: ObjectWeapon
   m_Icon: {fileID: 0}
@@ -318,9 +351,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   anim: {fileID: 6529950160097543187}
   controller: {fileID: 2175357256695995880}
-  arc: {fileID: 7354708917907336272}
+  arc: {fileID: 0}
   hitbox: {fileID: 6110609152592325587}
   throwBox: {fileID: 5168576159283970348}
+  sprite: {fileID: 3442740799414355683}
+  damagedSprite: {fileID: 0}
+  actorWielder: {fileID: 0}
   _weaponScriptable: {fileID: 11400000, guid: e3de2277a3cbfa547b5ebe62311afece, type: 2}
   _weaponPhysics: {fileID: 1630916773381673146}
 --- !u!1 &8244530961570813241

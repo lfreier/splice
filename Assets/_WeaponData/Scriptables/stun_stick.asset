@@ -16,11 +16,12 @@ MonoBehaviour:
   <atkSpeed>k__BackingField: 0.35
   <canBeDropped>k__BackingField: 1
   <damage>k__BackingField: 2
-  durability: 3
+  <durability>k__BackingField: 3
   <npcAttackRange>k__BackingField: 2
-  <throwDamage>k__BackingField: 2
+  <throwDamage>k__BackingField: 1
+  <throwDurabilityDamage>k__BackingField: 0.5
   <throwSpeed>k__BackingField: 54
-  <throwWeight>k__BackingField: 2
+  <throwWeight>k__BackingField: 4
   <throwHurtSpeed>k__BackingField: 15
   <weaponType>k__BackingField: 1
   equipPosX: 0.38

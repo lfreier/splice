@@ -13,10 +13,11 @@ MonoBehaviour:
   m_Name: security1
   m_EditorClassIdentifier: 
   <health>k__BackingField: 3
-  <maxSpeed>k__BackingField: 11
+  <maxSpeed>k__BackingField: 10
   <moveSpeed>k__BackingField: 0.4
   <acceleration>k__BackingField: 0.5
   <deceleration>k__BackingField: 0.2
-  <hearingRange>k__BackingField: 12
-  <sightRange>k__BackingField: 8
+  <hearingRange>k__BackingField: 8
+  <sightRange>k__BackingField: 12
+  <sightAngle>k__BackingField: 110
   <frightenedDistance>k__BackingField: 6

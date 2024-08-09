@@ -15,7 +15,6 @@ GameObject:
   - component: {fileID: 740460995545239096}
   - component: {fileID: 4430561409393562764}
   - component: {fileID: 8181113457589132258}
-  - component: {fileID: 3066400801353164671}
   - component: {fileID: 8936931521236048847}
   m_Layer: 8
   m_Name: scientist
@@ -225,25 +224,6 @@ MonoBehaviour:
   actorBody: {fileID: 2658991806923027523}
   moveTargetError: 0.2
   gameManager: {fileID: 0}
---- !u!114 &3066400801353164671
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7904725563872449456}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b15cd33169dc58f4a903244618e280d7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  horizontalRayCount: 4
-  verticalRayCount: 4
-  directionalRayCount: 4
-  collider2DObj: {fileID: 1722529025439896153}
-  collisionMask:
-    serializedVersion: 2
-    m_Bits: 64
 --- !u!114 &8936931521236048847
 MonoBehaviour:
   m_ObjectHideFlags: 0

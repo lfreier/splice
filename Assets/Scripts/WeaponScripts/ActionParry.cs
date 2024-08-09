@@ -19,16 +19,6 @@ public class ActionParry : MonoBehaviour, ActionInterface
 		attacker.drop();
 	}
 
-	private void attackerStun(Actor attacker)
-	{
-		/* create new stun, attach it, and initialize it */
-		EStun newStun = attacker.effectHolder.transform.AddComponent<EStun>();
-		GameManager manager = GameManager.Instance;
-
-		newStun.init(manager.getEffectScriptable(GameManager.EFCT_SCRIP_ID_STUN1));
-		newStun.start(attacker);
-	}
-
 	public void setActorToHold(Actor actor)
 	{
 		actorWielder = actor;
@@ -48,7 +38,7 @@ public class ActionParry : MonoBehaviour, ActionInterface
 			if (attacker != null)
 			{
 				attackerDisarm(attacker);
-				attackerStun(attacker);
+				EffectDefs.effectStun(attacker, GameManager.EFCT_SCRIP_ID_STUN3);
 			}
 		}
 	}

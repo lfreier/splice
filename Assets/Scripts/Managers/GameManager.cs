@@ -16,11 +16,20 @@ public class GameManager : MonoBehaviour
 
 	public LayerMask actorLayers;
 
+	public LayerMask collisionLayer;
+
+	public LayerMask lineOfSightLayers;
+
+	public static string DAMAGE_LAYER = "Damage";
+	public static string OBJECT_LAYER = "Object";
+	public static string COLLISION_ACTOR_LAYER = "CollisionActor";
+
 	public static string CHAR_SCRIP_ID_SCIENTIST = "scientist";
 
 	public static string EFCT_SCRIP_ID_BLEED1 = "bleed1";
 
 	public static string EFCT_SCRIP_ID_STUN1 = "stun1";
+	public static string EFCT_SCRIP_ID_STUN3 = "stun3";
 
 	public static string WEAP_SCRIP_ID_BLADEARM = "bladeArm";
 	public static string WEAP_SCRIP_ID_FISTS = "fists";

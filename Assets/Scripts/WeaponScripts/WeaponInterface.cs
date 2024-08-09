@@ -21,6 +21,8 @@ public interface WeaponInterface
 
 	public bool isActive();
 
+	public void reduceDurability(float reduction);
+
 	public void setActorToHold(Actor actor);
 
 	public void setHitbox(bool toggle);

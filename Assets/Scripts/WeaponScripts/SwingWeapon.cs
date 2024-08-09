@@ -26,7 +26,7 @@ public class SwingWeapon : MonoBehaviour, WeaponInterface
 	public WeaponScriptable _weaponScriptable;
 	public WeaponPhysics _weaponPhysics;
 
-	private int durability;
+	private float durability;
 
 	void Start()
 	{
@@ -107,7 +107,7 @@ public class SwingWeapon : MonoBehaviour, WeaponInterface
 		controller.transform.Translate(velocity);
 	}
 
-	private void reduceDurability(int reduction)
+	public void reduceDurability(float reduction)
 	{
 		if (durability < 0)
 		{
@@ -170,11 +170,6 @@ public class SwingWeapon : MonoBehaviour, WeaponInterface
 	public bool toggleSecondaryCollider()
 	{
 		return secondaryAction.toggleHitbox();
-	}
-	public bool toggleStun()
-	{
-
-		return true;
 	}
 
 	private void OnTriggerEnter2D(Collider2D collision)

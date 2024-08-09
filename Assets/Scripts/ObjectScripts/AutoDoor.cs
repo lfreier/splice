@@ -24,6 +24,10 @@ public class AutoDoor : MonoBehaviour
 		{
 			doorLock();
 		}
+		else
+		{
+			doorUnlock();
+		}
 		gameManager = GameManager.Instance;
 	}
 

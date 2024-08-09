@@ -28,5 +28,9 @@ public class ActorScriptable : ScriptableObject
 	public float sightRange { get; private set; } = 10F;
 
 	[field: SerializeField]
+	/* In degrees - must be a multiple of 10 */
+	public float sightAngle { get; private set; } = 110F;
+
+	[field: SerializeField]
 	public float frightenedDistance { get; private set; } = 3F;
 }

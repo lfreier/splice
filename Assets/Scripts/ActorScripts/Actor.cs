@@ -26,6 +26,7 @@ public class Actor : MonoBehaviour
 		public float deceleration;
 
 		public float hearingRange;
+		public float sightAngle;
 		public float sightRange;
 
 		public float frightenedDistance;
@@ -35,9 +36,9 @@ public class Actor : MonoBehaviour
 	{
 		idle = 0,
 		suspicious = 1,
-		hostile = 2,
-		frightened = 3,
-		cautious = 4,
+		seeking = 2,
+		hostile = 3,
+		frightened = 4,
 		getWeapon = 5
 	};
 
@@ -104,6 +105,7 @@ public class Actor : MonoBehaviour
 		actorData.deceleration = _actorScriptable.deceleration;
 
 		actorData.hearingRange = _actorScriptable.hearingRange;
+		actorData.sightAngle = _actorScriptable.sightAngle;
 		actorData.sightRange = _actorScriptable.sightRange;
 
 		actorData.frightenedDistance = _actorScriptable.frightenedDistance;
@@ -427,8 +429,6 @@ public class Actor : MonoBehaviour
 
 	public void throwWeapon()
 	{
-		drop();
-		return;
 		Vector3 pointerPos = actorBody.transform.TransformDirection(transform.up);
 		throwWeapon(pointerPos);
 	}
@@ -440,8 +440,6 @@ public class Actor : MonoBehaviour
 			return;
 		}
 
-		drop();
-		return;
 		Vector3 aimDir = new Vector3(throwTargetPos.x, throwTargetPos.y, 0) - this.transform.position;
 		
 		this.equippedWeaponInt.throwWeapon(Vector3.ClampMagnitude(aimDir, 1));

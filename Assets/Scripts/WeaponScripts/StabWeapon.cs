@@ -22,7 +22,7 @@ public class StabWeapon : MonoBehaviour, WeaponInterface
 	public WeaponScriptable _weaponScriptable;
 	public WeaponPhysics _weaponPhysics;
 
-	private int durability;
+	private float durability;
 
 	void Start()
 	{
@@ -88,6 +88,11 @@ public class StabWeapon : MonoBehaviour, WeaponInterface
 	public bool isActive()
 	{
 		return (!anim.GetCurrentAnimatorStateInfo(0).IsTag("Idle") || _weaponPhysics.isBeingThrown());
+	}
+
+	public void reduceDurability(float reduction)
+	{
+
 	}
 
 	public void setActorToHold(Actor actor)
