@@ -16,7 +16,7 @@ MonoBehaviour:
   <atkSpeed>k__BackingField: 0.25
   <canBeDropped>k__BackingField: 0
   <damage>k__BackingField: 1
-  <durability>k__BackingField: 2
+  <durability>k__BackingField: -1
   <npcAttackRange>k__BackingField: -1
   <throwDamage>k__BackingField: 0
   <throwDurabilityDamage>k__BackingField: 0
@@ -27,3 +27,4 @@ MonoBehaviour:
   equipPosX: 0.35
   equipPosY: 0.15
   equipRotZ: 0
+  <knockbackDamage>k__BackingField: 2

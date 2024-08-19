@@ -19,11 +19,13 @@ public class PlayerInputs: MonoBehaviour
 	private float throwAction;
 	private float lastThrowAction;
 
+	private float walkAction;
+
 	private float[] specialActions = new float[MutationDefs.MAX_SLOTS];
 	private float[] lastSpecialActions = new float[MutationDefs.MAX_SLOTS];
 
 	[SerializeField]
-	private InputActionReference attack, secondaryAttack, move, moveCam, interact, pointer, throwVal, action1, action2;
+	private InputActionReference attack, secondaryAttack, move, moveCam, walk, interact, pointer, throwVal, action1, action2;
 
 	public float attackInput() { return attackAction; }
 	public float secondaryAttackInput() { return secondaryAttackAction; }
@@ -32,6 +34,7 @@ public class PlayerInputs: MonoBehaviour
 	public Vector2 moveInput() { return moveAction; }
 	public float interactInput() { return interactAction; }
 	public float throwInput() { return throwAction; }
+	public float walkInput() { return walkAction; }
 
 	public float[] actionInputs() { return specialActions; }
 
@@ -59,6 +62,7 @@ public class PlayerInputs: MonoBehaviour
 
 		//move inputs
 		moveAction = move.action.ReadValue<Vector2>();
+		walkAction = walk.action.ReadValue<float>();
 
 		//interact inputs
 		lastInteractAction = interactAction;

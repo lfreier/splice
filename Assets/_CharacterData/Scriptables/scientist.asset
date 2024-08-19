@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f695e0652b30c1047ae87fa8be4f8912, type: 3}
   m_Name: scientist
   m_EditorClassIdentifier: 
-  <health>k__BackingField: 2
+  <health>k__BackingField: 8
   <maxSpeed>k__BackingField: 8
   <moveSpeed>k__BackingField: 0.4
   <acceleration>k__BackingField: 0.5
@@ -21,3 +21,4 @@ MonoBehaviour:
   <sightRange>k__BackingField: 10
   <sightAngle>k__BackingField: 80
   <frightenedDistance>k__BackingField: 6
+  <knockbackResist>k__BackingField: 0.4

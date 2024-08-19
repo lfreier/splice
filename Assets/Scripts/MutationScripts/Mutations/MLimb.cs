@@ -54,6 +54,17 @@ public class MLimb : MonoBehaviour, MutationInterface
 
 	public bool toggleCollider()
 	{
+		if (!hitbox.enabled)
+		{
+			hitbox.gameObject.layer = LayerMask.NameToLayer(GameManager.OBJECT_MID_LAYER);
+			hitboxHand.gameObject.layer = LayerMask.NameToLayer(GameManager.OBJECT_MID_LAYER);
+		}
+		else
+		{
+			hitbox.gameObject.layer = LayerMask.NameToLayer(GameManager.OBJECT_LAYER);
+			hitboxHand.gameObject.layer = LayerMask.NameToLayer(GameManager.OBJECT_LAYER);
+		}
+
 		hitboxHand.enabled = !hitboxHand.enabled;
 		return hitbox.enabled = !hitbox.enabled;
 	}
@@ -72,9 +83,10 @@ public class MLimb : MonoBehaviour, MutationInterface
 			currParent = currParent.transform.parent;
 		}
 
-		Actor actorHit = collision.GetComponent<Actor>();
+		Actor actorHit = collision.gameObject.GetComponent<Actor>();
 		if (actorHit != null)
 		{
+			actorHit.actorBody.AddForce(1000 * (this.gameObject.transform.parent.position - actorHit.transform.position));
 			actorWielder.triggerDamageEffects(actorHit);
 			actorHit.takeDamage(mutationScriptable.damage);
 			Debug.Log("Hit: " + collision.name + " for " + mutationScriptable.damage + " damage");

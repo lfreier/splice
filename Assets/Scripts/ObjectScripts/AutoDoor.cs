@@ -34,7 +34,7 @@ public class AutoDoor : MonoBehaviour
 	private void Update()
 	{
 
-		RaycastHit2D[] hit = Physics2D.BoxCastAll(new Vector2(gameObject.transform.position.x, gameObject.transform.position.y), new Vector2(detectSize, detectSize), 0F, Vector2.up, detectSize, gameManager.actorLayers);
+		Collider2D[] hit = Physics2D.OverlapBoxAll(gameObject.transform.position, new Vector2(detectSize, detectSize), 0, gameManager.actorLayers);
 		if (!open && !locked && hit.Length > 0)
 		{
 			doorOpen();

@@ -13,8 +13,6 @@ public class EStun: MonoBehaviour, EffectInterface
 	// Use this for initialization
 	void Start()
 	{
-		GameManager manager = GameManager.Instance;
-		effectScriptable = manager.getEffectScriptable(GameManager.EFCT_SCRIP_ID_STUN1);
 	}
 
 	// Update is called once per frame

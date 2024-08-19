@@ -14,12 +14,12 @@ public class SwingWeapon : MonoBehaviour, WeaponInterface
 	string id;
 
 	public Controller2D controller;
-	public CircleCollider2D arc;
-	public BoxCollider2D hitbox;
+	public Collider2D hitbox;
 	public BoxCollider2D throwBox;
 
 	public SpriteRenderer sprite;
 	public Sprite damagedSprite;
+	public SpriteRenderer trailSprite;
 
 	public Actor actorWielder;
 
@@ -125,6 +125,7 @@ public class SwingWeapon : MonoBehaviour, WeaponInterface
 		if (durability <= 0)
 		{
 			this.actorWielder.drop();
+			Debug.Log("Weapon broke: " + this.name);
 			Destroy(this.transform.parent.gameObject);
 		}
 	}
@@ -159,11 +160,17 @@ public class SwingWeapon : MonoBehaviour, WeaponInterface
 	/* Only deal with the movement of the throw */
 	public void throwWeapon(Vector3 target)
 	{
+		anim.Rebind();
+		anim.Update(0f);
 		_weaponPhysics.startThrow(target, actorWielder);
 	}
 
 	public bool toggleCollider()
 	{
+		if (trailSprite != null)
+		{
+			trailSprite.enabled = !trailSprite.enabled;
+		}
 		return hitbox.enabled = !hitbox.enabled;
 	}
 
@@ -174,18 +181,19 @@ public class SwingWeapon : MonoBehaviour, WeaponInterface
 
 	private void OnTriggerEnter2D(Collider2D collision)
 	{
+		float knockbackMult = 1;
 		//TODO: deal with layermasks in a way that actually makes sense later
 		//TODO: put this somewhere else that's not specific for the weapon?
-		Transform currParent = this.gameObject.transform;
-		while(currParent != null)
+		if (this.actorWielder != null && collision.name == actorWielder.name)
 		{
-			if (collision.name == currParent.name
-				|| (_weaponPhysics.throwingActor != null && collision.name == _weaponPhysics.throwingActor.name))
-			{
-				Debug.Log("Stop hitting yourself");
-				return;
-			}
-			currParent = currParent.transform.parent;
+			Debug.Log("Stop hitting yourself");
+			return;
+		}
+
+		if (_weaponPhysics.throwingActor != null && collision.name == _weaponPhysics.throwingActor.name)
+		{
+			Debug.Log("Stop hitting yourself");
+			return;
 		}
 
 		Actor actorHit = collision.GetComponent<Actor>();
@@ -194,11 +202,21 @@ public class SwingWeapon : MonoBehaviour, WeaponInterface
 			actorWielder.triggerDamageEffects(actorHit);
 			actorHit.takeDamage(_weaponScriptable.damage);
 			reduceDurability(1);
+			knockbackMult = actorHit._actorScriptable.knockbackResist;
 			Debug.Log("Hit: " + collision.name + " for " + _weaponScriptable.damage + " damage");
 		}
 		else
 		{
 			Debug.Log("Hit: " + collision.name + " for no damage");
+		}
+
+		/* knockback */
+		Rigidbody2D hitBody = collision.attachedRigidbody;
+		if (hitBody != null)
+		{
+			Vector3 force = Vector3.ClampMagnitude(hitBody.transform.position - _weaponPhysics.transform.position, 1);
+			force *= _weaponScriptable.knockbackDamage * 1000 * knockbackMult;
+			hitBody.AddForce(force);
 		}
 	}
 }

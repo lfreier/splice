@@ -33,4 +33,8 @@ public class ActorScriptable : ScriptableObject
 
 	[field: SerializeField]
 	public float frightenedDistance { get; private set; } = 3F;
+
+	[field: SerializeField]
+	/*  */
+	public float knockbackResist { get; private set; } = 5F;
 }

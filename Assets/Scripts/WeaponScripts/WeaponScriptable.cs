@@ -54,4 +54,7 @@ public class WeaponScriptable : ScriptableObject
 	public float equipPosY = 0.15F;
 	public float equipRotZ = -67.5F;
 
+	[field: SerializeField]
+	/* In percent */
+	public float knockbackDamage { get; private set; } = 1F;
 }

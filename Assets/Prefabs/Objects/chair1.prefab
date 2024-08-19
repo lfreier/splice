@@ -100,6 +100,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _obstacleScriptable: {fileID: 11400000, guid: 8fe2e4e7722fd3b48b809d460fd40361, type: 2}
+  obstacleBody: {fileID: 783624939676991837}
 --- !u!50 &783624939676991837
 Rigidbody2D:
   serializedVersion: 4

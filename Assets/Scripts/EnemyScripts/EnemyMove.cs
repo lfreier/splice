@@ -195,23 +195,29 @@ public class EnemyMove : MonoBehaviour
 	private Collider2D findNearestWeapon(float withinRange)
 	{
 		RaycastHit2D[] noticedWeapons = Physics2D.CircleCastAll(new Vector2(this.transform.position.x, this.transform.position.y), withinRange, Vector2.zero, withinRange, actor.pickupLayer);
+		Collider2D closest = null;
+		float closestDistance = withinRange + 1;
 		foreach (RaycastHit2D target in noticedWeapons)
 		{
-			if (WeaponDefs.canWeaponBePickedUp(target.transform.gameObject))
+			float currDistance = Vector3.Distance(actor.transform.position, target.transform.position);
+			if (WeaponDefs.canWeaponBePickedUp(target.transform.gameObject) && closestDistance > currDistance)
 			{
-				return target.collider;
+				closestDistance = currDistance;
+				closest = target.collider;
 			}
 		}
 
-		return null;
+		return closest;
 	}
 
 	private Actor hearHostiles()
 	{
-		RaycastHit2D[] noticedActors = Physics2D.CircleCastAll(new Vector2(this.transform.position.x, this.transform.position.y), _actorData.hearingRange, Vector2.zero, _actorData.hearingRange, gameManager.actorLayers);
+		RaycastHit2D[] heardSound = Physics2D.CircleCastAll(new Vector2(this.transform.position.x, this.transform.position.y), _actorData.hearingRange, Vector2.zero, _actorData.hearingRange, gameManager.soundLayer);
+		float loudest = 0;
 
-		foreach (RaycastHit2D target in noticedActors)
+		foreach (RaycastHit2D target in heardSound)
 		{
+			Sound soundScript = target.transform.gameObject.GetComponent<Sound>();
 			Actor targetActor = target.transform.gameObject.GetComponent<Actor>();
 			if (targetActor != null && actor.isTargetHostile(targetActor))
 			{
@@ -239,6 +245,19 @@ public class EnemyMove : MonoBehaviour
 				actor.setAttackTarget(targetActor);
 				attackTarget = targetActor.transform.position;
 				return targetActor;
+			}
+			else if (soundScript != null && soundScript.scriptable.volume >= loudest)
+			{
+				attackTarget = target.transform.position;
+				loudest = soundScript.scriptable.volume;
+
+				switch (soundScript.scriptable.type)
+				{
+					case SoundDefs.SoundType.TAP:
+					default:
+						_detection = detectMode.suspicious;
+						break;
+				}
 			}
 		}
 

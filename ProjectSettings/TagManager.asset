@@ -24,12 +24,12 @@ TagManager:
   - Object
   - ObjectPickup
   - ObjectInteract
-  - 
-  - 
+  - ObjectMid
+  - ObjectHigh
   - Damage
   - Parry
   - 
-  - 
+  - Sound
   - 
   - 
   - 
@@ -55,4 +55,7 @@ TagManager:
     locked: 0
   - name: Obstacles
     uniqueID: 2129607759
+    locked: 0
+  - name: Walls
+    uniqueID: 2913765829
     locked: 0

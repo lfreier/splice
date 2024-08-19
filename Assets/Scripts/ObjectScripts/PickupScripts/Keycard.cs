@@ -5,6 +5,7 @@ public class Keycard : MonoBehaviour, PickupInterface
 {
 	public PickupDefs.keycardType _keycardType;
 	public SpriteRenderer keycardColor;
+	public int keycardUses;
 
 	void Start()
 	{

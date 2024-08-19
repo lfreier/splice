@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
+using UnityEditor;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
@@ -20,8 +21,11 @@ public class GameManager : MonoBehaviour
 
 	public LayerMask lineOfSightLayers;
 
+	public LayerMask soundLayer;
+
 	public static string DAMAGE_LAYER = "Damage";
 	public static string OBJECT_LAYER = "Object";
+	public static string OBJECT_MID_LAYER = "ObjectMid";
 	public static string COLLISION_ACTOR_LAYER = "CollisionActor";
 
 	public static string CHAR_SCRIP_ID_SCIENTIST = "scientist";
@@ -40,6 +44,7 @@ public class GameManager : MonoBehaviour
 	private Dictionary<string, ActorScriptable> actorScriptables = new Dictionary<string, ActorScriptable>();
 	private Dictionary<string, EffectScriptable> effectScriptables = new Dictionary<string, EffectScriptable>();
 	private Dictionary<string, MutationScriptable> mutationScriptables = new Dictionary<string, MutationScriptable>();
+	private Dictionary<string, SoundScriptable> soundScriptables = new Dictionary<string, SoundScriptable>();
 	private Dictionary<string, WeaponScriptable> weaponScriptables = new Dictionary<string, WeaponScriptable>();
 
 	private Dictionary<string, MutationInterface> mutations = new Dictionary<string, MutationInterface>();
@@ -63,25 +68,36 @@ public class GameManager : MonoBehaviour
 			instance = this;
 		}
 
-		var actorScriptableObjects = Resources.FindObjectsOfTypeAll(typeof(ActorScriptable));
+		Resources.LoadAll<ActorScriptable>("");
+		var actorScriptableObjects = FindAssetsByType<ActorScriptable>();
 		foreach (ActorScriptable actor in actorScriptableObjects)
 		{
 			actorScriptables.Add(actor.name, actor);
 		}
 
-		var effectScriptableObjects = Resources.FindObjectsOfTypeAll(typeof(EffectScriptable));
+		Resources.LoadAll<EffectScriptable>("");
+		var effectScriptableObjects = FindAssetsByType<EffectScriptable>();
 		foreach (EffectScriptable effect in effectScriptableObjects)
 		{
 			effectScriptables.Add(effect.name, effect);
 		}
 
-		var mutationScriptableObjects = Resources.FindObjectsOfTypeAll(typeof(MutationScriptable));
+		Resources.LoadAll<MutationScriptable>("");
+		var mutationScriptableObjects = FindAssetsByType<MutationScriptable>();
 		foreach (MutationScriptable mutation in mutationScriptableObjects)
 		{
 			mutationScriptables.Add(mutation.name, mutation);
 		}
 
-		var weaponScriptableObjects = Resources.FindObjectsOfTypeAll(typeof(WeaponScriptable));
+		Resources.LoadAll<SoundScriptable>("");
+		var soundScriptableObjects = FindAssetsByType<SoundScriptable>();
+		foreach (SoundScriptable sound in soundScriptableObjects)
+		{
+			soundScriptables.Add(sound.name, sound);
+		}
+
+		Resources.LoadAll<WeaponScriptable>("");
+		var weaponScriptableObjects = FindAssetsByType<WeaponScriptable>();
 		foreach (WeaponScriptable weapon in weaponScriptableObjects)
 		{
 			weaponScriptables.Add(weapon.name, weapon);
@@ -135,6 +151,16 @@ public class GameManager : MonoBehaviour
 
 		return null;
 	}
+	public SoundScriptable getSoundScriptable(string id)
+	{
+		SoundScriptable sound;
+		if (soundScriptables.TryGetValue(id, out sound))
+		{
+			return sound;
+		}
+
+		return null;
+	}
 
 	public WeaponScriptable getWeaponScriptable(string id)
 	{
@@ -145,5 +171,18 @@ public class GameManager : MonoBehaviour
 		}
 
 		return null;
+	}
+	public static IEnumerable<T> FindAssetsByType<T>() where T : UnityEngine.Object
+	{
+		var guids = AssetDatabase.FindAssets($"t:{typeof(T)}");
+		foreach (var t in guids)
+		{
+			var assetPath = AssetDatabase.GUIDToAssetPath(t);
+			var asset = AssetDatabase.LoadAssetAtPath<T>(assetPath);
+			if (asset != null)
+			{
+				yield return asset;
+			}
+		}
 	}
 }

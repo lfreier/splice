@@ -9,8 +9,7 @@ public class ObstacleScriptable : ScriptableObject
 
 	[field: SerializeField]
 	public float collisionDamage { get; private set; } = 1F;
-	static void DoIt()
-	{
-		EditorUtility.DisplayDialog("MyTool", "Do It in C# !", "OK", "");
-	}
+
+	[field: SerializeField]
+	public float pushbackForce { get; private set; } = 1F;
 }

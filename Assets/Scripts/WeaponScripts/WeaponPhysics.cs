@@ -98,6 +98,11 @@ public class WeaponPhysics : MonoBehaviour
 		this.throwingActor = throwingActor;
 		throwCollider.enabled = true;
 		pickupCollider.enabled = false;
+
+		Transform dataObject = gameObject.transform.GetChild(0);
+		dataObject.SetParent(gameObject.transform);
+		dataObject.localPosition = Vector3.zero;
+		dataObject.rotation = new Quaternion(0,0,0,0);
 	}
 
 	private void OnTriggerEnter2D(Collider2D collision)
@@ -114,6 +119,7 @@ public class WeaponPhysics : MonoBehaviour
 				}
 				Debug.Log("Throwing " + this.gameObject.name + " hit " + actorHit.name + " for " + _weaponScriptable.throwDamage + " damage");
 				actorHit.takeDamage(_weaponScriptable.throwDamage);
+				actorHit.drop();
 				_weapon.reduceDurability(_weaponScriptable.throwDurabilityDamage);
 				EffectDefs.effectStun(actorHit, GameManager.EFCT_SCRIP_ID_STUN1);
 			}

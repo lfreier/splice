@@ -303,11 +303,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   anim: {fileID: 7498851668401721827}
   controller: {fileID: 0}
-  arc: {fileID: 9073983823355340072}
   hitbox: {fileID: 1109013575069055799}
   throwBox: {fileID: 5989834994661812141}
-  sprite: {fileID: 0}
+  sprite: {fileID: 3442740799414355683}
   damagedSprite: {fileID: 0}
+  trailSprite: {fileID: 0}
   actorWielder: {fileID: 0}
   _weaponScriptable: {fileID: 11400000, guid: 04697dc785bc1b44c9ea901776758fbc, type: 2}
   _weaponPhysics: {fileID: 2490751913895706594}
