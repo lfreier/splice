@@ -12,6 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6bd7c4db436403340bd60efc568faba0, type: 3}
   m_Name: stun3
   m_EditorClassIdentifier: 
+  <constantEffectType>k__BackingField: 1
   <effectLength>k__BackingField: 3
+  effectPrefab: {fileID: 7516209376199959669, guid: 06d2adf875b25aa4faea072461ddb9c4, type: 3}
+  effectSprite: {fileID: 21300000, guid: e4c36ec0221250b49a2db8e67974da03, type: 3}
   <effectStrength>k__BackingField: 1
   <tickLength>k__BackingField: 0.5

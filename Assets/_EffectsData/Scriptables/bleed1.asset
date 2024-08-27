@@ -12,6 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6bd7c4db436403340bd60efc568faba0, type: 3}
   m_Name: bleed1
   m_EditorClassIdentifier: 
+  <constantEffectType>k__BackingField: 0
   <effectLength>k__BackingField: 2
+  effectPrefab: {fileID: 7481581874167313850, guid: 8545dc729432f234a8aa19158292ac1c, type: 3}
   <effectStrength>k__BackingField: 1
   <tickLength>k__BackingField: 0.5

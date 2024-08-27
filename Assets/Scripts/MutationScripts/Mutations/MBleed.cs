@@ -19,11 +19,7 @@ public class MBleed : MonoBehaviour, MutationInterface
 	public void trigger(Actor actorTarget)
 	{
 		/* create new bleed, attach it, and initialize it */
-		EBleed newBleed = actorTarget.effectHolder.transform.AddComponent<EBleed>();
-		GameManager manager = GameManager.Instance;
-
-		newBleed.init(manager.getEffectScriptable(GameManager.EFCT_SCRIP_ID_BLEED1));
-		newBleed.start(actorTarget);
+		EffectDefs.effectApply(actorTarget, GameManager.EFCT_SCRIP_ID_BLEED1);
 	}
 
 	public MutationInterface mEquip(Actor actor)

@@ -61,6 +61,12 @@ public class StabWeapon : MonoBehaviour, WeaponInterface
 		return true;
 	}
 
+	public void cancelAttack()
+	{
+		anim.StopPlayback();
+		hitbox.enabled = false;
+	}
+
 	public WeaponScriptable getScriptable()
 	{
 		return _weaponScriptable;

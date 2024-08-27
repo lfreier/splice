@@ -72,6 +72,12 @@ public class SwingWeapon : MonoBehaviour, WeaponInterface
 		return true;
 	}
 
+	public void cancelAttack()
+	{
+		anim.StopPlayback();
+		hitbox.enabled = false;
+	}
+
 	public WeaponScriptable getScriptable()
 	{
 		return _weaponScriptable;
@@ -197,11 +203,18 @@ public class SwingWeapon : MonoBehaviour, WeaponInterface
 		}
 
 		Actor actorHit = collision.GetComponent<Actor>();
+		if (actorWielder == null)
+		{
+			return;
+		}
+
 		if (actorHit != null && actorWielder.isTargetHostile(actorHit))
 		{
 			actorWielder.triggerDamageEffects(actorHit);
-			actorHit.takeDamage(_weaponScriptable.damage);
-			reduceDurability(1);
+			if (actorHit.takeDamage(_weaponScriptable.damage) > 0)
+			{
+				reduceDurability(1);
+			}
 			knockbackMult = actorHit._actorScriptable.knockbackResist;
 			Debug.Log("Hit: " + collision.name + " for " + _weaponScriptable.damage + " damage");
 		}

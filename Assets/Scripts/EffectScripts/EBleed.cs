@@ -15,8 +15,6 @@ public class EBleed : MonoBehaviour, EffectInterface
 	// Use this for initialization
 	void Start()
 	{
-		GameManager manager = GameManager.Instance;
-		effectScriptable = manager.getEffectScriptable(GameManager.EFCT_SCRIP_ID_BLEED1);
 	}
 
 	// Update is called once per frame
@@ -29,6 +27,16 @@ public class EBleed : MonoBehaviour, EffectInterface
 		{
 			tick(effectScriptable.tickLength);
 		}
+	}
+
+	public float getCompareValue()
+	{
+		if (timer > 0)
+		{
+			return timer * effectScriptable.effectStrength;
+		}
+
+		return effectScriptable.effectLength * effectScriptable.effectStrength;
 	}
 
 	public float getTimer()
@@ -55,7 +63,7 @@ public class EBleed : MonoBehaviour, EffectInterface
 
 		if (timer <= 0)
 		{
-			Destroy(this);
+			Destroy(this.gameObject);
 		}
 	}
 

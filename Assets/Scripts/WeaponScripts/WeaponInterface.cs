@@ -9,6 +9,8 @@ public interface WeaponInterface
 
 	public bool canBeDropped();
 
+	public void cancelAttack();
+
 	public Actor getActorWielder();
 
 	public WeaponScriptable getScriptable();

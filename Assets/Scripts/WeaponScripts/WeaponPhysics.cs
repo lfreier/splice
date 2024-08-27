@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.InputSystem.XR;
@@ -118,10 +119,13 @@ public class WeaponPhysics : MonoBehaviour
 					return;
 				}
 				Debug.Log("Throwing " + this.gameObject.name + " hit " + actorHit.name + " for " + _weaponScriptable.throwDamage + " damage");
-				actorHit.takeDamage(_weaponScriptable.throwDamage);
-				actorHit.drop();
-				_weapon.reduceDurability(_weaponScriptable.throwDurabilityDamage);
-				EffectDefs.effectStun(actorHit, GameManager.EFCT_SCRIP_ID_STUN1);
+				if (actorHit.takeDamage(_weaponScriptable.throwDamage) > 0)
+				{	
+					actorHit.drop();
+					_weapon.reduceDurability(_weaponScriptable.throwDurabilityDamage);
+				}
+
+				EffectDefs.effectApply(actorHit, GameManager.EFCT_SCRIP_ID_STUN1);
 			}
 
 			currentSpeed /= 2;

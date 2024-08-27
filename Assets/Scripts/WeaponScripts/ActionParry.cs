@@ -1,4 +1,4 @@
-﻿using UnityEditor;
+using UnityEditor;
 using UnityEngine;
 using Unity.VisualScripting;
 
@@ -34,11 +34,14 @@ public class ActionParry : MonoBehaviour, ActionInterface
 		WeaponInterface weapon = collision.gameObject.GetComponent<WeaponInterface>();
 		if (weapon != null)
 		{
-			Actor attacker = weapon.getActorWielder();
-			if (attacker != null)
+			Actor target = weapon.getActorWielder();
+			if (target != null)
 			{
-				attackerDisarm(attacker);
-				EffectDefs.effectStun(attacker, GameManager.EFCT_SCRIP_ID_STUN3);
+				attackerDisarm(target);
+				EffectDefs.effectApply(target, GameManager.EFCT_SCRIP_ID_STUN1);
+				WeaponScriptable weapData = weapon.getScriptable();
+				Vector3 force = Vector3.ClampMagnitude(target.actorBody.transform.position - actorWielder.transform.position, 1);
+				target.actorBody.AddForce(force * 1500 * weapData.knockbackDamage * target._actorScriptable.knockbackResist);
 			}
 		}
 	}

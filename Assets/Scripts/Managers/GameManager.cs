@@ -34,10 +34,16 @@ public class GameManager : MonoBehaviour
 
 	public static string EFCT_SCRIP_ID_STUN1 = "stun1";
 	public static string EFCT_SCRIP_ID_STUN3 = "stun3";
+	public static string EFCT_SCRIP_ID_IFRAME0 = "iframe0";
+	public static string EFCT_SCRIP_ID_IFRAME1 = "iframe1";
 
 	public static string WEAP_SCRIP_ID_BLADEARM = "bladeArm";
 	public static string WEAP_SCRIP_ID_FISTS = "fists";
 	public static string WEAP_SCRIP_ID_RULER = "ruler";
+
+	public static Color COLOR_BLUE = new Color(0.1F, 0.1F, 0.4F, 1F);
+	public static Color COLOR_RED = new Color(0.4F, 0.1F, 0.1F, 1F);
+	public static Color COLOR_IFRAME = new Color(0.9F, 0.3F, 0.3F, 1F);
 
 	public List<Type> actorBehaviors = new List<Type>();
 
@@ -172,6 +178,7 @@ public class GameManager : MonoBehaviour
 
 		return null;
 	}
+
 	public static IEnumerable<T> FindAssetsByType<T>() where T : UnityEngine.Object
 	{
 		var guids = AssetDatabase.FindAssets($"t:{typeof(T)}");

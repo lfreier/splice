@@ -6,6 +6,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.U2D;
+using static EffectDefs;
 
 /*
  * Actor class:
@@ -68,8 +69,11 @@ public class Actor : MonoBehaviour
 	private WeaponInterface equippedWeaponInt;
 
 	private SpriteRenderer sprite;
+	private SpriteRenderer weaponSprite;
 
 	private float speedCheck;
+
+	private bool invincible = false;
 
 	public void Start()
 	{
@@ -77,6 +81,7 @@ public class Actor : MonoBehaviour
 		attackTarget = null;
 		gameManager = GameManager.Instance;
 		activeSlots = new MutationInterface[MutationDefs.MAX_SLOTS];
+		sprite = GetComponent<SpriteRenderer>();
 		initActorData();
 	}
 
@@ -157,6 +162,8 @@ public class Actor : MonoBehaviour
 	{
 		if (equippedWeaponInt == null || !equippedWeaponInt.canBeDropped()) { return; }
 
+		equippedWeaponInt.cancelAttack();
+
 		Vector3 pointerPos = actorBody.transform.TransformDirection(transform.up);
 
 		/* Literally just getting positive/negatives */
@@ -165,7 +172,7 @@ public class Actor : MonoBehaviour
 
 		equippedWeapon.transform.Translate(translate, Space.World);
 		equippedWeapon.transform.Rotate(new Vector3(0, 0, Random.Range(-45, 45)), Space.Self);
-		sprite.sortingLayerName = WeaponDefs.SORT_LAYER_GROUND;
+		weaponSprite.sortingLayerName = WeaponDefs.SORT_LAYER_GROUND;
 
 		resetEquip();
 	}
@@ -227,8 +234,8 @@ public class Actor : MonoBehaviour
 		equippedWeaponInt = tempWeapInt;
 
 		equippedWeapon.transform.SetParent(this.transform, true);
-		sprite = equippedWeapon.GetComponentInChildren<SpriteRenderer>();
-		sprite.sortingLayerName = WeaponDefs.SORT_LAYER_CHARS;
+		weaponSprite = equippedWeapon.GetComponentInChildren<SpriteRenderer>();
+		weaponSprite.sortingLayerName = WeaponDefs.SORT_LAYER_CHARS;
 		equippedWeaponInt.setStartingPosition();
 
 		setWeaponTag(equippedWeapon, WeaponDefs.EQUIPPED_WEAPON_TAG);
@@ -307,6 +314,16 @@ public class Actor : MonoBehaviour
 	public void kill()
 	{
 		drop();
+
+		for (int i = 0; i < effectHolder.transform.childCount; i ++)
+		{
+			Transform currentEffect = effectHolder.transform.GetChild(i);
+
+			if (currentEffect != null)
+			{
+				Destroy(currentEffect.gameObject);
+			}
+		}
 		//TODO: spawn replacement sprite
 		Destroy(transform.gameObject);
 	}
@@ -386,6 +403,32 @@ public class Actor : MonoBehaviour
 		attackTarget = targetActor;
 	}
 
+	public void setColor(Color newColor)
+	{
+		if (sprite != null)
+		{
+			this.sprite.color = newColor;
+		}
+	}
+
+	public void setConstant(bool toggle, constantType type)
+	{
+		switch (type)
+		{
+			case constantType.STUN:
+				foreach (MonoBehaviour script in behaviorList)
+				{
+					script.enabled = !toggle;
+				}
+				break;
+			case constantType.IFRAME:
+				this.invincible = toggle;
+				break;
+			default:
+				break;
+		}
+	}
+
 	/* Changes the actor's max speed to the given value.
 	 * If changedSpeed is negative, will reset to the actor's base speed.
 	 */
@@ -417,6 +460,12 @@ public class Actor : MonoBehaviour
 
 	public float takeDamage(float damage)
 	{
+		if (this.invincible)
+		{
+			return 0F;
+		}
+
+		float startingHealth = actorData.health;
 		actorData.health -= damage;
 		actorData.health = actorData.health < 0 ? 0 : actorData.health;
 
@@ -424,7 +473,17 @@ public class Actor : MonoBehaviour
 		{
 			this.kill();
 		}
-		return actorData.health;
+
+		if (this.tag.Equals(ActorDefs.playerTag))
+		{
+			EffectDefs.effectApply(this, GameManager.EFCT_SCRIP_ID_IFRAME1);
+		}
+		else
+		{
+			EffectDefs.effectApply(this, GameManager.EFCT_SCRIP_ID_IFRAME0);
+		}
+
+		return startingHealth - actorData.health;
 	}
 
 	public void throwWeapon()
@@ -457,14 +516,6 @@ public class Actor : MonoBehaviour
 			{
 				mutation.trigger(target);
 			}
-		}
-	}
-
-	public void setStun(bool stun)
-	{
-		foreach (MonoBehaviour script in behaviorList)
-		{
-			script.enabled = !stun;
 		}
 	}
 

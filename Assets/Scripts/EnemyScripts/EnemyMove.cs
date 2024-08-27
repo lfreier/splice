@@ -17,6 +17,9 @@ public class EnemyMove : MonoBehaviour
 
 	public float moveTargetError;
 
+	public Vector2[] idlePath;
+	private int pathIndex;
+
 	private Vector2 eyeStart;
 
 	private detectMode _detection;
@@ -43,6 +46,7 @@ public class EnemyMove : MonoBehaviour
 		gameManager = GameManager.Instance;
 		_detection = detectMode.idle;
 		attackTargetActor = null;
+		pathIndex = 0;
 	}
 
 	void Update()
@@ -62,7 +66,7 @@ public class EnemyMove : MonoBehaviour
 		attackTargetActor = attackTargetActor != null ? attackTargetActor : hearHostiles();
 
 		/*  determine move speed based on current state */
-		if (_oldDetection != _detection)
+		if (_oldDetection != _detection || maxStateSpeed == 0)
 		{
 			stateSpeedIncrease = _actorData.acceleration * _actorData.moveSpeed;
 			maxStateSpeed = _actorData.maxSpeed;
@@ -71,8 +75,26 @@ public class EnemyMove : MonoBehaviour
 		}
 
 		/*  determine move target based on current state */
+		if (_detection == detectMode.idle && idlePath.Length > 0)
+		{
+			/* If at a path position, go to next */
+			if (((Vector2)actorBody.transform.position -  idlePath[pathIndex]).magnitude < 0.5F)
+			{
+				if (pathIndex >= idlePath.Length - 1)
+				{
+					pathIndex = 0;
+				}
+				else
+				{
+					pathIndex++;
+				}
+			}
 
-		if (_detection != detectMode.idle)
+			/* Follow path if it exists */
+			moveTarget = idlePath[pathIndex];
+			actorBody.rotation = aimAngle(moveTarget);
+		}
+		else if (_detection != detectMode.idle)
 		{
 			/* first, pickup a weapon if needed */
 			if (actor.isUnarmed())
@@ -107,6 +129,10 @@ public class EnemyMove : MonoBehaviour
 					moveTarget = actor.transform.position;
 				}
 			}
+		}
+		else
+		{
+			moveTarget = actor.transform.position;
 		}
 
 		if (_detection == detectMode.getWeapon)
@@ -145,12 +171,8 @@ public class EnemyMove : MonoBehaviour
 			}
 		}
 
-		if (_detection == detectMode.idle)
-		{
-			moveTarget = actor.transform.position;
-		}
-
 		/* Move to last known location if hostile is not detected */
+		//TODO
 
 		/* Make sure to save to the actor */
 		actor.detection = _detection;
@@ -297,13 +319,13 @@ public class EnemyMove : MonoBehaviour
 		switch (_detection)
 		{
 			case detectMode.idle:
-				stateSpeedIncrease /= 3;
-				maxStateSpeed /= 3;
+				stateSpeedIncrease /= 2;
+				maxStateSpeed /= 2;
 				break;
 			case detectMode.seeking:
 			case detectMode.suspicious:
-				stateSpeedIncrease /= 2;
-				maxStateSpeed /= 2;
+				stateSpeedIncrease /= 1.5F;
+				maxStateSpeed /= 1.5F;
 				break;
 			case detectMode.frightened:
 			case detectMode.hostile:

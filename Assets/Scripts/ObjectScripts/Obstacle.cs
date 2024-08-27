@@ -27,15 +27,17 @@ public class Obstacle : MonoBehaviour
 	{
 		Actor actorHit = collision.gameObject.GetComponent<Actor>();
 		if (actorHit != null)
-		{
+		{	
+			Vector2 velocityDiff = collision.attachedRigidbody.velocity - obstacleBody.velocity;
+			Debug.Log("Actor velocity: " + collision.attachedRigidbody.velocity);
+			Debug.Log("Chair velocity: " + obstacleBody.velocity);
+
 			/*
-			Vector2 velocityDiff = collision.rigidbody.velocity - collision.otherRigidbody.velocity;
 			if (velocityDiff.magnitude >= _obstacleScriptable.collisionDamageThreshold)
 			{
-				actorHit.actorBody.AddForce(_obstacleScriptable.pushbackForce * 1000);
+				actorHit.actorBody.AddForce(velocityDiff * (_obstacleScriptable.pushbackForce * 1000));
 				actorHit.takeDamage(_obstacleScriptable.collisionDamage);
-			}
-			*/
+			}*/
 		}
 
 		WeaponInterface weaponHit = collision.gameObject.GetComponent<WeaponInterface>();

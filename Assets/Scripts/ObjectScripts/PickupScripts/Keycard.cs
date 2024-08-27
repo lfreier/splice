@@ -17,11 +17,11 @@ public class Keycard : MonoBehaviour, PickupInterface
 		switch (_keycardType)
 		{
 			case PickupDefs.keycardType.BLUE:
-				keycardColor.color = new Color(0.1F, 0.1F, 0.4F, 1F);
+				keycardColor.color = GameManager.COLOR_BLUE;
 				break;
 			case PickupDefs.keycardType.RED:
 			default:
-				keycardColor.color = new Color(0.4F, 0.1F, 0.1F, 1F);
+				keycardColor.color = GameManager.COLOR_RED;
 				break;
 		}
 	}

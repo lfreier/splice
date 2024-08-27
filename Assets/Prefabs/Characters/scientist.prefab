@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: 4430561409393562764}
   - component: {fileID: 8181113457589132258}
   - component: {fileID: 8936931521236048847}
+  - component: {fileID: 2023260988043286838}
   m_Layer: 8
   m_Name: scientist
   m_TagString: NPC
@@ -237,6 +238,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   actor: {fileID: 740460995545239096}
+--- !u!114 &2023260988043286838
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7904725563872449456}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 373cb9d829f0f984193474cb9245a291, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  actor: {fileID: 740460995545239096}
+  spriteList:
+  - {fileID: 21300000, guid: 6471ebb20ee70ca46a467b7594f06484, type: 3}
+  - {fileID: 21300000, guid: 89bea3433cad90f448bce6e2ae6cde37, type: 3}
+  - {fileID: 21300000, guid: 895a8c5a0b344484cb946a4d89f76406, type: 3}
+  - {fileID: 21300000, guid: d0d62e677cf25c2409700acbd505b539, type: 3}
 --- !u!1 &8081907558892302357
 GameObject:
   m_ObjectHideFlags: 0

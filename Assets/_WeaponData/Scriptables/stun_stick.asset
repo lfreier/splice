@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: stun_stick
   m_EditorClassIdentifier: 
   <arc>k__BackingField: 115
-  <atkSpeed>k__BackingField: 0.55
+  <atkSpeed>k__BackingField: 0.45
   <canBeDropped>k__BackingField: 1
-  <damage>k__BackingField: 2
+  <damage>k__BackingField: 3
   <durability>k__BackingField: 3
   <npcAttackRange>k__BackingField: 2.5
   <throwDamage>k__BackingField: 1
@@ -27,4 +27,4 @@ MonoBehaviour:
   equipPosX: 0.38
   equipPosY: 0.15
   equipRotZ: -57.5
-  <knockbackDamage>k__BackingField: 5
+  <knockbackDamage>k__BackingField: 7
