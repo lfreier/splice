@@ -14,7 +14,11 @@ public static class SoundDefs
 
 	public static string SOUND_LAYER_NAME = "Sound";
 
-	public static string SOUND_FOOTSTEP = "Footstep";
+	public static string SOUND_FOOTSTEP = "footstep";
+	public static string SOUND_WEAPON_THUD = "weaponThud";
+	public static string SOUND_WEAPON_CLANG = "weaponClang";
+
+	public static string TAG_WALL_METAL = "WallMetal";
 
 	static public void createSound(Vector2 worldPosition, SoundScriptable scriptable)
 	{

@@ -32,6 +32,7 @@ public class GameManager : MonoBehaviour
 
 	public static string EFCT_SCRIP_ID_BLEED1 = "bleed1";
 
+	public static string EFCT_SCRIP_ID_STUNHALF = "stunHalf";
 	public static string EFCT_SCRIP_ID_STUN1 = "stun1";
 	public static string EFCT_SCRIP_ID_STUN3 = "stun3";
 	public static string EFCT_SCRIP_ID_IFRAME0 = "iframe0";
@@ -42,6 +43,7 @@ public class GameManager : MonoBehaviour
 	public static string WEAP_SCRIP_ID_RULER = "ruler";
 
 	public static Color COLOR_BLUE = new Color(0.1F, 0.1F, 0.4F, 1F);
+	public static Color COLOR_GREEN = new Color(0.15F, 0.4f, 0, 1F);
 	public static Color COLOR_RED = new Color(0.4F, 0.1F, 0.1F, 1F);
 	public static Color COLOR_IFRAME = new Color(0.9F, 0.3F, 0.3F, 1F);
 
@@ -119,12 +121,6 @@ public class GameManager : MonoBehaviour
 		actorBehaviors.Add(Type.GetType("EnemyMove"));
 	}
 
-	// Update is called once per frame
-	void Update()
-	{
-
-	}
-
 	public ActorScriptable getActorScriptable(string id)
 	{
 		ActorScriptable actor;
@@ -181,6 +177,7 @@ public class GameManager : MonoBehaviour
 
 	public static IEnumerable<T> FindAssetsByType<T>() where T : UnityEngine.Object
 	{
+		//AssetBundle bundle;
 		var guids = AssetDatabase.FindAssets($"t:{typeof(T)}");
 		foreach (var t in guids)
 		{

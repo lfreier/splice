@@ -13,31 +13,24 @@ public class Obstacle : MonoBehaviour
 
 	}
 
-	// Update is called once per frame
-	void Update()
-	{
-
-	}
-
 	private void pushByDamage(WeaponInterface weapon)
 	{
 	}
-	
-	private void OnTriggerEnter2D(Collider2D collision)
+
+	private void OnCollisionEnter2D(Collision2D collision)
 	{
 		Actor actorHit = collision.gameObject.GetComponent<Actor>();
 		if (actorHit != null)
 		{	
-			Vector2 velocityDiff = collision.attachedRigidbody.velocity - obstacleBody.velocity;
-			Debug.Log("Actor velocity: " + collision.attachedRigidbody.velocity);
-			Debug.Log("Chair velocity: " + obstacleBody.velocity);
+			Vector2 velocityDiff = obstacleBody.velocity - (Vector2)actorHit.currMoveVector;
+			Debug.Log("Diff magnitude: " + velocityDiff.magnitude); 
+			Debug.Log("Obstacle magnitude: " + obstacleBody.velocity.magnitude);
 
-			/*
-			if (velocityDiff.magnitude >= _obstacleScriptable.collisionDamageThreshold)
+			if (velocityDiff.magnitude >= _obstacleScriptable.collisionDamageThreshold && obstacleBody.velocity.magnitude > _obstacleScriptable.collisionDamageThreshold / 2)
 			{
 				actorHit.actorBody.AddForce(velocityDiff * (_obstacleScriptable.pushbackForce * 1000));
 				actorHit.takeDamage(_obstacleScriptable.collisionDamage);
-			}*/
+			}
 		}
 
 		WeaponInterface weaponHit = collision.gameObject.GetComponent<WeaponInterface>();

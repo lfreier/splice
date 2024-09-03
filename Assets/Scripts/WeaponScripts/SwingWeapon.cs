@@ -26,10 +26,16 @@ public class SwingWeapon : MonoBehaviour, WeaponInterface
 	public WeaponScriptable _weaponScriptable;
 	public WeaponPhysics _weaponPhysics;
 
+	public SoundScriptable actorHitSound;
+	public SoundScriptable wallHitSound;
+
+	private GameManager gameManager;
+
 	private float durability;
 
 	void Start()
 	{
+		gameManager = GameManager.Instance;
 		durability = _weaponScriptable.durability;
 		id = this.gameObject.name;
 		secondaryAction = GetComponent<ActionInterface>();
@@ -44,6 +50,10 @@ public class SwingWeapon : MonoBehaviour, WeaponInterface
 	{
 		// was just thrown, so give it initial speed
 		_weaponPhysics.calculateThrow();
+		if (!isActive())
+		{
+			hitbox.enabled = false;
+		}
 	}
 
 	public bool attack(LayerMask targetLayer)
@@ -188,7 +198,6 @@ public class SwingWeapon : MonoBehaviour, WeaponInterface
 	private void OnTriggerEnter2D(Collider2D collision)
 	{
 		float knockbackMult = 1;
-		//TODO: deal with layermasks in a way that actually makes sense later
 		//TODO: put this somewhere else that's not specific for the weapon?
 		if (this.actorWielder != null && collision.name == actorWielder.name)
 		{
@@ -216,10 +225,19 @@ public class SwingWeapon : MonoBehaviour, WeaponInterface
 				reduceDurability(1);
 			}
 			knockbackMult = actorHit._actorScriptable.knockbackResist;
+			SoundDefs.createSound(actorHit.transform.position, actorHitSound);
 			Debug.Log("Hit: " + collision.name + " for " + _weaponScriptable.damage + " damage");
 		}
 		else
 		{
+			if (collision.tag == SoundDefs.TAG_WALL_METAL)
+			{
+				SoundDefs.createSound(_weaponPhysics.transform.position, wallHitSound);
+			}
+			else
+			{
+				SoundDefs.createSound(_weaponPhysics.transform.position, actorHitSound);
+			}
 			Debug.Log("Hit: " + collision.name + " for no damage");
 		}
 

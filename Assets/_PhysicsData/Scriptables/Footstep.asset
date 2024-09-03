@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fb55f236f4211e041aae60ee7c308f35, type: 3}
-  m_Name: Footstep
+  m_Name: footstep
   m_EditorClassIdentifier: 
   <length>k__BackingField: 0.5
   <radius>k__BackingField: 1
   <type>k__BackingField: 0
-  <triggerSpeed>k__BackingField: 6
+  <triggerSpeed>k__BackingField: 8
   <threshold>k__BackingField: 2
-  <volume>k__BackingField: 0.1
+  <volume>k__BackingField: 1

@@ -79,6 +79,6 @@ public class PlayerMove : MonoBehaviour
 		}
 
 		currentSpeed = Mathf.Clamp(currentSpeed, 0, playerData.maxSpeed);
-		player.Move(new Vector3(lastMoveInput.x * currentSpeed * Time.deltaTime, lastMoveInput.y * currentSpeed * Time.deltaTime));
+		player.Move(new Vector3(lastMoveInput.x * currentSpeed, lastMoveInput.y * currentSpeed));
 	}
 }

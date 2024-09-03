@@ -97,7 +97,7 @@ GameObject:
   - component: {fileID: 7042054641042475375}
   m_Layer: 31
   m_Name: auto_door1
-  m_TagString: Untagged
+  m_TagString: WallMetal
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -139,6 +139,7 @@ MonoBehaviour:
   lockSprite: {fileID: 5132895676981951594}
   lockType: 0
   doorAnimator: {fileID: 7042054641042475375}
+  detectSize: 3
 --- !u!95 &7042054641042475375
 Animator:
   serializedVersion: 7
@@ -336,7 +337,7 @@ GameObject:
   - component: {fileID: 4559284024274786769}
   m_Layer: 6
   m_Name: auto_door1 (1)
-  m_TagString: Untagged
+  m_TagString: WallMetal
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -551,7 +552,7 @@ GameObject:
   - component: {fileID: 3858416088514600466}
   m_Layer: 6
   m_Name: auto_door1
-  m_TagString: Untagged
+  m_TagString: WallMetal
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

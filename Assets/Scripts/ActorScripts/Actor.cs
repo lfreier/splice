@@ -38,9 +38,10 @@ public class Actor : MonoBehaviour
 		idle = 0,
 		suspicious = 1,
 		seeking = 2,
-		hostile = 3,
-		frightened = 4,
-		getWeapon = 5
+		lost = 3,
+		hostile = 4,
+		frightened = 5,
+		getWeapon = 6
 	};
 
 	public detectMode detection;
@@ -62,6 +63,8 @@ public class Actor : MonoBehaviour
 	public GameObject effectHolder;
 
 	public MutationInterface[] activeSlots;
+
+	public GameObject[] droppedItems;
 
 	public GameManager gameManager;
 
@@ -175,6 +178,15 @@ public class Actor : MonoBehaviour
 		weaponSprite.sortingLayerName = WeaponDefs.SORT_LAYER_GROUND;
 
 		resetEquip();
+	}
+
+	public void dropItem()
+	{
+		foreach (GameObject item in droppedItems)
+		{
+			GameObject newDrop = Instantiate(item, this.transform.position, this.transform.rotation, this.transform.parent);
+			newDrop.transform.Rotate(new Vector3(0, 0, Random.Range(-45, 45)), Space.Self);
+		}
 	}
 
 	/* 
@@ -324,6 +336,8 @@ public class Actor : MonoBehaviour
 				Destroy(currentEffect.gameObject);
 			}
 		}
+
+		dropItem();
 		//TODO: spawn replacement sprite
 		Destroy(transform.gameObject);
 	}
@@ -331,7 +345,7 @@ public class Actor : MonoBehaviour
 	public void Move(Vector3 moveVector)
 	{
 		currMoveVector = new Vector3(moveVector.x, moveVector.y, moveVector.z);
-		actorBody.MovePosition(actorBody.transform.position + moveVector);
+		actorBody.velocity = moveVector;
 	}
 
 	public void pickupItem()

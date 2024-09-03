@@ -33,7 +33,7 @@ Transform:
   m_GameObject: {fileID: 7904725563872449456}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 8.108392, y: -1.8755531, z: 0}
+  m_LocalPosition: {x: 8.108392, y: -1.875553, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -189,6 +189,7 @@ MonoBehaviour:
   behaviorList: []
   mutationHolder: {fileID: 8081907558892302357}
   effectHolder: {fileID: 8153268800123022767}
+  droppedItems: []
   gameManager: {fileID: 0}
 --- !u!114 &4430561409393562764
 MonoBehaviour:
@@ -224,6 +225,7 @@ MonoBehaviour:
   actor: {fileID: 740460995545239096}
   actorBody: {fileID: 2658991806923027523}
   moveTargetError: 0.2
+  idlePath: []
   gameManager: {fileID: 0}
 --- !u!114 &8936931521236048847
 MonoBehaviour:

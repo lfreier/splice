@@ -9,7 +9,7 @@ public class EnemyAttack : MonoBehaviour
 	{
 	}
 
-	void Update()
+	void FixedUpdate()
 	{
 		Actor target = actor.getAttackTarget();
 		if (target != null && actor.inWeaponRange(target.transform.position))

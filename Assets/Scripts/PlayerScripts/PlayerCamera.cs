@@ -20,16 +20,15 @@ public class PlayerCamera : MonoBehaviour
 	// Update is called once per frame
 	void Update()
 	{
+		moveCamInput = inputs.moveCamInput();
+		cameraInputs();
 	}
 
 	private void FixedUpdate()
 	{
-		cameraInputs();
 	}
 	public void cameraInputs()
 	{
-		moveCamInput = inputs.moveCamInput();
-
 		// camera logic for 'look' input
 		if (moveCamInput > 0)
 		{

@@ -20,10 +20,4 @@ public class EnemyData : MonoBehaviour
 		int i = Random.Range(0, spriteList.Length);
 		sprite.sprite = spriteList[i];
 	}
-
-	// Update is called once per frame
-	void Update()
-	{
-
-	}
 }

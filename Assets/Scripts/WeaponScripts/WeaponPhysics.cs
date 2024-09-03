@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.InputSystem.XR;
 
@@ -28,7 +27,7 @@ public class WeaponPhysics : MonoBehaviour
 		gameManager = GameManager.Instance;
 	}
 
-	void Update()
+	void FixedUpdate()
 	{
 		/* if currently being thrown... */
 		if (_lastThrowMove.magnitude > 0)
@@ -125,7 +124,7 @@ public class WeaponPhysics : MonoBehaviour
 					_weapon.reduceDurability(_weaponScriptable.throwDurabilityDamage);
 				}
 
-				EffectDefs.effectApply(actorHit, GameManager.EFCT_SCRIP_ID_STUN1);
+				EffectDefs.effectApply(actorHit, GameManager.EFCT_SCRIP_ID_STUNHALF);
 			}
 
 			currentSpeed /= 2;

@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -39,6 +38,10 @@ public class EnemyMove : MonoBehaviour
 
 	private ActorData _actorData;
 
+	private float stateTimer;
+	private static float HOSTILE_TIMER_LENGTH = 3;
+	private static float LOST_TIMER_LENGTH = 2;
+
 	public GameManager gameManager;
 
 	void Start()
@@ -49,7 +52,7 @@ public class EnemyMove : MonoBehaviour
 		pathIndex = 0;
 	}
 
-	void Update()
+	void FixedUpdate()
 	{
 		_actorData = actor.actorData;
 		_oldDetection = _detection;
@@ -62,12 +65,14 @@ public class EnemyMove : MonoBehaviour
 		 * attackTargetActor is going to be null if the target can no longer be detected, e.g. the player moves out of sight range
 		 * Then the NPC should move to the last known location
 		 */
+		hearHostiles();
 		attackTargetActor = seeHostiles();
-		attackTargetActor = attackTargetActor != null ? attackTargetActor : hearHostiles();
 
 		/*  determine move speed based on current state */
 		if (_oldDetection != _detection || maxStateSpeed == 0)
 		{
+			handleEdges();
+
 			stateSpeedIncrease = _actorData.acceleration * _actorData.moveSpeed;
 			maxStateSpeed = _actorData.maxSpeed;
 
@@ -99,51 +104,17 @@ public class EnemyMove : MonoBehaviour
 			/* first, pickup a weapon if needed */
 			if (actor.isUnarmed())
 			{
-				Collider2D weaponColl;
-				/* Then, move to it */
-				weaponColl = findNearestWeapon(_actorData.sightRange);
-				if (weaponColl != null)
-				{
-					_detection = detectMode.getWeapon;
-					moveTarget = weaponColl.transform.position;
-					actorBody.rotation = aimAngle(moveTarget);
-				}
-				else
-				{
-					_detection = detectMode.frightened;
-				}
+				handleUnarmedStates();
 			}
+			/* Armed - perform state logic */
 			else
 			{
-				if (_detection == detectMode.hostile)
-				{
-					moveTarget = attackTarget;
-					actorBody.rotation = aimAngle(moveTarget);
-				}
-				else if (_detection == detectMode.suspicious || _detection == detectMode.seeking)
-				{
-					actorBody.rotation = aimAngle(attackTarget);
-				}
-				else
-				{
-					moveTarget = actor.transform.position;
-				}
+				handleArmedStates();
 			}
 		}
 		else
 		{
 			moveTarget = actor.transform.position;
-		}
-
-		if (_detection == detectMode.getWeapon)
-		{
-			if (Vector3.Magnitude(moveTarget - this.transform.position) <= ActorDefs.GLOBAL_PICKUP_RANGE)
-			{
-				actor.pickupItem();
-				_detection = detectMode.hostile;
-				/* face attack target */
-				actorBody.rotation = aimAngle(attackTarget);
-			}
 		}
 
 		if (_detection == detectMode.frightened)
@@ -177,9 +148,11 @@ public class EnemyMove : MonoBehaviour
 		/* Make sure to save to the actor */
 		actor.detection = _detection;
 		actor.oldDetection = _oldDetection;
+
+		moveUpdate();
 	}
 
-	void FixedUpdate()
+	void moveUpdate()
 	{
 		calcMoveInput();
 
@@ -195,7 +168,7 @@ public class EnemyMove : MonoBehaviour
 
 		currentSpeed = Mathf.Clamp(currentSpeed, 0, maxStateSpeed);
 
-		actor.Move(new Vector3(oldMoveInput.x * currentSpeed * Time.deltaTime, oldMoveInput.y * currentSpeed * Time.deltaTime));
+		actor.Move(new Vector3(oldMoveInput.x * currentSpeed, oldMoveInput.y * currentSpeed));
 	}
 
 	private float aimAngle(Vector2 aimTarget)
@@ -231,8 +204,121 @@ public class EnemyMove : MonoBehaviour
 
 		return closest;
 	}
+	private void handleEdges()
+	{
+		switch (_detection)
+		{
+			case detectMode.hostile:
+				_actorData.sightAngle = actor._actorScriptable.sightAngle * 1.5F;
+				stateTimer = HOSTILE_TIMER_LENGTH;
+				break;
+			case detectMode.seeking:
+				_actorData.sightAngle = actor._actorScriptable.sightAngle * 1.5F;
+				break;
+			case detectMode.lost:
+				_actorData.sightAngle = actor._actorScriptable.sightAngle * 1.5F;
+				moveTarget = transform.position + transform.up;
+				stateTimer = LOST_TIMER_LENGTH;
+				break;
+			case detectMode.suspicious:
+				break;
+			default:
+				_actorData.sightAngle = actor._actorScriptable.sightAngle;
+				stateTimer = 0;
+				break;
+		}
+	}
 
-	private Actor hearHostiles()
+	private void handleArmedStates()
+	{
+		switch (_detection)
+		{
+			case detectMode.hostile:
+				moveTarget = attackTarget;
+				if (stateTimer <= 0)
+				{
+					_detection = detectMode.seeking;
+					stateTimer = HOSTILE_TIMER_LENGTH;
+				}
+				else
+				{
+					stateTimer -= Time.deltaTime;
+				}
+				actorBody.rotation = aimAngle(moveTarget);
+				break;
+			case detectMode.seeking:
+				/* Keep moving in the direction of the last known location if it's reached */
+				if ((moveTarget - transform.position).magnitude < 0.5F)
+				{
+					_detection = detectMode.lost;
+				}
+				actorBody.rotation = aimAngle(attackTarget);
+				break;
+			case detectMode.lost:
+				/* Move in a random direction */
+				if (stateTimer <= 0)
+				{
+					float radAngle = Random.Range(0F, 2F * Mathf.PI);
+					float temp = Random.Range(2F, 4F);
+					moveTarget = transform.position + new Vector3(temp * Mathf.Sin(radAngle), temp * Mathf.Cos(radAngle), 0);
+					actorBody.rotation = aimAngle(moveTarget);
+					stateTimer = LOST_TIMER_LENGTH;
+				}
+				else
+				{
+					stateTimer -= Time.deltaTime;
+				}
+				break;
+			case detectMode.suspicious:
+				actorBody.rotation = aimAngle(attackTarget);
+				break;
+			default:
+				moveTarget = actor.transform.position;
+				break;
+		}
+	}
+
+	private void handleUnarmedStates()
+	{
+		switch (_detection)
+		{
+			case detectMode.idle:
+				break;
+			case detectMode.getWeapon:
+				if (Vector3.Magnitude(moveTarget - this.transform.position) <= ActorDefs.GLOBAL_PICKUP_RANGE)
+				{
+					actor.pickupItem();
+					_detection = detectMode.hostile;
+					/* face attack target */
+					actorBody.rotation = aimAngle(attackTarget);
+				}
+				break;
+			case detectMode.hostile:
+			case detectMode.seeking:
+			case detectMode.lost:
+				Collider2D weaponColl;
+				/* Then, move to it */
+				weaponColl = findNearestWeapon(_actorData.sightRange);
+				if (weaponColl != null)
+				{
+					_detection = detectMode.getWeapon;
+					moveTarget = weaponColl.transform.position;
+					actorBody.rotation = aimAngle(moveTarget);
+				}
+				else
+				{
+					_detection = detectMode.frightened;
+				}
+				break;
+			case detectMode.suspicious:
+				actorBody.rotation = aimAngle(attackTarget);
+				break;
+			default:
+				break;
+		}
+	}
+
+	private void hearHostiles()
 	{
 		RaycastHit2D[] heardSound = Physics2D.CircleCastAll(new Vector2(this.transform.position.x, this.transform.position.y), _actorData.hearingRange, Vector2.zero, _actorData.hearingRange, gameManager.soundLayer);
 		float loudest = 0;
@@ -241,9 +327,9 @@ public class EnemyMove : MonoBehaviour
 		{
 			Sound soundScript = target.transform.gameObject.GetComponent<Sound>();
 			Actor targetActor = target.transform.gameObject.GetComponent<Actor>();
+			/*
 			if (targetActor != null && actor.isTargetHostile(targetActor))
 			{
-				/* If they can go through a door, go through it */
 				RaycastHit2D rayHit = Physics2D.Raycast(eyeStart, targetActor.transform.position - transform.position, actor.actorData.sightRange, gameManager.lineOfSightLayers);
 				//Debug.DrawRay(eyeStart, targetActor.transform.position - transform.position);
 				if (rayHit.collider != null && rayHit.collider.gameObject.transform.parent != null)
@@ -268,49 +354,101 @@ public class EnemyMove : MonoBehaviour
 				attackTarget = targetActor.transform.position;
 				return targetActor;
 			}
-			else if (soundScript != null && soundScript.scriptable.volume >= loudest)
+			*/
+			if (soundScript != null && soundScript.scriptable.volume >= loudest)
 			{
 				attackTarget = target.transform.position;
 				loudest = soundScript.scriptable.volume;
 
 				switch (soundScript.scriptable.type)
 				{
+					case SoundDefs.SoundType.CLANG:
+						if (_detection != detectMode.hostile && _detection != detectMode.getWeapon && _detection != detectMode.frightened)
+						{
+							_detection = detectMode.seeking;
+						}
+						break;
+					case SoundDefs.SoundType.THUD:
 					case SoundDefs.SoundType.TAP:
 					default:
-						_detection = detectMode.suspicious;
+						if (_detection == detectMode.lost || _detection == detectMode.seeking || _detection == detectMode.hostile)
+						{
+							_detection = detectMode.seeking;
+						}
+						else
+						{
+							_detection = detectMode.suspicious;
+						}
 						break;
 				}
+			}
+		}
+	}
+
+	private Actor handleSightRays(Vector2 center, float maxLength, float increment, float sightRange, float index)
+	{
+		Vector2 viewRay = center - (Vector2)((maxLength - (index * increment)) * transform.right);
+		RaycastHit2D rayHit = Physics2D.Raycast(eyeStart, viewRay, sightRange, gameManager.lineOfSightLayers);
+		Debug.DrawRay(eyeStart, Vector2.ClampMagnitude(viewRay, 1) * sightRange);
+
+		if (rayHit.rigidbody != null)
+		{
+			Actor targetActor = rayHit.rigidbody.gameObject.GetComponent<Actor>();
+			if (targetActor != null && actor.isTargetHostile(targetActor))
+			{
+				_detection = detectMode.hostile;
+				actor.setAttackTarget(targetActor);
+				attackTarget = targetActor.transform.position;
+				return targetActor;
 			}
 		}
 
 		return null;
 	}
 
+	/* IMPORTANT NOTE
+	 * Math is wrong here, but it works enough. Angles are basically fantasy land and not indicitive of reality.
+	 */
 	private Actor seeHostiles()
 	{
 		Vector2 center = transform.up * _actorData.sightRange;
 		float degrees = _actorData.sightRange > 12F ? 2.5F : 5F;
-		float increment = Math.Abs((float)Math.Tan(degrees * Math.PI / 180) * _actorData.sightRange);
+		float increment = Mathf.Abs((float)Mathf.Tan(degrees * Mathf.PI / 180) * _actorData.sightRange);
 		float numIncrements = _actorData.sightAngle / degrees;
 		float maxLength = numIncrements * increment / 2;
 
 		for (float i= 0; i < numIncrements + 1; i ++)
 		{
-			RaycastHit2D rayHit = Physics2D.Raycast(eyeStart, center - (Vector2)((maxLength - (i * increment)) * transform.right), actor.actorData.sightRange, gameManager.lineOfSightLayers);
-			Debug.DrawRay(eyeStart, center - (Vector2)((maxLength - (i * increment)) * transform.right));
-
-			if (rayHit.rigidbody != null)
+			Actor returnActor = handleSightRays(center, maxLength, increment, _actorData.sightRange, i);
+			if (returnActor != null)
 			{
-				Actor targetActor = rayHit.rigidbody.gameObject.GetComponent<Actor>();
-				if (targetActor != null && actor.isTargetHostile(targetActor))
-				{
-					_detection = detectMode.hostile;
-					actor.setAttackTarget(targetActor);
-					attackTarget = targetActor.transform.position;
-					return targetActor;
-				}
+				return returnActor;
 			}
 		}
+
+		/* Extra peripheral vision */
+		/* This doesn't work how I thought, but it's fine */
+		float peripheralRange = _actorData.sightRange / 2;
+		float peripheralMult = 5;
+		/* 100 angle - 2 extra rays, 140 angle - 3 extra,  180 angle = 4 extra */
+		int peripheralRayCount = ((Mathf.RoundToInt(_actorData.sightAngle) - 100) / 40) + 2;
+		for (float i = -(peripheralRayCount * peripheralMult); i < 0; i += peripheralMult)
+		{
+			Actor returnActor = handleSightRays(center, maxLength, increment, peripheralRange, i);
+			if (returnActor != null)
+			{
+				return returnActor;
+			}
+		}
+		for (float i = numIncrements + 1 + peripheralMult; i < numIncrements + 1 + peripheralRayCount + (peripheralRayCount * peripheralMult); i += peripheralMult)
+		{
+			Actor returnActor = handleSightRays(center, maxLength, increment, peripheralRange, i);
+			if (returnActor != null)
+			{
+				return returnActor;
+			}
+		}
+
 		return null;
 	}
 

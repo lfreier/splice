@@ -8,7 +8,7 @@ public class CameraHandler : MonoBehaviour
 	bool followPlayer;
 	Vector2 pointerPos;
 
-	static float cameraSmoothing = 0.4F;
+	Vector3 cameraTarget;
 
 	float widthRatio = (float)Screen.width / (float)Screen.height;
 	float heightRatio = (float)Screen.height / (float)Screen.width;
@@ -41,6 +41,8 @@ public class CameraHandler : MonoBehaviour
 		{
 			camFollowPointer();
 		}
+
+		this.transform.position = cameraTarget;
 	}
 
 	public void setCamFollowPlayer(bool toSet)
@@ -57,13 +59,14 @@ public class CameraHandler : MonoBehaviour
 			Mathf.Clamp(newXPos, player.transform.position.x - horExtent, player.transform.position.x + horExtent), 
 			Mathf.Clamp(newYPos, player.transform.position.y - verExtent, player.transform.position.y + verExtent), 
 			this.transform.position.z);
-		this.transform.position = Vector3.Lerp(this.transform.position, newPos, cameraSmoothing);
+		//this.transform.position = Vector3.Lerp(this.transform.position, newPos, cameraSmoothing);
+		cameraTarget = newPos;
 	}
 
 	void camFollowPointer()
 	{
 		float newXPos = Mathf.Clamp((player.transform.position.x + pointerPos.x) / 2F, player.transform.position.x - horExtent, player.transform.position.x + horExtent);
 		float newYPos = Mathf.Clamp((player.transform.position.y + pointerPos.y) / 2F, player.transform.position.y - verExtent, player.transform.position.y + verExtent);
-		this.transform.position = Vector3.Lerp(this.transform.position, new Vector3(newXPos, newYPos, this.transform.position.z), cameraSmoothing);
+		cameraTarget = new Vector3(newXPos, newYPos, this.transform.position.z);
 	}
 }

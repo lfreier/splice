@@ -13,12 +13,26 @@ public class AutoDoor : MonoBehaviour
 
 	public Animator doorAnimator;
 
-	private float detectSize = 3F;
+	private Color keycardColor;
+
+	public float detectSize = 3F;
 
 	private GameManager gameManager;
 
 	private void Start()
 	{
+		/* Set color */
+		switch (lockType)
+		{
+			case PickupDefs.keycardType.BLUE:
+				keycardColor = GameManager.COLOR_BLUE;
+				break;
+			case PickupDefs.keycardType.RED:
+			default:
+				keycardColor = GameManager.COLOR_RED;
+				break;
+		}
+
 		open = false;
 		if (locked)
 		{
@@ -28,10 +42,11 @@ public class AutoDoor : MonoBehaviour
 		{
 			doorUnlock();
 		}
+
 		gameManager = GameManager.Instance;
 	}
 
-	private void Update()
+	private void FixedUpdate()
 	{
 
 		Collider2D[] hit = Physics2D.OverlapBoxAll(gameObject.transform.position, new Vector2(detectSize, detectSize), 0, gameManager.actorLayers);
@@ -61,12 +76,12 @@ public class AutoDoor : MonoBehaviour
 	public void doorLock()
 	{
 		locked = true;
-		lockSprite.color = new Color(0.4F,0.1F,0.1F,1F);
+		lockSprite.color = keycardColor;
 	}
 
 	public void doorUnlock()
 	{
 		locked = false;
-		lockSprite.color = new Color(0.15F, 0.4f, 0, 1F);
+		lockSprite.color = GameManager.COLOR_GREEN;
 	}
 }

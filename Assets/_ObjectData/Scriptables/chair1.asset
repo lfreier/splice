@@ -12,5 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12485bce966292c44ae90699429e6b84, type: 3}
   m_Name: chair1
   m_EditorClassIdentifier: 
-  <collisionDamageThreshold>k__BackingField: 5
-  <collisionDamage>k__BackingField: 0
+  <collisionDamageThreshold>k__BackingField: 10
+  <collisionDamage>k__BackingField: 1
+  <pushbackForce>k__BackingField: 1
