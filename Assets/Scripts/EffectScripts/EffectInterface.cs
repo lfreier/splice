@@ -4,6 +4,8 @@ public interface EffectInterface
 {
 	public float getCompareValue();
 
+	public EffectScriptable getScriptable();
+
 	public float getTimer();
 
 	public void init(EffectScriptable scriptable);

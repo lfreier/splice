@@ -48,6 +48,11 @@ public class EConstant: MonoBehaviour, EffectInterface
 		return effectScriptable.effectLength;
 	}
 
+	public EffectScriptable getScriptable()
+	{
+		return effectScriptable;
+	}
+
 	public float getTimer()
 	{
 		return timer;

@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 3398982447540545742}
   - component: {fileID: 1630916773381673146}
-  - component: {fileID: 2175357256695995880}
   - component: {fileID: 2539849135012674436}
   - component: {fileID: 5168576159283970348}
   m_Layer: 10
@@ -53,25 +52,6 @@ MonoBehaviour:
   weaponBody: {fileID: 2539849135012674436}
   throwCollider: {fileID: 5168576159283970348}
   pickupCollider: {fileID: 2666023793495350712}
---- !u!114 &2175357256695995880
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1192526033329145194}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b15cd33169dc58f4a903244618e280d7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  horizontalRayCount: 4
-  verticalRayCount: 4
-  directionalRayCount: 4
-  collider2DObj: {fileID: 5168576159283970348}
-  collisionMask:
-    serializedVersion: 2
-    m_Bits: 64
 --- !u!50 &2539849135012674436
 Rigidbody2D:
   serializedVersion: 4
@@ -220,8 +200,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 850694283
-  m_SortingLayer: 1
+  m_SortingLayerID: 919069219
+  m_SortingLayer: 2
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: c63b668ceeac13d44b10e09e58d8ab87, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -247,7 +227,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   anim: {fileID: 6529950160097543187}
-  controller: {fileID: 2175357256695995880}
   hitbox: {fileID: 9146951687459429566}
   throwBox: {fileID: 5168576159283970348}
   sprite: {fileID: 3442740799414355683}
@@ -459,7 +438,7 @@ GameObject:
   - component: {fileID: 1376748707928612415}
   m_Layer: 15
   m_Name: TrailSprite
-  m_TagString: Untagged
+  m_TagString: ObjectWeapon
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

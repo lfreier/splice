@@ -8,7 +8,6 @@ using static Actor;
 /* Includes logic for basic enemy movement.
  * Also has to interact with 'AI' for detection and where to move.
  */
-[RequireComponent(typeof(Controller2D))]
 public class EnemyMove : MonoBehaviour
 {
 	public Actor actor;
@@ -17,11 +16,14 @@ public class EnemyMove : MonoBehaviour
 	public float moveTargetError;
 
 	public Vector2[] idlePath;
+	public float[] idlePathPauseTime;
+	private float idlePauseTimer;
 	private int pathIndex;
 
+	private Vector2 idleLookTarget;
 	private Vector2 eyeStart;
 
-	private detectMode _detection;
+	public detectMode _detection;
 	private detectMode _oldDetection;
 
 	float currentSpeed;
@@ -39,8 +41,9 @@ public class EnemyMove : MonoBehaviour
 	private ActorData _actorData;
 
 	private float stateTimer;
-	private static float HOSTILE_TIMER_LENGTH = 3;
+	private static float HOSTILE_TIMER_LENGTH = 4;
 	private static float LOST_TIMER_LENGTH = 2;
+	private static float SUS_TIMER_LENGTH = 5;
 
 	public GameManager gameManager;
 
@@ -50,14 +53,16 @@ public class EnemyMove : MonoBehaviour
 		_detection = detectMode.idle;
 		attackTargetActor = null;
 		pathIndex = 0;
+		idlePauseTimer = 0;
+		idleLookTarget = transform.position + transform.up * 0.5F;
 	}
 
 	void FixedUpdate()
 	{
 		_actorData = actor.actorData;
-		_oldDetection = _detection;
 		attackTargetActor = null;
 		eyeStart = transform.position + transform.up * 0.5F;
+		_oldDetection = _detection;
 
 		//functions for noticing hostiles
 		/* IMPORTANT NOTE: 
@@ -68,17 +73,6 @@ public class EnemyMove : MonoBehaviour
 		hearHostiles();
 		attackTargetActor = seeHostiles();
 
-		/*  determine move speed based on current state */
-		if (_oldDetection != _detection || maxStateSpeed == 0)
-		{
-			handleEdges();
-
-			stateSpeedIncrease = _actorData.acceleration * _actorData.moveSpeed;
-			maxStateSpeed = _actorData.maxSpeed;
-
-			setStateMoveSpeed();
-		}
-
 		/*  determine move target based on current state */
 		if (_detection == detectMode.idle && idlePath.Length > 0)
 		{
@@ -88,16 +82,31 @@ public class EnemyMove : MonoBehaviour
 				if (pathIndex >= idlePath.Length - 1)
 				{
 					pathIndex = 0;
+					if (idlePathPauseTime.Length > 0)
+					{
+						idlePauseTimer = idlePathPauseTime[0];
+					}
 				}
 				else
 				{
 					pathIndex++;
+					if (idlePathPauseTime.Length >= pathIndex)
+					{
+						idlePauseTimer = idlePathPauseTime[pathIndex];
+					}
 				}
-			}
 
-			/* Follow path if it exists */
-			moveTarget = idlePath[pathIndex];
-			actorBody.rotation = aimAngle(moveTarget);
+			}
+			
+			if (idlePauseTimer <= 0)
+			{
+				moveTarget = idlePath[pathIndex];
+				actorBody.rotation = actor.aimAngle(moveTarget);
+			}
+			else
+			{
+				idlePauseTimer -= Time.deltaTime;
+			}
 		}
 		else if (_detection != detectMode.idle)
 		{
@@ -122,7 +131,7 @@ public class EnemyMove : MonoBehaviour
 			if (attackTargetActor != null)
 			{
 				/* face target of fright */
-				actorBody.rotation = aimAngle(attackTargetActor.transform.position);
+				actorBody.rotation = actor.aimAngle(attackTargetActor.transform.position);
 
 				/* move away from target */
 				if (_actorData.frightenedDistance > (attackTargetActor.transform.position - actor.transform.position).magnitude)
@@ -145,10 +154,9 @@ public class EnemyMove : MonoBehaviour
 		/* Move to last known location if hostile is not detected */
 		//TODO
 
-		/* Make sure to save to the actor */
-		actor.detection = _detection;
-		actor.oldDetection = _oldDetection;
+		handleEdges();
 
+		/*  determine move speed based on current state */
 		moveUpdate();
 	}
 
@@ -171,11 +179,6 @@ public class EnemyMove : MonoBehaviour
 		actor.Move(new Vector3(oldMoveInput.x * currentSpeed, oldMoveInput.y * currentSpeed));
 	}
 
-	private float aimAngle(Vector2 aimTarget)
-	{
-		return (Mathf.Atan2((aimTarget - (Vector2)actor.transform.position).y, (aimTarget - (Vector2)actor.transform.position).x) * Mathf.Rad2Deg) - 90F;
-	}
-
 	private void calcMoveInput()
 	{
 		if (moveTarget == null)
@@ -194,6 +197,15 @@ public class EnemyMove : MonoBehaviour
 		float closestDistance = withinRange + 1;
 		foreach (RaycastHit2D target in noticedWeapons)
 		{
+			/* Check for wall collisions */
+			Vector2 targetDir = (target.collider.transform.position - transform.position).normalized;
+			RaycastHit2D rayHit = Physics2D.Raycast(transform.position, targetDir, withinRange, gameManager.findWeaponLayers);
+
+			if (rayHit.collider != target.collider)
+			{
+				continue;
+			}
+
 			float currDistance = Vector3.Distance(actor.transform.position, target.transform.position);
 			if (WeaponDefs.canWeaponBePickedUp(target.transform.gameObject) && closestDistance > currDistance)
 			{
@@ -206,8 +218,27 @@ public class EnemyMove : MonoBehaviour
 	}
 	private void handleEdges()
 	{
+		if (!(_oldDetection != _detection || maxStateSpeed == 0))
+		{
+			return;
+		}
+
+		switch (_oldDetection)
+		{
+			case detectMode.getWeapon:
+				if (actor.isUnarmed() && findNearestWeapon(_actorData.sightRange) != null)
+				{
+					_detection = detectMode.getWeapon;
+				}
+				return;
+			default:
+				break;
+		}
 		switch (_detection)
 		{
+			case detectMode.idle:
+				actorBody.rotation = actor.aimAngle(idleLookTarget);
+				break;
 			case detectMode.hostile:
 				_actorData.sightAngle = actor._actorScriptable.sightAngle * 1.5F;
 				stateTimer = HOSTILE_TIMER_LENGTH;
@@ -221,12 +252,19 @@ public class EnemyMove : MonoBehaviour
 				stateTimer = LOST_TIMER_LENGTH;
 				break;
 			case detectMode.suspicious:
+				_actorData.sightAngle = actor._actorScriptable.sightAngle * 1.5F;
+				stateTimer = SUS_TIMER_LENGTH;
 				break;
 			default:
 				_actorData.sightAngle = actor._actorScriptable.sightAngle;
 				stateTimer = 0;
 				break;
 		}
+
+		stateSpeedIncrease = _actorData.acceleration * _actorData.moveSpeed;
+		maxStateSpeed = _actorData.maxSpeed;
+
+		setStateMoveSpeed();
 	}
 
 	private void handleArmedStates()
@@ -244,7 +282,7 @@ public class EnemyMove : MonoBehaviour
 				{
 					stateTimer -= Time.deltaTime;
 				}
-				actorBody.rotation = aimAngle(moveTarget);
+				actorBody.rotation = actor.aimAngle(moveTarget);
 				break;
 			case detectMode.seeking:
 				/* Keep moving in the direction of the last known location if it's reached */
@@ -252,7 +290,7 @@ public class EnemyMove : MonoBehaviour
 				{
 					_detection = detectMode.lost;
 				}
-				actorBody.rotation = aimAngle(attackTarget);
+				actorBody.rotation = actor.aimAngle(attackTarget);
 				break;
 			case detectMode.lost:
 				/* Move in a random direction */
@@ -261,7 +299,7 @@ public class EnemyMove : MonoBehaviour
 					float radAngle = Random.Range(0F, 2F * Mathf.PI);
 					float temp = Random.Range(2F, 4F);
 					moveTarget = transform.position + new Vector3(temp * Mathf.Sin(radAngle), temp * Mathf.Cos(radAngle), 0);
-					actorBody.rotation = aimAngle(moveTarget);
+					actorBody.rotation = actor.aimAngle(moveTarget);
 					stateTimer = LOST_TIMER_LENGTH;
 				}
 				else
@@ -270,7 +308,7 @@ public class EnemyMove : MonoBehaviour
 				}
 				break;
 			case detectMode.suspicious:
-				actorBody.rotation = aimAngle(attackTarget);
+				handleSuspiciousState();
 				break;
 			default:
 				moveTarget = actor.transform.position;
@@ -284,15 +322,8 @@ public class EnemyMove : MonoBehaviour
 		{
 			case detectMode.idle:
 				break;
+			case detectMode.frightened:
 			case detectMode.getWeapon:
-				if (Vector3.Magnitude(moveTarget - this.transform.position) <= ActorDefs.GLOBAL_PICKUP_RANGE)
-				{
-					actor.pickupItem();
-					_detection = detectMode.hostile;
-					/* face attack target */
-					actorBody.rotation = aimAngle(attackTarget);
-				}
-				break;
 			case detectMode.hostile:
 			case detectMode.seeking:
 			case detectMode.lost:
@@ -303,26 +334,59 @@ public class EnemyMove : MonoBehaviour
 				{
 					_detection = detectMode.getWeapon;
 					moveTarget = weaponColl.transform.position;
-					actorBody.rotation = aimAngle(moveTarget);
+					actorBody.rotation = actor.aimAngle(moveTarget);
 				}
 				else
 				{
 					_detection = detectMode.frightened;
 				}
+
+				if (Vector3.Magnitude(moveTarget - this.transform.position) <= ActorDefs.NPC_TRY_PICKUP_RANGE)
+				{
+					if (actor.pickupItem())
+					{
+						_detection = detectMode.hostile;
+						/* face attack target */
+						actorBody.rotation = actor.aimAngle(attackTarget);
+					}
+				}
 				break;
 			case detectMode.suspicious:
-				actorBody.rotation = aimAngle(attackTarget);
+				handleSuspiciousState();
 				break;
 			default:
 				break;
 		}
 	}
 
+	private void handleSuspiciousState()
+	{
+		moveTarget = actor.transform.position;
+		actorBody.rotation = actor.aimAngle(attackTarget);
+		if (stateTimer <= 0)
+		{
+			_detection = detectMode.idle;
+		}
+		else
+		{
+			stateTimer -= Time.deltaTime;
+		}
+	}
+
 	private void hearHostiles()
 	{
 		RaycastHit2D[] heardSound = Physics2D.CircleCastAll(new Vector2(this.transform.position.x, this.transform.position.y), _actorData.hearingRange, Vector2.zero, _actorData.hearingRange, gameManager.soundLayer);
-		float loudest = 0;
 
+		/* States that should override hearing */
+		if (_detection == detectMode.getWeapon || _detection == detectMode.hostile || heardSound.Length == 0)
+		{
+			return;
+		}
+
+		/* by default, handle the edge case since a new sound was heard */
+		_oldDetection = detectMode.idle;
+
+		float loudest = 0;
 		foreach (RaycastHit2D target in heardSound)
 		{
 			Sound soundScript = target.transform.gameObject.GetComponent<Sound>();
@@ -378,6 +442,7 @@ public class EnemyMove : MonoBehaviour
 						else
 						{
 							_detection = detectMode.suspicious;
+							handleEdges();
 						}
 						break;
 				}

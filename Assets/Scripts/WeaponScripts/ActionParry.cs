@@ -39,9 +39,11 @@ public class ActionParry : MonoBehaviour, ActionInterface
 			{
 				attackerDisarm(target);
 				EffectDefs.effectApply(target, GameManager.EFCT_SCRIP_ID_STUN1);
-				WeaponScriptable weapData = weapon.getScriptable();
+				WeaponScriptable weapData = actorWielder.equippedWeaponInt.getScriptable();
 				Vector3 force = Vector3.ClampMagnitude(target.actorBody.transform.position - actorWielder.transform.position, 1);
-				target.actorBody.AddForce(force * 1500 * weapData.knockbackDamage * target._actorScriptable.knockbackResist);
+				float forceMult = Mathf.Min(WeaponDefs.KNOCKBACK_MULT_PARRY * weapData.knockbackDamage * (1 - target._actorScriptable.knockbackResist), ActorDefs.MAX_PARRY_FORCE);
+				Debug.Log("Parry force: " + forceMult);
+				target.actorBody.AddForce(force * forceMult);
 			}
 		}
 	}

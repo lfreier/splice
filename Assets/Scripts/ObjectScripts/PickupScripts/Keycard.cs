@@ -12,6 +12,11 @@ public class Keycard : MonoBehaviour, PickupInterface
 		init();
 	}
 
+	public int getCount()
+	{
+		return 1;
+	}
+
 	public void init()
 	{
 		switch (_keycardType)

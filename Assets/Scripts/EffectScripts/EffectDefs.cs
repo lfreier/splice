@@ -22,21 +22,28 @@ public class EffectDefs
 		GameObject prefab = GameObject.Instantiate(effectData.effectPrefab, Vector3.zero, Quaternion.identity);
 		EffectInterface newEffect = prefab.GetComponent<EffectInterface>();
 
-		var repeatEffect = target.effectHolder.GetComponentInChildren(newEffect.GetType());
-		if (repeatEffect != null)
+		foreach (var repeatEffect in target.effectHolder.GetComponentsInChildren(newEffect.GetType()))
 		{
-			EffectInterface currEffect = repeatEffect as EffectInterface;
-			if (currEffect.getCompareValue() >= newEffect.getCompareValue())
+			if (repeatEffect != null)
 			{
-				GameObject.Destroy(prefab);
-				return;
-			}
-			else
-			{
-				GameObject.Destroy(repeatEffect.gameObject);
+				EffectInterface currEffect = repeatEffect as EffectInterface;
+				if ((effectData.constantEffectType != constantType.NONE && currEffect.getScriptable().constantEffectType != constantType.NONE)
+					&& effectData.constantEffectType != currEffect.getScriptable().constantEffectType)
+				{
+					continue;
+				}
+				if (currEffect.getCompareValue() >= newEffect.getCompareValue())
+				{
+					GameObject.Destroy(prefab);
+					return;
+				}
+				else
+				{
+					GameObject.Destroy(repeatEffect.gameObject);
+				}
 			}
 		}
-
+		
 		prefab.transform.SetParent(target.effectHolder.transform);
 		prefab.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
 		

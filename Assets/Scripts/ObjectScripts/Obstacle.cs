@@ -23,24 +23,14 @@ public class Obstacle : MonoBehaviour
 		if (actorHit != null)
 		{	
 			Vector2 velocityDiff = obstacleBody.velocity - (Vector2)actorHit.currMoveVector;
-			Debug.Log("Diff magnitude: " + velocityDiff.magnitude); 
-			Debug.Log("Obstacle magnitude: " + obstacleBody.velocity.magnitude);
 
+			Debug.Log("Obstacle/Actor diff: " + velocityDiff.magnitude);
 			if (velocityDiff.magnitude >= _obstacleScriptable.collisionDamageThreshold && obstacleBody.velocity.magnitude > _obstacleScriptable.collisionDamageThreshold / 2)
 			{
-				actorHit.actorBody.AddForce(velocityDiff * (_obstacleScriptable.pushbackForce * 1000));
+				actorHit.actorBody.AddForce(velocityDiff * _obstacleScriptable.actorPushForce);
+				EffectDefs.effectApply(actorHit, GameManager.EFCT_SCRIP_ID_STUNHALF);
 				actorHit.takeDamage(_obstacleScriptable.collisionDamage);
 			}
-		}
-
-		WeaponInterface weaponHit = collision.gameObject.GetComponent<WeaponInterface>();
-		if (weaponHit != null)
-		{
-			WeaponScriptable weapData = weaponHit.getScriptable();
-			Vector3 weapPos = collision.transform.parent.transform.position;
-			Vector3 force = Vector3.ClampMagnitude(obstacleBody.transform.position - weapPos, 1);
-			force *= weapData.damage * 1000;
-			obstacleBody.AddForce(force);
 		}
 	}
 }

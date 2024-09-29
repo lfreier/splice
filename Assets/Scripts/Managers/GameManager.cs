@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -13,20 +14,18 @@ public class GameManager : MonoBehaviour
 
 	public GameObject weapPBladeArm;
 	public GameObject weapPFist;
-	public GameObject weapPRuler;
 
 	public LayerMask actorLayers;
-
 	public LayerMask collisionLayer;
-
 	public LayerMask lineOfSightLayers;
-
+	public LayerMask findWeaponLayers;
 	public LayerMask soundLayer;
 
 	public static string DAMAGE_LAYER = "Damage";
 	public static string OBJECT_LAYER = "Object";
 	public static string OBJECT_MID_LAYER = "ObjectMid";
 	public static string COLLISION_ACTOR_LAYER = "CollisionActor";
+	public static string UI_LAYER = "UI";
 
 	public static string CHAR_SCRIP_ID_SCIENTIST = "scientist";
 
@@ -119,6 +118,8 @@ public class GameManager : MonoBehaviour
 		actorBehaviors.Add(Type.GetType("PlayerSecondaries"));
 		actorBehaviors.Add(Type.GetType("EnemyAttack"));
 		actorBehaviors.Add(Type.GetType("EnemyMove"));
+
+		SceneManager.LoadScene(SceneDefs.PLAYER_HUD_SCENE, LoadSceneMode.Additive);
 	}
 
 	public ActorScriptable getActorScriptable(string id)

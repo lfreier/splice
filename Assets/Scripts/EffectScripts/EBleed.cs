@@ -39,6 +39,11 @@ public class EBleed : MonoBehaviour, EffectInterface
 		return effectScriptable.effectLength * effectScriptable.effectStrength;
 	}
 
+	public EffectScriptable getScriptable()
+	{
+		return effectScriptable;
+	}
+
 	public float getTimer()
 	{
 		return timer;

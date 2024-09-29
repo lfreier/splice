@@ -12,6 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12485bce966292c44ae90699429e6b84, type: 3}
   m_Name: chair1
   m_EditorClassIdentifier: 
-  <collisionDamageThreshold>k__BackingField: 10
+  <actorPushForce>k__BackingField: 3
+  <collisionDamageThreshold>k__BackingField: 20
   <collisionDamage>k__BackingField: 1
-  <pushbackForce>k__BackingField: 1
+  <maxObstacleForce>k__BackingField: 12000
+  <weaponDurabilityDamage>k__BackingField: 0.05
+  <weaponHitMult>k__BackingField: 1.6

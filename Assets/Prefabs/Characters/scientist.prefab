@@ -13,7 +13,6 @@ GameObject:
   - component: {fileID: 2658991806923027523}
   - component: {fileID: 1722529025439896153}
   - component: {fileID: 740460995545239096}
-  - component: {fileID: 4430561409393562764}
   - component: {fileID: 8181113457589132258}
   - component: {fileID: 8936931521236048847}
   - component: {fileID: 2023260988043286838}
@@ -178,8 +177,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 15fd7453a9e30e440b488bc93f515537, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  detection: 0
-  oldDetection: 0
+  hud: {fileID: 0}
   _actorScriptable: {fileID: 11400000, guid: cb5b7816b2070b143891c7c7dfbaee5b, type: 2}
   actorBody: {fileID: 2658991806923027523}
   currMoveVector: {x: 0, y: 0, z: 0}
@@ -189,26 +187,11 @@ MonoBehaviour:
   behaviorList: []
   mutationHolder: {fileID: 8081907558892302357}
   effectHolder: {fileID: 8153268800123022767}
+  droppedItems:
+  - {fileID: 7098409054979973783, guid: 0bd2a725f32769444a75c53a2af17124, type: 3}
   gameManager: {fileID: 0}
---- !u!114 &4430561409393562764
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7904725563872449456}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b15cd33169dc58f4a903244618e280d7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  horizontalRayCount: 4
-  verticalRayCount: 4
-  directionalRayCount: 4
-  collider2DObj: {fileID: 1722529025439896153}
-  collisionMask:
-    serializedVersion: 2
-    m_Bits: 64
+  corpseSprite: {fileID: 0}
+  corpsePrefab: {fileID: 2911627580042638205, guid: 9bdd8350a0e30434eaadda3861d39b89, type: 3}
 --- !u!114 &8181113457589132258
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -224,6 +207,9 @@ MonoBehaviour:
   actor: {fileID: 740460995545239096}
   actorBody: {fileID: 2658991806923027523}
   moveTargetError: 0.2
+  idlePath: []
+  idlePathPauseTime: []
+  _detection: 0
   gameManager: {fileID: 0}
 --- !u!114 &8936931521236048847
 MonoBehaviour:
@@ -251,11 +237,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   actor: {fileID: 740460995545239096}
+  cellDropMin: 8
+  cellDropMax: 12
   spriteList:
   - {fileID: 21300000, guid: 6471ebb20ee70ca46a467b7594f06484, type: 3}
   - {fileID: 21300000, guid: 89bea3433cad90f448bce6e2ae6cde37, type: 3}
   - {fileID: 21300000, guid: 895a8c5a0b344484cb946a4d89f76406, type: 3}
   - {fileID: 21300000, guid: d0d62e677cf25c2409700acbd505b539, type: 3}
+  corpseSpriteList:
+  - {fileID: 21300000, guid: 59c0f10706b1377459650f8d2109ca69, type: 3}
+  - {fileID: 21300000, guid: d670cf3a3aed5d743b8b631e54e2bc25, type: 3}
+  - {fileID: 21300000, guid: 3673212831752834bb2b3c03cf20c4a2, type: 3}
+  - {fileID: 21300000, guid: 5d1d18422847e6748a317ddbcd1d40e4, type: 3}
 --- !u!1 &8081907558892302357
 GameObject:
   m_ObjectHideFlags: 0

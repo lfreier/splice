@@ -17,6 +17,7 @@ public class PlayerMove : MonoBehaviour
 	private Vector2 lastMoveInput;
 
 	private float walkInput;
+	private float lastWalkInput;
 
 	private float footstepTimer;
 
@@ -47,14 +48,15 @@ public class PlayerMove : MonoBehaviour
 		// move
 		if (moveInput.magnitude > 0)
 		{
-			if (walkInput > 0)
+			if (walkInput > 0 && lastWalkInput <= 0)
 			{
-				player.setSpeed(ActorDefs.PLAYER_WALK_SPEED * player._actorScriptable.maxSpeed);
+				player.setSpeed(ActorDefs.PLAYER_WALK_SPEED * playerData.maxSpeed);
 			}
-			else
+			else if (lastWalkInput > 0 && walkInput <= 0)
 			{
-				player.setSpeed(player._actorScriptable.maxSpeed);
+				player.setSpeed(playerData.maxSpeed / ActorDefs.PLAYER_WALK_SPEED);
 			}
+			lastWalkInput = walkInput;
 			lastMoveInput = moveInput;
 			currentSpeed += playerData.acceleration * playerData.moveSpeed;
 

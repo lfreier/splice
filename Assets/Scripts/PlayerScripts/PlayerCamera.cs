@@ -5,7 +5,8 @@ using UnityEngine.InputSystem;
 public class PlayerCamera : MonoBehaviour
 {
 	public Actor player;
-	public CameraHandler camHandler;
+	private CameraHandler camHandler;
+	public PlayerInput unityInput;
 
 	private float moveCamInput;
 
@@ -14,7 +15,16 @@ public class PlayerCamera : MonoBehaviour
 	// Use this for initialization
 	void Start()
 	{
-
+		foreach (Camera cam in FindObjectsByType<Camera>(FindObjectsSortMode.None))
+		{
+			CameraHandler script = cam.gameObject.GetComponent<CameraHandler>();
+			if (script != null)
+			{
+				camHandler = script;
+				unityInput.camera = cam;
+				break;
+			}
+		}
 	}
 
 	// Update is called once per frame

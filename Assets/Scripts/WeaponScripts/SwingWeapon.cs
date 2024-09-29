@@ -1,7 +1,6 @@
 ﻿using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.UIElements;
 using static UnityEngine.GraphicsBuffer;
 
 public class SwingWeapon : MonoBehaviour, WeaponInterface
@@ -13,7 +12,6 @@ public class SwingWeapon : MonoBehaviour, WeaponInterface
 	LayerMask lastTargetLayer;
 	string id;
 
-	public Controller2D controller;
 	public Collider2D hitbox;
 	public BoxCollider2D throwBox;
 
@@ -118,11 +116,6 @@ public class SwingWeapon : MonoBehaviour, WeaponInterface
 		return (!anim.GetCurrentAnimatorStateInfo(0).IsTag("Idle") || _weaponPhysics.isBeingThrown());
 	}
 
-	public void physicsMove(Vector3 velocity)
-	{
-		controller.transform.Translate(velocity);
-	}
-
 	public void reduceDurability(float reduction)
 	{
 		if (durability < 0)
@@ -198,6 +191,7 @@ public class SwingWeapon : MonoBehaviour, WeaponInterface
 	private void OnTriggerEnter2D(Collider2D collision)
 	{
 		float knockbackMult = 1;
+		float maxForce = 10000;
 		//TODO: put this somewhere else that's not specific for the weapon?
 		if (this.actorWielder != null && collision.name == actorWielder.name)
 		{
@@ -224,8 +218,15 @@ public class SwingWeapon : MonoBehaviour, WeaponInterface
 			{
 				reduceDurability(1);
 			}
-			knockbackMult = actorHit._actorScriptable.knockbackResist;
+			knockbackMult = 1 - actorHit._actorScriptable.knockbackResist;
 			SoundDefs.createSound(actorHit.transform.position, actorHitSound);
+
+			maxForce = ActorDefs.MAX_HIT_FORCE;
+			if (actorWielder.isStunned())
+			{
+				maxForce = ActorDefs.MAX_PARRY_FORCE;
+			}
+
 			Debug.Log("Hit: " + collision.name + " for " + _weaponScriptable.damage + " damage");
 		}
 		else
@@ -239,15 +240,24 @@ public class SwingWeapon : MonoBehaviour, WeaponInterface
 				SoundDefs.createSound(_weaponPhysics.transform.position, actorHitSound);
 			}
 			Debug.Log("Hit: " + collision.name + " for no damage");
+
+			Obstacle obstacle = collision.GetComponent<Obstacle>();
+			if (obstacle != null)
+			{
+				reduceDurability(obstacle._obstacleScriptable.weaponDurabilityDamage);
+				knockbackMult = obstacle._obstacleScriptable.weaponHitMult;
+				maxForce = obstacle._obstacleScriptable.maxObstacleForce;
+			}
 		}
 
 		/* knockback */
 		Rigidbody2D hitBody = collision.attachedRigidbody;
 		if (hitBody != null)
 		{
-			Vector3 force = Vector3.ClampMagnitude(hitBody.transform.position - _weaponPhysics.transform.position, 1);
-			force *= _weaponScriptable.knockbackDamage * 1000 * knockbackMult;
-			hitBody.AddForce(force);
+			Vector3 force = Vector3.ClampMagnitude(hitBody.transform.position - actorWielder.transform.position, 1);
+			float forceMult = Mathf.Min(WeaponDefs.KNOCKBACK_MULT_SWING * _weaponScriptable.knockbackDamage * knockbackMult, maxForce);
+			Debug.Log("Hit force on " + hitBody.name + ": " + forceMult);
+			hitBody.AddForce(force * forceMult);
 		}
 	}
 }

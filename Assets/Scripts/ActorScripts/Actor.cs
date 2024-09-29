@@ -5,6 +5,7 @@ using System.ComponentModel;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 using UnityEngine.U2D;
 using static EffectDefs;
 
@@ -19,6 +20,7 @@ public class Actor : MonoBehaviour
 	public struct ActorData
 	{
 		public float health;
+		public float maxHealth;
 
 		public float maxSpeed;
 		public float moveSpeed;
@@ -35,6 +37,7 @@ public class Actor : MonoBehaviour
 
 	public enum detectMode
 	{
+		nul = -1,
 		idle = 0,
 		suspicious = 1,
 		seeking = 2,
@@ -44,8 +47,7 @@ public class Actor : MonoBehaviour
 		getWeapon = 6
 	};
 
-	public detectMode detection;
-	public detectMode oldDetection;
+	public PlayerHUD hud;
 
 	public ActorScriptable _actorScriptable;
 	public ActorData actorData;
@@ -69,7 +71,10 @@ public class Actor : MonoBehaviour
 	public GameManager gameManager;
 
 	private GameObject equippedWeapon;
-	private WeaponInterface equippedWeaponInt;
+	public WeaponInterface equippedWeaponInt;
+
+	public Sprite corpseSprite;
+	public GameObject corpsePrefab;
 
 	private SpriteRenderer sprite;
 	private SpriteRenderer weaponSprite;
@@ -106,6 +111,7 @@ public class Actor : MonoBehaviour
 	private void initActorData()
 	{
 		actorData.health = _actorScriptable.health;
+		actorData.maxHealth = _actorScriptable.health;
 
 		actorData.maxSpeed = _actorScriptable.maxSpeed;
 		actorData.moveSpeed = _actorScriptable.moveSpeed;
@@ -135,6 +141,11 @@ public class Actor : MonoBehaviour
 				this.behaviorList.Add(foundScript);
 			}
 		}
+	}
+
+	public float aimAngle(Vector2 aimTarget)
+	{
+		return (Mathf.Atan2((aimTarget - (Vector2)this.transform.position).y, (aimTarget - (Vector2)this.transform.position).x) * Mathf.Rad2Deg) - 90F;
 	}
 
 	public void attack()
@@ -186,6 +197,16 @@ public class Actor : MonoBehaviour
 		{
 			GameObject newDrop = Instantiate(item, this.transform.position, this.transform.rotation, this.transform.parent);
 			newDrop.transform.Rotate(new Vector3(0, 0, Random.Range(-45, 45)), Space.Self);
+
+			Cell newCell = newDrop.GetComponent<Cell>();
+			if (newCell != null)
+			{
+				EnemyData npcData = this.gameObject.GetComponent<EnemyData>();
+				if (npcData != null)
+				{
+					newCell.generateCount(npcData.cellDropMin, npcData.cellDropMax);
+				}
+			}
 		}
 	}
 
@@ -206,24 +227,47 @@ public class Actor : MonoBehaviour
 	 */
 	public bool equip(GameObject weaponToEquip)
 	{
-		GameObject tempWeaponToEquip;
-		WeaponInterface tempWeapInt = weaponToEquip.GetComponent<WeaponInterface>();
+		WeaponInterface tempWeapInt = null;
 
 		/* This should make it so it doesn't matter if you equip the parent or child object */
-		if (tempWeapInt == null)
+		Transform tempWeap = weaponToEquip.transform;
+		if (null == (tempWeapInt = weaponToEquip.GetComponent<WeaponInterface>()))
 		{
-			if (null != (tempWeapInt = weaponToEquip.transform.GetChild(0).GetComponent<WeaponInterface>()))
+			/* Only one place it can be if in children */
+			if (tempWeap.childCount > 0)
 			{
-				tempWeaponToEquip = weaponToEquip;
+				for (int i = 0; i < tempWeap.childCount; i ++)
+				{
+					if (null != (tempWeapInt = tempWeap.GetChild(i).GetComponent<WeaponInterface>()))
+					{
+						break;
+					}
+				}
 			}
+			/* Has to be in the parent */
 			else
 			{
-				return false;
+				while (tempWeap.parent != null)
+				{
+					tempWeap = tempWeap.parent;
+					if (null != (tempWeapInt = tempWeap.GetComponent<WeaponInterface>()))
+					{
+						tempWeap = tempWeap.parent;
+						break;
+					}
+				}
 			}
 		}
 		else
 		{
-			tempWeaponToEquip = weaponToEquip.transform.parent.gameObject;
+			/* tempWeap is the data object, so it needs to be the parent now */
+			tempWeap = tempWeap.parent;
+		}
+
+
+		if (tempWeapInt == null)
+		{
+			return false;
 		}
 
 		if (equippedWeaponInt != null)
@@ -241,8 +285,7 @@ public class Actor : MonoBehaviour
 				return false;
 			}
 		}
-
-		equippedWeapon = tempWeaponToEquip;
+		equippedWeapon = tempWeap.gameObject;
 		equippedWeaponInt = tempWeapInt;
 
 		equippedWeapon.transform.SetParent(this.transform, true);
@@ -250,7 +293,7 @@ public class Actor : MonoBehaviour
 		weaponSprite.sortingLayerName = WeaponDefs.SORT_LAYER_CHARS;
 		equippedWeaponInt.setStartingPosition();
 
-		setWeaponTag(equippedWeapon, WeaponDefs.EQUIPPED_WEAPON_TAG);
+		WeaponDefs.setWeaponTag(equippedWeapon, WeaponDefs.EQUIPPED_WEAPON_TAG);
 
 		equippedWeaponInt.setActorToHold(this);
 
@@ -266,6 +309,11 @@ public class Actor : MonoBehaviour
 	{
 		return attackTarget;
 	}
+
+	public Camera getCamera()
+	{
+		return Camera.main;
+	}
 	public GameObject instantiateActive(GameObject prefab)
 	{
 		GameObject activePrefab = Instantiate(prefab, new Vector3(0, 0, 0), Quaternion.identity);
@@ -273,7 +321,7 @@ public class Actor : MonoBehaviour
 
 		activePrefab.transform.SetParent(this.gameObject.transform, false);
 		mutScript.setStartingPosition();
-		setWeaponTag(activePrefab, WeaponDefs.EQUIPPED_ACTIVE_TAG);
+		WeaponDefs.setWeaponTag(activePrefab, WeaponDefs.EQUIPPED_ACTIVE_TAG);
 
 		return activePrefab;
 	}
@@ -284,7 +332,7 @@ public class Actor : MonoBehaviour
 
 		weaponPrefab.transform.SetParent(this.gameObject.transform, true);
 		weaponPrefab.transform.position = new Vector3(0.25F, 0.25F, 0);
-		setWeaponTag(weaponPrefab, WeaponDefs.EQUIPPED_WEAPON_TAG);
+		WeaponDefs.setWeaponTag(weaponPrefab, WeaponDefs.EQUIPPED_WEAPON_TAG);
 
 		return weaponPrefab;
 	}
@@ -296,6 +344,10 @@ public class Actor : MonoBehaviour
 			return false;
 		}
 		return equippedWeaponInt.inRange(target);
+	}
+	public bool isStunned()
+	{
+		return behaviorList[0].enabled;
 	}
 
 	public bool isTargetHostile(Actor targetActor)
@@ -323,6 +375,9 @@ public class Actor : MonoBehaviour
 		return this.equippedWeaponInt.getType() == WeaponType.UNARMED;
 	}
 
+	/* Deals with actor death. Always called when health is reduced to zero.
+	 * Needs to drop weapons/items, destroy each attached effect, play sound, and drop a corpse
+	 */
 	public void kill()
 	{
 		drop();
@@ -338,7 +393,27 @@ public class Actor : MonoBehaviour
 		}
 
 		dropItem();
-		//TODO: spawn replacement sprite
+		if (corpsePrefab != null)
+		{
+			GameObject newCorpse = Instantiate(corpsePrefab, transform.position, transform.rotation);
+			SpriteRenderer newSprite = newCorpse.GetComponent<SpriteRenderer>();
+			newCorpse.transform.Rotate(0, 0, Random.Range(-20, 20));
+
+			if (newSprite != null)
+			{
+				newSprite.sprite = corpseSprite;
+			}
+		}
+		
+		/* Player logic */
+		if (gameObject.tag == ActorDefs.playerTag)
+		{
+			foreach (MonoBehaviour script in behaviorList)
+			{
+				script.enabled = false;
+			}
+			//SceneManager.LoadScene(SceneDefs.GAME_OVER_SCENE, LoadSceneMode.Additive);
+		}
 		Destroy(transform.gameObject);
 	}
 
@@ -348,7 +423,7 @@ public class Actor : MonoBehaviour
 		actorBody.velocity = moveVector;
 	}
 
-	public void pickupItem()
+	public bool pickupItem()
 	{
 		Collider2D[] hitTargets1 = Physics2D.OverlapCircleAll(this.transform.position + (transform.up * ActorDefs.GLOBAL_PICKUP_OFFSET), ActorDefs.GLOBAL_PICKUP_RANGE, this.pickupLayer);
 		Collider2D[] hitTargets2 = Physics2D.OverlapCircleAll(this.transform.position, ActorDefs.GLOBAL_PICKUP_RANGE, this.pickupLayer);
@@ -358,25 +433,33 @@ public class Actor : MonoBehaviour
 
 		foreach (Collider2D target in hitTargets)
 		{
-			/* Make sure to only pickup valid objects. This will be expanded on eventually */
-			if (WeaponDefs.canWeaponBePickedUp(target.gameObject))
+			GameObject targetObject = target.gameObject;
+
+			PickupBox pickupBox = target.gameObject.GetComponent<PickupBox>();
+			if (pickupBox != null && pickupBox.hasPickup())
 			{
-				Debug.Log("Picking up: " + target.gameObject.transform.parent.gameObject.name);
-				if (this.equip(target.gameObject.transform.parent.gameObject))
+				targetObject = pickupBox.getPickup();
+			}
+
+			/* Make sure to only pickup valid objects. This will be expanded on eventually */
+			if (WeaponDefs.canWeaponBePickedUp(targetObject))
+			{
+				Debug.Log("Picking up: " + targetObject.transform.gameObject.name);
+				if (this.equip(targetObject.transform.gameObject))
 				{
 					//Make sure to only pick up one weapon
-					break;
+					return true;
 				}
 			}
 
 			/* TODO: Probably a better way to do this */
 			if (this.tag == ActorDefs.playerTag)
 			{
-				if (MutationDefs.isMutationSelect(target.gameObject))
+				if (MutationDefs.isMutationSelect(targetObject))
 				{
 					//TODO: implement mutation selection
 
-					var mutationList = target.gameObject.GetComponents<MutationInterface>();
+					var mutationList = targetObject.GetComponents<MutationInterface>();
 
 					foreach (MutationInterface mut in mutationList)
 					{
@@ -393,6 +476,7 @@ public class Actor : MonoBehaviour
 								if (activeSlots[0] == null)
 								{
 									activeSlots[0] = newMut;
+									return true;
 								}
 							}
 							break;
@@ -406,10 +490,13 @@ public class Actor : MonoBehaviour
 					if (pickup != null)
 					{
 						pickup.pickup(this);
+						return true;
 					}
 				}
 			}
 		}
+
+		return false;
 	}
 
 	public void setAttackTarget(Actor targetActor)
@@ -459,19 +546,10 @@ public class Actor : MonoBehaviour
 		}
 	}
 
-	private static void setWeaponTag(GameObject weapon, string newTag)
-	{
-		weapon.tag = newTag;
-		foreach (Transform child in weapon.transform)
-		{
-			child.tag = newTag;
-			foreach (Transform secChild in child)
-			{
-				secChild.tag = newTag;
-			}
-		}
-	}
-
+	/* Logic to handle taking damage from any source
+	 * only applies effects that originate from this actor
+	 * returns actual damage taken (health cannot be negative)
+	 */
 	public float takeDamage(float damage)
 	{
 		if (this.invincible)
@@ -491,6 +569,7 @@ public class Actor : MonoBehaviour
 		if (this.tag.Equals(ActorDefs.playerTag))
 		{
 			EffectDefs.effectApply(this, GameManager.EFCT_SCRIP_ID_IFRAME1);
+			hud.updateHealth(actorData.health);
 		}
 		else
 		{
@@ -544,7 +623,7 @@ public class Actor : MonoBehaviour
 	private void resetEquip()
 	{
 		equippedWeapon.transform.SetParent(null, true);
-		setWeaponTag(equippedWeapon, WeaponDefs.OBJECT_WEAPON_TAG);
+		WeaponDefs.setWeaponTag(equippedWeapon, WeaponDefs.OBJECT_WEAPON_TAG);
 
 		equippedWeapon = null;
 		equippedWeaponInt = null;

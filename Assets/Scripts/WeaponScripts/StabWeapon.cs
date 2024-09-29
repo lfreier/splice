@@ -9,7 +9,6 @@ public class StabWeapon : MonoBehaviour, WeaponInterface
 
 	string id;
 
-	public Controller2D controller;
 	public CircleCollider2D arc;
 	public BoxCollider2D hitbox;
 	public BoxCollider2D throwBox;
