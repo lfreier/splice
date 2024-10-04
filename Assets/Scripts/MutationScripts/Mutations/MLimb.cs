@@ -5,6 +5,8 @@ public class MLimb : MonoBehaviour, MutationInterface
 {
 	Actor actorWielder;
 
+	public Sprite icon;
+
 	[SerializeField] public Animator anim;
 
 	[SerializeField] public Collider2D hitbox;
@@ -15,6 +17,16 @@ public class MLimb : MonoBehaviour, MutationInterface
 	public void colliderEnter(Collider2D collision)
 	{
 		this.OnTriggerEnter2D(collision);
+	}
+
+	public Sprite getIcon()
+	{
+		return icon;
+	}
+
+	public string getId()
+	{
+		return "MLimb";
 	}
 
 	public mutationTrigger getMutationType()

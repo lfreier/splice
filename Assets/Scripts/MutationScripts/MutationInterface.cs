@@ -3,6 +3,9 @@ using UnityEngine;
 
 public interface MutationInterface
 {
+	public Sprite getIcon();
+
+	public string getId();
 	public mutationTrigger getMutationType();
 	public void trigger(Actor actorTarget);
 

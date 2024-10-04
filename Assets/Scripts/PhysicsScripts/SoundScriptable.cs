@@ -5,6 +5,9 @@ using UnityEngine;
 public class SoundScriptable : ScriptableObject
 {
 	[field: SerializeField]
+	public AudioClip audioClip { get; private set; } = null;
+
+	[field: SerializeField]
 	public float length { get; private set; } = 0.5F;
 
 	[field: SerializeField]

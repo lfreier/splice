@@ -20,10 +20,12 @@ public class PlayerMove : MonoBehaviour
 	private float lastWalkInput;
 
 	private float footstepTimer;
+	private float soundTimer;
+	private bool firstStep = false;
 
 	public PlayerInputs inputs;
 
-	private SoundScriptable _scriptable;
+	public SoundScriptable footstepScriptable;
 
 	private void Start()
 	{
@@ -36,11 +38,6 @@ public class PlayerMove : MonoBehaviour
 		playerData = player.actorData;
 		moveInput = inputs.moveInput();
 		walkInput = inputs.walkInput();
-
-		if (_scriptable == null && player.gameManager != null)
-		{
-			_scriptable = player.gameManager.getSoundScriptable(SoundDefs.SOUND_FOOTSTEP);
-		}
 	}
 
 	private void FixedUpdate()
@@ -60,19 +57,33 @@ public class PlayerMove : MonoBehaviour
 			lastMoveInput = moveInput;
 			currentSpeed += playerData.acceleration * playerData.moveSpeed;
 
-			if (_scriptable != null && currentSpeed > _scriptable.triggerSpeed)
+			if (footstepScriptable != null && currentSpeed > footstepScriptable.triggerSpeed)
 			{
 				footstepTimer += currentSpeed * Time.deltaTime;
+				soundTimer += Time.deltaTime;
 
-				if (footstepTimer > _scriptable.threshold)
+				if (footstepTimer > footstepScriptable.threshold)
 				{
-					SoundDefs.createSound(player.transform.position, _scriptable);
 					footstepTimer = 0;
+					SoundDefs.createSound(player.transform.position, footstepScriptable);
+
+					if (soundTimer > playerData.maxSpeed / 45 || firstStep)
+					{
+						soundTimer = 0;
+						firstStep = false;
+						if (player.actorAudioSource != null && footstepScriptable.audioClip != null)
+						{
+							//TODO: enable when adding sound
+							//player.actorAudioSource.PlayOneShot(footstepScriptable.audioClip, 0.25F);
+						}
+					}
 				}
 			}
 			else
 			{
 				footstepTimer = 0;
+				soundTimer = 0;
+				firstStep = true;
 			}
 		}
 		else

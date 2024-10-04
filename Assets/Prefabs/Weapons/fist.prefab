@@ -134,6 +134,8 @@ SpriteRenderer:
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 0
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -302,7 +304,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   anim: {fileID: 7498851668401721827}
-  controller: {fileID: 0}
   hitbox: {fileID: 1109013575069055799}
   throwBox: {fileID: 5989834994661812141}
   sprite: {fileID: 3442740799414355683}
@@ -311,8 +312,11 @@ MonoBehaviour:
   actorWielder: {fileID: 0}
   _weaponScriptable: {fileID: 11400000, guid: 04697dc785bc1b44c9ea901776758fbc, type: 2}
   _weaponPhysics: {fileID: 2490751913895706594}
-  actorHitSound: {fileID: 11400000, guid: 85b4e16a3f45bf943bbaaafa9518ce16, type: 2}
+  actorHitSound: {fileID: 11400000, guid: 4ef7172c84fd22b4586d55e87fa9e529, type: 2}
   wallHitSound: {fileID: 11400000, guid: 2dee26a68c8b6d14c9f1598aceb14c3a, type: 2}
+  weaponAudioSource: {fileID: 0}
+  weaponBreakSound: {fileID: 0}
+  weaponSwingSound: {fileID: 0}
 --- !u!1 &7142411589276092687
 GameObject:
   m_ObjectHideFlags: 0

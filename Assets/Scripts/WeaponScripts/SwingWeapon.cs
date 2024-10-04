@@ -27,6 +27,9 @@ public class SwingWeapon : MonoBehaviour, WeaponInterface
 	public SoundScriptable actorHitSound;
 	public SoundScriptable wallHitSound;
 
+	public AudioClip weaponBreakSound;
+	public AudioClip weaponSwingSound;
+
 	private GameManager gameManager;
 
 	private float durability;
@@ -58,6 +61,8 @@ public class SwingWeapon : MonoBehaviour, WeaponInterface
 	{
 		anim.SetTrigger("Attack");
 		lastTargetLayer = targetLayer;
+		actorWielder.invincible = false;
+		//actorWielder.actorAudioSource.PlayOneShot(weaponSwingSound);
 
 		return true;
 	}
@@ -135,13 +140,15 @@ public class SwingWeapon : MonoBehaviour, WeaponInterface
 		{
 			this.actorWielder.drop();
 			Debug.Log("Weapon broke: " + this.name);
+			//actorWielder.actorAudioSource.PlayOneShot(weaponBreakSound);
+			//might need to wait for sound to play out
 			Destroy(this.transform.parent.gameObject);
 		}
 	}
 	public void setActorToHold(Actor actor)
 	{
 		actorWielder = actor;
-		if (secondaryAction != null)
+		if (secondaryAction != null || null != (secondaryAction = GetComponentInChildren<ActionInterface>()))
 		{
 			secondaryAction.setActorToHold(actor);
 		}
@@ -182,6 +189,13 @@ public class SwingWeapon : MonoBehaviour, WeaponInterface
 		}
 		return hitbox.enabled = !hitbox.enabled;
 	}
+	public void toggleIFrames()
+	{
+		if (actorWielder != null)
+		{
+			actorWielder.invincible = !actorWielder.invincible;
+		}
+	}
 
 	public bool toggleSecondaryCollider()
 	{
@@ -211,7 +225,7 @@ public class SwingWeapon : MonoBehaviour, WeaponInterface
 			return;
 		}
 
-		if (actorHit != null && actorWielder.isTargetHostile(actorHit))
+		if (actorHit != null && actorWielder.isTargetHostile(actorHit) && !actorHit.invincible)
 		{
 			actorWielder.triggerDamageEffects(actorHit);
 			if (actorHit.takeDamage(_weaponScriptable.damage) > 0)

@@ -174,6 +174,8 @@ SpriteRenderer:
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 0
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -263,6 +265,8 @@ SpriteRenderer:
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 0
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -319,8 +323,11 @@ MonoBehaviour:
   actorWielder: {fileID: 0}
   _weaponScriptable: {fileID: 11400000, guid: 0134897986adec14483be19013cb49f1, type: 2}
   _weaponPhysics: {fileID: 1630916773381673146}
-  actorHitSound: {fileID: 11400000, guid: 14171c28ed3adca408d74c2da5276215, type: 2}
+  actorHitSound: {fileID: 11400000, guid: 435f69a6187a6184393edba61d25272b, type: 2}
   wallHitSound: {fileID: 11400000, guid: 14171c28ed3adca408d74c2da5276215, type: 2}
+  weaponAudioSource: {fileID: 0}
+  weaponBreakSound: {fileID: 0}
+  weaponSwingSound: {fileID: 8300000, guid: 619dccd5df123b94d8da05c4efd605cc, type: 3}
 --- !u!95 &6529950160097543187
 Animator:
   serializedVersion: 7
@@ -398,7 +405,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5772951913937938461}
-  - component: {fileID: 8394247993623779045}
   - component: {fileID: 7173058267457517701}
   - component: {fileID: 7310155880921450233}
   m_Layer: 16
@@ -423,20 +429,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 6210392783176579490}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &8394247993623779045
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6492267961003396372}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5e660c718b26fa94faa3388fc7908336, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  anim: {fileID: 6529950160097543187}
-  parryHitbox: {fileID: 7310155880921450233}
 --- !u!50 &7173058267457517701
 Rigidbody2D:
   serializedVersion: 4

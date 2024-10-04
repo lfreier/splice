@@ -13,12 +13,9 @@ public class EffectDefs
 		IFRAME = 2
 	}
 
-	public static void effectApply(Actor target, string effectScriptable)
+	public static void effectApply(Actor target, EffectScriptable effectData)
 	{
 		/* create new effect, attach it, and initialize it */
-		GameManager manager = GameManager.Instance;
-		EffectScriptable effectData = manager.getEffectScriptable(effectScriptable);
-
 		GameObject prefab = GameObject.Instantiate(effectData.effectPrefab, Vector3.zero, Quaternion.identity);
 		EffectInterface newEffect = prefab.GetComponent<EffectInterface>();
 

@@ -90,9 +90,9 @@ public class EnemyMove : MonoBehaviour
 				else
 				{
 					pathIndex++;
-					if (idlePathPauseTime.Length >= pathIndex)
+					if (idlePathPauseTime.Length >= pathIndex - 1)
 					{
-						idlePauseTimer = idlePathPauseTime[pathIndex];
+						idlePauseTimer = idlePathPauseTime[pathIndex - 1];
 					}
 				}
 
@@ -339,6 +339,7 @@ public class EnemyMove : MonoBehaviour
 				else
 				{
 					_detection = detectMode.frightened;
+					break;
 				}
 
 				if (Vector3.Magnitude(moveTarget - this.transform.position) <= ActorDefs.NPC_TRY_PICKUP_RANGE)

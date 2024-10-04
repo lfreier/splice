@@ -28,7 +28,7 @@ public class Obstacle : MonoBehaviour
 			if (velocityDiff.magnitude >= _obstacleScriptable.collisionDamageThreshold && obstacleBody.velocity.magnitude > _obstacleScriptable.collisionDamageThreshold / 2)
 			{
 				actorHit.actorBody.AddForce(velocityDiff * _obstacleScriptable.actorPushForce);
-				EffectDefs.effectApply(actorHit, GameManager.EFCT_SCRIP_ID_STUNHALF);
+				EffectDefs.effectApply(actorHit, actorHit.gameManager.effectManager.stunHalf);
 				actorHit.takeDamage(_obstacleScriptable.collisionDamage);
 			}
 		}

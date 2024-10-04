@@ -10,6 +10,9 @@ public class ActorScriptable : ScriptableObject
 	public float health { get; private set; } = 2F;
 
 	[field: SerializeField]
+	public float attackTimer { get; private set; } = 0.2F;
+
+	[field: SerializeField]
 	public float maxSpeed { get; private set; } = 25F;
 
 	[field: SerializeField]

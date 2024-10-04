@@ -124,7 +124,7 @@ public class WeaponPhysics : MonoBehaviour
 					_weapon.reduceDurability(_weaponScriptable.throwDurabilityDamage);
 				}
 
-				EffectDefs.effectApply(actorHit, GameManager.EFCT_SCRIP_ID_STUNHALF);
+				EffectDefs.effectApply(actorHit, actorHit.gameManager.effectManager.stunHalf);
 			}
 
 			currentSpeed /= 2;

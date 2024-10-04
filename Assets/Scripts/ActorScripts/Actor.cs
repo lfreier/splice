@@ -47,6 +47,8 @@ public class Actor : MonoBehaviour
 		getWeapon = 6
 	};
 
+	public AudioSource actorAudioSource;
+
 	public PlayerHUD hud;
 
 	public ActorScriptable _actorScriptable;
@@ -81,7 +83,7 @@ public class Actor : MonoBehaviour
 
 	private float speedCheck;
 
-	private bool invincible = false;
+	public bool invincible = false;
 
 	public void Start()
 	{
@@ -357,13 +359,12 @@ public class Actor : MonoBehaviour
 			return false;
 		}
 
-		if (this.tag.Equals(ActorDefs.npcTag) && targetActor.tag.Equals(ActorDefs.playerTag)
-			|| this.tag.Equals(ActorDefs.playerTag) && targetActor.tag.Equals(ActorDefs.npcTag))
+		if (this.tag.Equals(ActorDefs.npcTag) && targetActor.tag.Equals(ActorDefs.npcTag))
 		{
-			return true;
+			return false;
 		}
 
-		return false;
+		return true;
 	}
 
 	public bool isUnarmed()
@@ -412,7 +413,7 @@ public class Actor : MonoBehaviour
 			{
 				script.enabled = false;
 			}
-			//SceneManager.LoadScene(SceneDefs.GAME_OVER_SCENE, LoadSceneMode.Additive);
+			gameManager.gameOver(this);
 		}
 		Destroy(transform.gameObject);
 	}
@@ -430,6 +431,8 @@ public class Actor : MonoBehaviour
 		Collider2D[] hitTargets = new Collider2D[hitTargets1.Length + hitTargets2.Length];
 		hitTargets1.CopyTo(hitTargets, 0);
 		hitTargets2.CopyTo(hitTargets, hitTargets1.Length);
+
+		List<GameObject> pickupList = new List<GameObject>();
 
 		foreach (Collider2D target in hitTargets)
 		{
@@ -455,35 +458,7 @@ public class Actor : MonoBehaviour
 			/* TODO: Probably a better way to do this */
 			if (this.tag == ActorDefs.playerTag)
 			{
-				if (MutationDefs.isMutationSelect(targetObject))
-				{
-					//TODO: implement mutation selection
-
-					var mutationList = targetObject.GetComponents<MutationInterface>();
-
-					foreach (MutationInterface mut in mutationList)
-					{
-						var existingMuts = mutationHolder.GetComponents(mut.GetType());
-						if (existingMuts.Length > 0)
-						{
-							continue;
-						}
-						MutationInterface newMut = (MutationInterface)mutationHolder.AddComponent(mut.GetType());
-						if (null != (newMut = newMut.mEquip(this)))
-						{
-							if (newMut.getMutationType() == mutationTrigger.ACTIVE_SLOT)
-							{
-								if (activeSlots[0] == null)
-								{
-									activeSlots[0] = newMut;
-									return true;
-								}
-							}
-							break;
-						}
-					}
-				}
-				else if (PickupDefs.canBePickedUp(target.gameObject))
+				if (PickupDefs.canBePickedUp(target.gameObject))
 				{
 					Debug.Log("Picking up: " + target.gameObject.transform.parent.gameObject.name);
 					PickupInterface pickup = target.gameObject.transform.parent.gameObject.GetComponent<PickupInterface>();
@@ -542,6 +517,7 @@ public class Actor : MonoBehaviour
 		}
 		else
 		{
+			Debug.Log("newSpeed: " + changedSpeed);
 			actorData.maxSpeed = changedSpeed;
 		}
 	}
@@ -568,12 +544,30 @@ public class Actor : MonoBehaviour
 
 		if (this.tag.Equals(ActorDefs.playerTag))
 		{
-			EffectDefs.effectApply(this, GameManager.EFCT_SCRIP_ID_IFRAME1);
+			EffectDefs.effectApply(this, gameManager.effectManager.iFrame1);
 			hud.updateHealth(actorData.health);
 		}
 		else
 		{
-			EffectDefs.effectApply(this, GameManager.EFCT_SCRIP_ID_IFRAME0);
+			EffectDefs.effectApply(this, gameManager.effectManager.iFrame0);
+		}
+
+		return startingHealth - actorData.health;
+	}
+
+	public float takeHeal(float heal)
+	{
+		float startingHealth = actorData.health;
+		actorData.health += heal;
+
+		if (actorData.health > _actorScriptable.health)
+		{
+			actorData.health = _actorScriptable.health;
+		}
+
+		if (this.tag.Equals(ActorDefs.playerTag))
+		{
+			hud.updateHealth(actorData.health);
 		}
 
 		return startingHealth - actorData.health;

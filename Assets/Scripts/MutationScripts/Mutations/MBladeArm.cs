@@ -3,6 +3,17 @@ using UnityEngine;
 
 public class MBladeArm : MonoBehaviour, MutationInterface
 {
+	public Sprite icon;
+
+	public Sprite getIcon()
+	{
+		return icon;
+	}
+	public string getId()
+	{
+		return "MBladeArm";
+	}
+
 	public mutationTrigger getMutationType()
 	{
 		return mutationTrigger.IS_WEAPON;

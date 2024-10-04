@@ -14,7 +14,8 @@ public static class PickupDefs
 	public enum pickupType
 	{
 		CELL = 0,
-		KEYCARD = 1
+		KEYCARD = 1,
+		HEALTH_VIAL = 2
 	};
 
 	static public int MAX_KEYCARD_TYPE = (int)keycardType.BLUE;

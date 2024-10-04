@@ -1,28 +1,34 @@
 ﻿using System.Collections;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Scroll : MonoBehaviour
 {
 	public float homeY;
 	public float span = 0;
-	public float scrollSpeed = 1;
+	public float screensPerSecond = 1;
+
+	public Image image;
+	public RectTransform rTransform;
+	public Canvas canvas;
 
 	void Start()
 	{
-		homeY = transform.position.y;
+		homeY = rTransform.anchoredPosition.y;
+		span = image.sprite.rect.height * 10;
 	}
 
-	void Update()
+	void LateUpdate()
 	{
-		float yPos = transform.position.y;
+		float yPos = rTransform.anchoredPosition.y;
 
-		yPos += scrollSpeed;
+		yPos += (canvas.pixelRect.height * screensPerSecond) * Time.deltaTime;
 
 		if (yPos - homeY >= span)
 		{
 			yPos = homeY;
 		}
 
-		transform.position = new Vector2(transform.position.x, yPos);
+		rTransform.anchoredPosition = new Vector3(0, yPos, transform.position.z);
 	}
 }

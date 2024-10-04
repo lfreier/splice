@@ -6,12 +6,16 @@ public class CameraHandler : MonoBehaviour
 {
 	GameObject player;
 	bool followPlayer;
+	bool stop;
 	Vector2 pointerPos;
 
 	Vector3 cameraTarget;
 
+	public float sizeTarget = 7.7F;
+
 	float widthRatio = (float)Screen.width / (float)Screen.height;
 	float heightRatio = (float)Screen.height / (float)Screen.width;
+	float defaultWidth;
 	float verExtent;
 	float horExtent;
 
@@ -24,6 +28,7 @@ public class CameraHandler : MonoBehaviour
 		player = GameObject.Find("Player");
 		verExtent = Camera.main.orthographicSize;
 		horExtent = verExtent * widthRatio;
+		stop = false;
 		Update();
 	}
 
@@ -33,7 +38,11 @@ public class CameraHandler : MonoBehaviour
 		mousePos.z = Camera.main.nearClipPlane;
 		pointerPos = Camera.main.ScreenToWorldPoint(mousePos);
 
-		if (followPlayer)
+		if (stop)
+		{
+			cameraTarget = transform.position;
+		}
+		else if (followPlayer)
 		{
 			camFollowPlayer();
 		}
@@ -43,6 +52,12 @@ public class CameraHandler : MonoBehaviour
 		}
 
 		this.transform.position = cameraTarget;
+
+	}
+
+	public void stopCam(bool toSet)
+	{
+		stop = toSet;
 	}
 
 	public void setCamFollowPlayer(bool toSet)

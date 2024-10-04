@@ -15,7 +15,7 @@ MonoBehaviour:
   <arc>k__BackingField: 30
   <atkSpeed>k__BackingField: 0.25
   <canBeDropped>k__BackingField: 0
-  <damage>k__BackingField: 1
+  <damage>k__BackingField: 0.5
   <durability>k__BackingField: -1
   <npcAttackRange>k__BackingField: -1
   <throwDamage>k__BackingField: 0

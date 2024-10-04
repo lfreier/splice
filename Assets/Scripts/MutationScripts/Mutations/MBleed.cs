@@ -5,10 +5,20 @@ using UnityEngine;
 public class MBleed : MonoBehaviour, MutationInterface
 {
 	MutationScriptable mutationScriptable;
-
+	public Sprite icon;
 	public void Start()
 	{
 		//get mutationscriptable
+	}
+
+	public Sprite getIcon()
+	{
+		return icon;
+	}
+
+	public string getId()
+	{
+		return "MBleed";
 	}
 
 	public mutationTrigger getMutationType()
@@ -19,7 +29,7 @@ public class MBleed : MonoBehaviour, MutationInterface
 	public void trigger(Actor actorTarget)
 	{
 		/* create new bleed, attach it, and initialize it */
-		EffectDefs.effectApply(actorTarget, GameManager.EFCT_SCRIP_ID_BLEED1);
+		EffectDefs.effectApply(actorTarget, actorTarget.gameManager.effectManager.bleed1);
 	}
 
 	public MutationInterface mEquip(Actor actor)

@@ -11,6 +11,7 @@ TagManager:
   - EquippedActive
   - ObjectPickup
   - WallMetal
+  - NPCHostile
   layers:
   - Default
   - TransparentFX

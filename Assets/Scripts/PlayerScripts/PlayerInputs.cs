@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 public class PlayerInputs: MonoBehaviour
 {
@@ -21,11 +22,16 @@ public class PlayerInputs: MonoBehaviour
 
 	private float walkAction;
 
+	private float pauseAction;
+	public bool paused = false;
+
+	public CameraHandler camHandler;
+
 	private float[] specialActions = new float[MutationDefs.MAX_SLOTS];
 	private float[] lastSpecialActions = new float[MutationDefs.MAX_SLOTS];
 
 	[SerializeField]
-	private InputActionReference attack, secondaryAttack, move, moveCam, walk, interact, pointer, throwVal, action1, action2;
+	private InputActionReference attack, secondaryAttack, move, moveCam, walk, interact, pointer, throwVal, action1, action2, pause;
 
 	public float attackInput() { return attackAction; }
 	public float secondaryAttackInput() { return secondaryAttackAction; }
@@ -33,6 +39,7 @@ public class PlayerInputs: MonoBehaviour
 	public Vector2 pointerPos() { return pointerLoc; }
 	public Vector2 moveInput() { return moveAction; }
 	public float interactInput() { return interactAction; }
+	public float pauseInput() { return walkAction; }
 	public float throwInput() { return throwAction; }
 	public float walkInput() { return walkAction; }
 
@@ -57,8 +64,11 @@ public class PlayerInputs: MonoBehaviour
 		secondaryAttackAction = secondaryAttack.action.ReadValue<float>();
 
 		//mouse inputs
-		Vector2 mousePos = pointer.action.ReadValue<Vector2>();
-		pointerLoc = Camera.main.ScreenToWorldPoint(mousePos);
+		if (!paused)
+		{
+			Vector2 mousePos = pointer.action.ReadValue<Vector2>();
+			pointerLoc = Camera.main.ScreenToWorldPoint(mousePos);
+		}
 
 		//move inputs
 		moveAction = move.action.ReadValue<Vector2>();
@@ -67,6 +77,33 @@ public class PlayerInputs: MonoBehaviour
 		//interact inputs
 		lastInteractAction = interactAction;
 		interactAction = interact.action.ReadValue<float>();
+
+		//pause input
+		pauseAction = pause.action.ReadValue<float>();
+		if (pauseAction > 0 && !paused)
+		{
+			Time.timeScale = 0;
+
+			for (int j = 0; j < SceneManager.sceneCount; j++)
+			{
+				Scene curr = SceneManager.GetSceneAt(j);
+				if (curr.buildIndex == SceneDefs.PAUSE_SCENE)
+				{
+					SceneManager.UnloadSceneAsync(curr.buildIndex);
+					continue;
+				}
+			}
+
+			SceneManager.LoadSceneAsync(SceneDefs.PAUSE_SCENE, LoadSceneMode.Additive);
+			camHandler.stopCam(true);
+			paused = true;
+		}
+		if (Time.timeScale > 0 && paused == true)
+		{
+			camHandler.stopCam(false);
+			this.enabled = true;
+			paused = false;
+		}
 
 		//throw inputs
 		throwAction = throwVal.action.ReadValue<float>();
