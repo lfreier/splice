@@ -13,8 +13,18 @@ public class MutationSelectHUD : MonoBehaviour
 
 	public MainMenu menu;
 
+	public float clickProtectSeconds;
+
+	private float loadInTime = 0.5F;
+
 	public void selectMutation(int index)
 	{
+		/* Hacky way to add protection of mashing click */
+		if (Time.unscaledTime - loadInTime < clickProtectSeconds)
+		{
+			return;
+		}
+
 		if (index < mutArray.Length)
 		{
 			select.makeSelection(mutArray[index]);
@@ -31,6 +41,7 @@ public class MutationSelectHUD : MonoBehaviour
 	{
 		Time.timeScale = 0;
 		select = source;
+		loadInTime = Time.unscaledTime;
 
 		//save mutation array internally
 		GameObject[] objArray = source.mutationPrefabs;

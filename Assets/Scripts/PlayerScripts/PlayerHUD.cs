@@ -32,7 +32,7 @@ public class PlayerHUD : MonoBehaviour
 	private int headIndex;
 	private float hudHealth = 0;
 
-	private PlayerInventory inventory;
+	private PlayerStats stats;
 
 	private static float pixelSize = 0.0625F;
 
@@ -46,7 +46,7 @@ public class PlayerHUD : MonoBehaviour
 				player = actor;
 				player.hud = this;
 				PlayerInteract interactScript = player.gameObject.GetComponent<PlayerInteract>();
-				interactScript.inventory.hud = this;
+				interactScript.stats.hud = this;
 				Camera main = player.getCamera();
 
 				healthCanvas.worldCamera = main;

@@ -438,6 +438,7 @@ MonoBehaviour:
   - {fileID: 1092966977}
   select: {fileID: 0}
   menu: {fileID: 1122879510}
+  clickProtect: 0.5
 --- !u!114 &1122879509
 MonoBehaviour:
   m_ObjectHideFlags: 0

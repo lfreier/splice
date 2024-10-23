@@ -52,6 +52,8 @@ SpriteRenderer:
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 0
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -253,7 +255,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f174b3609e3249846a06f650e5eb86b8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pickup: {fileID: 1192526033329145194, guid: 667ae61a41d03f34bb1259307cf06291, type: 3}
+  pickup:
+  - {fileID: 1192526033329145194, guid: 667ae61a41d03f34bb1259307cf06291, type: 3}
 --- !u!114 &1910654144285547258
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -287,6 +290,8 @@ SpriteRenderer:
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 0
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:

@@ -41,7 +41,7 @@ public class Keycard : MonoBehaviour, PickupInterface
 		PlayerInteract interact = actorTarget.gameObject.GetComponent<PlayerInteract>();
 		if (interact != null)
 		{
-			interact.inventory.addItem(this);
+			interact.stats.addItem(this);
 			Destroy(this.gameObject);
 		}
 	}

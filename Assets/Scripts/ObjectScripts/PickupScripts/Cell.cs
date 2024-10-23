@@ -87,7 +87,7 @@ public class Cell : MonoBehaviour, PickupInterface
 		PlayerInteract interact = actorTarget.gameObject.GetComponent<PlayerInteract>();
 		if (interact != null)
 		{
-			interact.inventory.addItem(this);
+			interact.stats.addItem(this);
 		}
 
 		animator.SetTrigger(CELL_ANIM_TRIGGER);

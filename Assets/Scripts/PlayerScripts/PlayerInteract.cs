@@ -11,7 +11,7 @@ public class PlayerInteract : MonoBehaviour
 	public Actor player;
 
 	public PlayerInputs inputs;
-	public PlayerInventory inventory;
+	public PlayerStats stats;
 
 	private GameObject mutateHolder;
 
@@ -19,7 +19,7 @@ public class PlayerInteract : MonoBehaviour
 
 	private void Start()
 	{
-		inventory = new PlayerInventory();
+		stats = new PlayerStats();
 		mutateHolder = player.mutationHolder;
 		lastInteractInput = 0;
 	}
@@ -62,9 +62,9 @@ public class PlayerInteract : MonoBehaviour
 			AutoDoor doorInteract = target.transform.parent.gameObject.GetComponent<AutoDoor>();
 			if (doorInteract != null)
 			{
-				if (inventory.keycardCount[(int)doorInteract.lockType] > 0)
+				if (stats.keycardCount[(int)doorInteract.lockType] > 0)
 				{
-					inventory.keycardCount[(int)doorInteract.lockType] --;
+					stats.keycardCount[(int)doorInteract.lockType] --;
 					doorInteract.doorUnlock();
 					return true;
 				}
