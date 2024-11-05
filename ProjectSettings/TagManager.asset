@@ -30,7 +30,7 @@ TagManager:
   - ObjectHigh
   - Damage
   - Parry
-  - 
+  - ObjectExcludeActor
   - Sound
   - 
   - 

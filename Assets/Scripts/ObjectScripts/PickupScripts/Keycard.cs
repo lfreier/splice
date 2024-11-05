@@ -21,6 +21,9 @@ public class Keycard : MonoBehaviour, PickupInterface
 	{
 		switch (_keycardType)
 		{
+			case PickupDefs.keycardType.YELLOW:
+				keycardColor.color = GameManager.COLOR_YELLOW;
+				break;
 			case PickupDefs.keycardType.BLUE:
 				keycardColor.color = GameManager.COLOR_BLUE;
 				break;

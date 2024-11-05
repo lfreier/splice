@@ -16,3 +16,4 @@ MonoBehaviour:
   <trigger>k__BackingField: 5
   <effectScriptable>k__BackingField: {fileID: 0}
   <startingPosition>k__BackingField: {x: -0.621, y: 0.28}
+  <startingRotation>k__BackingField: -7

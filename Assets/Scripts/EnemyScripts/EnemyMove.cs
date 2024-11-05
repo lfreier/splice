@@ -77,25 +77,19 @@ public class EnemyMove : MonoBehaviour
 		if (_detection == detectMode.idle && idlePath.Length > 0)
 		{
 			/* If at a path position, go to next */
-			if (((Vector2)actorBody.transform.position -  idlePath[pathIndex]).magnitude < 0.5F)
+			if (((Vector2)actorBody.transform.position -  idlePath[pathIndex]).magnitude < moveTargetError)
 			{
-				if (pathIndex >= idlePath.Length - 1)
+				if (pathIndex < idlePathPauseTime.Length)
 				{
-					pathIndex = 0;
-					if (idlePathPauseTime.Length > 0)
-					{
-						idlePauseTimer = idlePathPauseTime[0];
-					}
-				}
-				else
-				{
-					pathIndex++;
-					if (idlePathPauseTime.Length >= pathIndex - 1)
-					{
-						idlePauseTimer = idlePathPauseTime[pathIndex - 1];
-					}
+					idlePauseTimer = idlePathPauseTime[pathIndex];
 				}
 
+				pathIndex++;
+				/* reset at at the end of the array */
+				if (pathIndex >= idlePath.Length)
+				{
+					pathIndex = 0;
+				}
 			}
 			
 			if (idlePauseTimer <= 0)
@@ -168,6 +162,7 @@ public class EnemyMove : MonoBehaviour
 		{
 			oldMoveInput = moveInput;
 			currentSpeed += stateSpeedIncrease;
+			
 		}
 		else
 		{
@@ -187,7 +182,14 @@ public class EnemyMove : MonoBehaviour
 		}
 
 		Vector2 diff = moveTarget - this.transform.position;
-		moveInput = Vector2.ClampMagnitude(diff, 1F); 
+		moveInput = Vector2.ClampMagnitude(diff, 1F);
+	}
+
+	/* TODO: A* pathfinding implementation */
+	private Vector2 findNextInput(Vector2 target)
+	{
+		//float gCost, hCost, Fcost;
+		return target;
 	}
 
 	private Collider2D findNearestWeapon(float withinRange)
@@ -344,7 +346,7 @@ public class EnemyMove : MonoBehaviour
 
 				if (Vector3.Magnitude(moveTarget - this.transform.position) <= ActorDefs.NPC_TRY_PICKUP_RANGE)
 				{
-					if (actor.pickupItem())
+					if (actor.pickup())
 					{
 						_detection = detectMode.hostile;
 						/* face attack target */

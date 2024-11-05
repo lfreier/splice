@@ -21,4 +21,8 @@ public class ObstacleScriptable : ScriptableObject
 
 	[field: SerializeField]
 	public float weaponHitMult { get; private set; } = 2F;
+
+	[field: SerializeField]
+	/* Internal weight 'class' - determines if an obstacle can be moved in certain situations (like being grabbed by the limb) */
+	public weightClass weight { get; private set; } = weightClass.MID;
 }

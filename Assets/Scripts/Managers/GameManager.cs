@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -12,8 +9,24 @@ public class GameManager : MonoBehaviour
 
 	public GameObject startingSelect;
 
+	public delegate void PlayerInteractEvent();
+	public event PlayerInteractEvent playerInteractEvent;
+	public delegate void PlayerInteractReleaseEvent();
+	public event PlayerInteractReleaseEvent playerInteractReleaseEvent;
+
+	public delegate void PlayerAbilityEvent();
+	public event PlayerAbilityEvent playerAbilityEvent;
+	public delegate void PlayerAbilityReleaseEvent();
+	public event PlayerAbilityReleaseEvent playerAbilityReleaseEvent;
+
+	public delegate void RotationLockedEvent();
+	public event RotationLockedEvent rotationLockedEvent;
+	public delegate void RotationUnlockedEvent();
+	public event RotationUnlockedEvent rotationUnlockedEvent;
+
 	public AudioManager audioManager;
 	public EffectManager effectManager;
+	public LevelManager levelManager;
 
 	public Camera mainCam;
 
@@ -33,6 +46,7 @@ public class GameManager : MonoBehaviour
 	public static string DAMAGE_LAYER = "Damage";
 	public static string OBJECT_LAYER = "Object";
 	public static string OBJECT_MID_LAYER = "ObjectMid";
+	public static string OBJECT_EXCLUDE_ACTOR_LAYER = "ObjectExcludeActor";
 	public static string COLLISION_ACTOR_LAYER = "CollisionActor";
 	public static string UI_LAYER = "UI";
 
@@ -45,6 +59,7 @@ public class GameManager : MonoBehaviour
 	public static Color COLOR_BLUE = new Color(0.1F, 0.1F, 0.4F, 1F);
 	public static Color COLOR_GREEN = new Color(0.15F, 0.4f, 0, 1F);
 	public static Color COLOR_RED = new Color(0.4F, 0.1F, 0.1F, 1F);
+	public static Color COLOR_YELLOW = new Color(0.6F, 0.6f, 0, 1F);
 	public static Color COLOR_IFRAME = new Color(0.9F, 0.3F, 0.3F, 1F);
 
 	public List<Type> actorBehaviors = new List<Type>();
@@ -137,5 +152,35 @@ public class GameManager : MonoBehaviour
 			Debug.Log("Starting with mutation selection");
 			select.gameObject.SetActive(true);
 		}
+	}
+
+	public void signalRotationLocked()
+	{
+		rotationLockedEvent?.Invoke();
+	}
+
+	public void signalRotationUnlocked()
+	{
+		rotationUnlockedEvent?.Invoke();
+	}
+
+	public void signalPlayerInteractEvent()
+	{
+		playerInteractEvent?.Invoke();
+	}
+
+	public void signalPlayerInteractReleaseEvent()
+	{
+		playerInteractReleaseEvent?.Invoke();
+	}
+
+	public void signalPlayerAbilityEvent()
+	{
+		playerAbilityEvent?.Invoke();
+	}
+
+	public void signalPlayerAbilityReleaseEvent()
+	{
+		playerAbilityReleaseEvent?.Invoke();
 	}
 }

@@ -15,6 +15,9 @@ public static class WeaponDefs
 	public static float THROW_ROTATE_HIGH = 600.0F;
 
 	public static float KNOCKBACK_MULT_PARRY = 1200F;
+
+	public static float DURABILITY_DAMAGED_DIVIDER = 3F;
+
 	public static float KNOCKBACK_MULT_SWING = 1600F;
 
 	public static bool canWeaponBePickedUp(GameObject target)

@@ -5,6 +5,8 @@ using UnityEngine.SceneManagement;
 
 public class PlayerInputs: MonoBehaviour
 {
+	private GameManager gameManager = null;
+
 	private float attackAction;
 	private float secondaryAttackAction;
 
@@ -53,12 +55,16 @@ public class PlayerInputs: MonoBehaviour
 	// Use this for initialization
 	void Start()
 	{
-
 	}
 
 	// Update is called once per frame
 	void Update()
 	{
+		if (gameManager == null)
+		{
+			gameManager = GameManager.Instance;
+		}
+
 		//attack inputs
 		attackAction = attack.action.ReadValue<float>();
 		secondaryAttackAction = secondaryAttack.action.ReadValue<float>();
@@ -120,5 +126,24 @@ public class PlayerInputs: MonoBehaviour
 		//I don't think there's a way around hard coding this but w/e
 		specialActions[0] = action1.action.ReadValue<float>();
 		specialActions[1] = action2.action.ReadValue<float>();
+
+		/* send out some signals */
+		if (specialActions[0] != 0 && lastSpecialActions[0] == 0)
+		{
+			Debug.Log("Sending ability event");
+			gameManager.signalPlayerAbilityEvent();
+		}
+		if (specialActions[0] == 0 && lastSpecialActions[0] != 0)
+		{
+			gameManager.signalPlayerAbilityReleaseEvent();
+		}
+		if (interactAction != 0 && lastInteractAction == 0)
+		{
+			gameManager.signalPlayerInteractEvent();
+		}
+		if (interactAction == 0 && lastInteractAction != 0)
+		{
+			gameManager.signalPlayerInteractReleaseEvent();
+		}
 	}
 }

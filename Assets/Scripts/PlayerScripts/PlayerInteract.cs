@@ -36,7 +36,7 @@ public class PlayerInteract : MonoBehaviour
 			//if unlocking a door, do not pick up weapons;
 			if (!interactWorld())
 			{
-				player.pickupItem();
+				player.pickup();
 			}
 		}
 		lastInteractInput = _interactInput;
@@ -59,7 +59,7 @@ public class PlayerInteract : MonoBehaviour
 				}
 			}
 
-			AutoDoor doorInteract = target.transform.parent.gameObject.GetComponent<AutoDoor>();
+			AutoDoor doorInteract = target.transform.GetComponentInParent<AutoDoor>();
 			if (doorInteract != null)
 			{
 				if (stats.keycardCount[(int)doorInteract.lockType] > 0)

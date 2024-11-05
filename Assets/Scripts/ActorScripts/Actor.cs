@@ -79,7 +79,6 @@ public class Actor : MonoBehaviour
 	public GameObject corpsePrefab;
 
 	private SpriteRenderer sprite;
-	private SpriteRenderer weaponSprite;
 
 	private float speedCheck;
 
@@ -188,7 +187,7 @@ public class Actor : MonoBehaviour
 
 		equippedWeapon.transform.Translate(translate, Space.World);
 		equippedWeapon.transform.Rotate(new Vector3(0, 0, Random.Range(-45, 45)), Space.Self);
-		weaponSprite.sortingLayerName = WeaponDefs.SORT_LAYER_GROUND;
+		setWeaponLayer(WeaponDefs.SORT_LAYER_GROUND);
 
 		resetEquip();
 	}
@@ -291,8 +290,7 @@ public class Actor : MonoBehaviour
 		equippedWeaponInt = tempWeapInt;
 
 		equippedWeapon.transform.SetParent(this.transform, true);
-		weaponSprite = equippedWeapon.GetComponentInChildren<SpriteRenderer>();
-		weaponSprite.sortingLayerName = WeaponDefs.SORT_LAYER_CHARS;
+		setWeaponLayer(WeaponDefs.SORT_LAYER_CHARS);
 		equippedWeaponInt.setStartingPosition();
 
 		WeaponDefs.setWeaponTag(equippedWeapon, WeaponDefs.EQUIPPED_WEAPON_TAG);
@@ -424,7 +422,7 @@ public class Actor : MonoBehaviour
 		actorBody.velocity = moveVector;
 	}
 
-	public bool pickupItem()
+	public bool pickup()
 	{
 		Collider2D[] hitTargets1 = Physics2D.OverlapCircleAll(this.transform.position + (transform.up * ActorDefs.GLOBAL_PICKUP_OFFSET), ActorDefs.GLOBAL_PICKUP_RANGE, this.pickupLayer);
 		Collider2D[] hitTargets2 = Physics2D.OverlapCircleAll(this.transform.position, ActorDefs.GLOBAL_PICKUP_RANGE, this.pickupLayer);
@@ -432,43 +430,77 @@ public class Actor : MonoBehaviour
 		hitTargets1.CopyTo(hitTargets, 0);
 		hitTargets2.CopyTo(hitTargets, hitTargets1.Length);
 
+		return pickup(hitTargets);
+	}
+
+	public bool pickup(Collider2D[] hitTargets)
+	{
 		List<GameObject> pickupList = new List<GameObject>();
 
 		foreach (Collider2D target in hitTargets)
 		{
-			GameObject targetObject = target.gameObject;
-
-			PickupBox pickupBox = target.gameObject.GetComponent<PickupBox>();
-			if (pickupBox != null && pickupBox.hasPickup())
+			if (pickupItem(target.gameObject))
 			{
-				targetObject = pickupBox.getPickup();
+				return true;
 			}
+		}
 
-			/* Make sure to only pickup valid objects. This will be expanded on eventually */
-			if (WeaponDefs.canWeaponBePickedUp(targetObject))
+		return false;
+	}
+
+	public bool pickupItem(GameObject target)
+	{
+		/* Make sure to only pickup valid objects. This will be expanded on eventually */
+		if (WeaponDefs.canWeaponBePickedUp(target))
+		{
+			Debug.Log("Picking up: " + target.transform.gameObject.name);
+			if (this.equip(target.transform.gameObject))
 			{
-				Debug.Log("Picking up: " + targetObject.transform.gameObject.name);
-				if (this.equip(targetObject.transform.gameObject))
+				//Make sure to only pick up one weapon
+				return true;
+			}
+		}
+
+		PickupBox pickupBox = target.GetComponent<PickupBox>();
+		if (pickupBox != null && pickupBox.hasPickup())
+		{
+			target = pickupBox.getPickup();
+		}
+
+		/* TODO: Probably a better way to do this */
+		if (this.tag == ActorDefs.playerTag)
+		{
+			if (PickupDefs.canBePickedUp(target))
+			{
+				PickupInterface pickup = target.transform.gameObject.GetComponentInChildren<PickupInterface>();
+				if (pickup == null)
+				{
+					pickup = target.transform.gameObject.GetComponentInParent<PickupInterface>();
+				}
+				if (pickup != null)
+				{
+					Debug.Log("Picking up: " + pickup);
+					pickup.pickup(this);
+					return true;
+				}
+			}
+			else if (WeaponDefs.canWeaponBePickedUp(target))
+			{
+				Debug.Log("Picking up: " + target.transform.gameObject.name);
+				if (this.equip(target.transform.gameObject))
 				{
 					//Make sure to only pick up one weapon
 					return true;
 				}
 			}
-
-			/* TODO: Probably a better way to do this */
-			if (this.tag == ActorDefs.playerTag)
+			/* TODO: trying to put a pickup on the ground if it's not valid */ 
+			/*
+			else if (pickupBox != null)
 			{
-				if (PickupDefs.canBePickedUp(target.gameObject))
-				{
-					Debug.Log("Picking up: " + target.gameObject.transform.parent.gameObject.name);
-					PickupInterface pickup = target.gameObject.transform.parent.gameObject.GetComponent<PickupInterface>();
-					if (pickup != null)
-					{
-						pickup.pickup(this);
-						return true;
-					}
-				}
-			}
+				target.transform.SetParent(null, false);
+				target.transform.SetPositionAndRotation(transform.position, target.transform.rotation);
+				target.transform.RotateAround(target.transform.position, Vector3.forward, Random.Range(0, 360));
+			}*/
 		}
 
 		return false;
@@ -519,6 +551,15 @@ public class Actor : MonoBehaviour
 		{
 			Debug.Log("newSpeed: " + changedSpeed);
 			actorData.maxSpeed = changedSpeed;
+		}
+	}
+
+	private void setWeaponLayer(string layerName)
+	{
+		SpriteRenderer[] allSprites = equippedWeapon.GetComponentsInChildren<SpriteRenderer>();
+		foreach (SpriteRenderer temp in allSprites)
+		{
+			temp.sortingLayerName = layerName;
 		}
 	}
 
@@ -603,14 +644,6 @@ public class Actor : MonoBehaviour
 			{
 				mutation.trigger(target);
 			}
-		}
-	}
-
-	public void useAction(short index)
-	{
-		if (activeSlots[index] != null)
-		{
-			activeSlots[index].trigger(this);
 		}
 	}
 

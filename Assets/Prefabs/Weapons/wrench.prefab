@@ -221,7 +221,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6210392783176579490}
   - component: {fileID: 3442740799414355683}
-  - component: {fileID: 6376094926111057244}
+  - component: {fileID: 3088101190892556993}
   - component: {fileID: 6529950160097543187}
   - component: {fileID: 9146951687459429566}
   m_Layer: 15
@@ -302,7 +302,7 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &6376094926111057244
+--- !u!114 &3088101190892556993
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -311,23 +311,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 1931358901001870893}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4f2b7c4c185a0c74294700a8fb39e679, type: 3}
+  m_Script: {fileID: 11500000, guid: 048d2fd541e5d8a43a0dfcb0a359d379, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   anim: {fileID: 6529950160097543187}
   hitbox: {fileID: 9146951687459429566}
-  throwBox: {fileID: 5168576159283970348}
+  throwBox: {fileID: 0}
   sprite: {fileID: 3442740799414355683}
   damagedSprite: {fileID: 21300000, guid: a09a29f35e9e02e4391c8cedd94a41f3, type: 3}
   trailSprite: {fileID: 8279841047873369876}
   actorWielder: {fileID: 0}
   _weaponScriptable: {fileID: 11400000, guid: 0134897986adec14483be19013cb49f1, type: 2}
   _weaponPhysics: {fileID: 1630916773381673146}
-  actorHitSound: {fileID: 11400000, guid: 435f69a6187a6184393edba61d25272b, type: 2}
-  wallHitSound: {fileID: 11400000, guid: 14171c28ed3adca408d74c2da5276215, type: 2}
-  weaponAudioSource: {fileID: 0}
+  actorHitSound: {fileID: 0}
+  wallHitSound: {fileID: 0}
   weaponBreakSound: {fileID: 0}
-  weaponSwingSound: {fileID: 8300000, guid: 619dccd5df123b94d8da05c4efd605cc, type: 3}
+  weaponSwingSound: {fileID: 0}
 --- !u!95 &6529950160097543187
 Animator:
   serializedVersion: 7

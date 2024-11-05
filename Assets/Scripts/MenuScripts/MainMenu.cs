@@ -1,8 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -34,6 +31,8 @@ public class MainMenu : MonoBehaviour
 	public EventSystem eventSystem;
 	public AudioListener audioListener;
 
+	private int nextScene = SceneDefs.LEVEL_START_SCENE;
+
 	AsyncOperation op;
 
 	public void LateUpdate()
@@ -46,7 +45,7 @@ public class MainMenu : MonoBehaviour
 				{
 					menuCam.enabled = false;
 				}
-				SceneManager.SetActiveScene(SceneManager.GetSceneByBuildIndex(SceneDefs.GAME_START_SCENE));
+				SceneManager.SetActiveScene(SceneManager.GetSceneByBuildIndex(nextScene));
 				loadDone = true;
 				if (hack == true)
 				{
@@ -81,7 +80,7 @@ public class MainMenu : MonoBehaviour
 				for (int i = 0; i < SceneManager.sceneCount; i ++)
 				{
 					Scene curr = SceneManager.GetSceneAt(i);
-					if (curr.buildIndex == SceneDefs.GAME_START_SCENE || curr.buildIndex == SceneDefs.PLAYER_HUD_SCENE)
+					if (curr.buildIndex == nextScene || curr.buildIndex == SceneDefs.PLAYER_HUD_SCENE)
 					{
 						continue;
 					}
@@ -154,14 +153,14 @@ public class MainMenu : MonoBehaviour
 		for (int i = 0; i < SceneManager.loadedSceneCount; i++)
 		{
 			Scene curr = SceneManager.GetSceneAt(i);
-			if (curr.buildIndex == SceneDefs.GAME_START_SCENE)
+			if (curr.buildIndex == nextScene)
 			{
 				SceneManager.UnloadSceneAsync(curr.buildIndex);
 				break;
 			}
 		}
 
-		op = SceneManager.LoadSceneAsync(SceneDefs.GAME_START_SCENE, LoadSceneMode.Additive);
+		op = SceneManager.LoadSceneAsync(nextScene, LoadSceneMode.Additive);
 		op.allowSceneActivation = true;
 
 		enterMainScene();

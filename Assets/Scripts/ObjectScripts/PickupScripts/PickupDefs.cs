@@ -8,14 +8,16 @@ public static class PickupDefs
 	public enum keycardType
 	{
 		RED = 0,
-		BLUE = 1
+		BLUE = 1,
+		YELLOW = 2
 	};
 
 	public enum pickupType
 	{
 		CELL = 0,
 		KEYCARD = 1,
-		HEALTH_VIAL = 2
+		HEALTH_VIAL = 2,
+		BATTERY = 3
 	};
 
 	static public int MAX_KEYCARD_TYPE = (int)keycardType.BLUE;

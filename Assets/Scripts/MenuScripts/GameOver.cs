@@ -30,10 +30,13 @@ public class GameOver : MonoBehaviour
 
 	private bool transitioning;
 
+	private int currentLevel = SceneDefs.LEVEL_START_SCENE;
+
+
 	void Start()
 	{
 		transitioning = true;
-		Scene mainScene = SceneManager.GetSceneByBuildIndex(SceneDefs.GAME_START_SCENE);
+		Scene mainScene = SceneManager.GetSceneByBuildIndex(currentLevel);
 		for (int i = 0; i < SceneManager.sceneCount; i ++)
 		{
 			Scene curr = SceneManager.GetSceneAt(i);

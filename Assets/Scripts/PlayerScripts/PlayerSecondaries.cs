@@ -19,7 +19,7 @@ public class PlayerSecondaries : MonoBehaviour
 	void Update()
 	{
 		throwInputs();
-		activeInputs();
+		//activeInputs();
 	}
 
 	void throwInputs()
@@ -41,10 +41,6 @@ public class PlayerSecondaries : MonoBehaviour
 		short i = 0;
 		foreach (var action in _specialActions)
 		{
-			if (_specialActions[i] > 0 && _lastSpecialActions[i] == 0)
-			{
-				player.useAction(i);
-			}
 			_lastSpecialActions[i] = action;
 			i++;
 		}

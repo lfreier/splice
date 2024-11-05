@@ -12,13 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f695e0652b30c1047ae87fa8be4f8912, type: 3}
   m_Name: security1
   m_EditorClassIdentifier: 
-  <attackTimer>k__BackingField: 0.1
   <health>k__BackingField: 2.5
+  <attackTimer>k__BackingField: 0.1
   <maxSpeed>k__BackingField: 9
   <moveSpeed>k__BackingField: 0.4
   <acceleration>k__BackingField: 0.5
   <deceleration>k__BackingField: 0.2
-  <hearingRange>k__BackingField: 10
+  <hearingRange>k__BackingField: 9
   <sightRange>k__BackingField: 10.5
   <sightAngle>k__BackingField: 240
   <frightenedDistance>k__BackingField: 6

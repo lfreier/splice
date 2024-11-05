@@ -3,27 +3,20 @@ using UnityEngine;
 
 public class LevelManager : MonoBehaviour
 {
-	private bool hasPower;
+	private bool powerOn;
 
-	private void Awake()
+	public void startNewLevel()
 	{
-		//set starting power
+		powerOn = true;
 	}
 
-	// Use this for initialization
-	void Start()
+	public bool hasPower()
 	{
-
-	}
-
-	// Update is called once per frame
-	void Update()
-	{
-
+		return powerOn;
 	}
 
 	void setPower(bool powerToSet)
 	{
-		hasPower = powerToSet;
+		powerOn = powerToSet;
 	}
 }
