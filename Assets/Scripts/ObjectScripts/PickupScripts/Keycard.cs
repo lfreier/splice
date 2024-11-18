@@ -6,9 +6,11 @@ public class Keycard : MonoBehaviour, PickupInterface
 	public PickupDefs.keycardType _keycardType;
 	public SpriteRenderer keycardColor;
 	public int keycardUses;
+	private GameManager gameManager;
 
 	void Start()
 	{
+		 gameManager = GameManager.Instance;
 		init();
 	}
 
@@ -19,19 +21,7 @@ public class Keycard : MonoBehaviour, PickupInterface
 
 	public void init()
 	{
-		switch (_keycardType)
-		{
-			case PickupDefs.keycardType.YELLOW:
-				keycardColor.color = GameManager.COLOR_YELLOW;
-				break;
-			case PickupDefs.keycardType.BLUE:
-				keycardColor.color = GameManager.COLOR_BLUE;
-				break;
-			case PickupDefs.keycardType.RED:
-			default:
-				keycardColor.color = GameManager.COLOR_RED;
-				break;
-		}
+		keycardColor.color = PickupDefs.getKeycardColor(_keycardType);
 	}
 
 	public PickupDefs.pickupType getPickupType()
@@ -41,11 +31,10 @@ public class Keycard : MonoBehaviour, PickupInterface
 
 	public void pickup(Actor actorTarget)
 	{
-		PlayerInteract interact = actorTarget.gameObject.GetComponent<PlayerInteract>();
-		if (interact != null)
+		if (gameManager != null)
 		{
-			interact.stats.addItem(this);
-			Destroy(this.gameObject);
+			gameManager.playerStats.addItem(this);
 		}
+		Destroy(this.gameObject);
 	}
 }

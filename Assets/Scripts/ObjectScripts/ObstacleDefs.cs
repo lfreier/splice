@@ -1,6 +1,5 @@
 ﻿public static class ObstacleDefs
 {
-
 }
 
 public enum weightClass

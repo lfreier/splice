@@ -1,15 +1,16 @@
 ﻿using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 using static GameManager;
 
 public class PlayerCamera : MonoBehaviour
 {
 	public Actor player;
-	private CameraHandler camHandler;
+	public CameraHandler camHandler;
 	public PlayerInput unityInput;
 
-	//private bool rotateLocked;
+	private bool rotateLocked;
 	private bool init;
 
 	private float moveCamInput;
@@ -28,7 +29,7 @@ public class PlayerCamera : MonoBehaviour
 			if (script != null)
 			{
 				camHandler = script;
-				unityInput.camera = cam;
+				unityInput.camera = Camera.main;
 				break;
 			}
 		}
@@ -41,6 +42,7 @@ public class PlayerCamera : MonoBehaviour
 		{
 			player.gameManager.rotationLockedEvent += lockRotation;
 			player.gameManager.rotationUnlockedEvent += unlockRotation;
+
 			init = true;
 		}
 		moveCamInput = inputs.moveCamInput();
@@ -66,18 +68,21 @@ public class PlayerCamera : MonoBehaviour
 		Vector2 aimDir = inputs.pointerPos() - player.actorBody.position;
 		float aimAngle = (Mathf.Atan2(aimDir.y, aimDir.x) * Mathf.Rad2Deg) - 90F;
 
-		player.actorBody.MoveRotation(aimAngle);
+		if (!rotateLocked)
+		{
+			player.actorBody.MoveRotation(aimAngle);
+		}
 		lastAimAngle = aimAngle;
 	}
 
 	private void lockRotation()
 	{
 		player.actorBody.MoveRotation(lastAimAngle);
-		//rotateLocked = true;
+		rotateLocked = true;
 	}
 
 	private void unlockRotation()
 	{
-		//rotateLocked = false;
+		rotateLocked = false;
 	}
 }

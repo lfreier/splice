@@ -8,6 +8,7 @@ using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using UnityEngine.U2D;
 using static EffectDefs;
+using static ActorDefs;
 
 /*
  * Actor class:
@@ -17,39 +18,7 @@ using static EffectDefs;
 
 public class Actor : MonoBehaviour
 {
-	public struct ActorData
-	{
-		public float health;
-		public float maxHealth;
-
-		public float maxSpeed;
-		public float moveSpeed;
-
-		public float acceleration;
-		public float deceleration;
-
-		public float hearingRange;
-		public float sightAngle;
-		public float sightRange;
-
-		public float frightenedDistance;
-	};
-
-	public enum detectMode
-	{
-		nul = -1,
-		idle = 0,
-		suspicious = 1,
-		seeking = 2,
-		lost = 3,
-		hostile = 4,
-		frightened = 5,
-		getWeapon = 6
-	};
-
 	public AudioSource actorAudioSource;
-
-	public PlayerHUD hud;
 
 	public ActorScriptable _actorScriptable;
 	public ActorData actorData;
@@ -82,13 +51,14 @@ public class Actor : MonoBehaviour
 
 	private float speedCheck;
 
+	private string setSide = null;
+
 	public bool invincible = false;
 
 	public void Start()
 	{
 		speedCheck = 0;
 		attackTarget = null;
-		gameManager = GameManager.Instance;
 		activeSlots = new MutationInterface[MutationDefs.MAX_SLOTS];
 		sprite = GetComponent<SpriteRenderer>();
 		initActorData();
@@ -96,12 +66,6 @@ public class Actor : MonoBehaviour
 
 	public void Update()
 	{
-		/* TODO: if game manager is null, just don't bother equipping fists.
-		   But it shouldn't work like that, gameManager should be singleton*/
-		if (gameManager != null && (equippedWeapon == null || equippedWeaponInt == null))
-		{
-			equipEmpty();
-		}
 	}
 
 	public void FixedUpdate()
@@ -111,6 +75,8 @@ public class Actor : MonoBehaviour
 
 	private void initActorData()
 	{
+		gameManager = GameManager.Instance;
+
 		actorData.health = _actorScriptable.health;
 		actorData.maxHealth = _actorScriptable.health;
 
@@ -142,6 +108,12 @@ public class Actor : MonoBehaviour
 				this.behaviorList.Add(foundScript);
 			}
 		}
+
+		if (gameManager != null && (equippedWeapon == null || equippedWeaponInt == null))
+		{
+			equipEmpty();
+		}
+
 	}
 
 	public float aimAngle(Vector2 aimTarget)
@@ -291,11 +263,16 @@ public class Actor : MonoBehaviour
 
 		equippedWeapon.transform.SetParent(this.transform, true);
 		setWeaponLayer(WeaponDefs.SORT_LAYER_CHARS);
-		equippedWeaponInt.setStartingPosition();
+		equippedWeaponInt.setStartingPosition(true);
 
 		WeaponDefs.setWeaponTag(equippedWeapon, WeaponDefs.EQUIPPED_WEAPON_TAG);
 
 		equippedWeaponInt.setActorToHold(this);
+
+		if (setSide != null)
+		{
+			setAttackOnly(setSide);
+		}
 
 		return true;
 	}
@@ -310,16 +287,12 @@ public class Actor : MonoBehaviour
 		return attackTarget;
 	}
 
-	public Camera getCamera()
-	{
-		return Camera.main;
-	}
 	public GameObject instantiateActive(GameObject prefab)
 	{
 		GameObject activePrefab = Instantiate(prefab, new Vector3(0, 0, 0), Quaternion.identity);
 		MutationInterface mutScript = activePrefab.GetComponentInChildren<MutationInterface>();
 
-		activePrefab.transform.SetParent(this.gameObject.transform, false);
+		activePrefab.transform.SetParent(mutationHolder.transform, false);
 		mutScript.setStartingPosition();
 		WeaponDefs.setWeaponTag(activePrefab, WeaponDefs.EQUIPPED_ACTIVE_TAG);
 
@@ -358,6 +331,11 @@ public class Actor : MonoBehaviour
 		}
 
 		if (this.tag.Equals(ActorDefs.npcTag) && targetActor.tag.Equals(ActorDefs.npcTag))
+		{
+			return false;
+		}
+
+		if (this.tag.Equals(ActorDefs.playerTag) && targetActor.tag.Equals(ActorDefs.playerTag))
 		{
 			return false;
 		}
@@ -511,6 +489,23 @@ public class Actor : MonoBehaviour
 		attackTarget = targetActor;
 	}
 
+	public void setAttackOnly(string animStateSide)
+	{
+		BasicWeapon weaponScript = equippedWeapon.GetComponentInChildren<BasicWeapon>();
+		if (weaponScript == null)
+		{
+			return;
+		}
+
+		bool toSet = animStateSide == WeaponDefs.ANIM_BOOL_ONLY_RIGHT;
+		weaponScript.anim.SetBool(WeaponDefs.ANIM_BOOL_ONLY_RIGHT, toSet);
+		weaponScript.anim.SetBool(WeaponDefs.ANIM_BOOL_ONLY_LEFT, !toSet);
+		weaponScript.anim.SetTrigger(WeaponDefs.ANIM_TRIGGER_SWAP_SIDE);
+		equippedWeaponInt.setStartingPosition(toSet);
+
+		setSide = animStateSide;
+	}
+
 	public void setColor(Color newColor)
 	{
 		if (sprite != null)
@@ -534,6 +529,18 @@ public class Actor : MonoBehaviour
 				break;
 			default:
 				break;
+		}
+	}
+
+	public void setActorCollision(bool toSet)
+	{
+		if (toSet)
+		{
+			actorBody.excludeLayers = 0;
+		}
+		else
+		{
+			actorBody.excludeLayers = LayerMask.GetMask(new string[] { GameManager.OBJECT_MID_LAYER, GameManager.ACTOR_LAYER });
 		}
 	}
 
@@ -586,7 +593,7 @@ public class Actor : MonoBehaviour
 		if (this.tag.Equals(ActorDefs.playerTag))
 		{
 			EffectDefs.effectApply(this, gameManager.effectManager.iFrame1);
-			hud.updateHealth(actorData.health);
+			gameManager.signalUpdateHealthEvent(actorData.health);
 		}
 		else
 		{
@@ -608,7 +615,7 @@ public class Actor : MonoBehaviour
 
 		if (this.tag.Equals(ActorDefs.playerTag))
 		{
-			hud.updateHealth(actorData.health);
+			gameManager.signalUpdateHealthEvent(actorData.health);
 		}
 
 		return startingHealth - actorData.health;
@@ -636,7 +643,7 @@ public class Actor : MonoBehaviour
 
 	public void triggerDamageEffects(Actor target)
 	{
-		var mutationList = mutationHolder.GetComponents<MonoBehaviour>();
+		var mutationList = mutationHolder.GetComponentsInChildren<MutationInterface>();
 
 		foreach (MutationInterface mutation in mutationList)
 		{

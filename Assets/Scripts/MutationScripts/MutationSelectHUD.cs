@@ -11,7 +11,7 @@ public class MutationSelectHUD : MonoBehaviour
 
 	public MutationSelect select;
 
-	public MainMenu menu;
+	public MenuHandler menu;
 
 	public float clickProtectSeconds;
 

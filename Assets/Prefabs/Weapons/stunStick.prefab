@@ -255,7 +255,7 @@ MonoBehaviour:
   - {fileID: 4577354303791393568}
   - {fileID: 2249135954518531883}
   startingCharge: 2
-  batteryDamage: 2.5
+  chargedDamage: 2.5
 --- !u!95 &6529950160097543187
 Animator:
   serializedVersion: 7
@@ -268,7 +268,7 @@ Animator:
   m_Avatar: {fileID: 0}
   m_Controller: {fileID: 9100000, guid: 67236f704e99ecb41a5e6a9220a260a9, type: 2}
   m_CullingMode: 0
-  m_UpdateMode: 0
+  m_UpdateMode: 1
   m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0

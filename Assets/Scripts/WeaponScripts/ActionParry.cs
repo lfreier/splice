@@ -11,7 +11,7 @@ public class ActionParry : MonoBehaviour, ActionInterface
 
 	public void action()
 	{
-		anim.SetTrigger("AttackSecondary");
+		anim.SetTrigger(WeaponDefs.ANIM_TRIGGER_ATTACK_SEC);
 	}
 
 	private void attackerDisarm(Actor attacker)
@@ -29,6 +29,11 @@ public class ActionParry : MonoBehaviour, ActionInterface
 		return parryHitbox.enabled = !parryHitbox.enabled;
 	}
 	
+	public void setDamagedSprite()
+	{
+
+	}
+
 	private void OnTriggerEnter2D(Collider2D collision)
 	{
 		WeaponInterface weapon = collision.gameObject.GetComponent<WeaponInterface>();

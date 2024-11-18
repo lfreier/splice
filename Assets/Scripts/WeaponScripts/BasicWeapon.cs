@@ -30,6 +30,8 @@ public abstract class BasicWeapon : MonoBehaviour, WeaponInterface
 	public AudioClip weaponBreakSound;
 	public AudioClip weaponSwingSound;
 
+	public bool currentSide;
+
 	private GameManager gameManager;
 
 	protected float durability;
@@ -61,7 +63,7 @@ public abstract class BasicWeapon : MonoBehaviour, WeaponInterface
 
 	public bool attack(LayerMask targetLayer)
 	{
-		anim.SetTrigger("Attack");
+		anim.SetTrigger(WeaponDefs.ANIM_TRIGGER_ATTACK);
 		lastTargetLayer = targetLayer;
 		actorWielder.invincible = false;
 		//actorWielder.actorAudioSource.PlayOneShot(weaponSwingSound);
@@ -146,6 +148,7 @@ public abstract class BasicWeapon : MonoBehaviour, WeaponInterface
 		{
 			//set to damaged sprite
 			sprite.sprite = damagedSprite;
+			secondaryAction.setDamagedSprite();
 		}
 
 		if (durability <= 0)
@@ -171,9 +174,15 @@ public abstract class BasicWeapon : MonoBehaviour, WeaponInterface
 		hitbox.enabled = toggle;
 	}
 
-	public void setStartingPosition()
+	public void setStartingPosition(bool side)
 	{
 		transform.parent.SetLocalPositionAndRotation(new Vector3(_weaponScriptable.equipPosX, _weaponScriptable.equipPosY, 0), Quaternion.Euler(0, 0, _weaponScriptable.equipRotZ));
+		if (!side)
+		{
+			transform.SetLocalPositionAndRotation(new Vector3(_weaponScriptable.equipOtherPosX, _weaponScriptable.equipOtherPosY, 0), Quaternion.Euler(0, 0, _weaponScriptable.equipOtherRotZ));
+		}
+
+		currentSide = side;
 	}
 
 	public void slowWielder(float percentage)

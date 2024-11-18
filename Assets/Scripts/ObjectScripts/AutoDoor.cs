@@ -22,16 +22,7 @@ public class AutoDoor : MonoBehaviour
 	private void Start()
 	{
 		/* Set color */
-		switch (lockType)
-		{
-			case PickupDefs.keycardType.BLUE:
-				keycardColor = GameManager.COLOR_BLUE;
-				break;
-			case PickupDefs.keycardType.RED:
-			default:
-				keycardColor = GameManager.COLOR_RED;
-				break;
-		}
+		keycardColor = PickupDefs.getKeycardColor(lockType);
 
 		open = false;
 		if (locked)

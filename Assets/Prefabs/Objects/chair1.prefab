@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 430976872287504748}
   - component: {fileID: 783624939676991837}
   - component: {fileID: 4972926401980030369}
-  m_Layer: 7
+  m_Layer: 13
   m_Name: chair1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -52,6 +52,8 @@ SpriteRenderer:
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 0
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:

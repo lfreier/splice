@@ -343,6 +343,7 @@ MonoBehaviour:
   menuOptions:
   - {fileID: 656053218}
   - {fileID: 1239532338}
+  reloadHUD: 1
   fadeChange: 0.25
   menuCanvas: {fileID: 1608346816}
   menuCam: {fileID: 1812369486}
@@ -807,7 +808,7 @@ GameObject:
   - component: {fileID: 1812369485}
   m_Layer: 0
   m_Name: Main Camera
-  m_TagString: MainCamera
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

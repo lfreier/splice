@@ -84,7 +84,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 919069219
   m_SortingLayer: 2
-  m_SortingOrder: 1
+  m_SortingOrder: 5
   m_Sprite: {fileID: 21300000, guid: 887dcf92f724851489cd6a07181a9a01, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -182,7 +182,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   actorAudioSource: {fileID: 5422313256502658861}
-  hud: {fileID: 0}
   _actorScriptable: {fileID: 11400000, guid: 16f7ba50317fbc64f9b1238e213c50ed, type: 2}
   actorBody: {fileID: 2658991806923027523}
   currMoveVector: {x: 0, y: 0, z: 0}
@@ -194,6 +193,7 @@ MonoBehaviour:
   effectHolder: {fileID: 8153268800123022767}
   droppedItems:
   - {fileID: 7098409054979973783, guid: 0bd2a725f32769444a75c53a2af17124, type: 3}
+  - {fileID: 7759880110565179527, guid: 5faef6d126fd21c4e924a1c7c05e34bc, type: 3}
   gameManager: {fileID: 0}
   corpseSprite: {fileID: 0}
   corpsePrefab: {fileID: 2911627580042638205, guid: 9bdd8350a0e30434eaadda3861d39b89, type: 3}
@@ -212,9 +212,27 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   actor: {fileID: 740460995545239096}
   actorBody: {fileID: 2658991806923027523}
-  moveTargetError: 0.2
-  idlePath: []
-  idlePathPauseTime: []
+  moveTargetError: 0.22
+  idlePath:
+  - {x: -19, y: -23}
+  - {x: -19, y: -4.8}
+  - {x: -17, y: -5}
+  - {x: 19.2, y: -5}
+  - {x: 19, y: -7}
+  - {x: 19, y: -43.2}
+  - {x: 17, y: -43}
+  - {x: -19.2, y: -43}
+  - {x: -19, y: -41}
+  idlePathPauseTime:
+  - 0
+  - 0
+  - 3
+  - 0
+  - 3
+  - 0
+  - 3
+  - 0
+  - 3
   _detection: 0
   gameManager: {fileID: 0}
 --- !u!114 &8936931521236048847
@@ -230,6 +248,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   actor: {fileID: 740460995545239096}
+  attackTimer: 0
 --- !u!114 &-1466957392654916104
 MonoBehaviour:
   m_ObjectHideFlags: 0

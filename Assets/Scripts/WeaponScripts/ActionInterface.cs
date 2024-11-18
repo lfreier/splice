@@ -7,4 +7,6 @@ public interface ActionInterface
 	public bool toggleHitbox();
 
 	public void setActorToHold(Actor actor);
+
+	public void setDamagedSprite();
 }

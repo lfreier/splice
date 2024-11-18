@@ -110,10 +110,18 @@ public class StabWeapon : MonoBehaviour, WeaponInterface
 		hitbox.enabled = toggle;
 	}
 
-	public void setStartingPosition()
+	public void setStartingPosition(bool side)
 	{
-		transform.parent.SetLocalPositionAndRotation(new Vector3(_weaponScriptable.equipPosX, _weaponScriptable.equipPosY, 0), Quaternion.Euler(0, 0, _weaponScriptable.equipRotZ));
+		if (side)
+		{
+			transform.parent.SetLocalPositionAndRotation(new Vector3(_weaponScriptable.equipPosX, _weaponScriptable.equipPosY, 0), Quaternion.Euler(0, 0, _weaponScriptable.equipRotZ));
+		}
+		else
+		{
+			transform.parent.SetLocalPositionAndRotation(new Vector3(_weaponScriptable.equipPosX + _weaponScriptable.equipOtherPosX, _weaponScriptable.equipPosY + _weaponScriptable.equipOtherPosY, 0), Quaternion.Euler(0, 0, _weaponScriptable.equipRotZ + _weaponScriptable.equipOtherRotZ));
+		}
 	}
+
 	public void slowWielder(float percentage)
 	{
 		if (actorWielder != null)

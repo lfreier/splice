@@ -10,77 +10,129 @@ public class PlayerHUD : MonoBehaviour
 {
 	private Actor player;
 
+	public Canvas[] hudCanvas;
+
+	public GameObject healthHudObject;
+
 	public TextMeshProUGUI cellText;
+	public Image mutationFill;
 
 	public GameObject heartPrefab;
 
 	public Sprite heartSprite;
 	public Sprite halfHeartSprite;
 
-	public Canvas healthCanvas;
 	public Canvas shadowCanvas;
 	public RectTransform textTransform;
+	public int pixelSpacing;
 
 	public AudioSource musicPlayer;
 	private float musicVolume;
 
 	private List<GameObject> heartList;
 
-	public int pixelSpacing;
-
 	private GameObject healthListHead;
 	private int headIndex;
 	private float hudHealth = 0;
 
-	private PlayerStats stats;
+	private Vector3 hudStartScale;
+	private Vector3 shadowStartScale;
+	private Vector3 textStartScale;
 
 	private static float pixelSize = 0.0625F;
+	private GameManager gameManager;
 
-	// Use this for initialization
-	void Start()
+	private void Start()
 	{
+		gameManager = GameManager.Instance;
+		gameManager.initHudEvent += init;
+		gameManager.updateHealthEvent += updateHealth;
+		gameManager.muteEvent += mute;
+		gameManager.updateCellCount += updateCells;
+		foreach (Canvas canvas in hudCanvas)
+		{
+			canvas.gameObject.SetActive(false);
+		}
+		hudStartScale = transform.localScale;
+		shadowStartScale = shadowCanvas.transform.localScale;
+		textStartScale = textTransform.localScale;
+	}
+
+	private void OnDestroy()
+	{
+		gameManager.initHudEvent -= init;
+		gameManager.updateHealthEvent -= updateHealth;
+		gameManager.updateCellCount -= updateCells;
+	}
+
+	public void init()
+	{
+		if (heartList != null)
+		{
+			resetHeartHUD();
+		}
+
 		foreach (Actor actor in FindObjectsByType<Actor>(FindObjectsSortMode.None))
 		{
 			if (actor.tag == ActorDefs.playerTag)
 			{
 				player = actor;
-				player.hud = this;
-				PlayerInteract interactScript = player.gameObject.GetComponent<PlayerInteract>();
-				interactScript.stats.hud = this;
-				Camera main = player.getCamera();
+				Camera main = Camera.main;
+				foreach (Canvas canvas in hudCanvas)
+				{
+					canvas.worldCamera = main;
+					canvas.sortingLayerName = GameManager.UI_LAYER;
+				}
 
-				healthCanvas.worldCamera = main;
-				shadowCanvas.worldCamera = main;
+				this.transform.localScale = hudStartScale * Screen.width / (1080 * 1.5F);
+				shadowCanvas.transform.localScale = shadowStartScale * Screen.width / (1080 * 1.5F);
+				textTransform.localScale = textStartScale * Screen.width / (1080 * 1.5F);
 
-				healthCanvas.transform.SetParent(main.transform, false);
-
-				this.transform.localScale *= Screen.width / (1080 * 1.5F);
-				shadowCanvas.transform.localScale *= Screen.width / (1080 * 1.5F);
-				textTransform.localScale *= Screen.width / (1080 * 1.5F);
-
-				healthCanvas.sortingLayerName = GameManager.UI_LAYER;
-				shadowCanvas.sortingLayerName = GameManager.UI_LAYER;
-
-				musicPlayer.Play();
+				if (musicPlayer.enabled && !musicPlayer.isPlaying)
+				{
+					musicPlayer.Play();
+				}
 
 				break;
 			}
 		}
 
+		if (player == null)
+		{
+			return;
+		}
+
 		heartList = new List<GameObject>();
 
 		float i;
-		for (i = 0; i < player.actorData.health - 0.5F; i ++)
+		float playerMaxHealth = player.gameManager.playerStats.getPlayerMaxHealth();
+		float currHealth = player.gameManager.playerStats.getPlayerSavedHealth();
+		//TODO: This is fucking dumb but w/e
+		player.actorData.health = currHealth;
+		player.actorData.maxHealth = playerMaxHealth;
+		for (i = 0; i < playerMaxHealth - 0.5F; i ++)
 		{
 			addHeart();
-			refillHeart(heartSprite);
+			if (i < currHealth - 0.5F)
+			{
+				refillHeart(heartSprite);
+			}
 		}
 
 		/* add an extra half heart */
-		if (player.actorData.health % 1 != 0)
+		if (playerMaxHealth % 1 != 0)
 		{
 			addHeart();
 			refillHeart(halfHeartSprite);
+			if (currHealth % 1 != 0)
+			{
+				refillHeart(halfHeartSprite);
+			}
+		}
+
+		foreach (Canvas canvas in hudCanvas)
+		{
+			canvas.gameObject.SetActive(true);
 		}
 	}
 
@@ -92,11 +144,12 @@ public class PlayerHUD : MonoBehaviour
 	public void updateCells(int count)
 	{
 		cellText.SetText("" + count);
+		mutationFill.fillAmount = gameManager.playerStats.getMutationBar() / gameManager.playerStats.maxMutationBar;
 	}
 
 	private void addHeart()
 	{
-		GameObject newHeart = Instantiate(heartPrefab, this.transform);
+		GameObject newHeart = Instantiate(heartPrefab, healthHudObject.transform);
 		newHeart.transform.SetLocalPositionAndRotation(new Vector2(heartList.Count * pixelSpacing * pixelSize, 0), Quaternion.identity);
 		heartList.Add(newHeart);
 
@@ -180,9 +233,14 @@ public class PlayerHUD : MonoBehaviour
 	{
 
 	}
-	private void removeHeart()
-	{
 
+	private void resetHeartHUD()
+	{
+		foreach (GameObject heart in heartList)
+		{
+			Destroy(heart);
+		}
+		hudHealth = 0;
 	}
 
 	public void updateHealth(float newHealth)

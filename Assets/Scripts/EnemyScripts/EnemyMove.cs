@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using static Actor;
+using static ActorDefs;
 
 /* Includes logic for basic enemy movement.
  * Also has to interact with 'AI' for detection and where to move.

@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 490452465005164610}
   - component: {fileID: 5488563473241676063}
   - component: {fileID: 5121713532546916100}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: blackboard
   m_TagString: Untagged
   m_Icon: {fileID: 0}

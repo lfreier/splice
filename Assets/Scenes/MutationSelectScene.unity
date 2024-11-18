@@ -438,7 +438,7 @@ MonoBehaviour:
   - {fileID: 1092966977}
   select: {fileID: 0}
   menu: {fileID: 1122879510}
-  clickProtect: 0.5
+  clickProtectSeconds: 0
 --- !u!114 &1122879509
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -451,7 +451,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d07dd0f11fee0d24dbdb4140930e1dcc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sceneBuildIndex: 5
+  sceneBuildIndex: 6
   gameOverCam: {fileID: 0}
   deathHeartImage: {fileID: 0}
   fadeInImages:

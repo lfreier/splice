@@ -1,13 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
+using Unity.VisualScripting.Antlr3.Runtime.Misc;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using static GameManager;
 
 public class GameManager : MonoBehaviour
 {
 	private static GameManager instance = null;
 
 	public GameObject startingSelect;
+
+	public delegate void InitHudEvent();
+	public event InitHudEvent initHudEvent;
+
+	public delegate void MuteEvent();
+	public event MuteEvent muteEvent;
+
+	public delegate void MovementLockedEvent();
+	public event MovementLockedEvent movementLockedEvent;
+
+	public delegate void MovementUnlockedEvent();
+	public event MovementUnlockedEvent movementUnlockedEvent;
 
 	public delegate void PlayerInteractEvent();
 	public event PlayerInteractEvent playerInteractEvent;
@@ -24,15 +38,20 @@ public class GameManager : MonoBehaviour
 	public delegate void RotationUnlockedEvent();
 	public event RotationUnlockedEvent rotationUnlockedEvent;
 
+	public delegate void UpdateCellCount(int count);
+	public event UpdateCellCount updateCellCount;
+
+	public delegate void UpdateHealthEvent(float newHealth);
+	public event UpdateHealthEvent updateHealthEvent;
+
 	public AudioManager audioManager;
 	public EffectManager effectManager;
 	public LevelManager levelManager;
 
-	public Camera mainCam;
-
-	public bool startWithSelect = false;
+	public LoadingHandler loadingHandler = null;
 
 	public GameObject mutPLimb;
+	public GameObject mutPBladeWing;
 
 	public GameObject weapPBladeArm;
 	public GameObject weapPFist;
@@ -43,6 +62,12 @@ public class GameManager : MonoBehaviour
 	public LayerMask findWeaponLayers;
 	public LayerMask soundLayer;
 
+	public PlayerStats playerStats;
+
+	public bool isLoaded = false;
+	public int currentScene = -1;
+
+	public static string ACTOR_LAYER = "Actor";
 	public static string DAMAGE_LAYER = "Damage";
 	public static string OBJECT_LAYER = "Object";
 	public static string OBJECT_MID_LAYER = "ObjectMid";
@@ -59,7 +84,7 @@ public class GameManager : MonoBehaviour
 	public static Color COLOR_BLUE = new Color(0.1F, 0.1F, 0.4F, 1F);
 	public static Color COLOR_GREEN = new Color(0.15F, 0.4f, 0, 1F);
 	public static Color COLOR_RED = new Color(0.4F, 0.1F, 0.1F, 1F);
-	public static Color COLOR_YELLOW = new Color(0.6F, 0.6f, 0, 1F);
+	public static Color COLOR_YELLOW = new Color(0.54F, 0.54F, 0, 1F);
 	public static Color COLOR_IFRAME = new Color(0.9F, 0.3F, 0.3F, 1F);
 
 	public List<Type> actorBehaviors = new List<Type>();
@@ -80,8 +105,9 @@ public class GameManager : MonoBehaviour
 		}
 	}
 
-	private void Awake()
+	private async void Awake()
 	{
+		currentScene = -1;
 		if (instance != null && instance != this)
 		{
 			Destroy(this.gameObject);
@@ -100,7 +126,28 @@ public class GameManager : MonoBehaviour
 		actorBehaviors.Add(Type.GetType("EnemyAttack"));
 		actorBehaviors.Add(Type.GetType("EnemyMove"));
 
-		SceneManager.LoadScene(SceneDefs.PLAYER_HUD_SCENE, LoadSceneMode.Additive);
+		/* load necessary background scenes now */
+		await SceneManager.LoadSceneAsync(SceneDefs.LOADING_SCENE, LoadSceneMode.Additive);
+
+		while (loadingHandler == null){}
+		loadingHandler.reloadHUD = true;
+		loadingHandler.resetPlayerData = true;
+		loadBackgroundScenes();
+
+		playerStats = new PlayerStats();
+
+		/* This is mainly for debugging - making sure we set the level if we don't load it */
+		for (int i = 0; i < SceneManager.sceneCount; i++)
+		{
+			Scene curr = SceneManager.GetSceneAt(i);
+			if (SceneDefs.isLevelScene(curr.buildIndex))
+			{
+				currentScene = curr.buildIndex;
+				break;
+			}
+		}
+
+		isLoaded = true;
 	}
 
 	private void Update()
@@ -113,45 +160,72 @@ public class GameManager : MonoBehaviour
 
 	public void gameOver(Actor player)
 	{
-		CameraHandler camHan = mainCam.GetComponent<CameraHandler>();
+		CameraHandler camHan = Camera.main.GetComponent<CameraHandler>();
 		camHan.enabled = false;
-		mainCam.transform.position = player.transform.position;
-		AudioListener audio = mainCam.GetComponent<AudioListener>();
+		Camera.main.transform.position = player.transform.position;
+		AudioListener audio = Camera.main.GetComponent<AudioListener>();
 		audio.enabled = false;
-		player.gameManager.startWithSelect = false;
 		SceneManager.LoadScene(SceneDefs.GAME_OVER_SCENE, LoadSceneMode.Additive);
-
-		//player.actorAudioSource.PlayOneShot(audioManager.playerDeath);
-		//while (player.actorAudioSource.isPlaying)
-		//{
-
-		//}
-		//audio.enabled = false;
 	}
-	public void nextLevel(Actor player)
+	public async void nextLevel(Actor player, int nextSceneIndex)
 	{
-		CameraHandler camHan = mainCam.GetComponent<CameraHandler>();
+		CameraHandler camHan = Camera.main.GetComponent<CameraHandler>();
 		camHan.enabled = false;
-		mainCam.transform.position = player.transform.position;
-		player.gameManager.startWithSelect = true;
-		AudioListener audio = mainCam.GetComponent<AudioListener>();
+		Camera.main.transform.position = player.transform.position;
+		AudioListener audio = Camera.main.GetComponent<AudioListener>();
 		audio.enabled = false;
-		Time.timeScale = 0;
-		SceneManager.LoadScene(SceneDefs.NEXT_LEVEL_SCENE, LoadSceneMode.Additive);
+		currentScene = nextSceneIndex;
+		loadingHandler.reloadHUD = true;
+
+		await loadingHandler.LoadSceneGroup(new int[] { currentScene }, true, true);
 	}
 
-	public void startMutationSelect()
+	public async void loadBackgroundScenes()
 	{
-		if (startingSelect == null)
+		List<int> bgScenes = new List<int>(SceneDefs.BACKGROUND_SCENES.Length);
+
+		int i = 0, j = 0;
+		for (i = 0; i < SceneDefs.BACKGROUND_SCENES.Length; i++)
 		{
-			Debug.Log("No starting select because null");
-			return;
+			for (j = 0; j < SceneManager.sceneCount; j++)
+			{
+				if (SceneDefs.BACKGROUND_SCENES[i] == SceneManager.GetSceneAt(j).buildIndex)
+				{
+					j = -1;
+					break;
+				}
+			}
+			if (j >= 0)
+			{
+				bgScenes.Add(SceneDefs.BACKGROUND_SCENES[i]);
+			}
 		}
-		foreach (MutationSelect select in startingSelect.GetComponents<MutationSelect>())
-		{
-			Debug.Log("Starting with mutation selection");
-			select.gameObject.SetActive(true);
-		}
+		await loadingHandler.LoadSceneGroup(bgScenes.ToArray(), false, false);
+	}
+
+	public void save(Actor player)
+	{
+		playerStats.savePlayerData(player);
+	}
+
+	public void signalInitHudEvent()
+	{
+		initHudEvent?.Invoke();
+	}
+
+	public void signalMovementLocked()
+	{
+		movementLockedEvent?.Invoke();
+	}
+
+	public void signalMovementUnlocked()
+	{
+		movementUnlockedEvent?.Invoke();
+	}
+
+	public void signalMuteEvent()
+	{
+		muteEvent?.Invoke();
 	}
 
 	public void signalRotationLocked()
@@ -182,5 +256,15 @@ public class GameManager : MonoBehaviour
 	public void signalPlayerAbilityReleaseEvent()
 	{
 		playerAbilityReleaseEvent?.Invoke();
+	}
+
+	public void signalUpdateCellCount(int count)
+	{
+		updateCellCount?.Invoke(count);
+	}
+
+	public void signalUpdateHealthEvent(float newHealth)
+	{
+		updateHealthEvent?.Invoke(newHealth);
 	}
 }

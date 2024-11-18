@@ -446,7 +446,7 @@ MonoBehaviour:
   - {fileID: 1057535118}
   - {fileID: 1729114714}
   desiredAlpha: 1
-  fadeChange: 0.25
+  fadeInChange: 0.25
   finalPumpScale: 14.5
   pumpMult: 40
   pumpTimer: 0.5
@@ -608,8 +608,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1122879505}
-        m_TargetAssemblyTypeName: MainMenu, Assembly-CSharp
-        m_MethodName: startGame
+        m_TargetAssemblyTypeName: MenuHandler, Assembly-CSharp
+        m_MethodName: restartGame
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

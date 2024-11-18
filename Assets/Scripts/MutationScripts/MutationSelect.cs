@@ -8,25 +8,14 @@ public class MutationSelect : MonoBehaviour
 {
 	public GameObject[] mutationPrefabs;
 
-	public bool startingSelect = false;
-
 	private PlayerInteract interact;
 
 	private CameraHandler camHandler;
 
 	private AsyncOperation op;
-	private GameManager gameManager;
 
 	private void Start()
 	{
-		gameManager = GameManager.Instance;
-		if (gameManager != null && startingSelect)
-		{
-			if (!gameManager.startWithSelect)
-			{
-				this.gameObject.SetActive(false);
-			}
-		}
 	}
 
 	private void Update()

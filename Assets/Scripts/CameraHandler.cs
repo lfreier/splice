@@ -22,6 +22,18 @@ public class CameraHandler : MonoBehaviour
 	[SerializeField]
 	private InputActionReference pointerPosition;
 
+	static Camera _MainCamera;
+	public static Camera MainCamera
+	{
+		get
+		{
+			if (_MainCamera == null)
+				_MainCamera = Camera.main;
+
+			return _MainCamera;
+		}
+	}
+
 	void Start()
 	{
 		followPlayer = true;
@@ -37,6 +49,9 @@ public class CameraHandler : MonoBehaviour
 		Vector3 mousePos = pointerPosition.action.ReadValue<Vector2>();
 		mousePos.z = Camera.main.nearClipPlane;
 		pointerPos = Camera.main.ScreenToWorldPoint(mousePos);
+		verExtent = Camera.main.orthographicSize;
+		widthRatio = (float)Screen.width / (float)Screen.height;
+		horExtent = verExtent * widthRatio;
 
 		if (stop)
 		{

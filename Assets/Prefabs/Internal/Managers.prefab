@@ -1,0 +1,117 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &7906487538385718882
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6340505024752381951}
+  - component: {fileID: 2777311585036640006}
+  - component: {fileID: 4654381731306417788}
+  - component: {fileID: 4511755820635981177}
+  m_Layer: 0
+  m_Name: Managers
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6340505024752381951
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7906487538385718882}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 5.3481436, y: 8.985862, z: -0.015034206}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2777311585036640006
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7906487538385718882}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 160baa9602fdafc45b6b9d372552af62, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  startingSelect: {fileID: 0}
+  audioManager: {fileID: 0}
+  effectManager: {fileID: 0}
+  levelManager: {fileID: 0}
+  loadingHandler: {fileID: 0}
+  mutPLimb: {fileID: 4878587490104917525, guid: c1e65fecc886f9b49b05444180df6926, type: 3}
+  mutPBladeWing: {fileID: 869377620814106126, guid: f3a8bd5cc9868d34daeeca1cb142e3c4, type: 3}
+  weapPBladeArm: {fileID: 1192526033329145194, guid: 94cfaef694721d248982433f4c181c99, type: 3}
+  weapPFist: {fileID: 1192526033329145194, guid: 3111e231717f3ba4fb9b5fb229a2e6d3, type: 3}
+  actorLayers:
+    serializedVersion: 2
+    m_Bits: 256
+  collisionLayer:
+    serializedVersion: 2
+    m_Bits: 64
+  lineOfSightLayers:
+    serializedVersion: 2
+    m_Bits: 320
+  findWeaponLayers:
+    serializedVersion: 2
+    m_Bits: 2112
+  soundLayer:
+    serializedVersion: 2
+    m_Bits: 262144
+  isLoaded: 0
+  currentScene: 0
+--- !u!114 &4654381731306417788
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7906487538385718882}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 501074c4f2d5ec949ac75d2abc02b139, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bleed1: {fileID: 11400000, guid: 19c01944902b8b34ebd0f33dad44fc3a, type: 2}
+  stunHalf: {fileID: 11400000, guid: d56cb6eaeed347642b2e0dd57748b9e8, type: 2}
+  stunParry: {fileID: 11400000, guid: 865c7d3cf90638f468f04540f7cb4ea0, type: 2}
+  stun3: {fileID: 11400000, guid: 87cc1f8670aa6ef48ad61bc0ba8c6f2d, type: 2}
+  iFrame0: {fileID: 11400000, guid: 9a999b547a817c54bb898f5610914bde, type: 2}
+  iFrame1: {fileID: 11400000, guid: 8cc20c6900a03f146a5a36c6cf287e80, type: 2}
+--- !u!114 &4511755820635981177
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7906487538385718882}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1b80ca114488feb40bc2654abc0e764e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  listener: {fileID: 0}
+  cellCollectPop: {fileID: 0}
+  actorDeath1: {fileID: 0}
+  actorDeath2: {fileID: 0}
+  actorDeath3: {fileID: 0}
+  doorClose: {fileID: 0}
+  doorOpen: {fileID: 0}
+  doorUnlock: {fileID: 0}
+  footstep: {fileID: 8300000, guid: 1d63fcbc8fcf97e4ab818c9c059d8ffe, type: 3}
+  heartPump: {fileID: 0}
+  parry: {fileID: 8300000, guid: acf0ab68899702345b836a505f63bbe1, type: 3}
+  playerDeath: {fileID: 0}
+  wallMetal: {fileID: 0}

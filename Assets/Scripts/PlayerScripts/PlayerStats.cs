@@ -5,11 +5,18 @@ public class PlayerStats
 {
 	public int[] keycardCount = new int[PickupDefs.MAX_KEYCARD_TYPE + 1];
 	public int cells = 0;
-	public int mutationBar = 0;
+	private float mutationBar = 0;
+	public float maxMutationBar = 100;
+	private ActorDefs.ActorData playerData;
 
-	public PlayerHUD hud;
+	private GameManager gameManager = null;
+
 	public void addItem(PickupInterface pickup)
 	{
+		if (gameManager == null)
+		{
+			gameManager = GameManager.Instance;
+		}
 		switch (pickup.getPickupType())
 		{
 			case PickupDefs.pickupType.KEYCARD:
@@ -19,9 +26,37 @@ public class PlayerStats
 				break;
 			case PickupDefs.pickupType.CELL:
 			default:
-				cells += pickup.getCount();
-				hud.updateCells(cells);
+				int toAdd = pickup.getCount();
+				cells += toAdd;
+				addMutationBar(toAdd);
+				gameManager.signalUpdateCellCount(cells);
 				break;
 		}
 	}
+
+	public void addMutationBar(float toAdd)
+	{
+		mutationBar = mutationBar + toAdd > maxMutationBar? maxMutationBar: mutationBar + toAdd;
+	}
+
+	public float getPlayerMaxHealth()
+	{
+		return playerData.maxHealth;
+	}
+
+	public float getPlayerSavedHealth()
+	{
+		return playerData.health;
+	}
+
+	public float getMutationBar()
+	{
+		return mutationBar;
+	}
+
+	public void savePlayerData(Actor player)
+	{
+		playerData = player.actorData;
+	}
+
 }

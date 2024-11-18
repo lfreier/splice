@@ -78,7 +78,7 @@ public class PlayerInputs: MonoBehaviour
 
 		//move inputs
 		moveAction = move.action.ReadValue<Vector2>();
-		walkAction = walk.action.ReadValue<float>();
+ 		walkAction = walk.action.ReadValue<float>();
 
 		//interact inputs
 		lastInteractAction = interactAction;

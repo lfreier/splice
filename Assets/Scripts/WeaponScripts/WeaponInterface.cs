@@ -29,7 +29,7 @@ public interface WeaponInterface
 
 	public void setHitbox(bool toggle);
 
-	public void setStartingPosition();
+	public void setStartingPosition(bool side);
 
 	public void slowWielder(float percentage);
 	

@@ -20,7 +20,7 @@ public static class PickupDefs
 		BATTERY = 3
 	};
 
-	static public int MAX_KEYCARD_TYPE = (int)keycardType.BLUE;
+	static public int MAX_KEYCARD_TYPE = (int)keycardType.YELLOW;
 
 	static public float CELL_ATTRACT_RANGE = 5F;
 	static public float CELL_ACCELERATION = 10F;
@@ -29,5 +29,19 @@ public static class PickupDefs
 	public static bool canBePickedUp(GameObject target)
 	{
 		return target.tag.StartsWith("Object") && target.tag.Equals(PickupDefs.OBJECT_PICKUP_TAG);
+	}
+
+	public static Color getKeycardColor(keycardType keyType)
+	{
+		switch (keyType)
+		{
+			case keycardType.YELLOW:
+				return GameManager.COLOR_YELLOW;
+			case keycardType.BLUE:
+				return GameManager.COLOR_BLUE;
+			case keycardType.RED:
+			default:
+				return GameManager.COLOR_RED;
+		}
 	}
 }

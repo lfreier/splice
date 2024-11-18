@@ -15,4 +15,33 @@ public class ActorDefs
 
 	public static float MAX_PARRY_FORCE= 3000F;
 	public static float MAX_HIT_FORCE = 4000F;
+	public struct ActorData
+	{
+		public float health;
+		public float maxHealth;
+
+		public float maxSpeed;
+		public float moveSpeed;
+
+		public float acceleration;
+		public float deceleration;
+
+		public float hearingRange;
+		public float sightAngle;
+		public float sightRange;
+
+		public float frightenedDistance;
+	};
+
+	public enum detectMode
+	{
+		nul = -1,
+		idle = 0,
+		suspicious = 1,
+		seeking = 2,
+		lost = 3,
+		hostile = 4,
+		frightened = 5,
+		getWeapon = 6
+	};
 }

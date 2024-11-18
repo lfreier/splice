@@ -29,14 +29,14 @@ public class GameOver : MonoBehaviour
 	public float pumpTimer;
 
 	private bool transitioning;
-
-	private int currentLevel = SceneDefs.LEVEL_START_SCENE;
+	private GameManager gameManager;
 
 
 	void Start()
 	{
+		gameManager = GameManager.Instance;
 		transitioning = true;
-		Scene mainScene = SceneManager.GetSceneByBuildIndex(currentLevel);
+		Scene mainScene = SceneManager.GetSceneByBuildIndex(gameManager.currentScene);
 		for (int i = 0; i < SceneManager.sceneCount; i ++)
 		{
 			Scene curr = SceneManager.GetSceneAt(i);

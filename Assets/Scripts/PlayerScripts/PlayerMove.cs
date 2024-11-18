@@ -3,7 +3,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.XR;
-using static Actor;
+using static ActorDefs;
 
 public class PlayerMove : MonoBehaviour
 {
@@ -23,6 +23,8 @@ public class PlayerMove : MonoBehaviour
 	private float soundTimer;
 	private bool firstStep = false;
 
+	private bool movementLocked;
+
 	public PlayerInputs inputs;
 
 	public SoundScriptable footstepScriptable;
@@ -30,12 +32,20 @@ public class PlayerMove : MonoBehaviour
 	private void Start()
 	{
 		playerData = player.actorData;
+		GameManager gameManager = GameManager.Instance;
+		if (gameManager == null)
+		{
+			Debug.LogError("Game Manager is null when it should not be");
+			return;
+		}
+		gameManager.movementLockedEvent += lockMovement;
+		gameManager.movementUnlockedEvent += unlockMovement;
+		movementLocked = false;
 		currentSpeed = 0;
 	}
 
 	private void Update()
 	{
-		playerData = player.actorData;
 		moveInput = inputs.moveInput();
 		walkInput = inputs.walkInput();
 	}
@@ -43,8 +53,9 @@ public class PlayerMove : MonoBehaviour
 	private void FixedUpdate()
 	{
 		// move
-		if (moveInput.magnitude > 0)
+		if (moveInput.magnitude > 0 && !movementLocked)
 		{
+			playerData = player.actorData;
 			if (walkInput > 0 && lastWalkInput <= 0)
 			{
 				player.setSpeed(ActorDefs.PLAYER_WALK_SPEED * playerData.maxSpeed);
@@ -91,7 +102,20 @@ public class PlayerMove : MonoBehaviour
 			currentSpeed -= playerData.deceleration * playerData.moveSpeed;
 		}
 
-		currentSpeed = Mathf.Clamp(currentSpeed, 0, playerData.maxSpeed);
-		player.Move(new Vector3(lastMoveInput.x * currentSpeed, lastMoveInput.y * currentSpeed));
+		if (!movementLocked)
+		{
+			currentSpeed = Mathf.Clamp(currentSpeed, 0, playerData.maxSpeed);
+			player.Move(new Vector3(lastMoveInput.x * currentSpeed, lastMoveInput.y * currentSpeed));
+		}
+	}
+
+	private void lockMovement()
+	{
+		movementLocked = true;
+	}
+
+	private void unlockMovement()
+	{
+		movementLocked = false;
 	}
 }

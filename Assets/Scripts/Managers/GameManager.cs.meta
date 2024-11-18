@@ -7,7 +7,7 @@ MonoImporter:
   - weapPBladeArm: {fileID: 1192526033329145194, guid: 94cfaef694721d248982433f4c181c99, type: 3}
   - weapPFist: {fileID: 1192526033329145194, guid: 3111e231717f3ba4fb9b5fb229a2e6d3, type: 3}
   - weapPRuler: {fileID: 1192526033329145194, guid: 01fd33c6aadc87d4fb58748aaaa0ad97, type: 3}
-  executionOrder: 0
+  executionOrder: -100
   icon: {instanceID: 0}
   userData: 
   assetBundleName: 

@@ -1,9 +1,11 @@
+using System.Collections.Generic;
+using UnityEditor.SearchService;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class MainMenu : MonoBehaviour
+public class MenuHandler : MonoBehaviour
 {
 	public Image backgroundImage;
 	public Image filterImage;
@@ -11,6 +13,7 @@ public class MainMenu : MonoBehaviour
 
 	private bool transitioning = false;
 	private bool loadDone = false;
+	private bool showLoading = false;
 
 	private float currentAlpha = 1;
 	private float desiredAlpha = 0;
@@ -20,8 +23,6 @@ public class MainMenu : MonoBehaviour
 
 	private float currentAlpha3 = 1;
 	private float desiredAlpha3 = 0F;
-
-	private bool hack = false;
 
 	public float fadeChange = 0.5F;
 
@@ -33,28 +34,37 @@ public class MainMenu : MonoBehaviour
 
 	private int nextScene = SceneDefs.LEVEL_START_SCENE;
 
-	AsyncOperation op;
+	private GameManager gameManager = null;
 
-	public void LateUpdate()
+	private async void Awake()
 	{
+		for (int i = 0; i <  SceneManager.sceneCount; i++)
+		{
+			if (SceneManager.GetSceneAt(i).buildIndex == SceneDefs.MANAGER_SCENE)
+			{
+				return;
+			}
+		}
+
+		await SceneManager.LoadSceneAsync(SceneDefs.MANAGER_SCENE, LoadSceneMode.Additive);
+	}
+
+	public async void LateUpdate()
+	{
+		if (gameManager == null)
+		{
+			gameManager = GameManager.Instance;
+		}
+
 		if (transitioning)
 		{
-			if (!loadDone && (op == null || op.isDone))
+			if (!loadDone)
 			{
 				if (menuCam != null)
 				{
 					menuCam.enabled = false;
 				}
-				SceneManager.SetActiveScene(SceneManager.GetSceneByBuildIndex(nextScene));
 				loadDone = true;
-				if (hack == true)
-				{
-					GameManager gm = GameManager.Instance;
-					if (gm != null)
-					{
-						gm.startMutationSelect();
-					}
-				}
 			}
 
 			currentAlpha = Mathf.MoveTowards(currentAlpha, desiredAlpha, fadeChange * Time.deltaTime);
@@ -77,20 +87,18 @@ public class MainMenu : MonoBehaviour
 			if (currentAlpha == desiredAlpha && currentAlpha2 == desiredAlpha2 && currentAlpha3 == desiredAlpha3)
 			{
 				transitioning = false;
-				for (int i = 0; i < SceneManager.sceneCount; i ++)
+				/* only disable the loading screen, don't destroy it */
+				if (this.gameObject.scene.buildIndex != SceneDefs.LOADING_SCENE)
 				{
-					Scene curr = SceneManager.GetSceneAt(i);
-					if (curr.buildIndex == nextScene || curr.buildIndex == SceneDefs.PLAYER_HUD_SCENE)
-					{
-						continue;
-					}
-					SceneManager.UnloadSceneAsync(curr.buildIndex);
+					int[] temp = { this.gameObject.scene.buildIndex };
+					await gameManager.loadingHandler.forceUnloadScenes(temp);
 				}
+				gameManager.loadingHandler.reset();
 			}
 		}
 	}
 
-	public void enterMainScene()
+	public void fadeOutScene()
 	{
 		if (menuCanvas != null)
 		{
@@ -103,7 +111,10 @@ public class MainMenu : MonoBehaviour
 		{
 			audioListener.enabled = false;
 		}
-		eventSystem.gameObject.SetActive(false);
+		if (eventSystem != null)
+		{
+			eventSystem.gameObject.SetActive(false);
+		}
 
 		currentAlpha = 1;
 		currentAlpha2 = 0;
@@ -120,50 +131,43 @@ public class MainMenu : MonoBehaviour
 
 	public void mute()
 	{
-		PlayerHUD hud = Camera.main.transform.GetComponentInChildren<PlayerHUD>();
-
-		if (hud != null)
-		{
-			hud.mute();
-		}
+		gameManager.signalMuteEvent();
 	}
 
-	public void restartWithSelection()
+	public async void restartGame()
 	{
-		hack = true;
-		startGame();
-	}
-
-	public void restartGame()
-	{
-		Time.timeScale = 1;
-		SceneManager.UnloadSceneAsync(SceneDefs.PLAYER_HUD_SCENE);
+		gameManager = GameManager.Instance;
+		/* Unload extra scenes, force unload the HUD scene, then reload the HUD scene */
+		int[] hudScene = new int[] { SceneDefs.PLAYER_HUD_SCENE };
+		await gameManager.loadingHandler.unloadAllScenes(false);
+		await gameManager.loadingHandler.forceUnloadScenes(hudScene);
+		showLoading = true;
+		await gameManager.loadingHandler.LoadSceneGroup(hudScene, showLoading, false);
+		nextScene = gameManager.currentScene;
 		startGame();
 	}
 
 	public void resumeGame()
 	{
+		GameManager gManager = GameManager.Instance;
+		nextScene = gManager.currentScene;
 		Time.timeScale = 1;
-		enterMainScene();
+		fadeOutScene();
 	}
 
-	public void startGame()
+	public async void startGame()
 	{
+		gameManager = GameManager.Instance;
 		Time.timeScale = 1;
-		for (int i = 0; i < SceneManager.loadedSceneCount; i++)
-		{
-			Scene curr = SceneManager.GetSceneAt(i);
-			if (curr.buildIndex == nextScene)
-			{
-				SceneManager.UnloadSceneAsync(curr.buildIndex);
-				break;
-			}
-		}
+		int[] nextLevel = { nextScene };
+		gameManager.loadingHandler.reloadHUD = true;
+		gameManager.loadingHandler.resetPlayerData = true;
+		await gameManager.loadingHandler.LoadSceneGroup(nextLevel, showLoading, false);
+		showLoading = false;
 
-		op = SceneManager.LoadSceneAsync(nextScene, LoadSceneMode.Additive);
-		op.allowSceneActivation = true;
+		SceneManager.SetActiveScene(SceneManager.GetSceneByBuildIndex(nextScene));
 
-		enterMainScene();
+		fadeOutScene();
 	}
 
 	public void quitGame()
