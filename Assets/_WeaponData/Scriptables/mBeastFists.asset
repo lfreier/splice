@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a24c888a6e975b64caf06be201292806, type: 3}
+  m_Name: mBeastFists
+  m_EditorClassIdentifier: 
+  <arc>k__BackingField: 30
+  <atkSpeed>k__BackingField: 0
+  <canBeDropped>k__BackingField: 0
+  <damage>k__BackingField: 1.5
+  <durability>k__BackingField: -1
+  <npcAttackRange>k__BackingField: -1
+  <secondaryDamage>k__BackingField: 2
+  <throwDamage>k__BackingField: 0
+  <throwDurabilityDamage>k__BackingField: 0
+  <throwSpeed>k__BackingField: 0
+  <throwWeight>k__BackingField: 0
+  <throwHurtSpeed>k__BackingField: 0
+  <weaponType>k__BackingField: 0
+  equipPosX: 0
+  equipPosY: 0
+  equipRotZ: 0
+  equipOtherPosX: 0
+  equipOtherPosY: 0
+  equipOtherRotZ: 0
+  <knockbackDamage>k__BackingField: 2.5

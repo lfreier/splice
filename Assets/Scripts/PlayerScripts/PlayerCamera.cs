@@ -49,6 +49,12 @@ public class PlayerCamera : MonoBehaviour
 		cameraInputs();
 	}
 
+	private void OnDestroy()
+	{
+		player.gameManager.rotationLockedEvent -= lockRotation;
+		player.gameManager.rotationUnlockedEvent -= unlockRotation;
+	}
+
 	private void FixedUpdate()
 	{
 	}

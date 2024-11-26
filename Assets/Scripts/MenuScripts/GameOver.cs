@@ -28,14 +28,17 @@ public class GameOver : MonoBehaviour
 	private float timer;
 	public float pumpTimer;
 
-	private bool transitioning;
+	public bool transitioning;
 	private GameManager gameManager;
 
 
 	void Start()
 	{
 		gameManager = GameManager.Instance;
-		transitioning = true;
+		if (fadeInImages.Length > 0)
+		{
+			transitioning = true;
+		}
 		Scene mainScene = SceneManager.GetSceneByBuildIndex(gameManager.currentScene);
 		for (int i = 0; i < SceneManager.sceneCount; i ++)
 		{

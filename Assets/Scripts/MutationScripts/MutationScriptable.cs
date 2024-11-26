@@ -15,6 +15,9 @@ public class MutationScriptable : ScriptableObject
 	public EffectScriptable effectScriptable { get; private set; } = null;
 
 	[field: SerializeField]
+	public int mutCost { get; private set; } = 100;
+
+	[field: SerializeField]
 	public Vector2 startingPosition { get; private set; } = new Vector2(-0.621F, 0.28F);
 
 	[field: SerializeField]

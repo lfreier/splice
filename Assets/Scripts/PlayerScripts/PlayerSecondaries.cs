@@ -46,23 +46,6 @@ public class PlayerSecondaries : MonoBehaviour
 		}
 	}
 
-	//TODO: pointless now
-	public void triggerMutationAnim(mutationType type)
-	{
-		switch (type)
-		{
-			case mutationType.mWing:
-				MBladeWing mWing = GetComponentInChildren<MBladeWing>();
-				if (mWing != null)
-				{
-					mWing.bladeWingDash();
-				}
-				break;
-			case mutationType.mLimb:
-			default:
-				break;
-		}
-	}
 	public void stopMutationAnim(mutationType type)
 	{
 		switch (type)

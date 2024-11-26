@@ -26,10 +26,6 @@ public class MBladeArm : MonoBehaviour, MutationInterface
 
 	public MutationInterface mEquip(Actor actor)
 	{
-		/* Instantiate the weapon prefab, then equip it. */
-		GameObject bladeArmPrefab = actor.instantiateWeapon(actor.gameManager.weapPBladeArm);
-		actor.equip(bladeArmPrefab);
-
 		return this;
 	}
 	public void setStartingPosition()

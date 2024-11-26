@@ -29,6 +29,18 @@ public class PlayerMove : MonoBehaviour
 
 	public SoundScriptable footstepScriptable;
 
+	private void OnDestroy()
+	{
+		GameManager gameManager = GameManager.Instance;
+		if (gameManager == null)
+		{
+			Debug.LogError("Game Manager is null when it should not be");
+			return;
+		}
+		gameManager.movementLockedEvent -= lockMovement;
+		gameManager.movementUnlockedEvent -= unlockMovement;
+	}
+
 	private void Start()
 	{
 		playerData = player.actorData;

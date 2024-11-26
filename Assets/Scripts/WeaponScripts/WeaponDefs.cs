@@ -15,6 +15,7 @@ public static class WeaponDefs
 	public static string ANIM_TRIGGER_SWAP_SIDE		= "SwapSide";
 	public static string ANIM_TRIGGER_ATTACK		= "Attack";
 	public static string ANIM_TRIGGER_ATTACK_SEC	= "AttackSecondary";
+	public static string ANIM_TRIGGER_TIMEOUT = "Timeout";
 
 	public static float THROW_ROTATE_LOW = 100.0F;
 	public static float THROW_ROTATE_MID = 350.0F;

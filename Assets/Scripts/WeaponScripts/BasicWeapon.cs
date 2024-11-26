@@ -34,7 +34,7 @@ public abstract class BasicWeapon : MonoBehaviour, WeaponInterface
 
 	private GameManager gameManager;
 
-	protected float durability;
+	public float durability;
 
 	void Start()
 	{
@@ -46,22 +46,27 @@ public abstract class BasicWeapon : MonoBehaviour, WeaponInterface
 		{
 			secondaryAction = GetComponentInChildren<ActionInterface>();
 		}
-		_weaponPhysics.linkInterface(this);
-
+		if (_weaponPhysics != null)
+		{
+			_weaponPhysics.linkInterface(this);
+		}
 		init();
 	}
 
 	void FixedUpdate()
 	{
 		// was just thrown, so give it initial speed
-		_weaponPhysics.calculateThrow();
-		if (!isActive())
+		if (_weaponPhysics != null)
 		{
-			hitbox.enabled = false;
+			_weaponPhysics.calculateThrow();
+			if (!isActive() && hitbox != null)
+			{
+				hitbox.enabled = false;
+			}
 		}
 	}
 
-	public bool attack(LayerMask targetLayer)
+	virtual public bool attack(LayerMask targetLayer)
 	{
 		anim.SetTrigger(WeaponDefs.ANIM_TRIGGER_ATTACK);
 		lastTargetLayer = targetLayer;
@@ -92,7 +97,10 @@ public abstract class BasicWeapon : MonoBehaviour, WeaponInterface
 	public void cancelAttack()
 	{
 		anim.StopPlayback();
-		hitbox.enabled = false;
+		if (hitbox != null)
+		{
+			hitbox.enabled = false;
+		}
 	}
 
 	public WeaponScriptable getScriptable()
@@ -130,9 +138,15 @@ public abstract class BasicWeapon : MonoBehaviour, WeaponInterface
 		return Vector3.Distance(transform.position, target) <= _weaponScriptable.npcAttackRange;
 	}
 
-	public bool isActive()
+	virtual public bool isActive()
 	{
-		return (!anim.GetCurrentAnimatorStateInfo(0).IsTag("Idle") || _weaponPhysics.isBeingThrown());
+		bool throwActive = false;
+		if (_weaponPhysics != null)
+		{
+			throwActive = _weaponPhysics.isBeingThrown();
+		}
+
+		return !anim.GetCurrentAnimatorStateInfo(0).IsTag("Idle") || throwActive;
 	}
 
 	virtual public void reduceDurability(float reduction)
@@ -171,7 +185,10 @@ public abstract class BasicWeapon : MonoBehaviour, WeaponInterface
 
 	public void setHitbox(bool toggle)
 	{
-		hitbox.enabled = toggle;
+		if (hitbox != null)
+		{
+			hitbox.enabled = toggle;
+		}
 	}
 
 	public void setStartingPosition(bool side)
@@ -197,6 +214,10 @@ public abstract class BasicWeapon : MonoBehaviour, WeaponInterface
 	/* Only deal with the movement of the throw */
 	public void throwWeapon(Vector3 target)
 	{
+		if (_weaponPhysics == null)
+		{
+			return;
+		}
 		anim.Rebind();
 		anim.Update(0f);
 		_weaponPhysics.startThrow(target, actorWielder);
@@ -208,8 +229,13 @@ public abstract class BasicWeapon : MonoBehaviour, WeaponInterface
 		{
 			trailSprite.enabled = !trailSprite.enabled;
 		}
+		if (hitbox == null)
+		{
+			return false;
+		}
 		return hitbox.enabled = !hitbox.enabled;
 	}
+
 	public void toggleIFrames()
 	{
 		if (actorWielder != null)
@@ -223,35 +249,40 @@ public abstract class BasicWeapon : MonoBehaviour, WeaponInterface
 		return secondaryAction.toggleHitbox();
 	}
 
-	private void OnTriggerEnter2D(Collider2D collision)
+	public Actor weaponHit(Collider2D collision)
+	{
+		return weaponHit(collision, getWeaponDamage(), 1F);
+	}
+
+	public Actor weaponHit(Collider2D collision, float damage, float durabilityDamage)
 	{
 		float knockbackMult = 1;
 		float maxForce = 10000;
-		//TODO: put this somewhere else that's not specific for the weapon?
+
 		if (this.actorWielder != null && collision.name == actorWielder.name)
 		{
 			Debug.Log("Stop hitting yourself");
-			return;
+			return null;
 		}
 
-		if (_weaponPhysics.throwingActor != null && collision.name == _weaponPhysics.throwingActor.name)
+		if (_weaponPhysics != null && _weaponPhysics.throwingActor != null && collision.name == _weaponPhysics.throwingActor.name)
 		{
 			Debug.Log("Stop hitting yourself");
-			return;
+			return null;
 		}
 
 		Actor actorHit = collision.GetComponent<Actor>();
 		if (actorWielder == null)
 		{
-			return;
+			return null;
 		}
 
 		if (actorHit != null && actorWielder.isTargetHostile(actorHit) && !actorHit.invincible)
 		{
 			actorWielder.triggerDamageEffects(actorHit);
-			if (actorHit.takeDamage(getWeaponDamage()) > 0)
+			if (actorHit.takeDamage(damage) > 0)
 			{
-				reduceDurability(1);
+				reduceDurability(durabilityDamage);
 			}
 			knockbackMult = 1 - actorHit._actorScriptable.knockbackResist;
 			SoundDefs.createSound(actorHit.transform.position, actorHitSound);
@@ -262,17 +293,17 @@ public abstract class BasicWeapon : MonoBehaviour, WeaponInterface
 				maxForce = ActorDefs.MAX_PARRY_FORCE;
 			}
 
-			Debug.Log("Hit: " + collision.name + " for " + _weaponScriptable.damage + " damage");
+			Debug.Log("Hit: " + collision.name + " for " + damage + " damage");
 		}
 		else
 		{
 			if (collision.tag == SoundDefs.TAG_WALL_METAL)
 			{
-				SoundDefs.createSound(_weaponPhysics.transform.position, wallHitSound);
+				SoundDefs.createSound(actorWielder.transform.position, wallHitSound);
 			}
 			else
 			{
-				SoundDefs.createSound(_weaponPhysics.transform.position, actorHitSound);
+				SoundDefs.createSound(actorWielder.transform.position, actorHitSound);
 			}
 			Debug.Log("Hit: " + collision.name + " for no damage");
 
@@ -294,5 +325,12 @@ public abstract class BasicWeapon : MonoBehaviour, WeaponInterface
 			Debug.Log("Hit force on " + hitBody.name + ": " + forceMult);
 			hitBody.AddForce(force * forceMult);
 		}
+
+		return actorHit;
+	}
+
+	private void OnTriggerEnter2D(Collider2D collision)
+	{
+		weaponHit(collision);
 	}
 }

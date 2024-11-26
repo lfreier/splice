@@ -22,6 +22,12 @@ public class MBladeWing : MonoBehaviour, MutationInterface
 
 	[SerializeField] public SoundScriptable soundScriptable;
 
+	private float buffTimer;
+
+	private void OnDestroy()
+	{
+		actorWielder.gameManager.playerAbilityEvent -= abilityInputPressed;
+	}
 	private void FixedUpdate()
 	{
 		if (dashActive)
@@ -30,11 +36,24 @@ public class MBladeWing : MonoBehaviour, MutationInterface
 			actorWielder.Move(dashTarget * dashSpeed * Time.deltaTime);
 			SoundDefs.createSound(actorWielder.transform.position, soundScriptable);
 		}
+
+		if (buffTimer != 0)
+		{
+			buffTimer -= Time.deltaTime;
+			if (buffTimer <= 0)
+			{
+				buffTimer = 0;
+			}
+		}
 	}
 
 	private void abilityInputPressed()
 	{
-		anim.SetTrigger(MutationDefs.TRIGGER_BLADE_WING);
+		if (buffTimer <= 0)
+		{
+			anim.SetTrigger(MutationDefs.TRIGGER_BLADE_WING);
+			buffTimer = MutationDefs.ABILITY_BUFF_TIMER;
+		}
 	}
 
 	public void bladeWingDash()
@@ -67,6 +86,7 @@ public class MBladeWing : MonoBehaviour, MutationInterface
 	{
 		this.actorWielder = wielder;
 		wielder.gameManager.playerAbilityEvent += abilityInputPressed;
+		buffTimer = 0;
 	}
 
 	public mutationTrigger getMutationType()
@@ -74,6 +94,7 @@ public class MBladeWing : MonoBehaviour, MutationInterface
 		return mutationTrigger.ACTIVE_SLOT;
 	}
 
+	/* for an active slot mutation, this does nothing */
 	public void trigger(Actor actorTarget)
 	{
 		return;
@@ -81,22 +102,15 @@ public class MBladeWing : MonoBehaviour, MutationInterface
 
 	public MutationInterface mEquip(Actor actor)
 	{
-		/* Need to equip a new prefab */
-		/* DO NOT DO INIT CODE IN HERE - THIS IS HAPPENING ON THE DUMMY SCRIPT*/
 		actorWielder = actor;
 
-		GameObject mBladeWingPrefab = actor.instantiateActive(actor.gameManager.mutPBladeWing);
-		actor.equipActive(mBladeWingPrefab);
-
-		MBladeWing newScript = mBladeWingPrefab.GetComponentInChildren<MBladeWing>();
-
-		newScript.init(actor);
+		init(actor);
 		
-		return newScript;
+		return this;
 	}
 	public void setStartingPosition()
 	{
-		this.transform.parent.SetLocalPositionAndRotation(mutationScriptable.startingPosition, Quaternion.Euler(0, 0, mutationScriptable.startingRotation));
+		this.transform.SetLocalPositionAndRotation(mutationScriptable.startingPosition, Quaternion.Euler(0, 0, mutationScriptable.startingRotation));
 	}
 
 	public void setWielder(Actor wielder)

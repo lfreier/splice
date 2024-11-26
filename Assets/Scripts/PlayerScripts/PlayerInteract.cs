@@ -63,7 +63,7 @@ public class PlayerInteract : MonoBehaviour
 				PlayerStats stats = player.gameManager.playerStats;
 				if (stats.keycardCount[(int)doorInteract.lockType] > 0)
 				{
-					stats.keycardCount[(int)doorInteract.lockType] --;
+					stats.useKeycard((int)doorInteract.lockType);
 					doorInteract.doorUnlock();
 					return true;
 				}
@@ -82,7 +82,24 @@ public class PlayerInteract : MonoBehaviour
 				/* the mutation already exists - return */
 				return;
 			}
-			MutationInterface newMut = (MutationInterface)mutateHolder.AddComponent(mut.GetType());
+
+			GameObject mutPrefab;
+			switch(mut.getId())
+			{
+				case "MBeast":
+					mutPrefab = player.instantiateActive(player.gameManager.mutPBeast);
+					break;
+				case "MBladeWing":
+					mutPrefab = player.instantiateActive(player.gameManager.mutPBladeWing);
+					break;
+				case "MLimb":
+					mutPrefab = player.instantiateActive(player.gameManager.mutPLimb);
+					break;
+				default:
+					return;
+			}
+
+			MutationInterface newMut = (MutationInterface)mutPrefab.GetComponentInChildren(mut.GetType());
 			if (null != (newMut = newMut.mEquip(player)))
 			{
 				if (newMut.getMutationType() == mutationTrigger.ACTIVE_SLOT)

@@ -15,5 +15,6 @@ MonoBehaviour:
   <damage>k__BackingField: 2.5
   <trigger>k__BackingField: 5
   <effectScriptable>k__BackingField: {fileID: 0}
+  <mutCost>k__BackingField: 50
   <startingPosition>k__BackingField: {x: 1, y: 0.125}
   <startingRotation>k__BackingField: -75

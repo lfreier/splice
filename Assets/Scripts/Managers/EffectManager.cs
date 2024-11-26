@@ -9,6 +9,7 @@ public class EffectManager : MonoBehaviour
 
 	public EffectScriptable stunHalf;
 	public EffectScriptable stunParry;
+	public EffectScriptable stun1;
 	public EffectScriptable stun3;
 
 	public EffectScriptable iFrame0;

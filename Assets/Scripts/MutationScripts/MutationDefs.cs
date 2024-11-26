@@ -4,9 +4,16 @@ using static UnityEngine.GraphicsBuffer;
 
 public static class MutationDefs
 {
-	public static string MUTATION_SELECT_TAG = "MutationSelect";
+	public static string MUTATION_SELECT_TAG	= "MutationSelect";
 
-	public static string TRIGGER_BLADE_WING = "TriggerBladeWing";
+	public static string TRIGGER_BEAST			= "TriggerBeast";
+	public static string TRIGGER_BLADE_WING		= "TriggerBladeWing";
+
+	public static string TRIGGER_BEAST_ATK2		= "AttackBeast2";
+	public static string TRIGGER_BEAST_ATK3		= "AttackBeast3";
+	public static string TRIGGER_STOP_TRANSFORM = "StopTransform";
+
+	public static float ABILITY_BUFF_TIMER		= 0.5F;
 
 	public static short MAX_SLOTS = 2;
 
@@ -18,8 +25,9 @@ public static class MutationDefs
 
 public enum mutationType
 {
-	mLimb = 0,
-	mWing = 1
+	mBeast = 0,
+	mLimb = 1,
+	mWing = 2
 };
 
 public enum mutationTrigger

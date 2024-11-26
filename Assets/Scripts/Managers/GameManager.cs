@@ -44,14 +44,18 @@ public class GameManager : MonoBehaviour
 	public delegate void UpdateHealthEvent(float newHealth);
 	public event UpdateHealthEvent updateHealthEvent;
 
+	public delegate void UpdateKeycardCount(int newCount, PickupDefs.keycardType type);
+	public event UpdateKeycardCount updateKeycardCount;
+
 	public AudioManager audioManager;
 	public EffectManager effectManager;
 	public LevelManager levelManager;
 
 	public LoadingHandler loadingHandler = null;
 
-	public GameObject mutPLimb;
+	public GameObject mutPBeast;
 	public GameObject mutPBladeWing;
+	public GameObject mutPLimb;
 
 	public GameObject weapPBladeArm;
 	public GameObject weapPFist;
@@ -81,11 +85,12 @@ public class GameManager : MonoBehaviour
 	public static string WEAP_SCRIP_ID_FISTS = "fists";
 	public static string WEAP_SCRIP_ID_RULER = "ruler";
 
-	public static Color COLOR_BLUE = new Color(0.1F, 0.1F, 0.4F, 1F);
-	public static Color COLOR_GREEN = new Color(0.15F, 0.4f, 0, 1F);
-	public static Color COLOR_RED = new Color(0.4F, 0.1F, 0.1F, 1F);
-	public static Color COLOR_YELLOW = new Color(0.54F, 0.54F, 0, 1F);
-	public static Color COLOR_IFRAME = new Color(0.9F, 0.3F, 0.3F, 1F);
+	public static Color COLOR_BLUE		= new Color(0.1F, 0.1F, 0.4F, 1F);
+	public static Color COLOR_GREEN		= new Color(0.15F, 0.4f, 0, 1F);
+	public static Color COLOR_RED		= new Color(0.4F, 0.1F, 0.1F, 1F);
+	public static Color COLOR_YELLOW	= new Color(0.54F, 0.54F, 0, 1F);
+	public static Color COLOR_VIOLET	= new Color(0.35F, 0F, 0.35F, 1F);
+	public static Color COLOR_IFRAME	= new Color(0.9F, 0.3F, 0.3F, 1F);
 
 	public List<Type> actorBehaviors = new List<Type>();
 
@@ -266,5 +271,10 @@ public class GameManager : MonoBehaviour
 	public void signalUpdateHealthEvent(float newHealth)
 	{
 		updateHealthEvent?.Invoke(newHealth);
+	}
+
+	public void signalUpdateKeycardCount(int newCount, PickupDefs.keycardType type)
+	{
+		updateKeycardCount?.Invoke(newCount, type);
 	}
 }

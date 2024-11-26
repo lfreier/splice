@@ -40,6 +40,14 @@ public class MLimb : MonoBehaviour, MutationInterface
 
 	[SerializeField] public MutationScriptable mutationScriptable;
 
+	private void OnDestroy()
+	{
+		actorWielder.gameManager.playerInteractEvent -= interactInputPressed;
+		actorWielder.gameManager.playerInteractReleaseEvent -= interactInputReleased;
+		actorWielder.gameManager.playerAbilityEvent -= abilityInputPressed;
+		actorWielder.gameManager.playerAbilityReleaseEvent -= abilityInputReleased;
+	}
+
 	private void FixedUpdate()
 	{
 		if (collisionHit && !hitbox.IsTouchingLayers(Physics2D.GetLayerCollisionMask(hitbox.gameObject.layer)) && !hitboxHand.IsTouchingLayers(Physics2D.GetLayerCollisionMask(hitbox.gameObject.layer)))
@@ -58,7 +66,7 @@ public class MLimb : MonoBehaviour, MutationInterface
 				releaseHeldObject();
 				return;
 			}
-			anim.SetTrigger("Attack");
+			anim.SetTrigger(WeaponDefs.ANIM_TRIGGER_ATTACK);
 			Debug.Log("Limb state is now active from pressing");
 			limbState = retracted.ACTIVE;
 		}
@@ -219,18 +227,11 @@ public class MLimb : MonoBehaviour, MutationInterface
 
 	public MutationInterface mEquip(Actor actor)
 	{
-		/* Need to equip a new prefab */
-		/* DO NOT DO INIT CODE IN HERE - THIS IS HAPPENING ON THE DUMMY SCRIPT*/
 		actorWielder = actor;
 
-		GameObject mLimbPrefab = actor.instantiateActive(actor.gameManager.mutPLimb);
-		actor.equipActive(mLimbPrefab);
+		init(actor);
 
-		MLimb newScript = mLimbPrefab.GetComponentInChildren<MLimb>();
-
-		newScript.init(actor);
-
-		return newScript;
+		return this;
 	}
 
 	/* Called when the "Retract" animation is finished
@@ -316,7 +317,8 @@ public class MLimb : MonoBehaviour, MutationInterface
 		hitboxHand.enabled = !hitboxHand.enabled;
 		return hitbox.enabled = !hitbox.enabled;
 	}
-	
+
+	/* for an active slot mutation, this does nothing */
 	public void trigger(Actor actorTarget)
 	{
 		return;

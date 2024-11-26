@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 432374684445198904}
   - component: {fileID: 698451071432964359}
   - component: {fileID: 2103060756208416191}
+  - component: {fileID: 4342857189336821340}
   m_Layer: 15
   m_Name: WrenchOverhead
   m_TagString: ObjectWeapon
@@ -134,6 +135,20 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 0.25, y: 1.3125}
   m_EdgeRadius: 0
+--- !u!114 &4342857189336821340
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 225397353238603709}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e25ae6f00cebcd44d921dea106a49c2f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  attachedOverhead: {fileID: 4481356936213069043}
+  isSweetspot: 0
 --- !u!1 &1192526033329145194
 GameObject:
   m_ObjectHideFlags: 0
@@ -356,7 +371,7 @@ GameObject:
   - component: {fileID: 6210392783176579490}
   - component: {fileID: 3442740799414355683}
   - component: {fileID: 3088101190892556993}
-  - component: {fileID: 6201840025095761210}
+  - component: {fileID: 4481356936213069043}
   - component: {fileID: 6529950160097543187}
   - component: {fileID: 9146951687459429566}
   m_Layer: 15
@@ -463,7 +478,8 @@ MonoBehaviour:
   weaponBreakSound: {fileID: 0}
   weaponSwingSound: {fileID: 0}
   currentSide: 0
---- !u!114 &6201840025095761210
+  durability: 0
+--- !u!114 &4481356936213069043
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -481,6 +497,7 @@ MonoBehaviour:
   weapon: {fileID: 3088101190892556993}
   spriteRend: {fileID: 698451071432964359}
   overheadDamagedSprite: {fileID: 21300000, guid: 38939f0c0f761ec46873194ad05060b0, type: 3}
+  hitSourspot: 0
   dashSpeed: 900
 --- !u!95 &6529950160097543187
 Animator:
@@ -560,6 +577,7 @@ GameObject:
   m_Component:
   - component: {fileID: 768515759195047654}
   - component: {fileID: 1096868797338884574}
+  - component: {fileID: 2169969578766600246}
   m_Layer: 15
   m_Name: WrenchOverheadSweetspot
   m_TagString: ObjectWeapon
@@ -626,8 +644,22 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 0.25, y: 0.3125}
+  m_Size: {x: 0.1875, y: 0.25}
   m_EdgeRadius: 0
+--- !u!114 &2169969578766600246
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7428001517436354642}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e25ae6f00cebcd44d921dea106a49c2f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  attachedOverhead: {fileID: 4481356936213069043}
+  isSweetspot: 1
 --- !u!1 &8244530961570813241
 GameObject:
   m_ObjectHideFlags: 0

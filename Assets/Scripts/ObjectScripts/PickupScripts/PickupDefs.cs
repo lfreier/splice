@@ -9,7 +9,8 @@ public static class PickupDefs
 	{
 		RED = 0,
 		BLUE = 1,
-		YELLOW = 2
+		YELLOW = 2,
+		VIOLET = 3
 	};
 
 	public enum pickupType
@@ -35,6 +36,8 @@ public static class PickupDefs
 	{
 		switch (keyType)
 		{
+			case keycardType.VIOLET:
+				return GameManager.COLOR_VIOLET;
 			case keycardType.YELLOW:
 				return GameManager.COLOR_YELLOW;
 			case keycardType.BLUE:

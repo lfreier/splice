@@ -61,6 +61,7 @@ public class PlayerHUD : MonoBehaviour
 	private void OnDestroy()
 	{
 		gameManager.initHudEvent -= init;
+		gameManager.muteEvent -= mute;
 		gameManager.updateHealthEvent -= updateHealth;
 		gameManager.updateCellCount -= updateCells;
 	}

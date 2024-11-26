@@ -360,6 +360,7 @@ MonoBehaviour:
   action1: {fileID: 8994166906992869186, guid: 5dcd39278cd0b8648bc115e1763cc81c, type: 3}
   action2: {fileID: 6855585124498333335, guid: 5dcd39278cd0b8648bc115e1763cc81c, type: 3}
   pause: {fileID: -3145529449138211349, guid: 5dcd39278cd0b8648bc115e1763cc81c, type: 3}
+  item: {fileID: -3856513518628014608, guid: 5dcd39278cd0b8648bc115e1763cc81c, type: 3}
 --- !u!114 &280256832018583085
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -548,3 +549,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f052739b3bbd4cf4d9cccd6576ced9c0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  heldMutations: 

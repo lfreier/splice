@@ -4,20 +4,42 @@ using UnityEngine;
 
 public class MutationHandler : MonoBehaviour
 {
-	public void triggerMutationAnim(mutationType type)
+	public List<mutationType> heldMutations;
+
+	private void Start()
 	{
-		switch (type)
+		heldMutations = new List<mutationType>();
+	}
+
+	public MutationInterface findMutation(mutationType type)
+	{
+		switch(type)
 		{
-			case mutationType.mWing:
-				MBladeWing mWing = GetComponentInChildren<MBladeWing>();
-				if (mWing != null)
+			case mutationType.mBeast:
+				MBeast beast = GetComponentInChildren<MBeast>();
+				if (beast != null)
 				{
-					mWing.bladeWingDash();
+					return beast;
 				}
 				break;
 			case mutationType.mLimb:
-			default:
+				MLimb limb = GetComponentInChildren<MLimb>();
+				if (limb != null)
+				{
+					return limb;
+				}
 				break;
+			case mutationType.mWing:
+				MBladeWing wing = GetComponentInChildren<MBladeWing>();
+				if (wing != null)
+				{
+					return wing;
+				}
+				break;
+			default:
+				return null;
 		}
+
+		return null;
 	}
 }

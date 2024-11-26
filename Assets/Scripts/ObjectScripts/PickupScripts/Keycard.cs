@@ -10,7 +10,7 @@ public class Keycard : MonoBehaviour, PickupInterface
 
 	void Start()
 	{
-		 gameManager = GameManager.Instance;
+		gameManager = GameManager.Instance;
 		init();
 	}
 

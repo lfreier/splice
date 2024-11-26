@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using UnityEngine;
+using static UnityEngine.GraphicsBuffer;
 
 public class ActionOverhead : MonoBehaviour, ActionInterface
 {
@@ -12,6 +13,8 @@ public class ActionOverhead : MonoBehaviour, ActionInterface
 	public SpriteRenderer spriteRend;
 
 	public Sprite overheadDamagedSprite;
+
+	public bool hitSourspot = false;
 
 	public float dashSpeed = 900F;
 	private Vector3 dashTarget;
@@ -33,6 +36,7 @@ public class ActionOverhead : MonoBehaviour, ActionInterface
 
 	public void action()
 	{
+		/* set animation trigger, switch sprites, and make sure attackActive is false (used for active hitbox frames) */
 		if (!animationActive)
 		{
 			attackActive = false;
@@ -49,17 +53,20 @@ public class ActionOverhead : MonoBehaviour, ActionInterface
 		animationActive = false;
 	}
 
+	/* set by BasicWeapon when normal weapon sprite is damaged */
 	public void setDamagedSprite()
 	{
 		spriteRend.sprite = overheadDamagedSprite;
 	}
 
+	/* called by the overhead animation */
 	public void startOverheadFrames()
 	{
 		actorWielder.gameManager.signalMovementLocked();
 		actorWielder.gameManager.signalRotationLocked();
 
-		sweetSpotHitbox.enabled = true;
+		hitSourspot = false;
+
 		overheadHitbox.enabled = true;
 
 		weaponStartSide = weapon.currentSide;
@@ -72,6 +79,13 @@ public class ActionOverhead : MonoBehaviour, ActionInterface
 		}
 	}
 
+	/* called by the overhead animation */
+	public void startSweetspotFrames()
+	{
+		sweetSpotHitbox.enabled = true;
+	}
+
+	/* called by the overhead animation - resets sprites and data, but NOT hitbox */
 	public void stopOverhead()
 	{
 		//need to set startingPosition
@@ -85,6 +99,9 @@ public class ActionOverhead : MonoBehaviour, ActionInterface
 		dashTarget = Vector2.zero;
 	}
 
+	/* Called by the overhead animation - has some attached logic
+	 * Not used to enable the hitbox - only disable (sorry)
+	 */
 	public bool toggleHitbox()
 	{
 		if (overheadHitbox.enabled)
@@ -105,14 +122,5 @@ public class ActionOverhead : MonoBehaviour, ActionInterface
 		}
 
 		return true;
-	}
-
-	private void OnTriggerEnter2D(Collider2D collision)
-	{
-		//if sweet spot, do more damage and stun
-
-		//otherwise do normal damage and stun
-
-		//then decrease durability
 	}
 }

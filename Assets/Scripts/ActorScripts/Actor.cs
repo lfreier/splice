@@ -70,7 +70,10 @@ public class Actor : MonoBehaviour
 
 	public void FixedUpdate()
 	{
-		speedCheck -= Time.deltaTime;
+		if (speedCheck > 0)
+		{
+			speedCheck -= Time.deltaTime;
+		}
 	}
 
 	private void initActorData()
@@ -251,7 +254,11 @@ public class Actor : MonoBehaviour
 			}
 			else if (equippedWeaponInt.getType() == WeaponType.UNARMED)
 			{
-				Destroy(equippedWeapon);
+				/* only destroy copies of the basic fist weapon, not muations */
+				if (equippedWeapon.GetComponentInChildren<MutationInterface>() == null)
+				{
+					Destroy(equippedWeapon);
+				}
 			}
 			else
 			{
@@ -261,9 +268,13 @@ public class Actor : MonoBehaviour
 		equippedWeapon = tempWeap.gameObject;
 		equippedWeaponInt = tempWeapInt;
 
-		equippedWeapon.transform.SetParent(this.transform, true);
-		setWeaponLayer(WeaponDefs.SORT_LAYER_CHARS);
-		equippedWeaponInt.setStartingPosition(true);
+		/* TODO: slightly hacky way for MBeast to work*/
+		if (equippedWeapon.GetComponent<MutationInterface>() == null)
+		{
+			equippedWeapon.transform.SetParent(this.transform, true);
+			setWeaponLayer(WeaponDefs.SORT_LAYER_CHARS);
+			equippedWeaponInt.setStartingPosition(true);
+		}
 
 		WeaponDefs.setWeaponTag(equippedWeapon, WeaponDefs.EQUIPPED_WEAPON_TAG);
 
@@ -664,7 +675,8 @@ public class Actor : MonoBehaviour
 
 		equipEmpty();
 	}
-	private void equipEmpty()
+
+	public void equipEmpty()
 	{
 		GameObject fistPrefab = instantiateWeapon(gameManager.weapPFist);
 

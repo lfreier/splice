@@ -5,7 +5,7 @@ public class PlayerStats
 {
 	public int[] keycardCount = new int[PickupDefs.MAX_KEYCARD_TYPE + 1];
 	public int cells = 0;
-	private float mutationBar = 0;
+	public float mutationBar = 0;
 	public float maxMutationBar = 100;
 	private ActorDefs.ActorData playerData;
 
@@ -23,6 +23,7 @@ public class PlayerStats
 				/* Add the keycard to the player inventory by just incrementing */
 				Keycard card = (Keycard)pickup;
 				keycardCount[(int)card._keycardType]++;
+				gameManager.signalUpdateKeycardCount(keycardCount[(int)card._keycardType], card._keycardType);
 				break;
 			case PickupDefs.pickupType.CELL:
 			default:
@@ -59,4 +60,12 @@ public class PlayerStats
 		playerData = player.actorData;
 	}
 
+	public void useKeycard(int keycardIndex)
+	{
+		if (keycardIndex >= 0 && keycardIndex <= PickupDefs.MAX_KEYCARD_TYPE)
+		{
+			keycardCount[keycardIndex]--;
+			gameManager.signalUpdateKeycardCount(keycardCount[keycardIndex], (PickupDefs.keycardType) keycardIndex);
+		}
+	}
 }

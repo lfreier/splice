@@ -247,6 +247,8 @@ MonoBehaviour:
   wallHitSound: {fileID: 0}
   weaponBreakSound: {fileID: 0}
   weaponSwingSound: {fileID: 0}
+  currentSide: 0
+  durability: 0
   batterySprites:
   - {fileID: 8724192091381546658}
   - {fileID: 4959557830975964963}
