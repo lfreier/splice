@@ -98,7 +98,8 @@ public class MBeast : BasicWeapon, MutationInterface
 
 	private void abilityInputPressed()
 	{
-		if (buffTimer > 0)
+		float currMutEnergy = actorWielder.gameManager.playerStats.getMutationBar();
+		if (buffTimer > 0  || currMutEnergy < mutScriptable.mutCost)
 		{
 			return;
 		}

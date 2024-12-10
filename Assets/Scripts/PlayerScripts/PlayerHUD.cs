@@ -17,6 +17,8 @@ public class PlayerHUD : MonoBehaviour
 	public TextMeshProUGUI cellText;
 	public Image mutationFill;
 
+	public Image activeItemIcon;
+
 	public GameObject heartPrefab;
 
 	public Sprite heartSprite;
@@ -78,6 +80,7 @@ public class PlayerHUD : MonoBehaviour
 			if (actor.tag == ActorDefs.playerTag)
 			{
 				player = actor;
+				gameManager.playerStats.playerHUD = this;
 				Camera main = Camera.main;
 				foreach (Canvas canvas in hudCanvas)
 				{
@@ -145,7 +148,13 @@ public class PlayerHUD : MonoBehaviour
 	public void updateCells(int count)
 	{
 		cellText.SetText("" + count);
-		mutationFill.fillAmount = gameManager.playerStats.getMutationBar() / gameManager.playerStats.maxMutationBar;
+		mutationFill.fillAmount = ((float)gameManager.playerStats.getMutationBar()) / ((float)gameManager.playerStats.getMaxMutationBar());
+	}
+
+	public void changeActiveItemIcon(Sprite icon)
+	{
+		activeItemIcon.enabled = true;
+		activeItemIcon.sprite = icon;
 	}
 
 	private void addHeart()

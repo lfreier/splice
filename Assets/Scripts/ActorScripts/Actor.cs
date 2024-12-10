@@ -7,8 +7,9 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using UnityEngine.U2D;
-using static EffectDefs;
 using static ActorDefs;
+using static EffectDefs;
+using static WeaponDefs;
 
 /*
  * Actor class:
@@ -110,6 +111,11 @@ public class Actor : MonoBehaviour
 			{
 				this.behaviorList.Add(foundScript);
 			}
+		}
+
+		if (tag == playerTag)
+		{
+			gameManager.playerStats.player = this;
 		}
 
 		if (gameManager != null && (equippedWeapon == null || equippedWeaponInt == null))
@@ -587,6 +593,11 @@ public class Actor : MonoBehaviour
 	 */
 	public float takeDamage(float damage)
 	{
+		return takeDamage(damage, null);
+	}
+
+	public float takeDamage(float damage, Actor sourceActor)
+	{
 		if (this.invincible)
 		{
 			return 0F;
@@ -609,6 +620,45 @@ public class Actor : MonoBehaviour
 		else
 		{
 			EffectDefs.effectApply(this, gameManager.effectManager.iFrame0);
+		}
+
+		if (sourceActor != null)
+		{
+			if (sourceActor.tag == ActorDefs.playerTag || this.tag == ActorDefs.playerTag)
+			{
+				/* TODO:
+				 * hardcoded bad, but w/e
+				 * hitstop for different amounts of damage
+				 */
+				float hitstopLength;
+				float hitstopSpeed;
+				if (damage < 1)
+				{
+					hitstopLength = 0;
+					hitstopSpeed = 1F;
+				}
+				else if (damage < 1.5)
+				{
+					hitstopLength = HITSTOP_LENGTH_SMALL;
+					hitstopSpeed = HITSTOP_SPD_NORMAL;
+				}
+				else if (damage < 2.5)
+				{
+					hitstopLength = HITSTOP_LENGTH_MID;
+					hitstopSpeed = HITSTOP_SPD_NORMAL;
+				}
+				else if (damage < 4)
+				{
+					hitstopLength = HITSTOP_LENGTH_HIGH;
+					hitstopSpeed = HITSTOP_SPD_HIGH;
+				}
+				else
+				{
+					hitstopLength = HITSTOP_LENGTH_MASSIVE;
+					hitstopSpeed = HITSTOP_SPD_HIGH;
+				}
+				gameManager.hitstop(hitstopLength, hitstopSpeed);
+			}
 		}
 
 		return startingHealth - actorData.health;
@@ -681,9 +731,5 @@ public class Actor : MonoBehaviour
 		GameObject fistPrefab = instantiateWeapon(gameManager.weapPFist);
 
 		equip(fistPrefab.transform.gameObject);
-	}
-
-	private void updatePointer()
-	{
 	}
 }

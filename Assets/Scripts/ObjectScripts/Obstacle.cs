@@ -62,7 +62,8 @@ public class Obstacle : MonoBehaviour
 			{
 				actorHit.actorBody.AddForce(velocityDiff * _obstacleScriptable.actorPushForce);
 				EffectDefs.effectApply(actorHit, actorHit.gameManager.effectManager.stunHalf);
-				actorHit.takeDamage(_obstacleScriptable.collisionDamage);
+				/* hitstop if player is hit */
+				actorHit.takeDamage(_obstacleScriptable.collisionDamage, actorHit);
 			}
 		}
 	}

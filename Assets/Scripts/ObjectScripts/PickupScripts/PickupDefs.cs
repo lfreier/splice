@@ -21,7 +21,14 @@ public static class PickupDefs
 		BATTERY = 3
 	};
 
-	static public int MAX_KEYCARD_TYPE = (int)keycardType.YELLOW;
+	public enum usableType
+	{
+		HEALTH_VIAL = 0,
+		BATTERY = 1
+	};
+
+	static public int MAX_KEYCARD_TYPE	= (int)keycardType.YELLOW;
+	static public int MAX_USABLE_ITEM_TYPE	= (int)usableType.BATTERY;
 
 	static public float CELL_ATTRACT_RANGE = 5F;
 	static public float CELL_ACCELERATION = 10F;

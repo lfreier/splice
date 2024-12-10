@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 2777311585036640006}
   - component: {fileID: 4654381731306417788}
   - component: {fileID: 4511755820635981177}
+  - component: {fileID: 9086022366862896558}
   m_Layer: 0
   m_Name: Managers
   m_TagString: Untagged
@@ -47,9 +48,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   startingSelect: {fileID: 0}
-  audioManager: {fileID: 0}
-  effectManager: {fileID: 0}
-  levelManager: {fileID: 0}
+  audioManager: {fileID: 4511755820635981177}
+  effectManager: {fileID: 4654381731306417788}
+  levelManager: {fileID: 9086022366862896558}
   loadingHandler: {fileID: 0}
   mutPBeast: {fileID: 3279388766364700584, guid: 60c128a3aea613c438eeb70f8c97eee7, type: 3}
   mutPBladeWing: {fileID: 869377620814106126, guid: f3a8bd5cc9868d34daeeca1cb142e3c4, type: 3}
@@ -62,15 +63,18 @@ MonoBehaviour:
   collisionLayer:
     serializedVersion: 2
     m_Bits: 64
-  lineOfSightLayers:
-    serializedVersion: 2
-    m_Bits: 320
   findWeaponLayers:
     serializedVersion: 2
-    m_Bits: 2112
+    m_Bits: 18496
+  lineOfSightLayers:
+    serializedVersion: 2
+    m_Bits: 16704
   soundLayer:
     serializedVersion: 2
     m_Bits: 262144
+  unwalkableLayers:
+    serializedVersion: 2
+    m_Bits: 24640
   isLoaded: 0
   currentScene: 0
 --- !u!114 &4654381731306417788
@@ -117,3 +121,17 @@ MonoBehaviour:
   parry: {fileID: 8300000, guid: acf0ab68899702345b836a505f63bbe1, type: 3}
   playerDeath: {fileID: 0}
   wallMetal: {fileID: 0}
+--- !u!114 &9086022366862896558
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7906487538385718882}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f489f2f1786fe464eb8461b78fa3e7da, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gridPosition: {x: 0, y: 0, z: 0}
+  currLevelData: {fileID: 0}

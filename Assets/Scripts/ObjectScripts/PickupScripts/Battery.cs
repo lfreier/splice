@@ -5,6 +5,9 @@ public class Battery : MonoBehaviour, PickupInterface
 {
 	public int chargeAmt = 0;
 
+	[SerializeField]
+	private Sprite icon;
+
 	// Use this for initialization
 	void Start()
 	{
@@ -13,6 +16,11 @@ public class Battery : MonoBehaviour, PickupInterface
 	public int getCount()
 	{
 		return chargeAmt;
+	}
+
+	public Sprite getIcon()
+	{
+		return icon;
 	}
 
 	public PickupDefs.pickupType getPickupType()
@@ -27,11 +35,11 @@ public class Battery : MonoBehaviour, PickupInterface
 
 	public void pickup(Actor actorTarget)
 	{
-		GameObject weapon = actorTarget.getEquippedWeapon();
-		SwingBatteryWeapon batteryWeap = weapon.GetComponentInChildren<SwingBatteryWeapon>();
-		if (batteryWeap != null)
+		GameManager gameManager = GameManager.Instance;
+		if (gameManager != null)
 		{
-			batteryWeap.fillBatteries(chargeAmt);
+			gameManager.signalUpdateItemCount(1, PickupDefs.usableType.BATTERY);
+			gameManager.playerStats.addItem(this);
 		}
 		Destroy(this.gameObject);
 	}

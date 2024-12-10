@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f695e0652b30c1047ae87fa8be4f8912, type: 3}
+  m_Name: security2
+  m_EditorClassIdentifier: 
+  <health>k__BackingField: 3.5
+  <attackTimer>k__BackingField: 0.1
+  <maxSpeed>k__BackingField: 7.5
+  <moveSpeed>k__BackingField: 0.25
+  <acceleration>k__BackingField: 0.4
+  <deceleration>k__BackingField: 0.2
+  <hearingRange>k__BackingField: 9
+  <sightRange>k__BackingField: 9
+  <sightAngle>k__BackingField: 240
+  <frightenedDistance>k__BackingField: 6
+  <knockbackResist>k__BackingField: 0.8

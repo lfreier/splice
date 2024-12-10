@@ -19,8 +19,8 @@ TagManager:
   - 
   - Water
   - UI
-  - Collision
-  - CollisionActor
+  - WallCollision
+  - ThrownWeapon
   - Actor
   - 
   - Object
@@ -33,7 +33,7 @@ TagManager:
   - ObjectExcludeActor
   - Sound
   - 
-  - 
+  - PathfindingCollider
   - 
   - 
   - 

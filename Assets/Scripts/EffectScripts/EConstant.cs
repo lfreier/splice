@@ -132,5 +132,7 @@ public class EConstant: MonoBehaviour, EffectInterface
 
 		timer = effectScriptable.effectLength;
 		tickTimer = effectScriptable.tickLength;
+
+		tick(tickTimer);
 	}
 }

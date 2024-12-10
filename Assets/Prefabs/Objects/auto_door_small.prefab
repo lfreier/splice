@@ -337,7 +337,7 @@ GameObject:
   - component: {fileID: 5393002915436178959}
   - component: {fileID: 3233932905664839279}
   - component: {fileID: 3858416088514600466}
-  m_Layer: 6
+  m_Layer: 14
   m_Name: auto_door1
   m_TagString: WallMetal
   m_Icon: {fileID: 0}

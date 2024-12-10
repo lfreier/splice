@@ -8,8 +8,8 @@ public class SwingBatteryWeapon : BasicWeapon
 
 	public float startingCharge = 2;
 	public float chargedDamage = 2.5F;
-	private int maxBatteries = 0;
-	private int filledBatteries = 0;
+	public int maxBatteries = 0;
+	public int filledBatteries = 0;
 
 	public override void reduceDurability(float reduction)
 	{
@@ -18,7 +18,11 @@ public class SwingBatteryWeapon : BasicWeapon
 			return;
 		}
 
-		durability -= reduction;
+		/* don't add durability when charging the battery */
+		if (reduction > 0)
+		{
+			durability -= reduction;
+		}
 
 		if (reduction <= 0)
 		{

@@ -1,5 +1,4 @@
 ﻿using Unity.VisualScripting;
-using UnityEditor;
 using UnityEngine;
 using static UnityEngine.GraphicsBuffer;
 
@@ -280,7 +279,7 @@ public abstract class BasicWeapon : MonoBehaviour, WeaponInterface
 		if (actorHit != null && actorWielder.isTargetHostile(actorHit) && !actorHit.invincible)
 		{
 			actorWielder.triggerDamageEffects(actorHit);
-			if (actorHit.takeDamage(damage) > 0)
+			if (actorHit.takeDamage(damage, actorWielder) > 0)
 			{
 				reduceDurability(durabilityDamage);
 			}

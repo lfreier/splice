@@ -10,17 +10,23 @@ public class PlayerInputs: MonoBehaviour
 	private float attackAction;
 	private float secondaryAttackAction;
 
+	private float cycleActiveAction;
+	private float lastCycleActiveAction;
+
 	private float moveCamAction;
 	private Vector2 pointerLoc;
 
 	private Vector2 moveAction;
 	private Vector2 oldMoveAction;
 
-	private float itemAction;
-	private float lastItemAction;
-
 	private float interactAction;
 	private float lastInteractAction;
+
+	private float inventoryAction;
+	private float lastInventoryAction;
+
+	private float itemAction;
+	private float lastItemAction;
 
 	private float throwAction;
 	private float lastThrowAction;
@@ -36,14 +42,17 @@ public class PlayerInputs: MonoBehaviour
 	private float[] lastSpecialActions = new float[MutationDefs.MAX_SLOTS];
 
 	[SerializeField]
-	private InputActionReference attack, secondaryAttack, move, moveCam, walk, interact, pointer, throwVal, action1, action2, pause, item;
+	private InputActionReference attack, secondaryAttack, move, moveCam, walk, interact, pointer, throwVal, action1, action2, pause, item, inventory, cycleActive;
 
 	public float attackInput() { return attackAction; }
+	public float cycleActiveInput() { return cycleActiveAction; }
 	public float secondaryAttackInput() { return secondaryAttackAction; }
 	public float moveCamInput() { return moveCamAction; }
 	public Vector2 pointerPos() { return pointerLoc; }
 	public Vector2 moveInput() { return moveAction; }
 	public float interactInput() { return interactAction; }
+	public float inventoryInput() { return inventoryAction; }
+	public float itemInput() { return itemAction; }
 	public float pauseInput() { return walkAction; }
 	public float throwInput() { return throwAction; }
 	public float walkInput() { return walkAction; }
@@ -53,11 +62,6 @@ public class PlayerInputs: MonoBehaviour
 	public static short Fshort(float value)
 	{
 		return (short)Mathf.FloorToInt(Mathf.Min(value, 1));
-	}
-
-	// Use this for initialization
-	void Start()
-	{
 	}
 
 	// Update is called once per frame
@@ -79,6 +83,10 @@ public class PlayerInputs: MonoBehaviour
 			pointerLoc = Camera.main.ScreenToWorldPoint(mousePos);
 		}
 
+		//item inputs
+		lastCycleActiveAction = cycleActiveAction;
+		cycleActiveAction = cycleActive.action.ReadValue<float>();
+
 		//move inputs
 		moveAction = move.action.ReadValue<Vector2>();
  		walkAction = walk.action.ReadValue<float>();
@@ -86,6 +94,10 @@ public class PlayerInputs: MonoBehaviour
 		//interact inputs
 		lastInteractAction = interactAction;
 		interactAction = interact.action.ReadValue<float>();
+
+		//inventory inputs
+		lastInventoryAction = inventoryAction;
+		inventoryAction = inventory.action.ReadValue<float>();
 
 		//item inputs
 		lastItemAction = itemAction;
@@ -151,6 +163,21 @@ public class PlayerInputs: MonoBehaviour
 		if (interactAction == 0 && lastInteractAction != 0)
 		{
 			gameManager.signalPlayerInteractReleaseEvent();
+		}
+		if (inventoryAction != 0 && lastInventoryAction == 0 && !paused)
+		{
+			Time.timeScale = 0;
+			camHandler.stopCam(true);
+			paused = true;
+			gameManager.signalInventoryOpenEvent();
+		}
+		if (itemAction != 0 && lastItemAction == 0)
+		{
+			gameManager.playerStats.useActiveItem();
+		}
+		if (cycleActiveAction != 0 && lastCycleActiveAction == 0)
+		{
+			gameManager.playerStats.cycleActiveItem();
 		}
 	}
 }

@@ -29,7 +29,7 @@ public class MutationSelectHUD : MonoBehaviour
 	public void selectMutation(int index)
 	{
 		/* Hacky way to add protection of mashing click */
-		if (Time.unscaledTime - loadInTime < clickProtectSeconds)
+		if (Time.unscaledTime - loadInTime < clickProtectSeconds || select == null)
 		{
 			return;
 		}

@@ -103,6 +103,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   count: 1
   healAmount: 1
+  icon: {fileID: 21300000, guid: 8ef64a6b4b9f5d84489410ed1d812eee, type: 3}
 --- !u!1 &1483397202772527511
 GameObject:
   m_ObjectHideFlags: 0

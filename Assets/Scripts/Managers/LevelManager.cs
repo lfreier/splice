@@ -4,10 +4,24 @@ using UnityEngine;
 public class LevelManager : MonoBehaviour
 {
 	private bool powerOn;
+	public Vector3 gridPosition;
+	public LevelData currLevelData;
 
 	public void startNewLevel()
 	{
 		powerOn = true;
+		int i = 0;
+		foreach (LevelData levelData in FindObjectsByType<LevelData>(FindObjectsSortMode.None))
+		{
+			currLevelData = levelData;
+			gridPosition = currLevelData.transform.position;
+			if (i > 0)
+			{
+				Debug.Log("Internal error: multiple PathGrid objects in a level");
+				break;
+			}
+			i++;
+		}
 	}
 
 	/* TODO: this definitely doesn't work */

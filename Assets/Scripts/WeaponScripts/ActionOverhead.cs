@@ -62,6 +62,11 @@ public class ActionOverhead : MonoBehaviour, ActionInterface
 	/* called by the overhead animation */
 	public void startOverheadFrames()
 	{
+		if (actorWielder == null)
+		{
+			return;
+		}
+
 		actorWielder.gameManager.signalMovementLocked();
 		actorWielder.gameManager.signalRotationLocked();
 
@@ -70,6 +75,11 @@ public class ActionOverhead : MonoBehaviour, ActionInterface
 		overheadHitbox.enabled = true;
 
 		weaponStartSide = weapon.currentSide;
+
+		if (actorWielder == null)
+		{
+			return;
+		}
 
 		PlayerInputs playerIn = actorWielder.GetComponentInChildren<PlayerInputs>();
 		if (playerIn != null)

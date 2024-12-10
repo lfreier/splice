@@ -49,7 +49,8 @@ public class MBladeWing : MonoBehaviour, MutationInterface
 
 	private void abilityInputPressed()
 	{
-		if (buffTimer <= 0)
+		float currMutEnergy = actorWielder.gameManager.playerStats.getMutationBar();
+		if (buffTimer <= 0 && currMutEnergy >= mutationScriptable.mutCost)
 		{
 			anim.SetTrigger(MutationDefs.TRIGGER_BLADE_WING);
 			buffTimer = MutationDefs.ABILITY_BUFF_TIMER;

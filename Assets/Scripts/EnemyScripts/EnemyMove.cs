@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -32,6 +33,7 @@ public class EnemyMove : MonoBehaviour
 
 	/* moveTarget will always be where the actor moves. Takes priority over the actor's hostile target. */
 	private Vector3 moveTarget;
+	private Vector3 lastMoveTarget;
 	private Vector3 attackTarget;
 	private Actor attackTargetActor;
 
@@ -43,18 +45,47 @@ public class EnemyMove : MonoBehaviour
 	private float stateTimer;
 	private static float HOSTILE_TIMER_LENGTH = 4;
 	private static float LOST_TIMER_LENGTH = 2;
+	private static float PATH_TIMER_LENGTH = 0.3F;
 	private static float SUS_TIMER_LENGTH = 5;
+
+	public Pathfinding pathfinder;
+	private bool usingPathfinding;
 
 	public GameManager gameManager;
 
 	void Start()
 	{
 		gameManager = GameManager.Instance;
+		pathfinder = new Pathfinding();
+		//pathfinder.grid = new PathGrid();
+		pathfinder.startPathfinding = false;
+		usingPathfinding = false;
+		LevelData levelData = gameManager.levelManager.currLevelData;
+		//pathfinder.grid.init(levelData.gridWorldSize, levelData.nodeRadius);
+		
+		PathColliderHelper colliderHelper = GetComponentInChildren<PathColliderHelper>();
+		if (colliderHelper != null)
+		{
+			colliderHelper.pathfinder = this.pathfinder;
+		}
+		
+		/*
+		for (int i = 0; i < idlePath.Length; i ++)
+		{
+			PathNode temp = pathfinder.grid.nodeFromWorldPosition(idlePath[i]);
+			idlePath[i] = temp.position;
+		}
+		*/
+
 		_detection = detectMode.idle;
 		attackTargetActor = null;
+
 		pathIndex = 0;
 		idlePauseTimer = 0;
+		pathfinder.pathingTimer = 0;
 		idleLookTarget = transform.position + transform.up * 0.5F;
+
+		moveTarget = lastMoveTarget = actorBody.transform.position;
 	}
 
 	void FixedUpdate()
@@ -169,6 +200,8 @@ public class EnemyMove : MonoBehaviour
 			currentSpeed -= _actorData.deceleration * _actorData.moveSpeed;
 		}
 
+		lastMoveTarget = moveTarget;
+
 		currentSpeed = Mathf.Clamp(currentSpeed, 0, maxStateSpeed);
 
 		actor.Move(new Vector3(oldMoveInput.x * currentSpeed, oldMoveInput.y * currentSpeed));
@@ -181,15 +214,59 @@ public class EnemyMove : MonoBehaviour
 			return;
 		}
 
-		Vector2 diff = moveTarget - this.transform.position;
-		moveInput = Vector2.ClampMagnitude(diff, 1F);
-	}
+		/* only start pathfinding on a collision
+		 * when starting pathfinding, wait for the timer before changing moveTarget
+		 *
+		 */
+		Vector2 diff;
+		if (pathfinder != null && pathfinder.startPathfinding && pathfinder.pathingTimer <= 0)
+		{
+			Debug.Log("Finding path for: " + gameObject.name);
+			var tempTimer = System.Diagnostics.Stopwatch.StartNew();
+			pathfinder.findPath(actorBody.transform.position, moveTarget);
+			tempTimer.Stop();
+			Debug.Log("Pathfinding took " + tempTimer.ElapsedMilliseconds + " milliseconds");
+			usingPathfinding = true;
+			pathfinder.pathingTimer = PATH_TIMER_LENGTH;
+		}
 
-	/* TODO: A* pathfinding implementation */
-	private Vector2 findNextInput(Vector2 target)
-	{
-		//float gCost, hCost, Fcost;
-		return target;
+		if (usingPathfinding)
+		{
+			Vector3 newTarget;
+			/* if move target changes, then stop using pathfinding */
+			if (pathfinder.startPathfinding == false && (lastMoveTarget - moveTarget).magnitude > moveTargetError)
+			{
+				usingPathfinding = false;
+				diff = moveTarget - this.transform.position;
+				moveInput = Vector2.ClampMagnitude(diff, 1F);
+				return;
+			}
+			if (pathfinder.pathingTimer > 0)
+			{
+				pathfinder.pathingTimer -= Time.deltaTime;
+			}
+
+			newTarget = pathfinder.getNextMove(actorBody.transform.position, moveTargetError);
+			if (newTarget == null || (newTarget - actorBody.transform.position).magnitude <= moveTargetError)
+			{
+				diff = moveTarget - this.transform.position;
+				moveInput = Vector2.ClampMagnitude(diff, 1F);
+				return;
+			}
+
+			pathfinder.startPathfinding = false;
+			diff = newTarget - this.transform.position;
+			if (diff.magnitude > moveTargetError)
+			{
+				diff *= 1 / diff.magnitude;
+			}
+		}
+		else
+		{
+			diff = moveTarget - this.transform.position;
+		}
+
+		moveInput = Vector2.ClampMagnitude(diff, 1F);
 	}
 
 	private Collider2D findNearestWeapon(float withinRange)

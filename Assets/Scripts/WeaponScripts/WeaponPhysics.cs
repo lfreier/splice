@@ -94,7 +94,7 @@ public class WeaponPhysics : MonoBehaviour
 	{
 		_throwMove = target;
 		weaponBody.bodyType = RigidbodyType2D.Dynamic;
-		gameObject.layer = LayerMask.NameToLayer(GameManager.COLLISION_ACTOR_LAYER);
+		gameObject.layer = LayerMask.NameToLayer(GameManager.THROWN_WEAPON_LAYER);
 		this.throwingActor = throwingActor;
 		throwCollider.enabled = true;
 		pickupCollider.enabled = false;
@@ -118,7 +118,7 @@ public class WeaponPhysics : MonoBehaviour
 					return;
 				}
 				Debug.Log("Throwing " + this.gameObject.name + " hit " + actorHit.name + " for " + _weaponScriptable.throwDamage + " damage");
-				if (actorHit.takeDamage(_weaponScriptable.throwDamage) > 0)
+				if (actorHit.takeDamage(_weaponScriptable.throwDamage, _weapon.getActorWielder()) > 0)
 				{	
 					actorHit.drop();
 					_weapon.reduceDurability(_weaponScriptable.throwDurabilityDamage);

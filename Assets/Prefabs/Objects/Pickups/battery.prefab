@@ -205,6 +205,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   chargeAmt: 2
+  icon: {fileID: 21300000, guid: 70d462bdc094038428f39745a69e8ef8, type: 3}
 --- !u!1 &7877326108191794197
 GameObject:
   m_ObjectHideFlags: 0

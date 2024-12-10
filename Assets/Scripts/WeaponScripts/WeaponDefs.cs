@@ -17,6 +17,14 @@ public static class WeaponDefs
 	public static string ANIM_TRIGGER_ATTACK_SEC	= "AttackSecondary";
 	public static string ANIM_TRIGGER_TIMEOUT = "Timeout";
 
+	public static float HITSTOP_LENGTH_SMALL = 0.0005F;
+	public static float HITSTOP_LENGTH_MID = 0.03F;
+	public static float HITSTOP_LENGTH_HIGH = 0.045F;
+	public static float HITSTOP_LENGTH_MASSIVE = 0.06F;
+
+	public static float HITSTOP_SPD_NORMAL = 0.15F;
+	public static float HITSTOP_SPD_HIGH = 0.1F;
+
 	public static float THROW_ROTATE_LOW = 100.0F;
 	public static float THROW_ROTATE_MID = 350.0F;
 	public static float THROW_ROTATE_HIGH = 600.0F;

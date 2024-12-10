@@ -17,6 +17,12 @@ public static class MutationDefs
 
 	public static short MAX_SLOTS = 2;
 
+	public struct MutationData
+	{
+		public int mutationBar;
+		public int maxMutationBar;
+	};
+
 	public static bool isMutationSelect(GameObject target)
 	{
 		return target.tag.StartsWith("Mutation") && target.tag.Equals(MutationDefs.MUTATION_SELECT_TAG);

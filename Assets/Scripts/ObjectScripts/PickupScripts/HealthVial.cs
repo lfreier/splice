@@ -6,6 +6,9 @@ public class HealthVial : MonoBehaviour, PickupInterface
 	public int count = 1;
 	public float healAmount = 0;
 
+	[SerializeField]
+	private Sprite icon;
+
 	// Use this for initialization
 	void Start()
 	{
@@ -14,6 +17,11 @@ public class HealthVial : MonoBehaviour, PickupInterface
 	public int getCount()
 	{
 		return count;
+	}
+
+	public Sprite getIcon()
+	{
+		return icon;
 	}
 
 	public PickupDefs.pickupType getPickupType()
@@ -28,7 +36,12 @@ public class HealthVial : MonoBehaviour, PickupInterface
 
 	public void pickup(Actor actorTarget)
 	{
-		actorTarget.takeHeal(healAmount);
+		GameManager gameManager = GameManager.Instance;
+		if (gameManager != null)
+		{
+			gameManager.signalUpdateItemCount(1, PickupDefs.usableType.HEALTH_VIAL);
+			gameManager.playerStats.addItem(this);
+		}
 		Destroy(this.gameObject);
 	}
 }

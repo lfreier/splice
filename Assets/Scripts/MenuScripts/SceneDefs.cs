@@ -7,12 +7,13 @@ public class SceneDefs
 	public static int LOADING_SCENE			= 3;
 	public static int PAUSE_SCENE			= 4;
 	public static int GAME_OVER_SCENE		= 5;
-	public static int MUTATION_SELECT_SCENE	= 6;
-	public static int WIN_SCENE				= 7;
-	public static int LEVEL_START_SCENE		= 8;
-	public static int LEVEL_OFFICE_SCENE	= 9;
+	public static int INVENTORY_HUD_SCENE	= 6;
+	public static int MUTATION_SELECT_SCENE	= 7;
+	public static int WIN_SCENE				= 8;
+	public static int LEVEL_START_SCENE		= 9;
+	public static int LEVEL_OFFICE_SCENE	= 10;
 
-	public static int[] BACKGROUND_SCENES = {MANAGER_SCENE, PLAYER_HUD_SCENE, LOADING_SCENE};
+	public static int[] BACKGROUND_SCENES = {MANAGER_SCENE, PLAYER_HUD_SCENE, LOADING_SCENE, INVENTORY_HUD_SCENE};
 
 	public static bool isLevelScene(int toCheck)
 	{

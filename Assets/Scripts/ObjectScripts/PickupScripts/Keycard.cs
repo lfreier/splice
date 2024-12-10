@@ -8,6 +8,9 @@ public class Keycard : MonoBehaviour, PickupInterface
 	public int keycardUses;
 	private GameManager gameManager;
 
+	[SerializeField]
+	private Sprite icon;
+
 	void Start()
 	{
 		gameManager = GameManager.Instance;
@@ -17,6 +20,11 @@ public class Keycard : MonoBehaviour, PickupInterface
 	public int getCount()
 	{
 		return 1;
+	}
+
+	public Sprite getIcon()
+	{
+		return icon;
 	}
 
 	public void init()

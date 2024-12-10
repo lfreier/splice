@@ -103,6 +103,7 @@ public class MLimb : MonoBehaviour, MutationInterface
 		/* Grab an object from the limb hand
 		 * Automatically picks up weapons and pickups - big objects will always be held
 		 */
+		bool objectCostsMut = false;
 
 		if (limbState == retracted.ACTIVE)
 		{
@@ -124,11 +125,13 @@ public class MLimb : MonoBehaviour, MutationInterface
 					break;
 				}
 				PickupBox box = target.GetComponentInChildren<PickupBox>();
+				Obstacle obstacle = target.GetComponentInChildren<Obstacle>();
 				if (box == null)
 				{
 					box = target.GetComponentInParent<PickupBox>();
 				}
-				if (box != null)
+				/* if trying to grab a pickup box, pick up the whole thing */
+				if (box != null && obstacle == null)
 				{
 					GameObject pickup = box.getPickup();
 					if (pickup != null)
@@ -138,7 +141,8 @@ public class MLimb : MonoBehaviour, MutationInterface
 					}
 				}
 
-				Obstacle obstacle = target.GetComponentInChildren<Obstacle>();
+				//TODO: grabbing actors
+
 				if (obstacle == null)
 				{
 					obstacle = target.GetComponentInParent<Obstacle>();
@@ -157,6 +161,7 @@ public class MLimb : MonoBehaviour, MutationInterface
 						heldRigidbody = objBody;
 						heldRigidbody.simulated = false;
 						heldObstacle = obstacle;
+						objectCostsMut = true;
 						break;
 					}
 				}
@@ -166,11 +171,16 @@ public class MLimb : MonoBehaviour, MutationInterface
 			{
 				if (currChild.parent == null)
 				{
-					grabbedObject = currChild.gameObject;
-					grabbedObject.transform.SetParent(handTransform);
-					grabbedObject.transform.SetPositionAndRotation(handGrabPos, grabbedObject.transform.rotation);
-					anim.SetTrigger("Retract");
-					break;
+					/* only spend mut energy for certain objects */
+					float currMutEnergy = actorWielder.gameManager.playerStats.getMutationBar();
+					if (!objectCostsMut || currMutEnergy >= mutationScriptable.mutCost)
+					{
+						grabbedObject = currChild.gameObject;
+						grabbedObject.transform.SetParent(handTransform);
+						grabbedObject.transform.SetPositionAndRotation(handGrabPos, grabbedObject.transform.rotation);
+						anim.SetTrigger("Retract");
+						break;
+					}
 				}
 				currChild = currChild.parent;
 			}

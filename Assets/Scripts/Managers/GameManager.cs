@@ -14,6 +14,9 @@ public class GameManager : MonoBehaviour
 	public delegate void InitHudEvent();
 	public event InitHudEvent initHudEvent;
 
+	public delegate void InventoryOpenEvent();
+	public event InventoryOpenEvent inventoryOpenEvent;
+
 	public delegate void MuteEvent();
 	public event MuteEvent muteEvent;
 
@@ -41,6 +44,9 @@ public class GameManager : MonoBehaviour
 	public delegate void UpdateCellCount(int count);
 	public event UpdateCellCount updateCellCount;
 
+	public delegate void UpdateItemCount(int newCount, PickupDefs.usableType type);
+	public event UpdateItemCount updateItemCount;
+
 	public delegate void UpdateHealthEvent(float newHealth);
 	public event UpdateHealthEvent updateHealthEvent;
 
@@ -62,22 +68,25 @@ public class GameManager : MonoBehaviour
 
 	public LayerMask actorLayers;
 	public LayerMask collisionLayer;
-	public LayerMask lineOfSightLayers;
 	public LayerMask findWeaponLayers;
+	public LayerMask lineOfSightLayers;
 	public LayerMask soundLayer;
+	public LayerMask unwalkableLayers;
 
 	public PlayerStats playerStats;
 
 	public bool isLoaded = false;
 	public int currentScene = -1;
 
-	public static string ACTOR_LAYER = "Actor";
-	public static string DAMAGE_LAYER = "Damage";
-	public static string OBJECT_LAYER = "Object";
-	public static string OBJECT_MID_LAYER = "ObjectMid";
-	public static string OBJECT_EXCLUDE_ACTOR_LAYER = "ObjectExcludeActor";
-	public static string COLLISION_ACTOR_LAYER = "CollisionActor";
-	public static string UI_LAYER = "UI";
+	public static string ACTOR_LAYER					= "Actor";
+	public static string DAMAGE_LAYER					= "Damage";
+	public static string OBJECT_LAYER					= "Object";
+	public static string OBJECT_MID_LAYER				= "ObjectMid";
+	public static string OBJECT_HIGH_LAYER				= "ObjectHigh";
+	public static string OBJECT_EXCLUDE_ACTOR_LAYER		= "ObjectExcludeActor";
+	public static string THROWN_WEAPON_LAYER			= "ThrownWeapon";
+	public static string WALL_COLLISION_LAYER			= "WallCollision";
+	public static string UI_LAYER						= "UI";
 
 	public static string CHAR_SCRIP_ID_SCIENTIST = "scientist";
 
@@ -102,6 +111,9 @@ public class GameManager : MonoBehaviour
 
 	private Dictionary<string, MutationInterface> mutations = new Dictionary<string, MutationInterface>();
 
+	private float hitstopLength;
+	private float hitstopSpeed;
+
 	public static GameManager Instance
 	{
 		get
@@ -122,6 +134,7 @@ public class GameManager : MonoBehaviour
 			instance = this;
 		}
 
+		/* TODO: this sucks */
 		actorBehaviors.Add(Type.GetType("PlayerAttack"));
 		actorBehaviors.Add(Type.GetType("PlayerCamera"));
 		actorBehaviors.Add(Type.GetType("PlayerInputs"));
@@ -148,19 +161,27 @@ public class GameManager : MonoBehaviour
 			if (SceneDefs.isLevelScene(curr.buildIndex))
 			{
 				currentScene = curr.buildIndex;
+				levelManager.startNewLevel();
 				break;
 			}
 		}
 
 		isLoaded = true;
+		hitstopLength = 0;
+		hitstopSpeed = 0;
 	}
 
-	private void Update()
+	private void FixedUpdate()
 	{
-		if (audioManager == null)
-			audioManager = AudioManager.Instance;
-		if (effectManager == null)
-			effectManager = EffectManager.Instance;
+		if (hitstopLength > 0)
+		{
+			hitstopLength -= Time.unscaledDeltaTime;
+			if (hitstopLength <= 0)
+			{
+				hitstopLength = 0;
+				Time.timeScale = 1;
+			}
+		}
 	}
 
 	public void gameOver(Actor player)
@@ -172,6 +193,15 @@ public class GameManager : MonoBehaviour
 		audio.enabled = false;
 		SceneManager.LoadScene(SceneDefs.GAME_OVER_SCENE, LoadSceneMode.Additive);
 	}
+
+	public void hitstop(float length, float speed)
+	{
+		//TODO: remove if committing to not using hitstop
+		return;
+		hitstopLength = length;
+		Time.timeScale = speed;
+	}
+
 	public async void nextLevel(Actor player, int nextSceneIndex)
 	{
 		CameraHandler camHan = Camera.main.GetComponent<CameraHandler>();
@@ -183,6 +213,8 @@ public class GameManager : MonoBehaviour
 		loadingHandler.reloadHUD = true;
 
 		await loadingHandler.LoadSceneGroup(new int[] { currentScene }, true, true);
+
+		levelManager.startNewLevel();
 	}
 
 	public async void loadBackgroundScenes()
@@ -208,6 +240,12 @@ public class GameManager : MonoBehaviour
 		await loadingHandler.LoadSceneGroup(bgScenes.ToArray(), false, false);
 	}
 
+	public void resetLevel()
+	{
+		playerStats.resetCounts();
+		levelManager.startNewLevel();
+	}
+
 	public void save(Actor player)
 	{
 		playerStats.savePlayerData(player);
@@ -216,6 +254,11 @@ public class GameManager : MonoBehaviour
 	public void signalInitHudEvent()
 	{
 		initHudEvent?.Invoke();
+	}
+
+	public void signalInventoryOpenEvent()
+	{
+		inventoryOpenEvent?.Invoke();
 	}
 
 	public void signalMovementLocked()
@@ -266,6 +309,11 @@ public class GameManager : MonoBehaviour
 	public void signalUpdateCellCount(int count)
 	{
 		updateCellCount?.Invoke(count);
+	}
+
+	public void signalUpdateItemCount(int toAdd, PickupDefs.usableType type)
+	{
+		updateItemCount?.Invoke(toAdd, type);
 	}
 
 	public void signalUpdateHealthEvent(float newHealth)

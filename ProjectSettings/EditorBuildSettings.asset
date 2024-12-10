@@ -24,6 +24,9 @@ EditorBuildSettings:
     path: Assets/Scenes/GameOverScene.unity
     guid: 945ec5b432c598a45806ce4116213593
   - enabled: 1
+    path: Assets/Scenes/HUDInventoryScene.unity
+    guid: 257a22f61405bae42a662ba8436ae2e9
+  - enabled: 1
     path: Assets/Scenes/MutationSelectScene.unity
     guid: 249a5a01f3e72874d88dab62807ad902
   - enabled: 1

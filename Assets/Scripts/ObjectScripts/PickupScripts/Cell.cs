@@ -12,6 +12,8 @@ public class Cell : MonoBehaviour, PickupInterface
 	public float attractForce = 100;
 	public Animator animator;
 
+	[SerializeField]
+	private Sprite icon;
 	GameManager gameManager;
 
 	// Use this for initialization
@@ -71,6 +73,12 @@ public class Cell : MonoBehaviour, PickupInterface
 	{
 		return cellCount;
 	}
+
+	public Sprite getIcon()
+	{
+		return icon;
+	}
+
 
 	public pickupType getPickupType()
 	{

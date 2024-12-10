@@ -164,6 +164,7 @@ public class MenuHandler : MonoBehaviour
 		gameManager.loadingHandler.resetPlayerData = true;
 		await gameManager.loadingHandler.LoadSceneGroup(nextLevel, showLoading, false);
 		showLoading = false;
+		gameManager.resetLevel();
 
 		SceneManager.SetActiveScene(SceneManager.GetSceneByBuildIndex(nextScene));
 
