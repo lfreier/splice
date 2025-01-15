@@ -11,7 +11,8 @@ TagManager:
   - EquippedActive
   - ObjectPickup
   - WallMetal
-  - NPCHostile
+  - TeamMonster
+  - TeamScience
   layers:
   - Default
   - TransparentFX

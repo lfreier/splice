@@ -92,6 +92,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: worker
       objectReference: {fileID: 0}
+    - target: {fileID: 7904725563872449456, guid: f3bb2ddd86bcc0544af59b764dd961fa, type: 3}
+      propertyPath: m_TagString
+      value: TeamScience
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

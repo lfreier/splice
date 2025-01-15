@@ -68,7 +68,7 @@ public class EnemyMove : MonoBehaviour
 		{
 			colliderHelper.pathfinder = this.pathfinder;
 		}
-		
+
 		/*
 		for (int i = 0; i < idlePath.Length; i ++)
 		{
@@ -77,7 +77,10 @@ public class EnemyMove : MonoBehaviour
 		}
 		*/
 
-		_detection = detectMode.idle;
+		if (_detection != detectMode.wandering)
+		{
+			_detection = detectMode.idle;
+		}
 		attackTargetActor = null;
 
 		pathIndex = 0;
@@ -204,7 +207,10 @@ public class EnemyMove : MonoBehaviour
 
 		currentSpeed = Mathf.Clamp(currentSpeed, 0, maxStateSpeed);
 
-		actor.Move(new Vector3(oldMoveInput.x * currentSpeed, oldMoveInput.y * currentSpeed));
+		if (!actor.movementLocked)
+		{
+			actor.Move(new Vector3(oldMoveInput.x * currentSpeed, oldMoveInput.y * currentSpeed));
+		}
 	}
 
 	private void calcMoveInput()
@@ -334,6 +340,11 @@ public class EnemyMove : MonoBehaviour
 				_actorData.sightAngle = actor._actorScriptable.sightAngle * 1.5F;
 				stateTimer = SUS_TIMER_LENGTH;
 				break;
+			case detectMode.wandering:
+				_actorData.sightAngle = actor._actorScriptable.sightAngle;
+				moveTarget = transform.position + transform.up;
+				stateTimer = LOST_TIMER_LENGTH;
+				break;
 			default:
 				_actorData.sightAngle = actor._actorScriptable.sightAngle;
 				stateTimer = 0;
@@ -372,6 +383,7 @@ public class EnemyMove : MonoBehaviour
 				actorBody.rotation = actor.aimAngle(attackTarget);
 				break;
 			case detectMode.lost:
+			case detectMode.wandering:
 				/* Move in a random direction */
 				if (stateTimer <= 0)
 				{
@@ -379,11 +391,22 @@ public class EnemyMove : MonoBehaviour
 					float temp = Random.Range(2F, 4F);
 					moveTarget = transform.position + new Vector3(temp * Mathf.Sin(radAngle), temp * Mathf.Cos(radAngle), 0);
 					actorBody.rotation = actor.aimAngle(moveTarget);
-					stateTimer = LOST_TIMER_LENGTH;
+					if (_detection == detectMode.wandering)
+					{
+						stateTimer = SUS_TIMER_LENGTH + Random.Range(0, SUS_TIMER_LENGTH);
+					}
+					else
+					{
+						stateTimer = LOST_TIMER_LENGTH;
+					}
 				}
 				else
 				{
 					stateTimer -= Time.deltaTime;
+					if (_detection == detectMode.wandering)
+					{
+						moveTarget = eyeStart;
+					}
 				}
 				break;
 			case detectMode.suspicious:
@@ -601,6 +624,10 @@ public class EnemyMove : MonoBehaviour
 	{
 		switch (_detection)
 		{
+			case detectMode.wandering:
+				stateSpeedIncrease /= 4;
+				maxStateSpeed /= 4;
+				break;
 			case detectMode.idle:
 				stateSpeedIncrease /= 2;
 				maxStateSpeed /= 2;

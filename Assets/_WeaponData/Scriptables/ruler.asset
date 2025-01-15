@@ -13,11 +13,12 @@ MonoBehaviour:
   m_Name: ruler
   m_EditorClassIdentifier: 
   <arc>k__BackingField: 115
-  <atkSpeed>k__BackingField: 0.25
+  <atkSpeed>k__BackingField: 0.3
   <canBeDropped>k__BackingField: 1
   <damage>k__BackingField: 1
-  <durability>k__BackingField: 2
+  <durability>k__BackingField: 3
   <npcAttackRange>k__BackingField: 2.5
+  <secondaryDamage>k__BackingField: 2
   <throwDamage>k__BackingField: 0.5
   <throwDurabilityDamage>k__BackingField: 0.5
   <throwSpeed>k__BackingField: 54

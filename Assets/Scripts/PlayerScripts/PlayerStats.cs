@@ -2,6 +2,7 @@
 using UnityEngine;
 using static PickupDefs;
 
+/* Only exists in the game manager */
 public class PlayerStats
 {
 	public int[] keycardCount			= new int[MAX_KEYCARD_TYPE + 1];
@@ -14,8 +15,10 @@ public class PlayerStats
 	public int activeItemIndex;
 
 	public int cells = 0;
+	public int petriCellAmount = 0;
 	private MutationDefs.MutationData mutationData;
 	private ActorDefs.ActorData playerData;
+	private GameObject[] mutationList;
 
 	public PlayerHUD playerHUD;
 
@@ -45,6 +48,21 @@ public class PlayerStats
 
 		switch (pickup.getPickupType())
 		{
+			case pickupType.PETRI_DISH:
+				usableItemCount[(int)usableType.REFILL]++;
+				if (usableItemSprite[(int)usableType.REFILL] == null)
+				{
+					usableItemSprite[(int)usableType.REFILL] = pickup.getIcon();
+				}
+				if (resetIcon == true)
+				{
+					activeItemIndex = (int)usableType.REFILL;
+				}
+				if (petriCellAmount <= 0)
+				{
+					petriCellAmount = pickup.getCount();
+				}
+				break;
 			case pickupType.BATTERY:
 				usableItemCount[(int)usableType.BATTERY]++;
 				if (usableItemSprite[(int)usableType.BATTERY] == null)
@@ -114,6 +132,48 @@ public class PlayerStats
 		}
 	}
 
+	public void equipMutation(MutationInterface mut)
+	{
+		if (mut != null)
+		{
+			var existingMuts = player.mutationHolder.GetComponents(mut.GetType());
+			if (existingMuts.Length > 0)
+			{
+				/* the mutation already exists - return */
+				return;
+			}
+
+			GameObject mutPrefab;
+			switch (mut.getId())
+			{
+				case "MBeast":
+					mutPrefab = player.instantiateActive(player.gameManager.mutPBeast);
+					break;
+				case "MBladeWing":
+					mutPrefab = player.instantiateActive(player.gameManager.mutPBladeWing);
+					break;
+				case "MLimb":
+					mutPrefab = player.instantiateActive(player.gameManager.mutPLimb);
+					break;
+				default:
+					return;
+			}
+
+			MutationInterface newMut = (MutationInterface)mutPrefab.GetComponentInChildren(mut.GetType());
+			if (null != (newMut = newMut.mEquip(player)))
+			{
+				if (newMut.getMutationType() == mutationTrigger.ACTIVE_SLOT)
+				{
+					if (player.activeSlots[0] == null)
+					{
+						player.activeSlots[0] = newMut;
+						return;
+					}
+				}
+			}
+		}
+	}
+
 	public float getPlayerMaxHealth()
 	{
 		return playerData.maxHealth;
@@ -146,9 +206,42 @@ public class PlayerStats
 		}
 	}
 
+	public void loadPlayerData(Actor player)
+	{
+		if (playerData.maxHealth != 0)
+		{
+			player.actorData = playerData;
+		}
+
+		if (mutationList != null)
+		{
+			foreach (GameObject mut in mutationList)
+			{
+				if (mut != null)
+				{
+					MutationInterface mutInt = mut.GetComponentInChildren<MutationInterface>();
+					if (mutInt != null)
+					{
+						equipMutation(mutInt);
+						GameObject.Destroy(mut);
+					}
+				}
+			}
+		}
+	}
+
 	public void savePlayerData(Actor player)
 	{
 		playerData = player.actorData;
+
+		int mutCount = player.mutationHolder.transform.childCount;
+		mutationList = new GameObject[mutCount];
+		for (int i = 0; i < mutCount; i++)
+		{
+			mutationList[i] = GameObject.Instantiate(player.mutationHolder.transform.GetChild(i).gameObject);
+			mutationList[i].SetActive(false);
+			mutationList[i].transform.SetParent(gameManager.gameObject.transform);
+		}
 	}
 
 	public void useActiveItem()
@@ -160,11 +253,14 @@ public class PlayerStats
 
 		switch ((usableType)activeItemIndex)
 		{
-			case usableType.HEALTH_VIAL:
-				useHealthVial();
+			case usableType.REFILL:
+				usePetriDish();
 				break;
 			case usableType.BATTERY:
 				useBattery();
+				break;
+			case usableType.HEALTH_VIAL:
+				useHealthVial();
 				break;
 			default:
 				break;
@@ -206,6 +302,17 @@ public class PlayerStats
 		{
 			keycardCount[keycardIndex]--;
 			gameManager.signalUpdateKeycardCount(keycardCount[keycardIndex], (PickupDefs.keycardType) keycardIndex);
+		}
+	}
+
+	private void usePetriDish()
+	{
+		if (getMutationBar() < getMaxMutationBar())
+		{
+			usableItemCount[activeItemIndex]--;
+			cells += petriCellAmount;
+			addMutationBar(petriCellAmount);
+			gameManager.signalUpdateCellCount(cells);
 		}
 	}
 }

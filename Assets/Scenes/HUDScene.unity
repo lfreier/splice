@@ -669,8 +669,11 @@ MonoBehaviour:
   mutationFill: {fileID: 696500276}
   activeItemIcon: {fileID: 1553637751}
   heartPrefab: {fileID: 7813007312882299714, guid: acc842b86f18b4e4796bcda5da97b620, type: 3}
+  shieldPrefab: {fileID: 7813007312882299714, guid: acc842b86f18b4e4796bcda5da97b620, type: 3}
   heartSprite: {fileID: 21300000, guid: f430b6c3f76fe384b8f3f5f9a1189556, type: 3}
   halfHeartSprite: {fileID: 21300000, guid: 672576108dfaf4c44acf2055c56a87f0, type: 3}
+  shieldSprite: {fileID: 21300000, guid: 26e0bae4a7f9b1140afc094951fefe65, type: 3}
+  halfShieldSprite: {fileID: 21300000, guid: 7b6588e473c14204ebe843228ec94f2c, type: 3}
   shadowCanvas: {fileID: 2026974792}
   textTransform: {fileID: 1358670589}
   pixelSpacing: 12
@@ -687,7 +690,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: 6b2a777e04267c94a801a672502da13d, type: 3}
   m_Resource: {fileID: 8300000, guid: 6b2a777e04267c94a801a672502da13d, type: 3}
-  m_PlayOnAwake: 1
+  m_PlayOnAwake: 0
   m_Volume: 0.03
   m_Pitch: 1
   Loop: 1

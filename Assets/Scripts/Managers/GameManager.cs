@@ -53,6 +53,9 @@ public class GameManager : MonoBehaviour
 	public delegate void UpdateKeycardCount(int newCount, PickupDefs.keycardType type);
 	public event UpdateKeycardCount updateKeycardCount;
 
+	public delegate void UpdateShieldEvent(float shield);
+	public event UpdateShieldEvent updateShieldEvent;
+
 	public AudioManager audioManager;
 	public EffectManager effectManager;
 	public LevelManager levelManager;
@@ -112,7 +115,6 @@ public class GameManager : MonoBehaviour
 	private Dictionary<string, MutationInterface> mutations = new Dictionary<string, MutationInterface>();
 
 	private float hitstopLength;
-	private float hitstopSpeed;
 
 	public static GameManager Instance
 	{
@@ -168,7 +170,6 @@ public class GameManager : MonoBehaviour
 
 		isLoaded = true;
 		hitstopLength = 0;
-		hitstopSpeed = 0;
 	}
 
 	private void FixedUpdate()
@@ -197,9 +198,11 @@ public class GameManager : MonoBehaviour
 	public void hitstop(float length, float speed)
 	{
 		//TODO: remove if committing to not using hitstop
+		/*
 		return;
 		hitstopLength = length;
 		Time.timeScale = speed;
+		*/
 	}
 
 	public async void nextLevel(Actor player, int nextSceneIndex)
@@ -324,5 +327,10 @@ public class GameManager : MonoBehaviour
 	public void signalUpdateKeycardCount(int newCount, PickupDefs.keycardType type)
 	{
 		updateKeycardCount?.Invoke(newCount, type);
+	}
+
+	public void signalUpdateShieldEvent(float shield)
+	{
+		updateShieldEvent?.Invoke(shield);
 	}
 }

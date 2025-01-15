@@ -22,7 +22,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1941681458001090663, guid: 73f47e22e6a312f40ba5aff9c72c4d11, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.46174863
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1941681458001090663, guid: 73f47e22e6a312f40ba5aff9c72c4d11, type: 3}
       propertyPath: m_LocalRotation.x
@@ -34,7 +34,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1941681458001090663, guid: 73f47e22e6a312f40ba5aff9c72c4d11, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.8870109
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1941681458001090663, guid: 73f47e22e6a312f40ba5aff9c72c4d11, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -46,7 +46,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1941681458001090663, guid: 73f47e22e6a312f40ba5aff9c72c4d11, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: -125
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2731659835703522835, guid: 73f47e22e6a312f40ba5aff9c72c4d11, type: 3}
       propertyPath: startingCharge

@@ -48,9 +48,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mutationPrefabs:
-  - {fileID: 1192526033329145194, guid: 94cfaef694721d248982433f4c181c99, type: 3}
+  - {fileID: 869377620814106126, guid: f3a8bd5cc9868d34daeeca1cb142e3c4, type: 3}
+  - {fileID: 3279388766364700584, guid: 60c128a3aea613c438eeb70f8c97eee7, type: 3}
   - {fileID: 4878587490104917525, guid: c1e65fecc886f9b49b05444180df6926, type: 3}
-  startingSelect: 0
 --- !u!212 &7052002624918970383
 SpriteRenderer:
   m_ObjectHideFlags: 0

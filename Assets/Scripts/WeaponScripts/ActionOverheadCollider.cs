@@ -19,7 +19,7 @@ public class ActionOverheadCollider : MonoBehaviour
 				Actor actorHit = weap.weaponHit(collision, weap._weaponScriptable.secondaryDamage, 0.5F);
 				if (actorHit != null)
 				{
-					EffectDefs.effectApply(actorHit, actorHit.gameManager.effectManager.stun1);
+					EffectDefs.effectApply(actorHit, attachedOverhead.sweetSpotStun);
 				}
 				else
 				{
@@ -34,7 +34,7 @@ public class ActionOverheadCollider : MonoBehaviour
 				if (actorHit != null)
 				{
 					attachedOverhead.hitSourspot = true;
-					EffectDefs.effectApply(actorHit, actorHit.gameManager.effectManager.stunHalf);
+					EffectDefs.effectApply(actorHit, attachedOverhead.sourSpotStun);
 				}
 				else
 				{

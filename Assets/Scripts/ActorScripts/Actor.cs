@@ -27,6 +27,7 @@ public class Actor : MonoBehaviour
 
 	private Actor attackTarget;
 	private Vector3 moveTarget;
+	public bool movementLocked = false;
 	public Vector3 currMoveVector;
 
 	public LayerMask pickupLayer;
@@ -81,8 +82,10 @@ public class Actor : MonoBehaviour
 	{
 		gameManager = GameManager.Instance;
 
+		actorData.armor = _actorScriptable.armor;
 		actorData.health = _actorScriptable.health;
 		actorData.maxHealth = _actorScriptable.health;
+		actorData.shield = 0;
 
 		actorData.maxSpeed = _actorScriptable.maxSpeed;
 		actorData.moveSpeed = _actorScriptable.moveSpeed;
@@ -116,6 +119,7 @@ public class Actor : MonoBehaviour
 		if (tag == playerTag)
 		{
 			gameManager.playerStats.player = this;
+			gameManager.playerStats.loadPlayerData(this);
 		}
 
 		if (gameManager != null && (equippedWeapon == null || equippedWeaponInt == null))
@@ -347,12 +351,7 @@ public class Actor : MonoBehaviour
 			return false;
 		}
 
-		if (this.tag.Equals(ActorDefs.npcTag) && targetActor.tag.Equals(ActorDefs.npcTag))
-		{
-			return false;
-		}
-
-		if (this.tag.Equals(ActorDefs.playerTag) && targetActor.tag.Equals(ActorDefs.playerTag))
+		if (this.tag.Equals(targetActor.tag))
 		{
 			return false;
 		}
@@ -561,6 +560,11 @@ public class Actor : MonoBehaviour
 		}
 	}
 
+	public void setMovementLocked(bool locked)
+	{
+		movementLocked = locked;
+	}
+
 	/* Changes the actor's max speed to the given value.
 	 * If changedSpeed is negative, will reset to the actor's base speed.
 	 */
@@ -604,7 +608,35 @@ public class Actor : MonoBehaviour
 		}
 
 		float startingHealth = actorData.health;
-		actorData.health -= damage;
+		/* make sure we dont go negative armor like a dumb */
+		float damageTaken = actorData.armor > damage ? 0 : (damage - actorData.armor);
+
+		if (damageTaken <= 0)
+		{
+			return 0;
+		}
+
+		/* take damage from shield first */
+		if (actorData.shield > 0)
+		{
+			float shieldDamage;
+			if (damageTaken > actorData.shield)
+			{
+				shieldDamage = actorData.shield;
+			}
+			else
+			{
+				shieldDamage = damageTaken;
+			}
+			damageTaken -= shieldDamage;
+			actorData.shield -= shieldDamage;
+			if (this.tag.Equals(ActorDefs.playerTag))
+			{
+				/* shields will be lost on the HUD when damage is taken */
+				gameManager.signalUpdateShieldEvent(actorData.shield);
+			}
+		}
+		actorData.health -= damageTaken;
 		actorData.health = actorData.health < 0 ? 0 : actorData.health;
 
 		if (actorData.health <= 0.0F)
@@ -612,14 +644,17 @@ public class Actor : MonoBehaviour
 			this.kill();
 		}
 
-		if (this.tag.Equals(ActorDefs.playerTag))
+		if (damageTaken > 0)
 		{
-			EffectDefs.effectApply(this, gameManager.effectManager.iFrame1);
-			gameManager.signalUpdateHealthEvent(actorData.health);
-		}
-		else
-		{
-			EffectDefs.effectApply(this, gameManager.effectManager.iFrame0);
+			if (this.tag.Equals(ActorDefs.playerTag))
+			{
+				EffectDefs.effectApply(this, gameManager.effectManager.iFrame1);
+				gameManager.signalUpdateHealthEvent(actorData.health);
+			}
+			else
+			{
+				EffectDefs.effectApply(this, gameManager.effectManager.iFrame0);
+			}
 		}
 
 		if (sourceActor != null)

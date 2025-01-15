@@ -20,9 +20,13 @@ public class PlayerHUD : MonoBehaviour
 	public Image activeItemIcon;
 
 	public GameObject heartPrefab;
+	public GameObject shieldPrefab;
 
 	public Sprite heartSprite;
 	public Sprite halfHeartSprite;
+		
+	public Sprite shieldSprite;
+	public Sprite halfShieldSprite;
 
 	public Canvas shadowCanvas;
 	public RectTransform textTransform;
@@ -32,10 +36,16 @@ public class PlayerHUD : MonoBehaviour
 	private float musicVolume;
 
 	private List<GameObject> heartList;
+	private List<GameObject> shieldList;
 
 	private GameObject healthListHead;
+	private GameObject shieldListHead;
+
 	private int headIndex;
 	private float hudHealth = 0;
+
+	private int shieldHeadIndex;
+	private float shieldHealth = 0;
 
 	private Vector3 hudStartScale;
 	private Vector3 shadowStartScale;
@@ -49,6 +59,7 @@ public class PlayerHUD : MonoBehaviour
 		gameManager = GameManager.Instance;
 		gameManager.initHudEvent += init;
 		gameManager.updateHealthEvent += updateHealth;
+		gameManager.updateShieldEvent += updateShield;
 		gameManager.muteEvent += mute;
 		gameManager.updateCellCount += updateCells;
 		foreach (Canvas canvas in hudCanvas)
@@ -65,6 +76,7 @@ public class PlayerHUD : MonoBehaviour
 		gameManager.initHudEvent -= init;
 		gameManager.muteEvent -= mute;
 		gameManager.updateHealthEvent -= updateHealth;
+		gameManager.updateShieldEvent -= updateShield;
 		gameManager.updateCellCount -= updateCells;
 	}
 
@@ -107,6 +119,7 @@ public class PlayerHUD : MonoBehaviour
 		}
 
 		heartList = new List<GameObject>();
+		shieldList = new List<GameObject>();
 
 		float i;
 		float playerMaxHealth = player.gameManager.playerStats.getPlayerMaxHealth();
@@ -159,6 +172,7 @@ public class PlayerHUD : MonoBehaviour
 
 	private void addHeart()
 	{
+		//TODO: move shield when adding hearts
 		GameObject newHeart = Instantiate(heartPrefab, healthHudObject.transform);
 		newHeart.transform.SetLocalPositionAndRotation(new Vector2(heartList.Count * pixelSpacing * pixelSize, 0), Quaternion.identity);
 		heartList.Add(newHeart);
@@ -169,43 +183,171 @@ public class PlayerHUD : MonoBehaviour
 		}
 	}
 
+	private void addShieldHeart()
+	{
+		GameObject newHeart = Instantiate(shieldPrefab, healthHudObject.transform);
+		newHeart.transform.SetLocalPositionAndRotation(new Vector2((heartList.Count + shieldList.Count) * pixelSpacing * pixelSize, 0), Quaternion.identity);
+		shieldList.Add(newHeart);
+
+		if (shieldHealth == 0)
+		{
+			shieldListHead = shieldList[0];
+		}
+	}
+
+	private void clearShields()
+	{
+		foreach (GameObject shield in shieldList)
+		{
+			Destroy(shield);
+		}
+
+		shieldHeadIndex = 0;
+		shieldHealth = 0;
+		shieldList.Clear();
+	}
+
+	private void damageShield()
+	{
+		changeHeart(null, ref shieldHealth, shieldListHead);
+		if (shieldList.Count - shieldHealth >= 1)
+		{
+			Destroy(shieldList[shieldList.Count - 1]);
+			shieldList.RemoveAt(shieldList.Count - 1);
+			updateListHead();
+		}
+	}
+
+	private void refillShield(Sprite sprite)
+	{
+		if (shieldHealth % 1 == 0)
+		{
+			/* don't do anything if trying to refill past max */
+			if (shieldHealth >= shieldList.Count)
+			{
+				return;
+			}
+			else
+			{
+				shieldListHead = shieldList[(int)shieldHealth];
+			}
+		}
+		changeHeart(sprite, ref shieldHealth, shieldListHead);
+	}
+
+	private void updateShield(float newShield)
+	{
+		/* add shield, or remove shield
+		 * damage is handled normally
+		 */
+		float damage = shieldHealth - newShield;
+
+		/* make new shield */
+		if (shieldHealth <= 0)
+		{
+			int i;
+			for (i = 0; i < newShield - 0.5F; i++)
+			{
+				addShieldHeart();
+				refillShield(shieldSprite);
+			}
+
+			/* add an extra half heart */
+			if (newShield % 1 != 0)
+			{
+				addShieldHeart();
+				refillShield(halfShieldSprite);
+				if (shieldHealth % 1 != 0)
+				{
+					refillShield(shieldSprite);
+				}
+			}
+		}
+		/* damage shield */
+		else if (shieldHealth > newShield)
+		{
+			if (damage > 0)
+			{
+				float i;
+
+				/* has a half heart right now */
+				if (shieldHealth % 1 != 0)
+				{
+					damageShield();
+					damage -= 0.5F;
+				}
+
+				for (i = 1; i <= damage; i++)
+				{
+					damageShield();
+				}
+
+				if (shieldHealth != newShield)
+				{
+					damageShield();
+					refillShield(halfShieldSprite);
+				}
+			}
+		}
+		/* refill shield */
+		else
+		{
+			float i;
+			for (i = damage; i <= -1; i = shieldHealth - newShield)
+			{
+				refillShield(shieldSprite);
+			}
+
+			if (i < 0)
+			{
+				refillShield(halfShieldSprite);
+			}
+		}
+
+		if (shieldHealth <= 0)
+		{
+			clearShields();
+		}
+	}
+
 	/* Helper function to make refilling/damaging hearts their own function for readiability
 	 */
-	private void changeHeart(Sprite heart)
+	private void changeHeart(Sprite heart, ref float healthSrc, GameObject listHead)
 	{
-		if (healthListHead.transform.childCount < 1)
+		if (listHead == null || listHead.transform.childCount < 1)
 		{
-			//error
+			Debug.Log("error when changing HUD heart");
 			return;
 		}
-		GameObject heartSpriteObj = healthListHead.transform.GetChild(0).gameObject;
+		GameObject heartSpriteObj = listHead.transform.GetChild(0).gameObject;
 		SpriteRenderer toChange = heartSpriteObj.GetComponent<SpriteRenderer>();
 
 		if (toChange != null)
 		{
 			if (heart == null)
 			{
-				if (toChange.sprite == halfHeartSprite)
+				/* TOOD: fix hacky shit but w/e it works*/
+				if (toChange.sprite.name.Contains("half"))
 				{
-					hudHealth -= 0.5F;
+					healthSrc -= 0.5F;
 				}
 				else
 				{
-					hudHealth -= 1;
+					healthSrc -= 1;
 				}
 			}
-			else if (heart == halfHeartSprite)
+			else if (heart.name.Contains("half"))
 			{
-				hudHealth += 0.5F;
+				healthSrc += 0.5F;
 			}
 			/* filling a half heart from a half heart */
-			else if (toChange.sprite == halfHeartSprite)
+			else if (toChange.sprite != null && toChange.sprite.name.Contains("half"))
 			{
-				hudHealth += 0.5F;
+				healthSrc += 0.5F;
 			}
 			else
 			{
-				hudHealth += 1;
+				healthSrc += 1;
 			}
 
 			toChange.sprite = heart;
@@ -217,7 +359,7 @@ public class PlayerHUD : MonoBehaviour
 
 	private void damageHeart()
 	{
-		changeHeart(null);
+		changeHeart(null, ref hudHealth, healthListHead);
 	}
 
 	private void refillHeart(Sprite heart)
@@ -234,7 +376,7 @@ public class PlayerHUD : MonoBehaviour
 				healthListHead = heartList[(int)hudHealth];
 			}
 		}
-		changeHeart(heart);
+		changeHeart(heart, ref hudHealth, healthListHead);
 	}
 
 	/* Removing max health, should not be done often
@@ -310,6 +452,28 @@ public class PlayerHUD : MonoBehaviour
 			headIndex = heartList.Count - 1;
 		}
 		healthListHead = heartList[headIndex];
+
+		shieldHeadIndex = (int)shieldHealth;
+
+		if (shieldHealth % 1 == 0 && shieldHeadIndex > 0)
+		{
+			shieldHeadIndex--;
+		}
+
+		/* don't do anything if trying to refill past max */
+		if (shieldHeadIndex >= shieldList.Count)
+		{
+			shieldHeadIndex = shieldList.Count - 1;
+		}
+
+		if (shieldHeadIndex >= 0 && shieldList.Count > 0)
+		{
+			shieldListHead = shieldList[shieldHeadIndex];
+		}
+		else
+		{
+			shieldListHead = null;
+		}
 	}
 
 	public void mute()

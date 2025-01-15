@@ -132,7 +132,7 @@ public abstract class BasicWeapon : MonoBehaviour, WeaponInterface
 
 	}
 
-	public bool inRange(Vector3 target)
+	virtual public bool inRange(Vector3 target)
 	{
 		return Vector3.Distance(transform.position, target) <= _weaponScriptable.npcAttackRange;
 	}
@@ -190,6 +190,12 @@ public abstract class BasicWeapon : MonoBehaviour, WeaponInterface
 		}
 	}
 
+	public void setSide(int side)
+	{
+		/* 1 == right side, 0 == left side */
+		currentSide = (side > 0);
+	}
+
 	public void setStartingPosition(bool side)
 	{
 		transform.parent.SetLocalPositionAndRotation(new Vector3(_weaponScriptable.equipPosX, _weaponScriptable.equipPosY, 0), Quaternion.Euler(0, 0, _weaponScriptable.equipRotZ));
@@ -198,6 +204,7 @@ public abstract class BasicWeapon : MonoBehaviour, WeaponInterface
 			transform.SetLocalPositionAndRotation(new Vector3(_weaponScriptable.equipOtherPosX, _weaponScriptable.equipOtherPosY, 0), Quaternion.Euler(0, 0, _weaponScriptable.equipOtherRotZ));
 		}
 
+		anim.enabled = true;
 		currentSide = side;
 	}
 
@@ -217,8 +224,14 @@ public abstract class BasicWeapon : MonoBehaviour, WeaponInterface
 		{
 			return;
 		}
-		anim.Rebind();
-		anim.Update(0f);
+
+		if (!currentSide)
+		{
+			anim.enabled = false;
+			transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.Euler(0, 0, 0));
+			transform.parent.SetPositionAndRotation(transform.parent.position - new Vector3(_weaponScriptable.equipOtherPosX, _weaponScriptable.equipOtherPosY, 0), Quaternion.Euler(0, 0, _weaponScriptable.equipOtherRotZ));
+		}
+
 		_weaponPhysics.startThrow(target, actorWielder);
 	}
 

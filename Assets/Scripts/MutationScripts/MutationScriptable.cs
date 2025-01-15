@@ -1,4 +1,5 @@
-﻿using UnityEditor;
+﻿using NUnit.Framework;
+using UnityEditor;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "NewMutation", menuName = "ScriptableObjects/MutationScriptable")]
@@ -22,4 +23,7 @@ public class MutationScriptable : ScriptableObject
 
 	[field: SerializeField]
 	public float startingRotation { get; private set; } = 7F;
+
+	[field: SerializeField]
+	public float[] values { get; private set; } = new float[10];
 }

@@ -5,6 +5,14 @@ using UnityEngine;
 
 public class AutoDoor : MonoBehaviour
 {
+	public enum doorType
+	{
+		AUTO = 0,
+		MANUAL = 1,
+		REMOTE = 2
+	}
+	public doorType _doorType = doorType.AUTO;
+
 	private bool open;
 	public bool locked;
 	public SpriteRenderer lockSprite;
@@ -39,16 +47,18 @@ public class AutoDoor : MonoBehaviour
 
 	private void FixedUpdate()
 	{
+		if (_doorType == doorType.AUTO)
+		{
+			Collider2D[] hit = Physics2D.OverlapBoxAll(gameObject.transform.position, new Vector2(detectSize, detectSize), 0, gameManager.actorLayers);
+			if (!open && !locked && hit.Length > 0)
+			{
+				doorOpen();
+			}
 
-		Collider2D[] hit = Physics2D.OverlapBoxAll(gameObject.transform.position, new Vector2(detectSize, detectSize), 0, gameManager.actorLayers);
-		if (!open && !locked && hit.Length > 0)
-		{
-			doorOpen();
-		}
-		
-		if(open && hit.Length <= 0)
-		{
-			doorClose();
+			if (open && hit.Length <= 0)
+			{
+				doorClose();
+			}
 		}
 	}
 
@@ -62,6 +72,21 @@ public class AutoDoor : MonoBehaviour
 	{
 		doorAnimator.SetTrigger("Close");
 		open = false;
+	}
+
+	public void doorToggle(bool force)
+	{
+		if (force || !locked)
+		{
+			if (open)
+			{
+				doorClose();
+			}
+			else
+			{
+				doorOpen();
+			}
+		}
 	}
 
 	public void doorLock()

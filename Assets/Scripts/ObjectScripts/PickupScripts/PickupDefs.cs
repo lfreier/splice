@@ -18,17 +18,19 @@ public static class PickupDefs
 		CELL = 0,
 		KEYCARD = 1,
 		HEALTH_VIAL = 2,
-		BATTERY = 3
+		BATTERY = 3,
+		PETRI_DISH = 4
 	};
 
 	public enum usableType
 	{
 		HEALTH_VIAL = 0,
-		BATTERY = 1
+		BATTERY = 1,
+		REFILL = 2
 	};
 
 	static public int MAX_KEYCARD_TYPE	= (int)keycardType.YELLOW;
-	static public int MAX_USABLE_ITEM_TYPE	= (int)usableType.BATTERY;
+	static public int MAX_USABLE_ITEM_TYPE	= (int)usableType.REFILL;
 
 	static public float CELL_ATTRACT_RANGE = 5F;
 	static public float CELL_ACCELERATION = 10F;

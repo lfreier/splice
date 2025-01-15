@@ -179,7 +179,7 @@ MonoBehaviour:
   currentSide: 0
   durability: 0
   mutScriptable: {fileID: 11400000, guid: 6a03470ba7b1f18479c16587ebf665ee, type: 2}
-  icon: {fileID: 21300000, guid: dc20ecddf8da0cf45b5a30d07f25bd64, type: 3}
+  icon: {fileID: 21300000, guid: 55ac9cc1c4d19b54fb50fb6ff3e23bed, type: 3}
   transformLength: 6
   beastColliderSize: {x: 0.9375, y: 0.625}
   rightArmColl: {fileID: 3334156004800836605}

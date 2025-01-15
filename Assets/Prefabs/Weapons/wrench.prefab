@@ -498,6 +498,8 @@ MonoBehaviour:
   spriteRend: {fileID: 698451071432964359}
   overheadDamagedSprite: {fileID: 21300000, guid: 38939f0c0f761ec46873194ad05060b0, type: 3}
   hitSourspot: 0
+  sweetSpotStun: {fileID: 11400000, guid: d92e4d46a82385f4c9f7e376918ad3bc, type: 2}
+  sourSpotStun: {fileID: 11400000, guid: d56cb6eaeed347642b2e0dd57748b9e8, type: 2}
   dashSpeed: 900
 --- !u!95 &6529950160097543187
 Animator:

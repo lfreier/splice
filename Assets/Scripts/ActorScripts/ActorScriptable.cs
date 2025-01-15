@@ -7,6 +7,9 @@ public class ActorScriptable : ScriptableObject
 {
 
 	[field: SerializeField]
+	public float armor { get; private set; } = 0F;
+
+	[field: SerializeField]
 	public float health { get; private set; } = 2F;
 
 	[field: SerializeField]

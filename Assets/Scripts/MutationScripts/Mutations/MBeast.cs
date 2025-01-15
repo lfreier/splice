@@ -13,6 +13,7 @@ public class MBeast : BasicWeapon, MutationInterface
 	}
 
 	public MutationScriptable mutScriptable;
+	private int INDEX_SHIELD = 0;
 
 	private atkState currState;
 	private bool animationRunning;
@@ -34,6 +35,8 @@ public class MBeast : BasicWeapon, MutationInterface
 
 	private bool dashActive = false;
 	private bool transformActive = false;
+
+	private float startingShield;
 
 	private Vector3 dashTarget;
 
@@ -107,7 +110,11 @@ public class MBeast : BasicWeapon, MutationInterface
 		buffTimer = MutationDefs.ABILITY_BUFF_TIMER;
 		playerCollider.size = beastColliderSize;
 
-		/* set new health */
+		/* set new shield */
+		actorWielder.actorData.shield = actorWielder.actorData.shield + mutScriptable.values[INDEX_SHIELD];
+		startingShield = actorWielder.actorData.shield;
+
+		actorWielder.gameManager.signalUpdateShieldEvent(actorWielder.actorData.shield);
 
 		/* equip weapon */
 		actorWielder.equip(this.gameObject);
@@ -281,6 +288,12 @@ public class MBeast : BasicWeapon, MutationInterface
 		{
 			currSprite.enabled = false;
 		}
+
+		if (actorWielder.actorData.shield == startingShield)
+		{
+			actorWielder.gameManager.signalUpdateShieldEvent(0);
+		}
+		startingShield = 0;
 
 		actorWielder.equipEmpty();
 

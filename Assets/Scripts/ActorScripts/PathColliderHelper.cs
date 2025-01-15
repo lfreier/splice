@@ -13,6 +13,12 @@ public class PathColliderHelper : MonoBehaviour
 	private void OnTriggerEnter2D(Collider2D collision)
 	{
 		return;
+		//turnOnPathfinding(collision);
+		
+	}
+
+	void turnOnPathfinding(Collider2D collision)
+	{
 		if (pathfinder.pathingTimer > 0)
 		{
 			return;
@@ -42,6 +48,5 @@ public class PathColliderHelper : MonoBehaviour
 
 		pathfinder.addUnwalkable(collision.transform.position);
 		pathfinder.startPathfinding = true;
-		
 	}
 }

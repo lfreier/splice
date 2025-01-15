@@ -4,6 +4,8 @@ public class ActorDefs
 {
 	public static string actorLayer = "Actor";
 	public static string npcTag = "NPC";
+	public static string teamMonsterTag = "TeamMonster";
+	public static string teamScienceTag = "TeamScience";
 	public static string playerTag = "Player";
 
 	public static float GLOBAL_PICKUP_RANGE = 1F;
@@ -17,8 +19,10 @@ public class ActorDefs
 	public static float MAX_HIT_FORCE = 4000F;
 	public struct ActorData
 	{
+		public float armor;
 		public float health;
 		public float maxHealth;
+		public float shield;
 
 		public float maxSpeed;
 		public float moveSpeed;
@@ -42,6 +46,7 @@ public class ActorDefs
 		lost = 3,
 		hostile = 4,
 		frightened = 5,
-		getWeapon = 6
+		getWeapon = 6,
+		wandering = 7
 	};
 }

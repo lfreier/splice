@@ -16,6 +16,9 @@ public class ActionOverhead : MonoBehaviour, ActionInterface
 
 	public bool hitSourspot = false;
 
+	public EffectScriptable sweetSpotStun;
+	public EffectScriptable sourSpotStun;
+
 	public float dashSpeed = 900F;
 	private Vector3 dashTarget;
 

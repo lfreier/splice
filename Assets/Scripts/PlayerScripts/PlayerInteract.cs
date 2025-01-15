@@ -57,15 +57,24 @@ public class PlayerInteract : MonoBehaviour
 				}
 			}
 
+			UsableInterface usable = target.transform.GetComponentInParent<UsableInterface>();
+			if (usable != null)
+			{
+				usable.use(player);
+			}
+
 			AutoDoor doorInteract = target.transform.GetComponentInParent<AutoDoor>();
 			if (doorInteract != null)
 			{
 				PlayerStats stats = player.gameManager.playerStats;
 				if (stats.keycardCount[(int)doorInteract.lockType] > 0)
 				{
-					stats.useKeycard((int)doorInteract.lockType);
-					doorInteract.doorUnlock();
-					return true;
+					if (doorInteract._doorType != AutoDoor.doorType.REMOTE)
+					{
+						doorInteract.doorUnlock();
+						stats.useKeycard((int)doorInteract.lockType);
+						return true;
+					}
 				}
 			}
 		}
@@ -74,43 +83,6 @@ public class PlayerInteract : MonoBehaviour
 
 	public void equipMutation(MutationInterface mut)
 	{
-		if (mut != null)
-		{
-			var existingMuts = mutateHolder.GetComponents(mut.GetType());
-			if (existingMuts.Length > 0)
-			{
-				/* the mutation already exists - return */
-				return;
-			}
-
-			GameObject mutPrefab;
-			switch(mut.getId())
-			{
-				case "MBeast":
-					mutPrefab = player.instantiateActive(player.gameManager.mutPBeast);
-					break;
-				case "MBladeWing":
-					mutPrefab = player.instantiateActive(player.gameManager.mutPBladeWing);
-					break;
-				case "MLimb":
-					mutPrefab = player.instantiateActive(player.gameManager.mutPLimb);
-					break;
-				default:
-					return;
-			}
-
-			MutationInterface newMut = (MutationInterface)mutPrefab.GetComponentInChildren(mut.GetType());
-			if (null != (newMut = newMut.mEquip(player)))
-			{
-				if (newMut.getMutationType() == mutationTrigger.ACTIVE_SLOT)
-				{
-					if (player.activeSlots[0] == null)
-					{
-						player.activeSlots[0] = newMut;
-						return;
-					}
-				}
-			}
-		}
+		player.gameManager.playerStats.equipMutation(mut);
 	}
 }
