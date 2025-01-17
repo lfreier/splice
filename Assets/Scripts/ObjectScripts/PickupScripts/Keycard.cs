@@ -41,8 +41,11 @@ public class Keycard : MonoBehaviour, PickupInterface
 	{
 		if (gameManager != null)
 		{
-			gameManager.playerStats.addItem(this);
+			/* only destroy if actually picked up */
+			if (gameManager.playerStats.addItem(this))
+			{
+				Destroy(this.gameObject);
+			}
 		}
-		Destroy(this.gameObject);
 	}
 }

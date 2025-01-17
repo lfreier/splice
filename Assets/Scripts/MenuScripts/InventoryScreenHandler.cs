@@ -73,6 +73,15 @@ public class InventoryScreenHandler : MonoBehaviour
 		}
 
 		itemDisplayCount[(int)type].SetText(newCount.ToString());
+
+		if (newCount >= gameManager.maxPickups[(int)type])
+		{
+			itemDisplayCount[(int)type].color = GameManager.COLOR_RED;
+		}
+		else
+		{
+			itemDisplayCount[(int)type].color = Color.white;
+		}
 	}
 
 	private void updateKeycardCount(int newCount, PickupDefs.keycardType type)

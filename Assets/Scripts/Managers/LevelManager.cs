@@ -41,7 +41,7 @@ public class LevelManager : MonoBehaviour
 		return powerOn;
 	}
 
-	void setPower(bool powerToSet)
+	public void setPower(bool powerToSet)
 	{
 		powerOn = powerToSet;
 	}

@@ -33,9 +33,11 @@ public class Refill : MonoBehaviour, PickupInterface
 		GameManager gameManager = GameManager.Instance;
 		if (gameManager != null)
 		{
-			gameManager.signalUpdateItemCount(1, PickupDefs.usableType.REFILL);
-			gameManager.playerStats.addItem(this);
+			/* only destroy if actually picked up */
+			if (gameManager.playerStats.addItem(this))
+			{
+				Destroy(this.gameObject);
+			}
 		}
-		Destroy(this.gameObject);
 	}
 }

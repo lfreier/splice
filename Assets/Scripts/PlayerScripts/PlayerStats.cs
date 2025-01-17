@@ -18,7 +18,9 @@ public class PlayerStats
 	public int petriCellAmount = 0;
 	private MutationDefs.MutationData mutationData;
 	private ActorDefs.ActorData playerData;
+	
 	private GameObject[] mutationList;
+	private GameObject weaponEquipped;
 
 	public PlayerHUD playerHUD;
 
@@ -33,7 +35,7 @@ public class PlayerStats
 		mutationData.mutationBar = 0;
 	}
 
-	public void addItem(PickupInterface pickup)
+	public bool addItem(PickupInterface pickup)
 	{
 		if (gameManager == null)
 		{
@@ -46,10 +48,26 @@ public class PlayerStats
 			resetIcon = true;
 		}
 
-		switch (pickup.getPickupType())
+		pickupType type = pickup.getPickupType();
+		int usableIndex = PickupDefs.pickupToUsable(type);
+
+		/* only increment usables if not at max */
+		if (usableIndex >= 0)
+		{
+			if (usableIndex < usableItemCount.Length && usableItemCount[usableIndex] < gameManager.maxPickups[usableIndex])
+			{
+				usableItemCount[usableIndex]++;
+			}
+			else
+			{
+				/* at max count, don't pick up item */
+				return false;
+			}
+		}
+
+		switch (type)
 		{
 			case pickupType.PETRI_DISH:
-				usableItemCount[(int)usableType.REFILL]++;
 				if (usableItemSprite[(int)usableType.REFILL] == null)
 				{
 					usableItemSprite[(int)usableType.REFILL] = pickup.getIcon();
@@ -64,7 +82,6 @@ public class PlayerStats
 				}
 				break;
 			case pickupType.BATTERY:
-				usableItemCount[(int)usableType.BATTERY]++;
 				if (usableItemSprite[(int)usableType.BATTERY] == null)
 				{
 					usableItemSprite[(int)usableType.BATTERY] = pickup.getIcon();
@@ -75,7 +92,6 @@ public class PlayerStats
 				}
 				break;
 			case pickupType.HEALTH_VIAL:
-				usableItemCount[(int)usableType.HEALTH_VIAL]++;
 				if (usableItemSprite[(int)usableType.HEALTH_VIAL] == null)
 				{
 					usableItemSprite[(int)usableType.HEALTH_VIAL] = pickup.getIcon();
@@ -105,6 +121,7 @@ public class PlayerStats
 			cycleActiveItem();
 		}
 
+		return true;
 		//TODO: add the item to a usable item slot if it doesn't exist yet
 	}
 
@@ -227,11 +244,24 @@ public class PlayerStats
 					}
 				}
 			}
+			mutationList = null;
+		}
+
+		if (weaponEquipped != null)
+		{
+			weaponEquipped.SetActive(true);
+			player.equip(weaponEquipped);
+			weaponEquipped = null;
 		}
 	}
 
 	public void savePlayerData(Actor player)
 	{
+		if (gameManager == null)
+		{
+			gameManager = GameManager.Instance;
+		}
+
 		playerData = player.actorData;
 
 		int mutCount = player.mutationHolder.transform.childCount;
@@ -241,6 +271,16 @@ public class PlayerStats
 			mutationList[i] = GameObject.Instantiate(player.mutationHolder.transform.GetChild(i).gameObject);
 			mutationList[i].SetActive(false);
 			mutationList[i].transform.SetParent(gameManager.gameObject.transform);
+		}
+
+		if (!player.isUnarmed())
+		{
+			weaponEquipped = GameObject.Instantiate(player.getEquippedWeapon());
+			if (weaponEquipped != null)
+			{
+				weaponEquipped.SetActive(false);
+				weaponEquipped.transform.SetParent(gameManager.gameObject.transform);
+			}
 		}
 	}
 

@@ -75,6 +75,8 @@ MonoBehaviour:
   unwalkableLayers:
     serializedVersion: 2
     m_Bits: 24640
+  pickupMaxScriptable: {fileID: 11400000, guid: a26d4bab1861ef84f8bf71a966c96f8c, type: 2}
+  maxPickups: 0000000000000000010000000100000001000000
   isLoaded: 0
   currentScene: 0
 --- !u!114 &4654381731306417788

@@ -26,6 +26,9 @@ public class GameManager : MonoBehaviour
 	public delegate void MovementUnlockedEvent();
 	public event MovementUnlockedEvent movementUnlockedEvent;
 
+	public delegate void PowerChangedEvent(bool powerOn);
+	public event PowerChangedEvent powerChangedEvent;
+
 	public delegate void PlayerInteractEvent();
 	public event PlayerInteractEvent playerInteractEvent;
 	public delegate void PlayerInteractReleaseEvent();
@@ -43,9 +46,6 @@ public class GameManager : MonoBehaviour
 
 	public delegate void UpdateCellCount(int count);
 	public event UpdateCellCount updateCellCount;
-
-	public delegate void UpdateItemCount(int newCount, PickupDefs.usableType type);
-	public event UpdateItemCount updateItemCount;
 
 	public delegate void UpdateHealthEvent(float newHealth);
 	public event UpdateHealthEvent updateHealthEvent;
@@ -75,6 +75,10 @@ public class GameManager : MonoBehaviour
 	public LayerMask lineOfSightLayers;
 	public LayerMask soundLayer;
 	public LayerMask unwalkableLayers;
+
+	public PickupMaxCounts pickupMaxScriptable;
+	[HideInInspector]
+	public int[] maxPickups = new int[PickupDefs.MAX_USABLE_ITEM_TYPE + 1];
 
 	public PlayerStats playerStats;
 
@@ -145,6 +149,11 @@ public class GameManager : MonoBehaviour
 		actorBehaviors.Add(Type.GetType("PlayerSecondaries"));
 		actorBehaviors.Add(Type.GetType("EnemyAttack"));
 		actorBehaviors.Add(Type.GetType("EnemyMove"));
+
+		maxPickups = new int[PickupDefs.MAX_USABLE_ITEM_TYPE + 1];
+		maxPickups[(int)PickupDefs.usableType.HEALTH_VIAL] = pickupMaxScriptable.healthVialMax;
+		maxPickups[(int)PickupDefs.usableType.BATTERY] = pickupMaxScriptable.batteryMax;
+		maxPickups[(int)PickupDefs.usableType.REFILL] = pickupMaxScriptable.refillMax;
 
 		/* load necessary background scenes now */
 		await SceneManager.LoadSceneAsync(SceneDefs.LOADING_SCENE, LoadSceneMode.Additive);
@@ -289,6 +298,11 @@ public class GameManager : MonoBehaviour
 		rotationUnlockedEvent?.Invoke();
 	}
 
+	public void signalPowerChangedEvent(bool powerOn)
+	{
+		powerChangedEvent?.Invoke(powerOn);
+	}
+
 	public void signalPlayerInteractEvent()
 	{
 		playerInteractEvent?.Invoke();
@@ -312,11 +326,6 @@ public class GameManager : MonoBehaviour
 	public void signalUpdateCellCount(int count)
 	{
 		updateCellCount?.Invoke(count);
-	}
-
-	public void signalUpdateItemCount(int toAdd, PickupDefs.usableType type)
-	{
-		updateItemCount?.Invoke(toAdd, type);
 	}
 
 	public void signalUpdateHealthEvent(float newHealth)

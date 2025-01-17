@@ -30,6 +30,7 @@ public static class PickupDefs
 	};
 
 	static public int MAX_KEYCARD_TYPE	= (int)keycardType.YELLOW;
+	static public int MAX_PICKUP_ITEM_TYPE = (int)pickupType.PETRI_DISH;
 	static public int MAX_USABLE_ITEM_TYPE	= (int)usableType.REFILL;
 
 	static public float CELL_ATTRACT_RANGE = 5F;
@@ -54,6 +55,21 @@ public static class PickupDefs
 			case keycardType.RED:
 			default:
 				return GameManager.COLOR_RED;
+		}
+	}
+
+	public static int pickupToUsable(pickupType type)
+	{
+		switch (type)
+		{
+			case pickupType.HEALTH_VIAL:
+				return (int)usableType.HEALTH_VIAL;
+			case pickupType.BATTERY:
+				return (int)usableType.BATTERY;
+			case pickupType.PETRI_DISH:
+				return (int)usableType.REFILL;
+			default:
+				return -1;
 		}
 	}
 }

@@ -17,6 +17,8 @@ public class AutoDoor : MonoBehaviour
 	public bool locked;
 	public SpriteRenderer lockSprite;
 
+	private bool stuck = false;
+
 	public PickupDefs.keycardType lockType;
 
 	public Animator doorAnimator;
@@ -32,6 +34,7 @@ public class AutoDoor : MonoBehaviour
 		/* Set color */
 		keycardColor = PickupDefs.getKeycardColor(lockType);
 
+		stuck = false;
 		open = false;
 		if (locked)
 		{
@@ -43,6 +46,18 @@ public class AutoDoor : MonoBehaviour
 		}
 
 		gameManager = GameManager.Instance;
+		if (gameManager != null && _doorType == doorType.AUTO)
+		{
+			gameManager.powerChangedEvent += handlePowerOutage;
+		}
+	}
+
+	private void OnDestroy()
+	{
+		if (gameManager != null && null != (gameManager = GameManager.Instance))
+		{
+			gameManager.powerChangedEvent -= handlePowerOutage;
+		}
 	}
 
 	private void FixedUpdate()
@@ -99,5 +114,18 @@ public class AutoDoor : MonoBehaviour
 	{
 		locked = false;
 		lockSprite.color = GameManager.COLOR_GREEN;
+	}
+
+	public bool isOpen()
+	{
+		return open;
+	}
+
+	private void handlePowerOutage(bool powerOn)
+	{
+		//TODO
+		if (!locked)
+		{
+		}
 	}
 }

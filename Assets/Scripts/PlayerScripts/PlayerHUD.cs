@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Audio;
 using UnityEngine.UI;
 
 
@@ -53,6 +54,8 @@ public class PlayerHUD : MonoBehaviour
 
 	private static float pixelSize = 0.0625F;
 	private GameManager gameManager;
+
+	public AudioResource[] bgm;
 
 	private void Start()
 	{
@@ -106,6 +109,11 @@ public class PlayerHUD : MonoBehaviour
 
 				if (musicPlayer.enabled && !musicPlayer.isPlaying)
 				{
+					if (bgm != null)
+					{
+						int bgmIndex = Random.Range(0, bgm.Length);
+						musicPlayer.resource = bgm[bgmIndex];
+					}
 					musicPlayer.Play();
 				}
 
@@ -204,18 +212,13 @@ public class PlayerHUD : MonoBehaviour
 
 		shieldHeadIndex = 0;
 		shieldHealth = 0;
+		player.actorData.shield = 0;
 		shieldList.Clear();
 	}
 
 	private void damageShield()
 	{
 		changeHeart(null, ref shieldHealth, shieldListHead);
-		if (shieldList.Count - shieldHealth >= 1)
-		{
-			Destroy(shieldList[shieldList.Count - 1]);
-			shieldList.RemoveAt(shieldList.Count - 1);
-			updateListHead();
-		}
 	}
 
 	private void refillShield(Sprite sprite)
@@ -286,6 +289,14 @@ public class PlayerHUD : MonoBehaviour
 				{
 					damageShield();
 					refillShield(halfShieldSprite);
+				}
+
+				/* remove shield hearts from HUD when depleted */
+				if (shieldList.Count - shieldHealth >= 1)
+				{
+					Destroy(shieldList[shieldList.Count - 1]);
+					shieldList.RemoveAt(shieldList.Count - 1);
+					updateListHead();
 				}
 			}
 		}
@@ -479,6 +490,10 @@ public class PlayerHUD : MonoBehaviour
 	public void mute()
 	{
 		musicPlayer.mute = !musicPlayer.mute;
+		if (musicPlayer.mute == false)
+		{
+			musicPlayer.Play();
+		}
 		Debug.Log("Setting mute to " + musicPlayer.mute);
 	}
 }
