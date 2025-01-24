@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -82,7 +83,9 @@ public class MutationSelectHUD : MonoBehaviour
 		selections = new GameObject[objArray.Length];
 		mutArray = new MutationInterface[objArray.Length];
 		gameOver.fadeInImages = new Image[objArray.Length * 3];
+		gameOver.fadeInText = new TextMeshProUGUI[objArray.Length * 2];
 		menu.menuOptions = new Image[objArray.Length * 3];
+		menu.fadeInText = new TextMeshProUGUI[objArray.Length * 2];
 
 		//set icons
 		for (int i = 0; i < objArray.Length; i++)
@@ -105,6 +108,17 @@ public class MutationSelectHUD : MonoBehaviour
 				panel.selectIcon.sprite = mut.getIcon();
 				panel.mutIndex = i;
 				panel.selectHUD = this;
+				if (panel.selectTexts.Length > 0)
+				{
+					int j = 0;
+					foreach (TextMeshProUGUI text in panel.selectTexts)
+					{
+						text.SetText(mut.getDisplayName());
+						menu.fadeInText[(i * 2) + j] = text;
+						gameOver.fadeInText[(i * 2) + j] = text;
+						j++;
+					}
+				}
 			}
 		}
 

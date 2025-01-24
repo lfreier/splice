@@ -52,6 +52,7 @@ public class MBladeWing : MonoBehaviour, MutationInterface
 		float currMutEnergy = actorWielder.gameManager.playerStats.getMutationBar();
 		if (buffTimer <= 0 && currMutEnergy >= mutationScriptable.mutCost)
 		{
+			actorWielder.gameManager.playerStats.changeMutationBar(-mutationScriptable.mutCost);
 			anim.SetTrigger(MutationDefs.TRIGGER_BLADE_WING);
 			buffTimer = MutationDefs.ABILITY_BUFF_TIMER;
 		}
@@ -72,6 +73,11 @@ public class MBladeWing : MonoBehaviour, MutationInterface
 		}
 
 		actorWielder.setActorCollision(false);
+	}
+
+	public string getDisplayName()
+	{
+		return MutationDefs.NAME_WINGS;
 	}
 
 	public Sprite getIcon()

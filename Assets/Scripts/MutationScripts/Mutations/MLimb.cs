@@ -178,6 +178,7 @@ public class MLimb : MonoBehaviour, MutationInterface
 						grabbedObject = currChild.gameObject;
 						grabbedObject.transform.SetParent(handTransform);
 						grabbedObject.transform.SetPositionAndRotation(handGrabPos, grabbedObject.transform.rotation);
+						actorWielder.gameManager.playerStats.changeMutationBar(-mutationScriptable.mutCost);
 						anim.SetTrigger("Retract");
 						break;
 					}
@@ -200,6 +201,11 @@ public class MLimb : MonoBehaviour, MutationInterface
 	private void interactInputReleased()
 	{
 
+	}
+
+	public string getDisplayName()
+	{
+		return MutationDefs.NAME_LIMB;
 	}
 
 	public Sprite getIcon()

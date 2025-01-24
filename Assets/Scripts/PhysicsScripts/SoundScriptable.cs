@@ -25,5 +25,5 @@ public class SoundScriptable : ScriptableObject
 	public float threshold { get; private set; } = 2F;
 
 	[field: SerializeField]
-	public float volume { get; private set; } = 0.1F;
+	public float volume { get; private set; } = 1F;
 }

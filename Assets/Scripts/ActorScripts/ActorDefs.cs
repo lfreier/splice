@@ -15,8 +15,8 @@ public class ActorDefs
 
 	public static float PLAYER_WALK_SPEED = 0.4F;
 
-	public static float MAX_PARRY_FORCE= 3000F;
-	public static float MAX_HIT_FORCE = 4000F;
+	public static float MAX_PARRY_FORCE= 2000F;
+	public static float MAX_HIT_FORCE = 3000F;
 	public struct ActorData
 	{
 		public float armor;

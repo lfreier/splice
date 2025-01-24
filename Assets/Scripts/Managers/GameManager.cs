@@ -11,6 +11,9 @@ public class GameManager : MonoBehaviour
 
 	public GameObject startingSelect;
 
+	public delegate void CloseMenusEvent();
+	public event CloseMenusEvent closeMenusEvent;
+
 	public delegate void InitHudEvent();
 	public event InitHudEvent initHudEvent;
 
@@ -44,6 +47,9 @@ public class GameManager : MonoBehaviour
 	public delegate void RotationUnlockedEvent();
 	public event RotationUnlockedEvent rotationUnlockedEvent;
 
+	public delegate void StartMusicEvent(MusicScriptable music);
+	public event StartMusicEvent startMusicEvent;
+
 	public delegate void UpdateCellCount(int count);
 	public event UpdateCellCount updateCellCount;
 
@@ -73,6 +79,7 @@ public class GameManager : MonoBehaviour
 	public LayerMask collisionLayer;
 	public LayerMask findWeaponLayers;
 	public LayerMask lineOfSightLayers;
+	public LayerMask excludeCollisionLayers;
 	public LayerMask soundLayer;
 	public LayerMask unwalkableLayers;
 
@@ -105,7 +112,7 @@ public class GameManager : MonoBehaviour
 	public static Color COLOR_GREEN		= new Color(0.15F, 0.4f, 0, 1F);
 	public static Color COLOR_RED		= new Color(0.4F, 0.1F, 0.1F, 1F);
 	public static Color COLOR_YELLOW	= new Color(0.54F, 0.54F, 0, 1F);
-	public static Color COLOR_VIOLET	= new Color(0.35F, 0F, 0.35F, 1F);
+	public static Color COLOR_VIOLET	= new Color(0.35F, 0F, 0.45F, 1F);
 	public static Color COLOR_IFRAME	= new Color(0.9F, 0.3F, 0.3F, 1F);
 
 	public List<Type> actorBehaviors = new List<Type>();
@@ -263,6 +270,11 @@ public class GameManager : MonoBehaviour
 		playerStats.savePlayerData(player);
 	}
 
+	public void signalCloseMenusEvent()
+	{
+		closeMenusEvent?.Invoke();
+	}
+
 	public void signalInitHudEvent()
 	{
 		initHudEvent?.Invoke();
@@ -287,17 +299,6 @@ public class GameManager : MonoBehaviour
 	{
 		muteEvent?.Invoke();
 	}
-
-	public void signalRotationLocked()
-	{
-		rotationLockedEvent?.Invoke();
-	}
-
-	public void signalRotationUnlocked()
-	{
-		rotationUnlockedEvent?.Invoke();
-	}
-
 	public void signalPowerChangedEvent(bool powerOn)
 	{
 		powerChangedEvent?.Invoke(powerOn);
@@ -322,6 +323,22 @@ public class GameManager : MonoBehaviour
 	{
 		playerAbilityReleaseEvent?.Invoke();
 	}
+
+	public void signalRotationLocked()
+	{
+		rotationLockedEvent?.Invoke();
+	}
+
+	public void signalRotationUnlocked()
+	{
+		rotationUnlockedEvent?.Invoke();
+	}
+
+	public void signalStartMusicEvent(MusicScriptable music)
+	{
+		startMusicEvent?.Invoke(music);
+	}
+
 
 	public void signalUpdateCellCount(int count)
 	{

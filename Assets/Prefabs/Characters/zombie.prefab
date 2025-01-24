@@ -22,7 +22,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1722529025439896153, guid: f3bb2ddd86bcc0544af59b764dd961fa, type: 3}
       propertyPath: m_Size.y
-      value: 0.46875
+      value: 0.375
+      objectReference: {fileID: 0}
+    - target: {fileID: 1722529025439896153, guid: f3bb2ddd86bcc0544af59b764dd961fa, type: 3}
+      propertyPath: m_Offset.y
+      value: -0.03125
       objectReference: {fileID: 0}
     - target: {fileID: 2023260988043286838, guid: f3bb2ddd86bcc0544af59b764dd961fa, type: 3}
       propertyPath: spriteList.Array.size

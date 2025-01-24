@@ -38,7 +38,10 @@ public abstract class BasicWeapon : MonoBehaviour, WeaponInterface
 	void Start()
 	{
 		gameManager = GameManager.Instance;
-		durability = _weaponScriptable.durability;
+		if (durability == 0)
+		{
+			durability = _weaponScriptable.durability;
+		}
 		id = this.gameObject.name;
 		secondaryAction = GetComponent<ActionInterface>();
 		if (secondaryAction == null)
@@ -325,6 +328,7 @@ public abstract class BasicWeapon : MonoBehaviour, WeaponInterface
 				reduceDurability(obstacle._obstacleScriptable.weaponDurabilityDamage);
 				knockbackMult = obstacle._obstacleScriptable.weaponHitMult;
 				maxForce = obstacle._obstacleScriptable.maxObstacleForce;
+				obstacle.knockOver();
 			}
 		}
 

@@ -123,6 +123,16 @@ public class PlayerInputs: MonoBehaviour
 			camHandler.stopCam(true);
 			paused = true;
 		}
+
+		if (inventoryAction != 0 && lastInventoryAction == 0 && !paused)
+		{
+			gameManager.signalCloseMenusEvent();
+			Time.timeScale = 0;
+			camHandler.stopCam(true);
+			paused = true;
+			gameManager.signalInventoryOpenEvent();
+		}
+
 		if (Time.timeScale > 0 && paused == true)
 		{
 			camHandler.stopCam(false);
@@ -163,13 +173,6 @@ public class PlayerInputs: MonoBehaviour
 		if (interactAction == 0 && lastInteractAction != 0)
 		{
 			gameManager.signalPlayerInteractReleaseEvent();
-		}
-		if (inventoryAction != 0 && lastInventoryAction == 0 && !paused)
-		{
-			Time.timeScale = 0;
-			camHandler.stopCam(true);
-			paused = true;
-			gameManager.signalInventoryOpenEvent();
 		}
 		if (itemAction != 0 && lastItemAction == 0)
 		{

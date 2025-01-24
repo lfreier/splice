@@ -15,6 +15,10 @@ public static class MutationDefs
 
 	public static float ABILITY_BUFF_TIMER		= 0.5F;
 
+	public static string NAME_BEAST = "BEAST";
+	public static string NAME_LIMB  = "LIMB";
+	public static string NAME_WINGS = "WINGS";
+
 	public static short MAX_SLOTS = 2;
 
 	public struct MutationData

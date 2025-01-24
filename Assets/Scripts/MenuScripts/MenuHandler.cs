@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
@@ -9,6 +10,7 @@ public class MenuHandler : MonoBehaviour
 	public Image backgroundImage;
 	public Image filterImage;
 	public Image[] menuOptions;
+	public TextMeshProUGUI[] fadeInText;
 
 	private bool transitioning = false;
 	private bool loadDone = false;
@@ -31,7 +33,11 @@ public class MenuHandler : MonoBehaviour
 	public EventSystem eventSystem;
 	public AudioListener audioListener;
 
+	public AudioSource menuMusic;
+	private float volumeDecrement;
+
 	private int nextScene = SceneDefs.LEVEL_START_SCENE;
+	private bool buttonsLocked = false;
 
 	private GameManager gameManager = null;
 
@@ -46,6 +52,23 @@ public class MenuHandler : MonoBehaviour
 		}
 
 		await SceneManager.LoadSceneAsync(SceneDefs.MANAGER_SCENE, LoadSceneMode.Additive);
+		buttonsLocked = false;
+	}
+
+	private void Start()
+	{
+		gameManager = GameManager.Instance;
+		if (gameManager != null)
+		{
+			gameManager.closeMenusEvent += killMenuScenes;
+			gameManager.startMusicEvent += killMenuMusic;
+		}
+	}
+
+	private void OnDestroy()
+	{
+		gameManager.closeMenusEvent -= killMenuScenes;
+		gameManager.startMusicEvent -= killMenuMusic;
 	}
 
 	public async void LateUpdate()
@@ -78,9 +101,22 @@ public class MenuHandler : MonoBehaviour
 			{
 				filterImage.color = new Color(filterImage.color.r, filterImage.color.g, filterImage.color.b, currentAlpha3);
 			}
+			if (menuMusic != null)
+			{
+				menuMusic.volume -= volumeDecrement;
+			}
+
 			for (int i = 0; i < menuOptions.Length; i ++)
 			{
 				menuOptions[i].color = new Color(menuOptions[i].color.r, menuOptions[i].color.g, menuOptions[i].color.b, currentAlpha);
+			}
+			for (int i = 0; fadeInText != null && i < fadeInText.Length; i++)
+			{
+				if (fadeInText[i] == null)
+				{
+					continue;
+				}
+				fadeInText[i].color = new Color(fadeInText[i].color.r, fadeInText[i].color.g, fadeInText[i].color.b, currentAlpha);
 			}
 
 			if (currentAlpha == desiredAlpha && currentAlpha2 == desiredAlpha2 && currentAlpha3 == desiredAlpha3)
@@ -94,6 +130,24 @@ public class MenuHandler : MonoBehaviour
 				}
 				gameManager.loadingHandler.reset();
 			}
+		}
+	}
+
+	public void killMenuMusic(MusicScriptable music)
+	{
+		if (menuMusic != null)
+		{
+			volumeDecrement = menuMusic.volume / 128;
+		}
+	}
+
+	public void killMenuScenes()
+	{
+		if (this.gameObject.scene.buildIndex == SceneDefs.PAUSE_SCENE)
+		{
+			currentAlpha = desiredAlpha;
+			currentAlpha2 = desiredAlpha2;
+			currentAlpha3 = desiredAlpha3;
 		}
 	}
 
@@ -135,6 +189,7 @@ public class MenuHandler : MonoBehaviour
 
 	public async void restartGame()
 	{
+		buttonsLocked = true;
 		gameManager = GameManager.Instance;
 		/* Unload extra scenes, force unload the HUD scene, then reload the HUD scene */
 		int[] hudScene = new int[] { SceneDefs.PLAYER_HUD_SCENE };
@@ -143,6 +198,7 @@ public class MenuHandler : MonoBehaviour
 		showLoading = true;
 		await gameManager.loadingHandler.LoadSceneGroup(hudScene, showLoading, false);
 		nextScene = gameManager.currentScene;
+		buttonsLocked = false;
 		startGame();
 	}
 
@@ -156,6 +212,12 @@ public class MenuHandler : MonoBehaviour
 
 	public async void startGame()
 	{
+		if (buttonsLocked)
+		{
+			return;
+		}
+
+		buttonsLocked = true;
 		gameManager = GameManager.Instance;
 		Time.timeScale = 1;
 		int[] nextLevel = { nextScene };
@@ -172,6 +234,10 @@ public class MenuHandler : MonoBehaviour
 
 	public void quitGame()
 	{
+		if (buttonsLocked)
+		{
+			return;
+		}
 		Application.Quit();
 	}
 }

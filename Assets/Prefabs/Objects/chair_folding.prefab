@@ -101,8 +101,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e0430fdafca962d409e83d3c13ca6875, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _obstacleScriptable: {fileID: 11400000, guid: 8fe2e4e7722fd3b48b809d460fd40361, type: 2}
+  _obstacleScriptable: {fileID: 11400000, guid: 66505b42f17de1d48b7d3a604b08cd4b, type: 2}
   obstacleBody: {fileID: 783624939676991837}
+  spriteRenderer: {fileID: 31093817161617161}
+  secondSprite: {fileID: 21300000, guid: 66f2376d06c3a744e9209537442d98e5, type: 3}
 --- !u!50 &783624939676991837
 Rigidbody2D:
   serializedVersion: 4
@@ -164,7 +166,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0.03125}
+  m_Offset: {x: 0, y: 0}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -174,5 +176,5 @@ BoxCollider2D:
     drawMode: 1
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 0.6875, y: 0.8128}
+  m_Size: {x: 0.625, y: 0.625}
   m_EdgeRadius: 0

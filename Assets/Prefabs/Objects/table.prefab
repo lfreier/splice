@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 4655435713712527087}
   - component: {fileID: 2722309007958253735}
   - component: {fileID: -5846313455815417817}
-  m_Layer: 7
+  m_Layer: 13
   m_Name: table
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -51,6 +51,8 @@ SpriteRenderer:
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 0
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:

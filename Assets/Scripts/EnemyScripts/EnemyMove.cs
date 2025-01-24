@@ -273,6 +273,12 @@ public class EnemyMove : MonoBehaviour
 		}
 
 		moveInput = Vector2.ClampMagnitude(diff, 1F);
+		
+		/* smooths out idle pathing */
+		if (_detection == detectMode.idle && idlePauseTimer == 0)
+		{
+			moveInput = diff.normalized;
+		}
 	}
 
 	private Collider2D findNearestWeapon(float withinRange)

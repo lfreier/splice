@@ -7,13 +7,27 @@ public class LevelManager : MonoBehaviour
 	public Vector3 gridPosition;
 	public LevelData currLevelData;
 
+	private GameManager gameManager;
+
 	public void startNewLevel()
 	{
+		if (gameManager == null)
+		{
+			gameManager = GameManager.Instance;
+		}
 		powerOn = true;
-		int i = 0;
+		//int i = 0;
 		foreach (LevelData levelData in FindObjectsByType<LevelData>(FindObjectsSortMode.None))
 		{
+			
 			currLevelData = levelData;
+			gameManager.signalStartMusicEvent(currLevelData.sceneMusic);
+			if (gameManager.currentScene < 0)
+			{
+				gameManager.currentScene = levelData.levelSceneIndex;
+			}
+			return;
+			/*
 			gridPosition = currLevelData.transform.position;
 			if (i > 0)
 			{
@@ -21,6 +35,7 @@ public class LevelManager : MonoBehaviour
 				break;
 			}
 			i++;
+			*/
 		}
 	}
 

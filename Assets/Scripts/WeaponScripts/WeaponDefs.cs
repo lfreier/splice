@@ -33,7 +33,7 @@ public static class WeaponDefs
 
 	public static float DURABILITY_DAMAGED_DIVIDER = 3F;
 
-	public static float KNOCKBACK_MULT_SWING = 1600F;
+	public static float KNOCKBACK_MULT_SWING = 1500F;
 
 	public static bool canWeaponBePickedUp(GameObject target)
 	{

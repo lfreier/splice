@@ -1,5 +1,10 @@
 ﻿public static class ObstacleDefs
 {
+	public enum type
+	{
+		NORMAL = 0,
+		KNOCK_OVER = 1
+	}
 }
 
 public enum weightClass

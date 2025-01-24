@@ -1,10 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.UI;
+using static GameManager;
 
 
 public class PlayerHUD : MonoBehaviour
@@ -43,10 +45,10 @@ public class PlayerHUD : MonoBehaviour
 	private GameObject shieldListHead;
 
 	private int headIndex;
-	private float hudHealth = 0;
+	public float hudHealth = 0;
 
 	private int shieldHeadIndex;
-	private float shieldHealth = 0;
+	public float shieldHealth = 0;
 
 	private Vector3 hudStartScale;
 	private Vector3 shadowStartScale;
@@ -55,12 +57,16 @@ public class PlayerHUD : MonoBehaviour
 	private static float pixelSize = 0.0625F;
 	private GameManager gameManager;
 
+	private bool fadeInMusic = false;
+	private float targetVolume;
+
 	public AudioResource[] bgm;
 
 	private void Start()
 	{
 		gameManager = GameManager.Instance;
 		gameManager.initHudEvent += init;
+		gameManager.startMusicEvent += startNewMusic;
 		gameManager.updateHealthEvent += updateHealth;
 		gameManager.updateShieldEvent += updateShield;
 		gameManager.muteEvent += mute;
@@ -72,12 +78,14 @@ public class PlayerHUD : MonoBehaviour
 		hudStartScale = transform.localScale;
 		shadowStartScale = shadowCanvas.transform.localScale;
 		textStartScale = textTransform.localScale;
+		fadeInMusic = false;
 	}
 
 	private void OnDestroy()
 	{
 		gameManager.initHudEvent -= init;
 		gameManager.muteEvent -= mute;
+		gameManager.startMusicEvent -= startNewMusic;
 		gameManager.updateHealthEvent -= updateHealth;
 		gameManager.updateShieldEvent -= updateShield;
 		gameManager.updateCellCount -= updateCells;
@@ -109,12 +117,16 @@ public class PlayerHUD : MonoBehaviour
 
 				if (musicPlayer.enabled && !musicPlayer.isPlaying)
 				{
-					if (bgm != null)
+					if (bgm != null && bgm.Length > 0)
 					{
 						int bgmIndex = Random.Range(0, bgm.Length);
 						musicPlayer.resource = bgm[bgmIndex];
 					}
-					musicPlayer.Play();
+					else if (gameManager.levelManager.currLevelData != null)
+					{
+						musicPlayer.resource = gameManager.levelManager.currLevelData.sceneMusic.audioClip;
+						musicPlayer.volume = gameManager.levelManager.currLevelData.sceneMusic.volume;
+					}
 				}
 
 				break;
@@ -145,25 +157,47 @@ public class PlayerHUD : MonoBehaviour
 		}
 
 		/* add an extra half heart */
-		if (playerMaxHealth % 1 != 0)
+		if (currHealth % 1 != 0)
 		{
-			addHeart();
 			refillHeart(halfHeartSprite);
-			if (currHealth % 1 != 0)
-			{
-				refillHeart(halfHeartSprite);
-			}
 		}
 
 		foreach (Canvas canvas in hudCanvas)
 		{
 			canvas.gameObject.SetActive(true);
 		}
+
+		if (musicPlayer != null && musicPlayer.enabled && !musicPlayer.isPlaying)
+		{
+			musicPlayer.Play();
+		}
 	}
 
 	// Update is called once per frame
 	void Update()
 	{
+		if (fadeInMusic)
+		{
+			musicPlayer.volume += (targetVolume / 128);
+			if (musicPlayer.volume >= targetVolume)
+			{
+				musicPlayer.Play();
+				fadeInMusic = false;
+			}
+		}
+	}
+
+	public void startNewMusic(MusicScriptable music)
+	{
+		if (!musicPlayer.resource.name.Equals(music.audioClip.name))
+		{
+			musicPlayer.Stop();
+			musicPlayer.enabled = true;
+			musicPlayer.resource = music.audioClip;
+			musicPlayer.volume = 0;
+			targetVolume = music.volume;
+			fadeInMusic = true;
+		}
 	}
 
 	public void updateCells(int count)
@@ -235,6 +269,7 @@ public class PlayerHUD : MonoBehaviour
 				shieldListHead = shieldList[(int)shieldHealth];
 			}
 		}
+
 		changeHeart(sprite, ref shieldHealth, shieldListHead);
 	}
 
@@ -323,7 +358,7 @@ public class PlayerHUD : MonoBehaviour
 
 	/* Helper function to make refilling/damaging hearts their own function for readiability
 	 */
-	private void changeHeart(Sprite heart, ref float healthSrc, GameObject listHead)
+	private void changeHeart(Sprite newHeart, ref float healthSrc, GameObject listHead)
 	{
 		if (listHead == null || listHead.transform.childCount < 1)
 		{
@@ -335,7 +370,7 @@ public class PlayerHUD : MonoBehaviour
 
 		if (toChange != null)
 		{
-			if (heart == null)
+			if (newHeart == null)
 			{
 				/* TOOD: fix hacky shit but w/e it works*/
 				if (toChange.sprite.name.Contains("half"))
@@ -347,7 +382,7 @@ public class PlayerHUD : MonoBehaviour
 					healthSrc -= 1;
 				}
 			}
-			else if (heart.name.Contains("half"))
+			else if (newHeart.name.Contains("half"))
 			{
 				healthSrc += 0.5F;
 			}
@@ -361,7 +396,7 @@ public class PlayerHUD : MonoBehaviour
 				healthSrc += 1;
 			}
 
-			toChange.sprite = heart;
+			toChange.sprite = newHeart;
 			toChange.size = new Vector2(1, 1);
 		}
 		
@@ -387,6 +422,7 @@ public class PlayerHUD : MonoBehaviour
 				healthListHead = heartList[(int)hudHealth];
 			}
 		}
+
 		changeHeart(heart, ref hudHealth, healthListHead);
 	}
 
@@ -436,14 +472,21 @@ public class PlayerHUD : MonoBehaviour
 		{
 			/* refill hearts */
 			float i;
-			for (i = damage; i <= -1; i = hudHealth - newHealth)
+			for (i = damage; i <= -1F; i = hudHealth - newHealth)
 			{
 				refillHeart(heartSprite);
 			}
 
 			if (i < 0)
 			{
-				refillHeart(halfHeartSprite);
+				if (hudHealth % 1 != 0)
+				{
+					refillHeart(heartSprite);
+				}
+				else
+				{
+					refillHeart(halfHeartSprite);
+				}
 			}
 		}
 	}

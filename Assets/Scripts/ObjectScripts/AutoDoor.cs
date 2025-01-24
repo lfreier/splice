@@ -17,7 +17,7 @@ public class AutoDoor : MonoBehaviour
 	public bool locked;
 	public SpriteRenderer lockSprite;
 
-	private bool stuck = false;
+	//private bool stuck = false;
 
 	public PickupDefs.keycardType lockType;
 
@@ -34,7 +34,6 @@ public class AutoDoor : MonoBehaviour
 		/* Set color */
 		keycardColor = PickupDefs.getKeycardColor(lockType);
 
-		stuck = false;
 		open = false;
 		if (locked)
 		{

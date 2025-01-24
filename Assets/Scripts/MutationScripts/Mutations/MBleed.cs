@@ -11,6 +11,10 @@ public class MBleed : MonoBehaviour, MutationInterface
 		//get mutationscriptable
 	}
 
+	public string getDisplayName()
+	{
+		return "";
+	}
 	public Sprite getIcon()
 	{
 		return icon;

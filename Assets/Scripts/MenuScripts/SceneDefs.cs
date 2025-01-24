@@ -15,9 +15,11 @@ public class SceneDefs
 
 	public static int[] BACKGROUND_SCENES = {MANAGER_SCENE, PLAYER_HUD_SCENE, LOADING_SCENE, INVENTORY_HUD_SCENE};
 
+	public static int NUM_SCENES = LEVEL_OFFICE_SCENE + 1;
+
 	public static bool isLevelScene(int toCheck)
 	{
-		if (toCheck == LEVEL_START_SCENE || toCheck == LEVEL_OFFICE_SCENE)
+		if (toCheck >= LEVEL_START_SCENE)
 		{
 			return true;
 		}

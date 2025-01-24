@@ -406,10 +406,12 @@ MonoBehaviour:
   actorWielder: {fileID: 0}
   _weaponScriptable: {fileID: 11400000, guid: e3de2277a3cbfa547b5ebe62311afece, type: 2}
   _weaponPhysics: {fileID: 1630916773381673146}
-  actorHitSound: {fileID: 11400000, guid: 435f69a6187a6184393edba61d25272b, type: 2}
-  wallHitSound: {fileID: 11400000, guid: fc7b5a00970e656469c43cf634631693, type: 2}
+  actorHitSound: {fileID: 11400000, guid: fc7b5a00970e656469c43cf634631693, type: 2}
+  wallHitSound: {fileID: 11400000, guid: 14171c28ed3adca408d74c2da5276215, type: 2}
   weaponBreakSound: {fileID: 0}
   weaponSwingSound: {fileID: 0}
+  currentSide: 0
+  durability: 0
 --- !u!1 &4928944941135937805
 GameObject:
   m_ObjectHideFlags: 0

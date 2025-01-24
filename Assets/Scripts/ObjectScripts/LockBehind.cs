@@ -5,6 +5,13 @@ public class LockBehind : MonoBehaviour
 {
 	public AutoDoor doorToLock;
 	public PickupDefs.keycardType newLockType;
+	public MusicScriptable musicToPlay;
+	private GameManager gm;
+
+	private void Start()
+	{
+		gm = GameManager.Instance;
+	}
 
 	private void OnTriggerEnter2D(Collider2D collision)
 	{
@@ -13,6 +20,11 @@ public class LockBehind : MonoBehaviour
 		{
 			doorToLock.lockType = newLockType;
 			doorToLock.doorLock();
+			if (musicToPlay != null)
+			{
+				gm.signalStartMusicEvent(musicToPlay);
+				Destroy(this.gameObject);
+			}
 		}
 	}
 }

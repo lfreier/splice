@@ -1,11 +1,13 @@
 ﻿using System.Collections;
 using UnityEngine;
-using UnityEngine.UI;
+using Unity.VisualScripting;
 
 public class Obstacle : MonoBehaviour
 {
 	public ObstacleScriptable _obstacleScriptable;
 	public Rigidbody2D obstacleBody;
+	public SpriteRenderer spriteRenderer;
+	public Sprite secondSprite;
 
 	private RigidbodyType2D obstacleType;
 	private bool physicsEnabled = false;
@@ -19,7 +21,7 @@ public class Obstacle : MonoBehaviour
 		physicsEnabled = false;
 	}
 
-	private void Update()
+	private void FixedUpdate()
 	{
 		if (physicsEnabled)
 		{
@@ -50,6 +52,26 @@ public class Obstacle : MonoBehaviour
 		}
 	}
 
+	public void knockOver()
+	{
+		if (_obstacleScriptable.type == ObstacleDefs.type.KNOCK_OVER)
+		{
+			if (secondSprite != null && spriteRenderer != null)
+			{
+				GameManager gm = GameManager.Instance;
+				spriteRenderer.sprite = secondSprite;
+				spriteRenderer.size = new Vector2(secondSprite.rect.width / 16, secondSprite.rect.height / 16);
+				spriteRenderer.color = new Color(spriteRenderer.color.r, spriteRenderer.color.g, spriteRenderer.color.b, 0.7F);
+				Collider2D[] collArr = new Collider2D[obstacleBody.attachedColliderCount];
+				obstacleBody.GetAttachedColliders(collArr);
+				foreach (Collider2D coll in collArr)
+				{
+					coll.excludeLayers = gm.excludeCollisionLayers;
+				}
+			}
+		}
+	}
+
 	private void OnCollisionEnter2D(Collision2D collision)
 	{
 		Actor actorHit = collision.gameObject.GetComponent<Actor>();
@@ -57,13 +79,17 @@ public class Obstacle : MonoBehaviour
 		{	
 			Vector2 velocityDiff = obstacleBody.velocity - (Vector2)actorHit.currMoveVector;
 
-			Debug.Log("Obstacle/Actor diff: " + velocityDiff.magnitude);
-			if (velocityDiff.magnitude >= _obstacleScriptable.collisionDamageThreshold && obstacleBody.velocity.magnitude > _obstacleScriptable.collisionDamageThreshold / 2)
+			//Debug.Log("Obstacle/Actor diff: " + velocityDiff.magnitude);
+			if (velocityDiff.magnitude >= _obstacleScriptable.collisionDamageThreshold)
 			{
-				actorHit.actorBody.AddForce(velocityDiff * _obstacleScriptable.actorPushForce);
-				EffectDefs.effectApply(actorHit, actorHit.gameManager.effectManager.stunHalf);
-				/* hitstop if player is hit */
-				actorHit.takeDamage(_obstacleScriptable.collisionDamage, actorHit);
+				knockOver();
+				if (obstacleBody.velocity.magnitude > _obstacleScriptable.collisionDamageThreshold / 2)
+				{
+					actorHit.actorBody.AddForce(velocityDiff * _obstacleScriptable.actorPushForce);
+					EffectDefs.effectApply(actorHit, actorHit.gameManager.effectManager.stunHalf);
+					/* hitstop if player is hit */
+					actorHit.takeDamage(_obstacleScriptable.collisionDamage, actorHit);
+				}
 			}
 		}
 	}

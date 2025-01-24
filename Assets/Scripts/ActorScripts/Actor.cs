@@ -731,7 +731,7 @@ public class Actor : MonoBehaviour
 		}
 
 		Vector3 aimDir = new Vector3(throwTargetPos.x, throwTargetPos.y, 0) - this.transform.position;
-		
+		setWeaponLayer(WeaponDefs.SORT_LAYER_GROUND);
 		this.equippedWeaponInt.throwWeapon(Vector3.ClampMagnitude(aimDir, 1));
 
 		resetEquip();

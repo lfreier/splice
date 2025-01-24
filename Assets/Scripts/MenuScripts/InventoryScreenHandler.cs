@@ -2,6 +2,7 @@
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using static PickupDefs;
 
 public class InventoryScreenHandler : MonoBehaviour
@@ -16,20 +17,41 @@ public class InventoryScreenHandler : MonoBehaviour
 
 	private GameManager gameManager;
 
+	[SerializeField]
+	private InputActionReference cancel;
+	private float lastCancel;
+
 	void Start()
 	{
 		gameManager = GameManager.Instance;
 		gameManager.inventoryOpenEvent += loadInventoryScreen;
+		//gameManager.closeMenusEvent += quitInventoryScreen;
 		invCanvas.enabled = false;
+		lastCancel = 1;
+	}
+
+	private void Update()
+	{
+		if (invCanvas.enabled)
+		{
+			float cancelVal = cancel.action.ReadValue<float>();
+			if (lastCancel <= 0 && cancelVal > 0)
+			{
+				quitInventoryScreen();
+			}
+			lastCancel = cancelVal;
+		}
 	}
 
 	private void OnDestroy()
 	{
 		gameManager.inventoryOpenEvent -= loadInventoryScreen;
+		//gameManager.closeMenusEvent -= quitInventoryScreen;
 	}
 
 	public void quitInventoryScreen()
 	{
+		lastCancel = 1;
 		invCanvas.enabled = false;
 		Time.timeScale = 1;
 	}
@@ -41,8 +63,6 @@ public class InventoryScreenHandler : MonoBehaviour
 			quitInventoryScreen();
 			return;
 		}
-
-		invCanvas.enabled = true;
 
 		//TODO: set the item select box to correct item
 		//first time an item is picked up, put it in the correct static order, but not static placement

@@ -17,6 +17,7 @@ public class PlayerStats
 	public int cells = 0;
 	public int petriCellAmount = 0;
 	private MutationDefs.MutationData mutationData;
+	private MutationDefs.MutationData savedMutationData;
 	private ActorDefs.ActorData playerData;
 	
 	private GameObject[] mutationList;
@@ -33,6 +34,9 @@ public class PlayerStats
 		mutationData = new MutationDefs.MutationData();
 		mutationData.maxMutationBar = 100;
 		mutationData.mutationBar = 0;
+		savedMutationData = new MutationDefs.MutationData();
+		savedMutationData.maxMutationBar = 100;
+		savedMutationData.mutationBar = 0;
 	}
 
 	public bool addItem(PickupInterface pickup)
@@ -111,7 +115,7 @@ public class PlayerStats
 			default:
 				int toAdd = pickup.getCount();
 				cells += toAdd;
-				addMutationBar(toAdd);
+				changeMutationBar(toAdd);
 				gameManager.signalUpdateCellCount(cells);
 				break;
 		}
@@ -125,9 +129,20 @@ public class PlayerStats
 		//TODO: add the item to a usable item slot if it doesn't exist yet
 	}
 
-	public void addMutationBar(int toAdd)
+	public void changeMutationBar(int change)
 	{
-		mutationData.mutationBar = mutationData.mutationBar + toAdd > mutationData.maxMutationBar ? mutationData.maxMutationBar : mutationData.mutationBar + toAdd;
+		if (mutationData.mutationBar + change < 0)
+		{
+			mutationData.mutationBar = 0;
+		}
+		else if (mutationData.mutationBar + change > mutationData.maxMutationBar)
+		{
+			mutationData.mutationBar = mutationData.maxMutationBar;
+		}
+		else
+		{
+			mutationData.mutationBar = mutationData.mutationBar + change;
+		}
 	}
 
 	public void cycleActiveItem()
@@ -230,6 +245,9 @@ public class PlayerStats
 			player.actorData = playerData;
 		}
 
+		mutationData.maxMutationBar = savedMutationData.maxMutationBar;
+		mutationData.mutationBar = savedMutationData.mutationBar;
+
 		if (mutationList != null)
 		{
 			foreach (GameObject mut in mutationList)
@@ -263,6 +281,9 @@ public class PlayerStats
 		}
 
 		playerData = player.actorData;
+
+		savedMutationData.maxMutationBar = mutationData.maxMutationBar;
+		savedMutationData.mutationBar = mutationData.mutationBar;
 
 		int mutCount = player.mutationHolder.transform.childCount;
 		mutationList = new GameObject[mutCount];
@@ -351,7 +372,7 @@ public class PlayerStats
 		{
 			usableItemCount[activeItemIndex]--;
 			cells += petriCellAmount;
-			addMutationBar(petriCellAmount);
+			changeMutationBar(petriCellAmount);
 			gameManager.signalUpdateCellCount(cells);
 		}
 	}

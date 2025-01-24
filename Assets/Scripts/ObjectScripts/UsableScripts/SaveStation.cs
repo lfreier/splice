@@ -5,6 +5,7 @@ public class SaveStation : MonoBehaviour, UsableInterface
 {
 	public void use(Actor user)
 	{
+		return;
 		GameManager gameManager = GameManager.Instance;
 		if (gameManager != null )
 		{

@@ -107,6 +107,7 @@ public class MBeast : BasicWeapon, MutationInterface
 			return;
 		}
 
+		actorWielder.gameManager.playerStats.changeMutationBar(-mutScriptable.mutCost);
 		buffTimer = MutationDefs.ABILITY_BUFF_TIMER;
 		playerCollider.size = beastColliderSize;
 
@@ -177,6 +178,11 @@ public class MBeast : BasicWeapon, MutationInterface
 	{
 		attackTimer = attackCancelFramesTime;
 		animationRunning = false;
+	}
+
+	public string getDisplayName()
+	{
+		return MutationDefs.NAME_BEAST;
 	}
 
 	public Sprite getIcon()

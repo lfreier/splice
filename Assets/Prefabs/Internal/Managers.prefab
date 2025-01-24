@@ -69,6 +69,9 @@ MonoBehaviour:
   lineOfSightLayers:
     serializedVersion: 2
     m_Bits: 16704
+  excludeCollisionLayers:
+    serializedVersion: 2
+    m_Bits: 123264
   soundLayer:
     serializedVersion: 2
     m_Bits: 262144

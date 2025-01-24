@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,6 +10,7 @@ public class MutationSelectPanel : MonoBehaviour
 	public Image selectIcon;
 	public RectTransform selectRect;
 	public MutationSelectHUD selectHUD;
+	public TextMeshProUGUI[] selectTexts;
 	public int mutIndex;
 
 	public void selectMutation()

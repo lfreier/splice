@@ -29,7 +29,7 @@ public static class PickupDefs
 		REFILL = 2
 	};
 
-	static public int MAX_KEYCARD_TYPE	= (int)keycardType.YELLOW;
+	static public int MAX_KEYCARD_TYPE	= (int)keycardType.VIOLET;
 	static public int MAX_PICKUP_ITEM_TYPE = (int)pickupType.PETRI_DISH;
 	static public int MAX_USABLE_ITEM_TYPE	= (int)usableType.REFILL;
 

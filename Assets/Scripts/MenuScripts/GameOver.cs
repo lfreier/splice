@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -14,6 +15,7 @@ public class GameOver : MonoBehaviour
 	public Image deathHeartImage;
 
 	public Image[] fadeInImages;
+	public TextMeshProUGUI[] fadeInText;
 
 	private float currentAlpha = 0;
 	public float desiredAlpha = 1;
@@ -91,6 +93,14 @@ public class GameOver : MonoBehaviour
 				fadeInImages[i].color = new Color(fadeInImages[i].color.r, fadeInImages[i].color.g, fadeInImages[i].color.b, currentAlpha);
 			}
 
+			for (int i = 0; fadeInText != null && i < fadeInText.Length; i++)
+			{
+				if (fadeInText[i] == null)
+				{
+					continue;
+				}
+				fadeInText[i].color = new Color(fadeInText[i].color.r, fadeInText[i].color.g, fadeInText[i].color.b, currentAlpha);
+			}
 
 			if (currentAlpha == desiredAlpha)
 			{

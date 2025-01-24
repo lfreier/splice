@@ -485,7 +485,7 @@ Canvas:
   m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 1
+  m_SortingOrder: 2
   m_TargetDisplay: 0
 --- !u!224 &770103558
 RectTransform:
@@ -678,10 +678,7 @@ MonoBehaviour:
   textTransform: {fileID: 1358670589}
   pixelSpacing: 12
   musicPlayer: {fileID: 1136655664}
-  bgm:
-  - {fileID: 8300000, guid: 1c03b63cf40baad488d31810e80eca34, type: 3}
-  - {fileID: 8300000, guid: 09664adce3c8e8a4298339a0b0fa9a62, type: 3}
-  - {fileID: 8300000, guid: 05e57be1fb842b04c84bfb7770bd5234, type: 3}
+  bgm: []
 --- !u!82 &1136655664
 AudioSource:
   m_ObjectHideFlags: 0
@@ -695,7 +692,7 @@ AudioSource:
   m_audioClip: {fileID: 8300000, guid: 6b2a777e04267c94a801a672502da13d, type: 3}
   m_Resource: {fileID: 8300000, guid: 6b2a777e04267c94a801a672502da13d, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 0.03
+  m_Volume: 0.1
   m_Pitch: 1
   Loop: 1
   Mute: 0

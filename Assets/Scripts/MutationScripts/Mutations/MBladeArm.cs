@@ -5,6 +5,10 @@ public class MBladeArm : MonoBehaviour, MutationInterface
 {
 	public Sprite icon;
 
+	public string getDisplayName()
+	{
+		return "BLADE ARM";
+	}
 	public Sprite getIcon()
 	{
 		return icon;
