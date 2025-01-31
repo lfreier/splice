@@ -3,14 +3,16 @@ using UnityEngine;
 
 public class SaveStation : MonoBehaviour, UsableInterface
 {
+	public int saveStationSpawnIndex = 0;
+	private bool used = false;
+
 	public void use(Actor user)
 	{
-		return;
-		GameManager gameManager = GameManager.Instance;
-		if (gameManager != null )
+		if (!used)
 		{
-			gameManager.save(user);
+			user.gameManager.levelManager.lastSavedSpawn = saveStationSpawnIndex;
+			user.gameManager.save(user);
+			used = true;
 		}
-		//TODO: failure case
 	}
 }

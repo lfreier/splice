@@ -6,6 +6,8 @@ public class MutationSelect : MonoBehaviour
 {
 	public GameObject[] mutationPrefabs;
 
+	public bool isActivated;
+
 	private PlayerInteract interact;
 
 	private CameraHandler camHandler;
@@ -14,6 +16,7 @@ public class MutationSelect : MonoBehaviour
 
 	private void Start()
 	{
+		isActivated = false;
 	}
 
 	private void Update()
@@ -31,6 +34,7 @@ public class MutationSelect : MonoBehaviour
 
 	public void activateSelectMenu(PlayerInteract player)
 	{
+		isActivated = true;
 		interact = player;
 		camHandler = Camera.main.transform.GetComponent<CameraHandler>();
 		if (camHandler != null)

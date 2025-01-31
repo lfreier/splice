@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: experiment1
   m_EditorClassIdentifier: 
   <armor>k__BackingField: 0
-  <health>k__BackingField: 7
+  <health>k__BackingField: 14
   <attackTimer>k__BackingField: 0
-  <maxSpeed>k__BackingField: 7.5
+  <maxSpeed>k__BackingField: 9.5
   <moveSpeed>k__BackingField: 0.4
   <acceleration>k__BackingField: 0.5
   <deceleration>k__BackingField: 0.2

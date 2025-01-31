@@ -90,7 +90,7 @@ public class AutoDoor : MonoBehaviour
 
 	public void doorToggle(bool force)
 	{
-		if (force || !locked)
+		if ((force || !locked) && _doorType != doorType.AUTO)
 		{
 			if (open)
 			{
@@ -100,6 +100,10 @@ public class AutoDoor : MonoBehaviour
 			{
 				doorOpen();
 			}
+		}
+		else if (force && locked)
+		{
+			doorUnlock();
 		}
 	}
 

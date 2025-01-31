@@ -9,7 +9,7 @@ public class CollisionExclusion : MonoBehaviour
 	private bool started = false;
 
 	// Update is called once per frame
-	void Update()
+	void FixedUpdate()
 	{
 		if (started == true)
 		{
@@ -21,7 +21,10 @@ public class CollisionExclusion : MonoBehaviour
 				{
 					foreach (Collider2D coll2 in attachedColliders2)
 					{
-						Physics2D.IgnoreCollision(coll1, coll2, false);
+						if (coll1 != null && coll2 != null)
+						{
+							Physics2D.IgnoreCollision(coll1, coll2, false);
+						}
 					}
 				}
 				Destroy(this);

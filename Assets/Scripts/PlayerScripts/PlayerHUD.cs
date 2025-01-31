@@ -19,6 +19,9 @@ public class PlayerHUD : MonoBehaviour
 
 	public TextMeshProUGUI cellText;
 	public Image mutationFill;
+	public Canvas mutationFillCanvas;
+	public Canvas mutationBGFillCanvas;
+	public Image mutationOutline;
 
 	public Image activeItemIcon;
 
@@ -114,6 +117,12 @@ public class PlayerHUD : MonoBehaviour
 				this.transform.localScale = hudStartScale * Screen.width / (1080 * 1.5F);
 				shadowCanvas.transform.localScale = shadowStartScale * Screen.width / (1080 * 1.5F);
 				textTransform.localScale = textStartScale * Screen.width / (1080 * 1.5F);
+
+				/* */
+				if (player.mutationHolder.transform.childCount > 0)
+				{
+					gameManager.playerStats.showMutationBar();
+				}
 
 				if (musicPlayer.enabled && !musicPlayer.isPlaying)
 				{

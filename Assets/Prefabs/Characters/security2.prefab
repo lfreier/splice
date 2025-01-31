@@ -73,6 +73,14 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4057087157832032976, guid: 73f47e22e6a312f40ba5aff9c72c4d11, type: 3}
+      propertyPath: cellDropMax
+      value: 18
+      objectReference: {fileID: 0}
+    - target: {fileID: 4057087157832032976, guid: 73f47e22e6a312f40ba5aff9c72c4d11, type: 3}
+      propertyPath: cellDropMin
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 4057087157832032976, guid: 73f47e22e6a312f40ba5aff9c72c4d11, type: 3}
       propertyPath: 'spriteList.Array.data[0]'
       value: 
       objectReference: {fileID: 21300000, guid: 449b65f794cc14640a40aab913ee5864, type: 3}

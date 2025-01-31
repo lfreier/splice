@@ -9,12 +9,18 @@ public class PlayerStats
 	public int[] usableItemCount		= new int[MAX_USABLE_ITEM_TYPE + 1];
 	public Sprite[] usableItemSprite	= new Sprite[MAX_USABLE_ITEM_TYPE + 1];
 
+	public int[] savedKeycardCount = new int[MAX_KEYCARD_TYPE + 1];
+	public int[] savedUsableItemCount = new int[MAX_USABLE_ITEM_TYPE + 1];
+	public Sprite[] savedUsableItemSprite = new Sprite[MAX_USABLE_ITEM_TYPE + 1];
+
 	/* TODO: this is a weird way of doing this */
 	//public UsableItem[] usableItems = new UsableItem[MAX_USABLE_TYPE + 1];
 	//public UsableItem activeItem;
 	public int activeItemIndex;
+	public int savedActiveItemIndex;
 
 	public int cells = 0;
+	public int savedCells = 0;
 	public int petriCellAmount = 0;
 	private MutationDefs.MutationData mutationData;
 	private MutationDefs.MutationData savedMutationData;
@@ -116,7 +122,6 @@ public class PlayerStats
 				int toAdd = pickup.getCount();
 				cells += toAdd;
 				changeMutationBar(toAdd);
-				gameManager.signalUpdateCellCount(cells);
 				break;
 		}
 
@@ -143,6 +148,7 @@ public class PlayerStats
 		{
 			mutationData.mutationBar = mutationData.mutationBar + change;
 		}
+		gameManager.signalUpdateCellCount(cells);
 	}
 
 	public void cycleActiveItem()
@@ -199,6 +205,7 @@ public class PlayerStats
 					if (player.activeSlots[0] == null)
 					{
 						player.activeSlots[0] = newMut;
+						showMutationBar();
 						return;
 					}
 				}
@@ -248,6 +255,19 @@ public class PlayerStats
 		mutationData.maxMutationBar = savedMutationData.maxMutationBar;
 		mutationData.mutationBar = savedMutationData.mutationBar;
 
+		savedKeycardCount.CopyTo(keycardCount, 0);
+		savedUsableItemCount.CopyTo(usableItemCount, 0);
+		savedUsableItemSprite.CopyTo(usableItemSprite, 0);
+		activeItemIndex = savedActiveItemIndex;
+		if (usableItemCount[activeItemIndex] > 0)
+		{
+			playerHUD.activeItemIcon.enabled = true;
+			playerHUD.changeActiveItemIcon(usableItemSprite[activeItemIndex]);
+		}
+
+		cells = savedCells;
+		gameManager.signalUpdateCellCount(cells);
+
 		if (mutationList != null)
 		{
 			foreach (GameObject mut in mutationList)
@@ -267,9 +287,12 @@ public class PlayerStats
 
 		if (weaponEquipped != null)
 		{
-			weaponEquipped.SetActive(true);
-			player.equip(weaponEquipped);
-			weaponEquipped = null;
+			GameObject spawnedWeapon = GameObject.Instantiate(weaponEquipped);
+			if (spawnedWeapon != null)
+			{
+				spawnedWeapon.SetActive(true);
+				player.equip(spawnedWeapon);
+			}
 		}
 	}
 
@@ -284,6 +307,13 @@ public class PlayerStats
 
 		savedMutationData.maxMutationBar = mutationData.maxMutationBar;
 		savedMutationData.mutationBar = mutationData.mutationBar;
+
+		savedCells = cells;
+
+		keycardCount.CopyTo(savedKeycardCount, 0);
+		usableItemCount.CopyTo(savedUsableItemCount, 0);
+		usableItemSprite.CopyTo(savedUsableItemSprite, 0);
+		savedActiveItemIndex = activeItemIndex;
 
 		int mutCount = player.mutationHolder.transform.childCount;
 		mutationList = new GameObject[mutCount];
@@ -303,6 +333,18 @@ public class PlayerStats
 				weaponEquipped.transform.SetParent(gameManager.gameObject.transform);
 			}
 		}
+		else
+		{
+			weaponEquipped = null;
+		}
+	}
+
+	/* TODO: player stats/HUD are poorly connected with one another*/
+	public void showMutationBar()
+	{
+		playerHUD.mutationFillCanvas.enabled = true;
+		playerHUD.mutationBGFillCanvas.enabled = true;
+		playerHUD.mutationOutline.enabled = true;
 	}
 
 	public void useActiveItem()
@@ -368,12 +410,8 @@ public class PlayerStats
 
 	private void usePetriDish()
 	{
-		if (getMutationBar() < getMaxMutationBar())
-		{
-			usableItemCount[activeItemIndex]--;
-			cells += petriCellAmount;
-			changeMutationBar(petriCellAmount);
-			gameManager.signalUpdateCellCount(cells);
-		}
+		usableItemCount[activeItemIndex]--;
+		cells += petriCellAmount;
+		changeMutationBar(petriCellAmount);
 	}
 }

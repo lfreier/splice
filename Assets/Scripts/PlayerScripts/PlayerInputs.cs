@@ -36,8 +36,6 @@ public class PlayerInputs: MonoBehaviour
 	private float pauseAction;
 	public bool paused = false;
 
-	public CameraHandler camHandler;
-
 	private float[] specialActions = new float[MutationDefs.MAX_SLOTS];
 	private float[] lastSpecialActions = new float[MutationDefs.MAX_SLOTS];
 
@@ -120,7 +118,7 @@ public class PlayerInputs: MonoBehaviour
 			}
 
 			SceneManager.LoadSceneAsync(SceneDefs.PAUSE_SCENE, LoadSceneMode.Additive);
-			camHandler.stopCam(true);
+			gameManager.levelManager.camHandler.stopCam(true);
 			paused = true;
 		}
 
@@ -128,14 +126,14 @@ public class PlayerInputs: MonoBehaviour
 		{
 			gameManager.signalCloseMenusEvent();
 			Time.timeScale = 0;
-			camHandler.stopCam(true);
+			gameManager.levelManager.camHandler.stopCam(true);
 			paused = true;
 			gameManager.signalInventoryOpenEvent();
 		}
 
 		if (Time.timeScale > 0 && paused == true)
 		{
-			camHandler.stopCam(false);
+			gameManager.levelManager.camHandler.stopCam(false);
 			this.enabled = true;
 			paused = false;
 		}

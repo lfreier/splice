@@ -179,7 +179,7 @@ public class GameManager : MonoBehaviour
 			if (SceneDefs.isLevelScene(curr.buildIndex))
 			{
 				currentScene = curr.buildIndex;
-				levelManager.startNewLevel();
+				levelManager.startNewLevel(-1);
 				break;
 			}
 		}
@@ -211,6 +211,18 @@ public class GameManager : MonoBehaviour
 		SceneManager.LoadScene(SceneDefs.GAME_OVER_SCENE, LoadSceneMode.Additive);
 	}
 
+	public void gameWin(Actor player)
+	{
+		CameraHandler camHan = Camera.main.GetComponent<CameraHandler>();
+		camHan.enabled = false;
+		Camera.main.transform.position = player.transform.position;
+		AudioListener audio = Camera.main.GetComponent<AudioListener>();
+		audio.enabled = false;
+		Time.timeScale = 0;
+		currentScene = SceneDefs.WIN_SCENE;
+		SceneManager.LoadScene(SceneDefs.WIN_SCENE, LoadSceneMode.Additive);
+	}
+
 	public void hitstop(float length, float speed)
 	{
 		//TODO: remove if committing to not using hitstop
@@ -221,7 +233,7 @@ public class GameManager : MonoBehaviour
 		*/
 	}
 
-	public async void nextLevel(Actor player, int nextSceneIndex)
+	public async void nextLevel(Actor player, int nextSceneIndex, int spawnIndex)
 	{
 		CameraHandler camHan = Camera.main.GetComponent<CameraHandler>();
 		camHan.enabled = false;
@@ -233,7 +245,8 @@ public class GameManager : MonoBehaviour
 
 		await loadingHandler.LoadSceneGroup(new int[] { currentScene }, true, true);
 
-		levelManager.startNewLevel();
+		levelManager.lastSavedSpawn = spawnIndex;
+		levelManager.startNewLevel(spawnIndex);
 	}
 
 	public async void loadBackgroundScenes()
@@ -262,7 +275,7 @@ public class GameManager : MonoBehaviour
 	public void resetLevel()
 	{
 		playerStats.resetCounts();
-		levelManager.startNewLevel();
+		levelManager.startNewLevel(levelManager.lastSavedSpawn);
 	}
 
 	public void save(Actor player)

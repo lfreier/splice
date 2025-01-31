@@ -13,7 +13,7 @@ public class LockBehind : MonoBehaviour
 		gm = GameManager.Instance;
 	}
 
-	private void OnTriggerEnter2D(Collider2D collision)
+	public void OnTriggerEnter2D(Collider2D collision)
 	{
 		Actor actor = collision.transform.GetComponent<Actor>();
 		if (actor != null && actor.tag == ActorDefs.playerTag)

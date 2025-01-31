@@ -239,7 +239,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 509544257}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
@@ -389,7 +389,7 @@ Canvas:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 696500274}
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
   m_RenderMode: 2
   m_Camera: {fileID: 0}
@@ -594,7 +594,7 @@ Canvas:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 878608456}
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
   m_RenderMode: 2
   m_Camera: {fileID: 0}
@@ -667,6 +667,9 @@ MonoBehaviour:
   healthHudObject: {fileID: 580065478}
   cellText: {fileID: 1358670590}
   mutationFill: {fileID: 696500276}
+  mutationFillCanvas: {fileID: 696500278}
+  mutationBGFillCanvas: {fileID: 878608460}
+  mutationOutline: {fileID: 509544259}
   activeItemIcon: {fileID: 1553637751}
   heartPrefab: {fileID: 7813007312882299714, guid: acc842b86f18b4e4796bcda5da97b620, type: 3}
   shieldPrefab: {fileID: 7813007312882299714, guid: acc842b86f18b4e4796bcda5da97b620, type: 3}
@@ -678,6 +681,8 @@ MonoBehaviour:
   textTransform: {fileID: 1358670589}
   pixelSpacing: 12
   musicPlayer: {fileID: 1136655664}
+  hudHealth: 0
+  shieldHealth: 0
   bgm: []
 --- !u!82 &1136655664
 AudioSource:

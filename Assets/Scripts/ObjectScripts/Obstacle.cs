@@ -13,6 +13,9 @@ public class Obstacle : MonoBehaviour
 	private bool physicsEnabled = false;
 	private bool thresholdPassed = false;
 	private float velocityThreshold = 0.05F;
+	public float knockVelocityThreshold = 0.5F;
+
+	public float knockOverDrag = 3F;
 
 	// Use this for initialization
 	void Start()
@@ -23,7 +26,7 @@ public class Obstacle : MonoBehaviour
 
 	private void FixedUpdate()
 	{
-		if (physicsEnabled)
+		if (physicsEnabled && obstacleBody != null && _obstacleScriptable.type != ObstacleDefs.type.KNOCK_OVER)
 		{
 			if (obstacleBody.velocity.magnitude > velocityThreshold)
 			{
@@ -34,6 +37,24 @@ public class Obstacle : MonoBehaviour
 				obstacleBody.bodyType = obstacleType;
 				physicsEnabled = false;
 				thresholdPassed = false;
+				if (_obstacleScriptable.type == ObstacleDefs.type.KNOCK_OVER)
+				{
+					obstacleBody.drag *= knockOverDrag;
+				}
+			}
+		}
+		else if (physicsEnabled && obstacleBody != null)
+		{
+			if (obstacleBody.velocity.magnitude > knockVelocityThreshold)
+			{
+				thresholdPassed = true;
+			}
+			if (thresholdPassed && obstacleBody.velocity.magnitude <= knockVelocityThreshold)
+			{
+				obstacleBody.bodyType = obstacleType;
+				physicsEnabled = false;
+				thresholdPassed = false;
+				obstacleBody.drag *= knockOverDrag;
 			}
 		}
 	}
@@ -49,6 +70,12 @@ public class Obstacle : MonoBehaviour
 			physicsEnabled = true;
 			thresholdPassed = false;
 			obstacleBody.bodyType = RigidbodyType2D.Dynamic;
+		}
+		else if (_obstacleScriptable.type == ObstacleDefs.type.KNOCK_OVER)
+		{
+			physicsEnabled = true;
+			thresholdPassed = false;
+			obstacleBody.drag /= knockOverDrag;
 		}
 	}
 
@@ -66,8 +93,9 @@ public class Obstacle : MonoBehaviour
 				obstacleBody.GetAttachedColliders(collArr);
 				foreach (Collider2D coll in collArr)
 				{
-					coll.excludeLayers = gm.excludeCollisionLayers;
+					Destroy(coll);
 				}
+				Destroy(obstacleBody);
 			}
 		}
 	}

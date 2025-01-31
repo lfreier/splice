@@ -9,6 +9,14 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 2023260988043286838, guid: f3bb2ddd86bcc0544af59b764dd961fa, type: 3}
+      propertyPath: cellDropMax
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 2023260988043286838, guid: f3bb2ddd86bcc0544af59b764dd961fa, type: 3}
+      propertyPath: cellDropMin
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 2023260988043286838, guid: f3bb2ddd86bcc0544af59b764dd961fa, type: 3}
       propertyPath: spriteList.Array.size
       value: 4
       objectReference: {fileID: 0}

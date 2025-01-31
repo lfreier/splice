@@ -50,7 +50,7 @@ public class PlayerInteract : MonoBehaviour
 			{
 				//TODO: implement mutation selection
 				MutationSelect mutateSelect = target.gameObject.GetComponent<MutationSelect>();
-				if (mutateSelect != null)
+				if (mutateSelect != null && !mutateSelect.isActivated)
 				{
 					mutateSelect.activateSelectMenu(this);
 					return true;

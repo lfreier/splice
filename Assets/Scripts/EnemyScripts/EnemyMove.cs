@@ -31,6 +31,8 @@ public class EnemyMove : MonoBehaviour
 	private float stateSpeedIncrease;
 	private float maxStateSpeed;
 
+	public LockBehind lockWhenSpotted;
+
 	/* moveTarget will always be where the actor moves. Takes priority over the actor's hostile target. */
 	private Vector3 moveTarget;
 	private Vector3 lastMoveTarget;
@@ -183,6 +185,11 @@ public class EnemyMove : MonoBehaviour
 		//TODO
 
 		handleEdges();
+
+		stateSpeedIncrease = _actorData.acceleration * _actorData.moveSpeed;
+		maxStateSpeed = _actorData.maxSpeed;
+
+		setStateMoveSpeed();
 
 		/*  determine move speed based on current state */
 		moveUpdate();
@@ -356,11 +363,6 @@ public class EnemyMove : MonoBehaviour
 				stateTimer = 0;
 				break;
 		}
-
-		stateSpeedIncrease = _actorData.acceleration * _actorData.moveSpeed;
-		maxStateSpeed = _actorData.maxSpeed;
-
-		setStateMoveSpeed();
 	}
 
 	private void handleArmedStates()
@@ -573,6 +575,17 @@ public class EnemyMove : MonoBehaviour
 				_detection = detectMode.hostile;
 				actor.setAttackTarget(targetActor);
 				attackTarget = targetActor.transform.position;
+
+				if (lockWhenSpotted != null)
+				{
+					Collider2D[] actorColliders = new Collider2D[rayHit.rigidbody.attachedColliderCount];
+					rayHit.rigidbody.GetAttachedColliders(actorColliders);
+					if (actorColliders.Length > 0)
+					{
+						lockWhenSpotted.OnTriggerEnter2D(actorColliders[0]);
+					}
+				}
+
 				return targetActor;
 			}
 		}

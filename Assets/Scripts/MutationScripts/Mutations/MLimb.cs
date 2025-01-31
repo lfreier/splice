@@ -103,7 +103,6 @@ public class MLimb : MonoBehaviour, MutationInterface
 		/* Grab an object from the limb hand
 		 * Automatically picks up weapons and pickups - big objects will always be held
 		 */
-		bool objectCostsMut = false;
 
 		if (limbState == retracted.ACTIVE)
 		{
@@ -111,44 +110,39 @@ public class MLimb : MonoBehaviour, MutationInterface
 			Vector3 handGrabPos = handTransform.position + (handTransform.up * grabOffset);
 
 			Collider2D[] hitTargets = Physics2D.OverlapCircleAll(handGrabPos, grabPickupRange, grabLayers);
-			Transform currChild = null;
 			foreach (Collider2D target in hitTargets)
 			{
-				if (target.GetComponentInChildren<WeaponInterface>() != null || target.GetComponentInParent<WeaponInterface>() != null)
-				{
-					currChild = target.gameObject.transform;
-					break;
-				}
-				if (target.GetComponentInChildren<PickupInterface>() != null || target.GetComponentInParent<PickupInterface>() != null)
-				{
-					currChild = target.gameObject.transform;
-					break;
-				}
+				/* weapon has to only check for parent, because of equipped weapons */
+				WeaponInterface weapon = target.GetComponentInParent<WeaponInterface>();
+
 				PickupBox box = target.GetComponentInChildren<PickupBox>();
 				Obstacle obstacle = target.GetComponentInChildren<Obstacle>();
-				if (box == null)
-				{
-					box = target.GetComponentInParent<PickupBox>();
-				}
-				/* if trying to grab a pickup box, pick up the whole thing */
-				if (box != null && obstacle == null)
-				{
-					GameObject pickup = box.getPickup();
-					if (pickup != null)
-					{
-						currChild = pickup.transform;
-						break;
-					}
-				}
+				Actor actor = target.GetComponentInChildren<Actor>();
+				PickupInterface pickup = target.GetComponentInChildren<PickupInterface>();
 
-				//TODO: grabbing actors
+				if (weapon != null)
+				{
+					if (WeaponDefs.canWeaponBePickedUp(target.gameObject))
+					{
+						if (checkGrabObject(target.gameObject.transform, null, 0))
+						{
+							break;
+						}
+					}
+					continue;
+				}
 
 				if (obstacle == null)
 				{
 					obstacle = target.GetComponentInParent<Obstacle>();
 				}
-				if (obstacle != null && obstacle._obstacleScriptable.weight < weightClass.MID)
+				if (obstacle != null && obstacle._obstacleScriptable.weight <= weightClass.MID)
 				{
+					int cost = mutationScriptable.mutCost;
+					if (obstacle._obstacleScriptable.weight == weightClass.MID)
+					{
+						cost = Mathf.RoundToInt(mutationScriptable.values[0]);
+					}
 					Rigidbody2D objBody = target.GetComponentInChildren<Rigidbody2D>();
 					if (objBody == null)
 					{
@@ -157,33 +151,70 @@ public class MLimb : MonoBehaviour, MutationInterface
 					if (objBody != null)
 					{
 						/* Now hold the object and wait to release */
-						currChild = target.gameObject.transform;
-						heldRigidbody = objBody;
-						heldRigidbody.simulated = false;
-						heldObstacle = obstacle;
-						objectCostsMut = true;
-						break;
+						if (checkGrabObject(target.gameObject.transform, null, cost))
+						{
+							heldRigidbody = objBody;
+							heldRigidbody.simulated = false;
+							heldObstacle = obstacle;
+							break;
+						}
+						continue;
 					}
 				}
-			}
 
-			while (currChild != null)
-			{
-				if (currChild.parent == null)
+				if (actor == null)
 				{
-					/* only spend mut energy for certain objects */
-					float currMutEnergy = actorWielder.gameManager.playerStats.getMutationBar();
-					if (!objectCostsMut || currMutEnergy >= mutationScriptable.mutCost)
+					actor = target.GetComponentInParent<Actor>();
+				}
+				if (actor != null)
+				{
+					Rigidbody2D objBody = target.GetComponentInChildren<Rigidbody2D>();
+					if (objBody == null)
 					{
-						grabbedObject = currChild.gameObject;
-						grabbedObject.transform.SetParent(handTransform);
-						grabbedObject.transform.SetPositionAndRotation(handGrabPos, grabbedObject.transform.rotation);
-						actorWielder.gameManager.playerStats.changeMutationBar(-mutationScriptable.mutCost);
-						anim.SetTrigger("Retract");
+						objBody = target.GetComponentInParent<Rigidbody2D>();
+					}
+					if (objBody != null && actor.name != actorWielder.name)
+					{
+						/* Now hold the object and wait to release */
+						if (checkGrabObject(target.gameObject.transform, actor, mutationScriptable.mutCost))
+						{
+							heldRigidbody = objBody;
+							heldRigidbody.simulated = false;
+							break;
+						}
+						continue;
+					}
+				}
+
+				if (box == null)
+				{
+					box = target.GetComponentInParent<PickupBox>();
+				}
+				/* if trying to grab a pickup box, pick up the whole thing */
+				if (box != null && obstacle == null)
+				{
+					GameObject boxPickup = box.getPickup();
+					if (boxPickup != null)
+					{
+						if (checkGrabObject(boxPickup.transform, null, 0))
+						{
+							break;
+						}
+						continue;
+					}
+				}
+
+				if (pickup == null)
+				{
+					pickup = target.GetComponentInParent<PickupInterface>();
+				}
+				if (pickup != null)
+				{
+					if (checkGrabObject(target.gameObject.transform, null, 0))
+					{
 						break;
 					}
 				}
-				currChild = currChild.parent;
 			}
 		}
 		else if (limbState == retracted.RETRACTED)
@@ -196,6 +227,45 @@ public class MLimb : MonoBehaviour, MutationInterface
 		{
 			//do nothing
 		}
+	}
+
+	private bool checkGrabObject(Transform currChild, Actor grabbedActor, int cost)
+	{
+		while (currChild != null)
+		{
+			if (currChild.parent == null)
+			{
+				/* only spend mut energy for certain objects */
+				float currMutEnergy = actorWielder.gameManager.playerStats.getMutationBar();
+				if (currMutEnergy >= cost)
+				{
+					grabbedObject = currChild.gameObject;
+
+					Transform handTransform = transform.GetChild(0);
+					Vector3 handGrabPos = handTransform.position + (handTransform.up * grabOffset);
+					grabbedObject.transform.SetParent(handTransform);
+					grabbedObject.transform.SetPositionAndRotation(handGrabPos, grabbedObject.transform.rotation);
+
+					if (cost > 0)
+					{
+						actorWielder.gameManager.playerStats.changeMutationBar(-mutationScriptable.mutCost);
+					}
+					if (grabbedActor != null)
+					{
+						EffectDefs.effectApply(grabbedActor, grabbedActor.gameManager.effectManager.stunPermanent);
+					}
+					anim.SetTrigger("Retract");
+					return true;
+				}
+				else
+				{
+					heldRigidbody = null;
+				}
+			}
+			currChild = currChild.parent;
+		}
+
+		return false;
 	}
 
 	private void interactInputReleased()
@@ -296,9 +366,17 @@ public class MLimb : MonoBehaviour, MutationInterface
 			releaseForce = Mathf.Min(objectReleaseForce, heldObstacle._obstacleScriptable.maxObstacleForce);
 		}
 
+		Actor grabbedActor = heldRigidbody.GetComponentInChildren<Actor>();
+		if (grabbedActor != null)
+		{
+			EffectDefs.effectApply(grabbedActor, grabbedActor.gameManager.effectManager.stun1);
+			releaseForce = objectReleaseForce / 4.5F;
+		}
+
 		heldRigidbody.AddForce(Vector2.ClampMagnitude(releaseTarget - heldRigidbody.transform.position, 1) * releaseForce);
 		heldRigidbody = null;
 		heldObstacle = null;
+		grabbedActor = null;
 	}
 
 	public void setStartingPosition()
@@ -319,6 +397,7 @@ public class MLimb : MonoBehaviour, MutationInterface
 
 	public bool toggleCollider()
 	{
+		/*
 		if (!hitbox.enabled)
 		{
 			hitbox.gameObject.layer = LayerMask.NameToLayer(GameManager.OBJECT_MID_LAYER);
@@ -332,6 +411,8 @@ public class MLimb : MonoBehaviour, MutationInterface
 
 		hitboxHand.enabled = !hitboxHand.enabled;
 		return hitbox.enabled = !hitbox.enabled;
+		*/
+		return false;
 	}
 
 	/* for an active slot mutation, this does nothing */

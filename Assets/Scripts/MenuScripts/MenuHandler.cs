@@ -199,7 +199,7 @@ public class MenuHandler : MonoBehaviour
 		await gameManager.loadingHandler.LoadSceneGroup(hudScene, showLoading, false);
 		nextScene = gameManager.currentScene;
 		buttonsLocked = false;
-		startGame();
+		startGame(true);
 	}
 
 	public void resumeGame()
@@ -210,7 +210,7 @@ public class MenuHandler : MonoBehaviour
 		fadeOutScene();
 	}
 
-	public async void startGame()
+	public async void startGame(bool reset)
 	{
 		if (buttonsLocked)
 		{
@@ -222,7 +222,7 @@ public class MenuHandler : MonoBehaviour
 		Time.timeScale = 1;
 		int[] nextLevel = { nextScene };
 		gameManager.loadingHandler.reloadHUD = true;
-		gameManager.loadingHandler.resetPlayerData = true;
+		gameManager.loadingHandler.resetPlayerData = !reset;
 		await gameManager.loadingHandler.LoadSceneGroup(nextLevel, showLoading, false);
 		showLoading = false;
 		gameManager.resetLevel();

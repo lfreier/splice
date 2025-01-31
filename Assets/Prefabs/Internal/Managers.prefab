@@ -99,6 +99,7 @@ MonoBehaviour:
   stunParry: {fileID: 11400000, guid: 865c7d3cf90638f468f04540f7cb4ea0, type: 2}
   stun1: {fileID: 11400000, guid: d92e4d46a82385f4c9f7e376918ad3bc, type: 2}
   stun3: {fileID: 11400000, guid: 87cc1f8670aa6ef48ad61bc0ba8c6f2d, type: 2}
+  stunPermanent: {fileID: 11400000, guid: 5c2f8452a537f96468a2f60eb9ccaba3, type: 2}
   iFrame0: {fileID: 11400000, guid: 9a999b547a817c54bb898f5610914bde, type: 2}
   iFrame1: {fileID: 11400000, guid: 8cc20c6900a03f146a5a36c6cf287e80, type: 2}
 --- !u!114 &4511755820635981177
@@ -140,3 +141,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gridPosition: {x: 0, y: 0, z: 0}
   currLevelData: {fileID: 0}
+  playerPrefab: {fileID: 4454810878759323063, guid: ade1a49a0d089d14ab68de3dd80ad968, type: 3}
+  lastSavedSpawn: 0
+  levelSpawns:
+  - {fileID: 11400000, guid: d005fe9a0a0fcff499c05a01ade00cb0, type: 2}
+  - {fileID: 11400000, guid: 4de7098faac9dc340ad110acfe45724a, type: 2}
+  - {fileID: 11400000, guid: cffedb1562eb6c548ac70982e90766f9, type: 2}
+  - {fileID: 11400000, guid: e0060532721259a478dd135a6355e1b0, type: 2}
+  camHandler: {fileID: 0}

@@ -15,7 +15,7 @@ MonoBehaviour:
   <actorPushForce>k__BackingField: 3
   <collisionDamageThreshold>k__BackingField: 9.3
   <collisionDamage>k__BackingField: 1
-  <maxObstacleForce>k__BackingField: 12000
+  <maxObstacleForce>k__BackingField: 14000
   <type>k__BackingField: 1
   <weaponDurabilityDamage>k__BackingField: 0.05
   <weaponHitMult>k__BackingField: 1.6

@@ -4,7 +4,7 @@ using UnityEngine.InputSystem;
 
 public class CameraHandler : MonoBehaviour
 {
-	GameObject player;
+	public GameObject player;
 	bool followPlayer;
 	bool stop;
 	Vector2 pointerPos;
@@ -36,8 +36,8 @@ public class CameraHandler : MonoBehaviour
 
 	void Start()
 	{
-		followPlayer = true;
 		player = GameObject.Find("Player");
+		followPlayer = true;
 		verExtent = Camera.main.orthographicSize;
 		horExtent = verExtent * widthRatio;
 		stop = false;
@@ -53,7 +53,7 @@ public class CameraHandler : MonoBehaviour
 		widthRatio = (float)Screen.width / (float)Screen.height;
 		horExtent = verExtent * widthRatio;
 
-		if (stop)
+		if (stop || player == null)
 		{
 			cameraTarget = transform.position;
 		}

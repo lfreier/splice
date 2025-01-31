@@ -82,21 +82,24 @@ public class Actor : MonoBehaviour
 	{
 		gameManager = GameManager.Instance;
 
-		actorData.armor = _actorScriptable.armor;
-		actorData.health = _actorScriptable.health;
-		actorData.maxHealth = _actorScriptable.health;
-		actorData.shield = 0;
+		if (this != gameManager.playerStats.player)
+		{
+			actorData.armor = _actorScriptable.armor;
+			actorData.health = _actorScriptable.health;
+			actorData.maxHealth = _actorScriptable.health;
+			actorData.shield = 0;
 
-		actorData.maxSpeed = _actorScriptable.maxSpeed;
-		actorData.moveSpeed = _actorScriptable.moveSpeed;
-		actorData.acceleration = _actorScriptable.acceleration;
-		actorData.deceleration = _actorScriptable.deceleration;
+			actorData.maxSpeed = _actorScriptable.maxSpeed;
+			actorData.moveSpeed = _actorScriptable.moveSpeed;
+			actorData.acceleration = _actorScriptable.acceleration;
+			actorData.deceleration = _actorScriptable.deceleration;
 
-		actorData.hearingRange = _actorScriptable.hearingRange;
-		actorData.sightAngle = _actorScriptable.sightAngle;
-		actorData.sightRange = _actorScriptable.sightRange;
+			actorData.hearingRange = _actorScriptable.hearingRange;
+			actorData.sightAngle = _actorScriptable.sightAngle;
+			actorData.sightRange = _actorScriptable.sightRange;
 
-		actorData.frightenedDistance = _actorScriptable.frightenedDistance;
+			actorData.frightenedDistance = _actorScriptable.frightenedDistance;
+		}
 
 		for (int i = 0; i < gameObject.transform.childCount; i++)
 		{
@@ -114,12 +117,6 @@ public class Actor : MonoBehaviour
 			{
 				this.behaviorList.Add(foundScript);
 			}
-		}
-
-		if (tag == playerTag)
-		{
-			gameManager.playerStats.player = this;
-			gameManager.playerStats.loadPlayerData(this);
 		}
 
 		if (gameManager != null && (equippedWeapon == null || equippedWeaponInt == null))
@@ -179,9 +176,12 @@ public class Actor : MonoBehaviour
 
 	public void dropItem()
 	{
+		Vector3 droppedPosition = new Vector3(this.transform.position.x, this.transform.position.y);
 		foreach (GameObject item in droppedItems)
 		{
-			GameObject newDrop = Instantiate(item, this.transform.position, this.transform.rotation, this.transform.parent);
+			droppedPosition.x += Random.Range(-0.5F, -.5F);
+			droppedPosition.y += Random.Range(-0.5F, -.5F);
+			GameObject newDrop = Instantiate(item, droppedPosition, this.transform.rotation, this.transform.parent);
 			newDrop.transform.Rotate(new Vector3(0, 0, Random.Range(-45, 45)), Space.Self);
 
 			Cell newCell = newDrop.GetComponent<Cell>();

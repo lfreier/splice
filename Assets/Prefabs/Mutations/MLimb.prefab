@@ -58,7 +58,7 @@ MonoBehaviour:
   releaseTargetOffset: 5
   grabLayers:
     serializedVersion: 2
-    m_Bits: 2176
+    m_Bits: 10496
   limbState: 0
   grabbedObject: {fileID: 0}
   anim: {fileID: 8933251707191168394}

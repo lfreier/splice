@@ -1,5 +1,7 @@
-﻿using System.Collections;
+﻿using JetBrains.Annotations;
+using System.Collections;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class LevelManager : MonoBehaviour
 {
@@ -7,9 +9,25 @@ public class LevelManager : MonoBehaviour
 	public Vector3 gridPosition;
 	public LevelData currLevelData;
 
+	public GameObject playerPrefab;
+
+	public int lastSavedSpawn;
+
+	public PlayerSpawnScriptable[] levelSpawns;
+
+	public enum levelSpawnIndex
+	{
+		levelStartSpawn = 0,
+		levelStartSaveSpawn = 1,
+		levelOfficeSpawn = 2,
+		levelOfficeSaveSpawn = 3
+	}
+
+	public CameraHandler camHandler;
+
 	private GameManager gameManager;
 
-	public void startNewLevel()
+	public void startNewLevel(int spawnIndex)
 	{
 		if (gameManager == null)
 		{
@@ -19,12 +37,34 @@ public class LevelManager : MonoBehaviour
 		//int i = 0;
 		foreach (LevelData levelData in FindObjectsByType<LevelData>(FindObjectsSortMode.None))
 		{
-			
-			currLevelData = levelData;
-			gameManager.signalStartMusicEvent(currLevelData.sceneMusic);
+			camHandler = levelData.gameObject.GetComponent<CameraHandler>();
+			gameManager.signalStartMusicEvent(levelData.sceneMusic);
 			if (gameManager.currentScene < 0)
 			{
 				gameManager.currentScene = levelData.levelSceneIndex;
+			}
+			/* spawn player if one isn't there */
+			if (spawnIndex >= 0)
+			{
+				foreach (Actor actor in FindObjectsByType<Actor>(FindObjectsSortMode.None))
+				{
+					if (actor.tag == ActorDefs.playerTag)
+					{
+						Destroy(actor.gameObject);
+					}
+				}
+				GameObject tempPlayer = Instantiate(playerPrefab);
+				tempPlayer.transform.SetPositionAndRotation(levelSpawns[spawnIndex].spawnPosition, Quaternion.identity);
+				tempPlayer.transform.Rotate(new Vector3(0, 0, levelSpawns[spawnIndex].spawnRotation));
+				
+				camHandler.player = tempPlayer;
+
+				Actor playerActor = tempPlayer.GetComponent<Actor>();
+				if (playerActor != null)
+				{
+					gameManager.playerStats.player = playerActor;
+					gameManager.playerStats.loadPlayerData(playerActor);
+				}
 			}
 			return;
 			/*

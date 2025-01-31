@@ -12,16 +12,12 @@ public class EConstant: MonoBehaviour, EffectInterface
 
 	public EffectScriptable effectScriptable;
 
+	public bool permanent = false;
+
 	private bool currFlash = false;
 
 	private SpriteRenderer effectSprite;
 
-	// Use this for initialization
-	void Start()
-	{
-	}
-
-	// Update is called once per frame
 	void Update()
 	{
 		timer -= Time.deltaTime;
@@ -65,7 +61,7 @@ public class EConstant: MonoBehaviour, EffectInterface
 
 	public bool isPermanent()
 	{
-		return false;
+		return permanent;
 	}
 
 	public void tick(float seconds)
@@ -92,7 +88,7 @@ public class EConstant: MonoBehaviour, EffectInterface
 				break;
 		}
 
-		if (timer <= 0)
+		if (timer <= 0 && !permanent)
 		{
 			switch (effectScriptable.constantEffectType)
 			{
@@ -106,7 +102,7 @@ public class EConstant: MonoBehaviour, EffectInterface
 			}
 
 			attachedActor.setConstant(false, effectScriptable.constantEffectType);
-			Debug.Log(attachedActor.name + " no longer suffering effect");
+			//Debug.Log(attachedActor.name + " no longer suffering effect");
 			Destroy(this.gameObject);
 		}
 	}
@@ -132,6 +128,11 @@ public class EConstant: MonoBehaviour, EffectInterface
 
 		timer = effectScriptable.effectLength;
 		tickTimer = effectScriptable.tickLength;
+
+		if (timer < 0)
+		{
+			permanent = true;
+		}
 
 		tick(tickTimer);
 	}
