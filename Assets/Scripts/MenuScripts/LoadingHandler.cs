@@ -73,7 +73,7 @@ public class LoadingHandler : MonoBehaviour
 		loadingCanvas.gameObject.SetActive(showLoadingScreen);
 		if (showLoadingScreen)
 		{
-			SceneManager.SetActiveScene(SceneManager.GetSceneByBuildIndex(SceneDefs.LOADING_SCENE));
+			SceneManager.SetActiveScene(SceneManager.GetSceneByBuildIndex((int)SceneDefs.SCENE.LOADING));
 		}
 
 		if (unloadLevel)
@@ -89,7 +89,7 @@ public class LoadingHandler : MonoBehaviour
 			{
 				if (actor.tag == ActorDefs.playerTag)
 				{
-					gameManager.save(actor);
+					gameManager.playerStats.savePlayerData(actor);
 					break;
 				}
 			}

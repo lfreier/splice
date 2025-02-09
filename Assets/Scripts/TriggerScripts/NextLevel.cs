@@ -14,12 +14,13 @@ public class NextLevel : MonoBehaviour
 		Actor actor = collision.transform.GetComponent<Actor>();
 		if (actor != null && actor.tag == ActorDefs.playerTag)
 		{
-			if (nextSceneIndex == SceneDefs.WIN_SCENE)
+			if (nextSceneIndex == (int)SceneDefs.SCENE.WIN)
 			{
 				actor.gameManager.gameWin(actor);
 				return;
 			}
-			actor.gameManager.save(actor);
+			//TODO: saving doesn't save level state
+			actor.gameManager.playerStats.savePlayerData(actor);
 			actor.gameManager.nextLevel(actor, nextSceneIndex, (int)spawnIndex);
 		}
 	}

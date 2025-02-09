@@ -123,6 +123,6 @@ public class MutationSelectHUD : MonoBehaviour
 		}
 
 		gameOver.transitioning = true;
-		SceneManager.SetActiveScene(SceneManager.GetSceneByBuildIndex(SceneDefs.MUTATION_SELECT_SCENE));
+		SceneManager.SetActiveScene(SceneManager.GetSceneByBuildIndex((int)SceneDefs.SCENE.MUTATION_SELECT));
 	}
 }

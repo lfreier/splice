@@ -3,6 +3,17 @@ using static UnityEngine.GraphicsBuffer;
 
 public static class WeaponDefs
 {
+	public enum prefabIndex
+	{
+		RULER = 0,
+		RULER_METAL = 1,
+		SCALPEL = 2,
+		STUN_STICK = 3,
+		WRENCH = 4
+	}
+
+	public static int MAX_PREFABS = 4;
+
 	public static string OBJECT_WEAPON_TAG			= "ObjectWeapon";
 	public static string EQUIPPED_WEAPON_TAG		= "EquippedWeapon";
 	public static string EQUIPPED_ACTIVE_TAG		= "EquippedActive";

@@ -16,10 +16,16 @@ public class PickupBox : MonoBehaviour
 	private void checkGlowDisable()
 	{
 		PickupEngine engine = gameObject.GetComponent<PickupEngine>();
-		if (pickup == null && engine != null)
+		if ((pickup == null || pickup.Length <= 0 || pickup[0] == null) && engine != null)
 		{
 			engine.disableGlow();
 		}
+	}
+
+	public void clearPickup()
+	{
+		pickup = null;
+		checkGlowDisable();
 	}
 
 	public GameObject getPickup()
@@ -45,6 +51,6 @@ public class PickupBox : MonoBehaviour
 
 	public bool hasPickup()
 	{
-		return pickup != null;
+		return (pickup != null && pickup.Length > 0 && pickup[0] != null);
 	}
 }

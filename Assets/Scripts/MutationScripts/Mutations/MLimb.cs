@@ -42,10 +42,11 @@ public class MLimb : MonoBehaviour, MutationInterface
 
 	private void OnDestroy()
 	{
-		actorWielder.gameManager.playerInteractEvent -= interactInputPressed;
-		actorWielder.gameManager.playerInteractReleaseEvent -= interactInputReleased;
-		actorWielder.gameManager.playerAbilityEvent -= abilityInputPressed;
-		actorWielder.gameManager.playerAbilityReleaseEvent -= abilityInputReleased;
+		GameManager gm = GameManager.Instance;
+		gm.playerInteractEvent -= interactInputPressed;
+		gm.playerInteractReleaseEvent -= interactInputReleased;
+		gm.playerAbilityEvent -= abilityInputPressed;
+		gm.playerAbilityReleaseEvent -= abilityInputReleased;
 	}
 
 	private void FixedUpdate()
@@ -298,11 +299,12 @@ public class MLimb : MonoBehaviour, MutationInterface
 	{
 		setWielder(wielder);
 
+		GameManager gm = GameManager.Instance;
 		/* subscribe to the necessary events for button presses */
-		wielder.gameManager.playerInteractEvent += interactInputPressed;
-		wielder.gameManager.playerInteractReleaseEvent += interactInputReleased;
-		wielder.gameManager.playerAbilityEvent += abilityInputPressed;
-		wielder.gameManager.playerAbilityReleaseEvent += abilityInputReleased;
+		gm.playerInteractEvent += interactInputPressed;
+		gm.playerInteractReleaseEvent += interactInputReleased;
+		gm.playerAbilityEvent += abilityInputPressed;
+		gm.playerAbilityReleaseEvent += abilityInputReleased;
 
 		/* when limb is equipped, player can only attach from the right side */
 		wielder.setAttackOnly(WeaponDefs.ANIM_BOOL_ONLY_RIGHT);

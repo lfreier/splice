@@ -41,7 +41,7 @@ public class MutationSelect : MonoBehaviour
 		{
 			camHandler.stopCam(true);
 		}
-		op = SceneManager.LoadSceneAsync(SceneDefs.MUTATION_SELECT_SCENE, LoadSceneMode.Additive);
+		op = SceneManager.LoadSceneAsync((int)SceneDefs.SCENE.MUTATION_SELECT, LoadSceneMode.Additive);
 		op.allowSceneActivation = true;
 	}
 

@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Threading.Tasks;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -9,6 +10,7 @@ using UnityEngine.SceneManagement;
 using UnityEngine.U2D;
 using static ActorDefs;
 using static EffectDefs;
+using static UnityEngine.GraphicsBuffer;
 using static WeaponDefs;
 
 /*
@@ -57,17 +59,17 @@ public class Actor : MonoBehaviour
 
 	public bool invincible = false;
 
+	public bool initialized = false;
+
 	public void Start()
 	{
+		initialized = false;
 		speedCheck = 0;
 		attackTarget = null;
 		activeSlots = new MutationInterface[MutationDefs.MAX_SLOTS];
 		sprite = GetComponent<SpriteRenderer>();
 		initActorData();
-	}
-
-	public void Update()
-	{
+		initialized = true;
 	}
 
 	public void FixedUpdate()
@@ -123,7 +125,6 @@ public class Actor : MonoBehaviour
 		{
 			equipEmpty();
 		}
-
 	}
 
 	public float aimAngle(Vector2 aimTarget)
@@ -167,11 +168,14 @@ public class Actor : MonoBehaviour
 		Vector3 aimDir = new Vector3(pointerPos.x, pointerPos.y, 0) - this.transform.position;
 		Vector3 translate = new Vector3(Random.Range(0.2F * Mathf.Sign(aimDir.x), 0.6F * Mathf.Sign(aimDir.x)), Random.Range(0.2F * Mathf.Sign(aimDir.y), 0.6F * Mathf.Sign(aimDir.y)), 0);
 
-		equippedWeapon.transform.Translate(translate, Space.World);
-		equippedWeapon.transform.Rotate(new Vector3(0, 0, Random.Range(-45, 45)), Space.Self);
-		setWeaponLayer(WeaponDefs.SORT_LAYER_GROUND);
+		if (equippedWeapon != null)
+		{
+			equippedWeapon.transform.Translate(translate, Space.World);
+			equippedWeapon.transform.Rotate(new Vector3(0, 0, Random.Range(-45, 45)), Space.Self);
+			setWeaponLayer(WeaponDefs.SORT_LAYER_GROUND);
 
-		resetEquip();
+			resetEquip();
+		}
 	}
 
 	public void dropItem()
@@ -179,8 +183,6 @@ public class Actor : MonoBehaviour
 		Vector3 droppedPosition = new Vector3(this.transform.position.x, this.transform.position.y);
 		foreach (GameObject item in droppedItems)
 		{
-			droppedPosition.x += Random.Range(-0.5F, -.5F);
-			droppedPosition.y += Random.Range(-0.5F, -.5F);
 			GameObject newDrop = Instantiate(item, droppedPosition, this.transform.rotation, this.transform.parent);
 			newDrop.transform.Rotate(new Vector3(0, 0, Random.Range(-45, 45)), Space.Self);
 
@@ -192,6 +194,13 @@ public class Actor : MonoBehaviour
 				{
 					newCell.generateCount(npcData.cellDropMin, npcData.cellDropMax);
 				}
+			}
+			float randX = Random.Range(-0.5F, -.5F);
+			float randY = Random.Range(-0.5F, -.5F);
+			if (!Physics2D.BoxCast(new Vector2(droppedPosition.x + randX, droppedPosition.y + randY), new Vector2(0.01F, 0.01F), 0, Vector2.up, 0.01F, gameManager.unwalkableLayers))
+			{
+				droppedPosition.x += randX;
+				droppedPosition.y += randY;
 			}
 		}
 	}
@@ -444,8 +453,59 @@ public class Actor : MonoBehaviour
 
 	public bool pickupItem(GameObject target)
 	{
+		if (target == null)
+		{
+			return false;
+		}
+
 		/* Make sure to only pickup valid objects. This will be expanded on eventually */
 		if (WeaponDefs.canWeaponBePickedUp(target))
+		{
+			Debug.Log("Picking up: " + target.transform.gameObject.name);
+			if (this.equip(target.transform.gameObject))
+			{
+				//Make sure to only pick up one weapon, but pickups are ok
+				pickupItemPlayer(target, true);
+				return true;
+			}
+		}
+
+		PickupBox pickupBox = target.GetComponent<PickupBox>();
+		if (pickupBox != null && pickupBox.hasPickup())
+		{
+			target = pickupBox.getPickup();
+			if (target == null)
+			{
+				return false;
+			}
+		}
+
+		/* TODO: Probably a better way to do this */
+		if (this.tag == ActorDefs.playerTag)
+		{
+			return pickupItemPlayer(target, false);
+		}
+
+		return false;
+	}
+
+	public bool pickupItemPlayer(GameObject target, bool onlyPickup)
+	{
+		if (PickupDefs.canBePickedUp(target))
+		{
+			PickupInterface pickup = target.transform.gameObject.GetComponentInChildren<PickupInterface>();
+			if (pickup == null)
+			{
+				pickup = target.transform.gameObject.GetComponentInParent<PickupInterface>();
+			}
+			if (pickup != null)
+			{
+				Debug.Log("Picking up: " + pickup);
+				pickup.pickup(this);
+				return true;
+			}
+		}
+		else if (WeaponDefs.canWeaponBePickedUp(target) && !onlyPickup)
 		{
 			Debug.Log("Picking up: " + target.transform.gameObject.name);
 			if (this.equip(target.transform.gameObject))
@@ -455,47 +515,14 @@ public class Actor : MonoBehaviour
 			}
 		}
 
-		PickupBox pickupBox = target.GetComponent<PickupBox>();
-		if (pickupBox != null && pickupBox.hasPickup())
+		/* TODO: trying to put a pickup on the ground if it's not valid */
+		/*
+		else if (pickupBox != null)
 		{
-			target = pickupBox.getPickup();
-		}
-
-		/* TODO: Probably a better way to do this */
-		if (this.tag == ActorDefs.playerTag)
-		{
-			if (PickupDefs.canBePickedUp(target))
-			{
-				PickupInterface pickup = target.transform.gameObject.GetComponentInChildren<PickupInterface>();
-				if (pickup == null)
-				{
-					pickup = target.transform.gameObject.GetComponentInParent<PickupInterface>();
-				}
-				if (pickup != null)
-				{
-					Debug.Log("Picking up: " + pickup);
-					pickup.pickup(this);
-					return true;
-				}
-			}
-			else if (WeaponDefs.canWeaponBePickedUp(target))
-			{
-				Debug.Log("Picking up: " + target.transform.gameObject.name);
-				if (this.equip(target.transform.gameObject))
-				{
-					//Make sure to only pick up one weapon
-					return true;
-				}
-			}
-			/* TODO: trying to put a pickup on the ground if it's not valid */ 
-			/*
-			else if (pickupBox != null)
-			{
-				target.transform.SetParent(null, false);
-				target.transform.SetPositionAndRotation(transform.position, target.transform.rotation);
-				target.transform.RotateAround(target.transform.position, Vector3.forward, Random.Range(0, 360));
-			}*/
-		}
+			target.transform.SetParent(null, false);
+			target.transform.SetPositionAndRotation(transform.position, target.transform.rotation);
+			target.transform.RotateAround(target.transform.position, Vector3.forward, Random.Range(0, 360));
+		}*/
 
 		return false;
 	}

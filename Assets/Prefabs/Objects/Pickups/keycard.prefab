@@ -199,6 +199,7 @@ GameObject:
   m_Component:
   - component: {fileID: 647760437655045498}
   - component: {fileID: 4676146276259819351}
+  - component: {fileID: -2410750095788609518}
   m_Layer: 11
   m_Name: keycard
   m_TagString: ObjectPickup
@@ -240,6 +241,20 @@ MonoBehaviour:
   _keycardType: 0
   keycardColor: {fileID: 1556481038316942576}
   keycardUses: 0
+  icon: {fileID: 0}
+--- !u!114 &-2410750095788609518
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4190192775242081158}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf336abf081bc2246bab9dfaca64e293, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  guid: keycard_7310476c-5d0d-4f27-a7c5-15ecd974b5e9
 --- !u!1 &4862851081301821928
 GameObject:
   m_ObjectHideFlags: 0

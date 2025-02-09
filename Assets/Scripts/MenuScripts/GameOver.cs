@@ -45,7 +45,7 @@ public class GameOver : MonoBehaviour
 		for (int i = 0; i < SceneManager.sceneCount; i ++)
 		{
 			Scene curr = SceneManager.GetSceneAt(i);
-			if (gameOverCam != null && curr.buildIndex == SceneDefs.PLAYER_HUD_SCENE)
+			if (gameOverCam != null && curr.buildIndex == (int)SceneDefs.SCENE.PLAYER_HUD)
 			{
 				SceneManager.UnloadSceneAsync(curr.buildIndex);
 			}

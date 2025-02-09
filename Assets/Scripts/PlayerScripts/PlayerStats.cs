@@ -27,13 +27,13 @@ public class PlayerStats
 	private ActorDefs.ActorData playerData;
 	
 	private GameObject[] mutationList;
-	private GameObject weaponEquipped;
+	public GameObject weaponEquipped;
 
 	public PlayerHUD playerHUD;
 
 	public Actor player;
 
-	private GameManager gameManager = null;
+	public GameManager gameManager = null;
 
 	public PlayerStats()
 	{
@@ -47,11 +47,6 @@ public class PlayerStats
 
 	public bool addItem(PickupInterface pickup)
 	{
-		if (gameManager == null)
-		{
-			gameManager = GameManager.Instance;
-		}
-
 		bool resetIcon = false;
 		if (playerHUD.activeItemIcon.enabled == false)
 		{
@@ -185,13 +180,13 @@ public class PlayerStats
 			switch (mut.getId())
 			{
 				case "MBeast":
-					mutPrefab = player.instantiateActive(player.gameManager.mutPBeast);
+					mutPrefab = player.instantiateActive(gameManager.mutPBeast);
 					break;
 				case "MBladeWing":
-					mutPrefab = player.instantiateActive(player.gameManager.mutPBladeWing);
+					mutPrefab = player.instantiateActive(gameManager.mutPBladeWing);
 					break;
 				case "MLimb":
-					mutPrefab = player.instantiateActive(player.gameManager.mutPLimb);
+					mutPrefab = player.instantiateActive(gameManager.mutPLimb);
 					break;
 				default:
 					return;
@@ -245,11 +240,14 @@ public class PlayerStats
 		}
 	}
 
-	public void loadPlayerData(Actor player)
+	public void loadPlayerData(Actor playerActor)
 	{
+		player = playerActor;
+
 		if (playerData.maxHealth != 0)
 		{
-			player.actorData = playerData;
+			playerActor.actorData = ActorDefs.copyData(playerData);
+			playerActor.actorData.maxSpeed = playerActor._actorScriptable.maxSpeed;
 		}
 
 		mutationData.maxMutationBar = savedMutationData.maxMutationBar;
@@ -296,14 +294,14 @@ public class PlayerStats
 		}
 	}
 
-	public void savePlayerData(Actor player)
+	public void savePlayerData(Actor playerActor)
 	{
 		if (gameManager == null)
 		{
 			gameManager = GameManager.Instance;
 		}
 
-		playerData = player.actorData;
+		playerData = playerActor.actorData;
 
 		savedMutationData.maxMutationBar = mutationData.maxMutationBar;
 		savedMutationData.mutationBar = mutationData.mutationBar;
@@ -315,18 +313,18 @@ public class PlayerStats
 		usableItemSprite.CopyTo(savedUsableItemSprite, 0);
 		savedActiveItemIndex = activeItemIndex;
 
-		int mutCount = player.mutationHolder.transform.childCount;
+		int mutCount = playerActor.mutationHolder.transform.childCount;
 		mutationList = new GameObject[mutCount];
 		for (int i = 0; i < mutCount; i++)
 		{
-			mutationList[i] = GameObject.Instantiate(player.mutationHolder.transform.GetChild(i).gameObject);
+			mutationList[i] = GameObject.Instantiate(playerActor.mutationHolder.transform.GetChild(i).gameObject);
 			mutationList[i].SetActive(false);
 			mutationList[i].transform.SetParent(gameManager.gameObject.transform);
 		}
 
-		if (!player.isUnarmed())
+		if (!playerActor.isUnarmed())
 		{
-			weaponEquipped = GameObject.Instantiate(player.getEquippedWeapon());
+			weaponEquipped = GameObject.Instantiate(playerActor.getEquippedWeapon());
 			if (weaponEquipped != null)
 			{
 				weaponEquipped.SetActive(false);

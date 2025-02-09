@@ -18,6 +18,7 @@ MonoBehaviour:
   <damage>k__BackingField: 0.5
   <durability>k__BackingField: 8
   <npcAttackRange>k__BackingField: 1.75
+  <prefabIndex>k__BackingField: 2
   <secondaryDamage>k__BackingField: 1.5
   <throwDamage>k__BackingField: 1
   <throwDurabilityDamage>k__BackingField: 0.5

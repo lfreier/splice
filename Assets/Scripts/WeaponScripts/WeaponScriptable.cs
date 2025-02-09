@@ -28,6 +28,9 @@ public class WeaponScriptable : ScriptableObject
 	public float npcAttackRange { get; private set; } = 2F;
 
 	[field: SerializeField]
+	public WeaponDefs.prefabIndex prefabIndex { get; private set; } = WeaponDefs.prefabIndex.RULER;
+
+	[field: SerializeField]
 	public float secondaryDamage { get; private set; } = 2F;
 
 	/* Throwing fields */

@@ -10,7 +10,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 374953620748231735, guid: fc06b89df42b8064c8cf0d82d4458e7a, type: 3}
       propertyPath: m_Name
-      value: tank Variant
+      value: tank_open_variant
       objectReference: {fileID: 0}
     - target: {fileID: 423111761922008575, guid: fc06b89df42b8064c8cf0d82d4458e7a, type: 3}
       propertyPath: m_LocalPosition.x
@@ -52,7 +52,8 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 3300520898645859524, guid: fc06b89df42b8064c8cf0d82d4458e7a, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:

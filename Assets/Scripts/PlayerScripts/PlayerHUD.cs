@@ -107,6 +107,10 @@ public class PlayerHUD : MonoBehaviour
 			{
 				player = actor;
 				gameManager.playerStats.playerHUD = this;
+				if (gameManager.playerStats.player == null)
+				{
+					gameManager.playerStats.player = actor;
+				}
 				Camera main = Camera.main;
 				foreach (Canvas canvas in hudCanvas)
 				{
@@ -175,11 +179,12 @@ public class PlayerHUD : MonoBehaviour
 		{
 			canvas.gameObject.SetActive(true);
 		}
-
+		/*
 		if (musicPlayer != null && musicPlayer.enabled && !musicPlayer.isPlaying)
 		{
 			musicPlayer.Play();
 		}
+		*/
 	}
 
 	// Update is called once per frame

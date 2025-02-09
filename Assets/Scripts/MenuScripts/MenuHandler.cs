@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using static SceneDefs;
 
 public class MenuHandler : MonoBehaviour
 {
@@ -36,7 +37,7 @@ public class MenuHandler : MonoBehaviour
 	public AudioSource menuMusic;
 	private float volumeDecrement;
 
-	private int nextScene = SceneDefs.LEVEL_START_SCENE;
+	private int nextScene = (int)SCENE.LEVEL_START;
 	private bool buttonsLocked = false;
 
 	private GameManager gameManager = null;
@@ -45,13 +46,13 @@ public class MenuHandler : MonoBehaviour
 	{
 		for (int i = 0; i <  SceneManager.sceneCount; i++)
 		{
-			if (SceneManager.GetSceneAt(i).buildIndex == SceneDefs.MANAGER_SCENE)
+			if (SceneManager.GetSceneAt(i).buildIndex == (int)SCENE.MANAGER)
 			{
 				return;
 			}
 		}
 
-		await SceneManager.LoadSceneAsync(SceneDefs.MANAGER_SCENE, LoadSceneMode.Additive);
+		await SceneManager.LoadSceneAsync((int)SCENE.MANAGER, LoadSceneMode.Additive);
 		buttonsLocked = false;
 	}
 
@@ -123,7 +124,7 @@ public class MenuHandler : MonoBehaviour
 			{
 				transitioning = false;
 				/* only disable the loading screen, don't destroy it */
-				if (this.gameObject.scene.buildIndex != SceneDefs.LOADING_SCENE)
+				if (this.gameObject.scene.buildIndex != (int)SCENE.LOADING)
 				{
 					int[] temp = { this.gameObject.scene.buildIndex };
 					await gameManager.loadingHandler.forceUnloadScenes(temp);
@@ -143,7 +144,7 @@ public class MenuHandler : MonoBehaviour
 
 	public void killMenuScenes()
 	{
-		if (this.gameObject.scene.buildIndex == SceneDefs.PAUSE_SCENE)
+		if (this.gameObject.scene.buildIndex == (int)SCENE.PAUSE)
 		{
 			currentAlpha = desiredAlpha;
 			currentAlpha2 = desiredAlpha2;
@@ -187,15 +188,23 @@ public class MenuHandler : MonoBehaviour
 		gameManager.signalMuteEvent();
 	}
 
+	public async void returnToMainMenu()
+	{
+		await gameManager.loadingHandler.unloadAllScenes(true);
+		int[] mainMenuScene = new int[] { (int)SCENE.MAIN_MENU };
+		await gameManager.loadingHandler.LoadSceneGroup(mainMenuScene, false, false);
+	}
+
 	public async void restartGame()
 	{
 		buttonsLocked = true;
 		gameManager = GameManager.Instance;
 		/* Unload extra scenes, force unload the HUD scene, then reload the HUD scene */
-		int[] hudScene = new int[] { SceneDefs.PLAYER_HUD_SCENE };
+		int[] hudScene = new int[] { (int)SCENE.PLAYER_HUD };
 		await gameManager.loadingHandler.unloadAllScenes(false);
 		await gameManager.loadingHandler.forceUnloadScenes(hudScene);
 		showLoading = true;
+		gameManager.levelManager.guidTable.Clear();
 		await gameManager.loadingHandler.LoadSceneGroup(hudScene, showLoading, false);
 		nextScene = gameManager.currentScene;
 		buttonsLocked = false;
@@ -223,10 +232,12 @@ public class MenuHandler : MonoBehaviour
 		int[] nextLevel = { nextScene };
 		gameManager.loadingHandler.reloadHUD = true;
 		gameManager.loadingHandler.resetPlayerData = !reset;
+		gameManager.levelManager.guidTable.Clear();
 		await gameManager.loadingHandler.LoadSceneGroup(nextLevel, showLoading, false);
 		showLoading = false;
 		gameManager.resetLevel();
 
+		gameManager.currentScene = nextScene;
 		SceneManager.SetActiveScene(SceneManager.GetSceneByBuildIndex(nextScene));
 
 		fadeOutScene();

@@ -114,6 +114,7 @@ GameObject:
   - component: {fileID: 5258754760927927165}
   - component: {fileID: 4648864928604382065}
   - component: {fileID: 3230125149127045620}
+  - component: {fileID: -3681885569249128111}
   m_Layer: 11
   m_Name: battery
   m_TagString: ObjectPickup
@@ -206,6 +207,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   chargeAmt: 2
   icon: {fileID: 21300000, guid: 70d462bdc094038428f39745a69e8ef8, type: 3}
+--- !u!114 &-3681885569249128111
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4718064208568494967}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf336abf081bc2246bab9dfaca64e293, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  guid: 
 --- !u!1 &7877326108191794197
 GameObject:
   m_ObjectHideFlags: 0

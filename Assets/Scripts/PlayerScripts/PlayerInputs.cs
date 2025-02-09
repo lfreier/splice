@@ -110,14 +110,14 @@ public class PlayerInputs: MonoBehaviour
 			for (int j = 0; j < SceneManager.sceneCount; j++)
 			{
 				Scene curr = SceneManager.GetSceneAt(j);
-				if (curr.buildIndex == SceneDefs.PAUSE_SCENE)
+				if (curr.buildIndex == (int)SceneDefs.SCENE.PAUSE)
 				{
 					SceneManager.UnloadSceneAsync(curr.buildIndex);
 					continue;
 				}
 			}
 
-			SceneManager.LoadSceneAsync(SceneDefs.PAUSE_SCENE, LoadSceneMode.Additive);
+			SceneManager.LoadSceneAsync((int)SceneDefs.SCENE.PAUSE, LoadSceneMode.Additive);
 			gameManager.levelManager.camHandler.stopCam(true);
 			paused = true;
 		}

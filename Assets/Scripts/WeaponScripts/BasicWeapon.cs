@@ -8,9 +8,6 @@ public abstract class BasicWeapon : MonoBehaviour, WeaponInterface
 
 	public ActionInterface secondaryAction;
 
-	LayerMask lastTargetLayer;
-	string id;
-
 	public Collider2D hitbox;
 	public BoxCollider2D throwBox;
 
@@ -35,6 +32,8 @@ public abstract class BasicWeapon : MonoBehaviour, WeaponInterface
 
 	public float durability;
 
+	public bool isInit = false;
+
 	void Start()
 	{
 		gameManager = GameManager.Instance;
@@ -42,7 +41,6 @@ public abstract class BasicWeapon : MonoBehaviour, WeaponInterface
 		{
 			durability = _weaponScriptable.durability;
 		}
-		id = this.gameObject.name;
 		secondaryAction = GetComponent<ActionInterface>();
 		if (secondaryAction == null)
 		{
@@ -53,6 +51,8 @@ public abstract class BasicWeapon : MonoBehaviour, WeaponInterface
 			_weaponPhysics.linkInterface(this);
 		}
 		init();
+
+		isInit = true;
 	}
 
 	void FixedUpdate()
@@ -71,7 +71,7 @@ public abstract class BasicWeapon : MonoBehaviour, WeaponInterface
 	virtual public bool attack(LayerMask targetLayer)
 	{
 		anim.SetTrigger(WeaponDefs.ANIM_TRIGGER_ATTACK);
-		lastTargetLayer = targetLayer;
+		//lastTargetLayer = targetLayer;
 		actorWielder.invincible = false;
 		//actorWielder.actorAudioSource.PlayOneShot(weaponSwingSound);
 
@@ -98,7 +98,10 @@ public abstract class BasicWeapon : MonoBehaviour, WeaponInterface
 
 	public void cancelAttack()
 	{
-		anim.StopPlayback();
+		if (anim != null)
+		{
+			anim.StopPlayback();
+		}
 		if (hitbox != null)
 		{
 			hitbox.enabled = false;

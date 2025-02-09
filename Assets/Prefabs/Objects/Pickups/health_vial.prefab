@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 5876045560190926118}
   - component: {fileID: 6552555172984992373}
   - component: {fileID: 628219280282154333}
+  - component: {fileID: -5497836542108477991}
   m_Layer: 11
   m_Name: health_vial
   m_TagString: ObjectPickup
@@ -104,6 +105,19 @@ MonoBehaviour:
   count: 1
   healAmount: 1
   icon: {fileID: 21300000, guid: 8ef64a6b4b9f5d84489410ed1d812eee, type: 3}
+--- !u!114 &-5497836542108477991
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 608380240518538002}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf336abf081bc2246bab9dfaca64e293, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  guid: health_vial_97041474-29d3-4d22-8a3b-ee1549a9903f
 --- !u!1 &1483397202772527511
 GameObject:
   m_ObjectHideFlags: 0

@@ -11,7 +11,8 @@ GameObject:
   - component: {fileID: 423111761922008575}
   - component: {fileID: 8729281797576198599}
   - component: {fileID: 4323827320372099676}
-  m_Layer: 0
+  - component: {fileID: 3300520898645859524}
+  m_Layer: 14
   m_Name: tank
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -115,6 +116,42 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!58 &3300520898645859524
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 374953620748231735}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: -0.0625, y: 0}
+  m_Radius: 1
 --- !u!1 &7211226709377825451
 GameObject:
   m_ObjectHideFlags: 0
@@ -125,7 +162,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4285263612428013942}
   - component: {fileID: 730891136191581784}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: tank_liquid
   m_TagString: Untagged
   m_Icon: {fileID: 0}

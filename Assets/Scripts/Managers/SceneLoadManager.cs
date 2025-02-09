@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Threading.Tasks;
 using UnityEngine.SceneManagement;
+using static SceneDefs;
 
 public class SceneLoadManager
 {
@@ -32,7 +33,7 @@ public class SceneLoadManager
 
 		for (i = 0; i < scenes.Length; i++)
 		{
-			if (SceneDefs.isLevelScene(scenes[i]))
+			if (isLevelScene(scenes[i]))
 			{
 				SceneManager.SetActiveScene(SceneManager.GetSceneByBuildIndex(scenes[i]));
 				break;
@@ -64,7 +65,7 @@ public class SceneLoadManager
 				continue;
 			}
 
-			if (sceneAt.buildIndex == SceneDefs.MANAGER_SCENE || (!unloadBgScenes && !SceneDefs.isValidUnload(sceneAt.buildIndex)))
+			if (sceneAt.buildIndex == (int)SCENE.MANAGER || (!unloadBgScenes && !isValidUnload(sceneAt.buildIndex)))
 			{
 				continue;
 			}

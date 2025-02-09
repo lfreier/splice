@@ -19,13 +19,14 @@ public class EnemyMove : MonoBehaviour
 	public Vector2[] idlePath;
 	public float[] idlePathPauseTime;
 	private float idlePauseTimer;
-	private int pathIndex;
+	public int pathIndex;
 
 	private Vector2 idleLookTarget;
 	private Vector2 eyeStart;
 
 	public detectMode _detection;
 	private detectMode _oldDetection;
+	private detectMode _startingDetection;
 
 	float currentSpeed;
 	private float stateSpeedIncrease;
@@ -34,7 +35,7 @@ public class EnemyMove : MonoBehaviour
 	public LockBehind lockWhenSpotted;
 
 	/* moveTarget will always be where the actor moves. Takes priority over the actor's hostile target. */
-	private Vector3 moveTarget;
+	public Vector3 moveTarget;
 	private Vector3 lastMoveTarget;
 	private Vector3 attackTarget;
 	private Actor attackTargetActor;
@@ -79,10 +80,11 @@ public class EnemyMove : MonoBehaviour
 		}
 		*/
 
-		if (_detection != detectMode.wandering)
+		if (_detection != detectMode.wandering && _detection != detectMode.nul)
 		{
 			_detection = detectMode.idle;
 		}
+		_startingDetection = _detection;
 		attackTargetActor = null;
 
 		pathIndex = 0;
@@ -106,11 +108,14 @@ public class EnemyMove : MonoBehaviour
 		 * attackTargetActor is going to be null if the target can no longer be detected, e.g. the player moves out of sight range
 		 * Then the NPC should move to the last known location
 		 */
-		hearHostiles();
-		attackTargetActor = seeHostiles();
+		if (_detection != detectMode.nul && _detection != detectMode.forced)
+		{
+			hearHostiles();
+			attackTargetActor = seeHostiles();
+		}
 
 		/*  determine move target based on current state */
-		if (_detection == detectMode.idle && idlePath.Length > 0)
+		if ((_detection == detectMode.idle || _detection == detectMode.forced) && idlePath.Length > 0)
 		{
 			/* If at a path position, go to next */
 			if (((Vector2)actorBody.transform.position -  idlePath[pathIndex]).magnitude < moveTargetError)
@@ -125,6 +130,8 @@ public class EnemyMove : MonoBehaviour
 				if (pathIndex >= idlePath.Length)
 				{
 					pathIndex = 0;
+					//this is done to make the forced state work
+					_detection = detectMode.idle;
 				}
 			}
 			
@@ -138,7 +145,7 @@ public class EnemyMove : MonoBehaviour
 				idlePauseTimer -= Time.deltaTime;
 			}
 		}
-		else if (_detection != detectMode.idle)
+		else if (_detection != detectMode.idle && _detection != detectMode.forced)
 		{
 			/* first, pickup a weapon if needed */
 			if (actor.isUnarmed())
@@ -476,7 +483,7 @@ public class EnemyMove : MonoBehaviour
 		actorBody.rotation = actor.aimAngle(attackTarget);
 		if (stateTimer <= 0)
 		{
-			_detection = detectMode.idle;
+			_detection = _startingDetection;
 		}
 		else
 		{

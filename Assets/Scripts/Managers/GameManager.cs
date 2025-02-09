@@ -4,6 +4,7 @@ using Unity.VisualScripting.Antlr3.Runtime.Misc;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using static GameManager;
+using static SceneDefs;
 
 public class GameManager : MonoBehaviour
 {
@@ -67,6 +68,8 @@ public class GameManager : MonoBehaviour
 	public LevelManager levelManager;
 
 	public LoadingHandler loadingHandler = null;
+
+	public GameObject[] weaponPrefabs;
 
 	public GameObject mutPBeast;
 	public GameObject mutPBladeWing;
@@ -163,7 +166,7 @@ public class GameManager : MonoBehaviour
 		maxPickups[(int)PickupDefs.usableType.REFILL] = pickupMaxScriptable.refillMax;
 
 		/* load necessary background scenes now */
-		await SceneManager.LoadSceneAsync(SceneDefs.LOADING_SCENE, LoadSceneMode.Additive);
+		await SceneManager.LoadSceneAsync((int)SCENE.LOADING, LoadSceneMode.Additive);
 
 		while (loadingHandler == null){}
 		loadingHandler.reloadHUD = true;
@@ -171,6 +174,7 @@ public class GameManager : MonoBehaviour
 		loadBackgroundScenes();
 
 		playerStats = new PlayerStats();
+		playerStats.gameManager = this;
 
 		/* This is mainly for debugging - making sure we set the level if we don't load it */
 		for (int i = 0; i < SceneManager.sceneCount; i++)
@@ -179,7 +183,20 @@ public class GameManager : MonoBehaviour
 			if (SceneDefs.isLevelScene(curr.buildIndex))
 			{
 				currentScene = curr.buildIndex;
-				levelManager.startNewLevel(-1);
+				switch (currentScene)
+				{
+					case (int)SCENE.LEVEL_START:
+						levelManager.lastSavedSpawn = (int)LevelManager.levelSpawnIndex.levelStartSpawn;
+						levelManager.lastSavedLevelIndex = (int)SCENE.LEVEL_START;
+						break;
+					case (int)SCENE.LEVEL_OFFICE:
+						levelManager.lastSavedSpawn = (int)LevelManager.levelSpawnIndex.levelOfficeSpawn;
+						levelManager.lastSavedLevelIndex = (int)SCENE.LEVEL_OFFICE;
+						break;
+					default:
+						break;
+				}
+				await levelManager.startNewLevel(-1);
 				break;
 			}
 		}
@@ -208,7 +225,7 @@ public class GameManager : MonoBehaviour
 		Camera.main.transform.position = player.transform.position;
 		AudioListener audio = Camera.main.GetComponent<AudioListener>();
 		audio.enabled = false;
-		SceneManager.LoadScene(SceneDefs.GAME_OVER_SCENE, LoadSceneMode.Additive);
+		SceneManager.LoadScene((int)SCENE.GAME_OVER, LoadSceneMode.Additive);
 	}
 
 	public void gameWin(Actor player)
@@ -219,8 +236,8 @@ public class GameManager : MonoBehaviour
 		AudioListener audio = Camera.main.GetComponent<AudioListener>();
 		audio.enabled = false;
 		Time.timeScale = 0;
-		currentScene = SceneDefs.WIN_SCENE;
-		SceneManager.LoadScene(SceneDefs.WIN_SCENE, LoadSceneMode.Additive);
+		currentScene = (int)SCENE.WIN;
+		SceneManager.LoadScene((int)SCENE.WIN, LoadSceneMode.Additive);
 	}
 
 	public void hitstop(float length, float speed)
@@ -240,25 +257,31 @@ public class GameManager : MonoBehaviour
 		Camera.main.transform.position = player.transform.position;
 		AudioListener audio = Camera.main.GetComponent<AudioListener>();
 		audio.enabled = false;
-		currentScene = nextSceneIndex;
 		loadingHandler.reloadHUD = true;
+
+		//TODO: when able to go back to previous levels, this should be the general idea
+		//int lastScene = currentScene;
+		//await levelManager.saveLevelState(lastScene);
+		currentScene = nextSceneIndex;
 
 		await loadingHandler.LoadSceneGroup(new int[] { currentScene }, true, true);
 
 		levelManager.lastSavedSpawn = spawnIndex;
-		levelManager.startNewLevel(spawnIndex);
+		levelManager.lastSavedLevelIndex = currentScene;
+		levelManager.lastSavedAtStation = false;
+		await levelManager.startNewLevel(spawnIndex);
 	}
 
 	public async void loadBackgroundScenes()
 	{
-		List<int> bgScenes = new List<int>(SceneDefs.BACKGROUND_SCENES.Length);
+		List<int> bgScenes = new List<int>(BACKGROUND_SCENES.Length);
 
 		int i = 0, j = 0;
-		for (i = 0; i < SceneDefs.BACKGROUND_SCENES.Length; i++)
+		for (i = 0; i < BACKGROUND_SCENES.Length; i++)
 		{
 			for (j = 0; j < SceneManager.sceneCount; j++)
 			{
-				if (SceneDefs.BACKGROUND_SCENES[i] == SceneManager.GetSceneAt(j).buildIndex)
+				if (BACKGROUND_SCENES[i] == SceneManager.GetSceneAt(j).buildIndex)
 				{
 					j = -1;
 					break;
@@ -266,21 +289,23 @@ public class GameManager : MonoBehaviour
 			}
 			if (j >= 0)
 			{
-				bgScenes.Add(SceneDefs.BACKGROUND_SCENES[i]);
+				bgScenes.Add(BACKGROUND_SCENES[i]);
 			}
 		}
 		await loadingHandler.LoadSceneGroup(bgScenes.ToArray(), false, false);
 	}
 
-	public void resetLevel()
+	public async void resetLevel()
 	{
 		playerStats.resetCounts();
-		levelManager.startNewLevel(levelManager.lastSavedSpawn);
+		await levelManager.startNewLevel(levelManager.lastSavedSpawn);
 	}
 
-	public void save(Actor player)
+	public async void save(Actor player)
 	{
 		playerStats.savePlayerData(player);
+		await levelManager.saveLevelState(currentScene);
+		levelManager.lastSavedLevelIndex = currentScene;
 	}
 
 	public void signalCloseMenusEvent()

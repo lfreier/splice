@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using static ActorDefs;
 
 public class ActorDefs
 {
@@ -47,6 +48,29 @@ public class ActorDefs
 		hostile = 4,
 		frightened = 5,
 		getWeapon = 6,
-		wandering = 7
+		wandering = 7,
+		forced = 8
 	};
+
+	public static ActorData copyData(ActorData toCopy)
+	{
+		ActorData toReturn = new();
+
+		toReturn.health = toCopy.health;
+		toReturn.maxHealth = toCopy.maxHealth;
+		toReturn.shield = 0;
+
+		toReturn.maxSpeed = toCopy.maxSpeed;
+		toReturn.moveSpeed = toCopy.moveSpeed;
+		toReturn.acceleration = toCopy.acceleration;
+		toReturn.deceleration = toCopy.deceleration;
+
+		toReturn.hearingRange = toCopy.hearingRange;
+		toReturn.sightAngle = toCopy.sightAngle;
+		toReturn.sightRange = toCopy.sightRange;
+
+		toReturn.frightenedDistance = toCopy.frightenedDistance;
+
+		return toReturn;
+	}
 }

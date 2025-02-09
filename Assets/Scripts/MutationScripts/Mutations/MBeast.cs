@@ -50,7 +50,7 @@ public class MBeast : BasicWeapon, MutationInterface
 
 	private void OnDestroy()
 	{
-		actorWielder.gameManager.playerAbilityEvent -= abilityInputPressed;
+		GameManager.Instance.playerAbilityEvent -= abilityInputPressed;
 	}
 
 	private void FixedUpdate()
@@ -203,7 +203,7 @@ public class MBeast : BasicWeapon, MutationInterface
 	{
 		setWielder(wielder);
 
-		wielder.gameManager.playerAbilityEvent += abilityInputPressed;
+		GameManager.Instance.playerAbilityEvent += abilityInputPressed;
 
 		/* save collider size */
 		playerCollider = wielder.GetComponentInChildren<BoxCollider2D>();

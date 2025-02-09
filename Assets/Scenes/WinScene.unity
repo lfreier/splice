@@ -413,11 +413,13 @@ MonoBehaviour:
   - {fileID: 1456761809}
   - {fileID: 1057535118}
   - {fileID: 1729114714}
+  fadeInText: []
   fadeChange: 0.35
   menuCanvas: {fileID: 798559242}
   menuCam: {fileID: 1557585866}
   eventSystem: {fileID: 1808270837}
   audioListener: {fileID: 1557585865}
+  menuMusic: {fileID: 0}
 --- !u!222 &1122879507
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -445,11 +447,13 @@ MonoBehaviour:
   - {fileID: 1456761809}
   - {fileID: 1057535118}
   - {fileID: 1729114714}
+  fadeInText: []
   desiredAlpha: 1
   fadeInChange: 0.25
   finalPumpScale: 14.5
   pumpMult: 40
   pumpTimer: 0.5
+  transitioning: 0
 --- !u!1 &1262930412
 GameObject:
   m_ObjectHideFlags: 0
@@ -543,7 +547,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1456761807
 RectTransform:
   m_ObjectHideFlags: 0
@@ -608,8 +612,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1122879505}
-        m_TargetAssemblyTypeName: MainMenu, Assembly-CSharp
-        m_MethodName: restartWithSelection
+        m_TargetAssemblyTypeName: MenuHandler, Assembly-CSharp
+        m_MethodName: returnToMainMenu
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

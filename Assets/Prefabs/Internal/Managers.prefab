@@ -52,6 +52,12 @@ MonoBehaviour:
   effectManager: {fileID: 4654381731306417788}
   levelManager: {fileID: 9086022366862896558}
   loadingHandler: {fileID: 0}
+  weaponPrefabs:
+  - {fileID: 1192526033329145194, guid: 667ae61a41d03f34bb1259307cf06291, type: 3}
+  - {fileID: 1192526033329145194, guid: e68bd7edcb08749459b30946014ecd34, type: 3}
+  - {fileID: 1192526033329145194, guid: 95f4e5b3291ade544a04604f4830459e, type: 3}
+  - {fileID: 1192526033329145194, guid: a1116bc9fda44684eb2ea2c225fe5c2b, type: 3}
+  - {fileID: 1192526033329145194, guid: 4b343bd6d0e62c94da28557b01dd8918, type: 3}
   mutPBeast: {fileID: 3279388766364700584, guid: 60c128a3aea613c438eeb70f8c97eee7, type: 3}
   mutPBladeWing: {fileID: 869377620814106126, guid: f3a8bd5cc9868d34daeeca1cb142e3c4, type: 3}
   mutPLimb: {fileID: 4878587490104917525, guid: c1e65fecc886f9b49b05444180df6926, type: 3}
@@ -143,9 +149,13 @@ MonoBehaviour:
   currLevelData: {fileID: 0}
   playerPrefab: {fileID: 4454810878759323063, guid: ade1a49a0d089d14ab68de3dd80ad968, type: 3}
   lastSavedSpawn: 0
+  lastSavedLevelIndex: 0
   levelSpawns:
   - {fileID: 11400000, guid: d005fe9a0a0fcff499c05a01ade00cb0, type: 2}
   - {fileID: 11400000, guid: 4de7098faac9dc340ad110acfe45724a, type: 2}
   - {fileID: 11400000, guid: cffedb1562eb6c548ac70982e90766f9, type: 2}
   - {fileID: 11400000, guid: e0060532721259a478dd135a6355e1b0, type: 2}
+  lastSavedAtStation: 0
+  savedActors: []
+  usedSavedStations: 0000
   camHandler: {fileID: 0}

@@ -17,6 +17,7 @@ GameObject:
   - component: {fileID: 8936931521236048847}
   - component: {fileID: 2023260988043286838}
   - component: {fileID: 3150324268760826422}
+  - component: {fileID: 7622839753614861741}
   m_Layer: 8
   m_Name: npc
   m_TagString: NPC
@@ -197,6 +198,7 @@ MonoBehaviour:
   corpseSprite: {fileID: 21300000, guid: 59c0f10706b1377459650f8d2109ca69, type: 3}
   corpsePrefab: {fileID: 2911627580042638205, guid: 9bdd8350a0e30434eaadda3861d39b89, type: 3}
   invincible: 0
+  initialized: 0
 --- !u!114 &8181113457589132258
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -215,6 +217,8 @@ MonoBehaviour:
   idlePath: []
   idlePathPauseTime: []
   _detection: 0
+  lockWhenSpotted: {fileID: 0}
+  moveTarget: {x: 0, y: 0, z: 0}
   gameManager: {fileID: 0}
 --- !u!114 &8936931521236048847
 MonoBehaviour:
@@ -345,6 +349,19 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &7622839753614861741
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7904725563872449456}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf336abf081bc2246bab9dfaca64e293, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  guid: npc_f7dedb45-22e9-4729-9e62-f2f7390917b1
 --- !u!1 &8081907558892302357
 GameObject:
   m_ObjectHideFlags: 0

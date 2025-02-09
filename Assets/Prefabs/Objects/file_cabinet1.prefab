@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 2737905760543029366}
   - component: {fileID: 4294341438885202313}
   - component: {fileID: 490808859570672265}
+  - component: {fileID: -2692900505047113629}
   m_Layer: 14
   m_Name: file_cabinet1
   m_TagString: Untagged
@@ -177,6 +178,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _obstacleScriptable: {fileID: 11400000, guid: 93504fb53eb5b1144b11a3ef537b6a59, type: 2}
   obstacleBody: {fileID: 2737905760543029366}
+  spriteRenderer: {fileID: 0}
+  secondSprite: {fileID: 0}
+  knockVelocityThreshold: 0.5
+  knockOverDrag: 2.5
+--- !u!114 &-2692900505047113629
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3301648032349487571}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf336abf081bc2246bab9dfaca64e293, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  guid: file_cabinet1_28c68567-7f3d-4ed2-a913-27782b811a69
 --- !u!1 &3899731082446351483
 GameObject:
   m_ObjectHideFlags: 0

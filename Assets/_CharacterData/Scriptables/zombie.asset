@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: zombie
   m_EditorClassIdentifier: 
   <armor>k__BackingField: 0
-  <health>k__BackingField: 4
+  <health>k__BackingField: 3
   <attackTimer>k__BackingField: 0.4
   <maxSpeed>k__BackingField: 4
   <moveSpeed>k__BackingField: 0.2

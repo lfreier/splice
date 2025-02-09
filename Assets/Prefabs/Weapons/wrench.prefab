@@ -161,6 +161,7 @@ GameObject:
   - component: {fileID: 1630916773381673146}
   - component: {fileID: 2539849135012674436}
   - component: {fileID: 5168576159283970348}
+  - component: {fileID: 1670971872776214535}
   m_Layer: 10
   m_Name: wrench
   m_TagString: ObjectWeapon
@@ -274,6 +275,19 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 0.4, y: 1.65}
   m_EdgeRadius: 0
+--- !u!114 &1670971872776214535
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1192526033329145194}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf336abf081bc2246bab9dfaca64e293, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  guid: 
 --- !u!1 &1364038643936873524
 GameObject:
   m_ObjectHideFlags: 0

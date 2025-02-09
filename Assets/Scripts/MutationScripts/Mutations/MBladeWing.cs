@@ -26,7 +26,7 @@ public class MBladeWing : MonoBehaviour, MutationInterface
 
 	private void OnDestroy()
 	{
-		actorWielder.gameManager.playerAbilityEvent -= abilityInputPressed;
+		GameManager.Instance.playerAbilityEvent -= abilityInputPressed;
 	}
 	private void FixedUpdate()
 	{
@@ -92,7 +92,7 @@ public class MBladeWing : MonoBehaviour, MutationInterface
 	private void init(Actor wielder)
 	{
 		this.actorWielder = wielder;
-		wielder.gameManager.playerAbilityEvent += abilityInputPressed;
+		GameManager.Instance.playerAbilityEvent += abilityInputPressed;
 		buffTimer = 0;
 	}
 

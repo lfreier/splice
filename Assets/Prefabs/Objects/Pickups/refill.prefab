@@ -117,6 +117,7 @@ GameObject:
   - component: {fileID: 6941284347711521236}
   - component: {fileID: 2169118679047859684}
   - component: {fileID: 8643042026247529061}
+  - component: {fileID: 5008086433226099685}
   m_Layer: 11
   m_Name: refill
   m_TagString: ObjectPickup
@@ -209,6 +210,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cellAmount: 50
   icon: {fileID: 21300000, guid: 41d1a620748cad1429142a8d3cdd4284, type: 3}
+--- !u!114 &5008086433226099685
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2817554636129167509}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf336abf081bc2246bab9dfaca64e293, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  guid: 
 --- !u!1 &6131762416296624868
 GameObject:
   m_ObjectHideFlags: 0
