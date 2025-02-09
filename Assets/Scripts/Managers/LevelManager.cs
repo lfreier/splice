@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using static ActorDefs;
 using Unity.VisualScripting;
-using static UnityEditor.Progress;
 
 public class LevelManager : MonoBehaviour
 {
