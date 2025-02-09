@@ -9,22 +9,37 @@ EditorBuildSettings:
     path: Assets/Scenes/MainMenuScene.unity
     guid: dfcdf4cf615dc77499a9d46b98674041
   - enabled: 1
+    path: Assets/Scenes/ManagerScene.unity
+    guid: f7a113a48139057448469bf6b1f77c10
+  - enabled: 1
     path: Assets/Scenes/HUDScene.unity
     guid: 476e03c2cfa371e44997543d598e08f4
   - enabled: 1
-    path: Assets/Scenes/MainScene.unity
-    guid: 2cda990e2423bbf4892e6590ba056729
-  - enabled: 1
-    path: Assets/Scenes/GameOverScene.unity
-    guid: 945ec5b432c598a45806ce4116213593
+    path: Assets/Scenes/LoadingScene.unity
+    guid: f3cec0acd3f7873438808ebca448837a
   - enabled: 1
     path: Assets/Scenes/PauseScene.unity
     guid: 866cf12a9fdb4b443a165a65a23b34cc
   - enabled: 1
+    path: Assets/Scenes/GameOverScene.unity
+    guid: 945ec5b432c598a45806ce4116213593
+  - enabled: 1
+    path: Assets/Scenes/HUDInventoryScene.unity
+    guid: 257a22f61405bae42a662ba8436ae2e9
+  - enabled: 1
     path: Assets/Scenes/MutationSelectScene.unity
-    guid: 9ef4b100ddc2db647ad8b78160521831
+    guid: 249a5a01f3e72874d88dab62807ad902
   - enabled: 1
     path: Assets/Scenes/WinScene.unity
     guid: 3142207104a0e6549b2de91642382a2d
+  - enabled: 1
+    path: Assets/Scenes/SavingScene.unity
+    guid: 5ab19b90ceb885443b32472a390e969c
+  - enabled: 1
+    path: Assets/Scenes/LevelStart.unity
+    guid: 2cda990e2423bbf4892e6590ba056729
+  - enabled: 1
+    path: Assets/Scenes/LevelOffice.unity
+    guid: 3de157fe2c6e72d4397220fd5c879db4
   m_configObjects: {}
   m_UseUCBPForAssetBundles: 0

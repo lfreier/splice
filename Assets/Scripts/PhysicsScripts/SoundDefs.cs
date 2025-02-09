@@ -22,6 +22,11 @@ public static class SoundDefs
 
 	static public void createSound(Vector2 worldPosition, SoundScriptable scriptable)
 	{
+		if (scriptable == null)
+		{
+			Debug.Log("No sound defined");
+			return;
+		}
 		GameObject newSound = new GameObject(SOUND_LAYER_NAME);
 		Sound script = newSound.AddComponent<Sound>();
 

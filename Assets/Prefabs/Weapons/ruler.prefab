@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 1630916773381673146}
   - component: {fileID: 2539849135012674436}
   - component: {fileID: 5168576159283970348}
+  - component: {fileID: 7506437891194036631}
   m_Layer: 10
   m_Name: ruler
   m_TagString: ObjectWeapon
@@ -125,6 +126,19 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 0.25, y: 1.4}
   m_EdgeRadius: 0
+--- !u!114 &7506437891194036631
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1192526033329145194}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf336abf081bc2246bab9dfaca64e293, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  guid: 
 --- !u!1 &1931358901001870893
 GameObject:
   m_ObjectHideFlags: 0
@@ -135,7 +149,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6210392783176579490}
   - component: {fileID: 3442740799414355683}
-  - component: {fileID: 6376094926111057244}
+  - component: {fileID: 2908192962566276644}
   - component: {fileID: 6529950160097543187}
   - component: {fileID: 9146951687459429566}
   m_Layer: 15
@@ -216,7 +230,7 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &6376094926111057244
+--- !u!114 &2908192962566276644
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -225,7 +239,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1931358901001870893}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4f2b7c4c185a0c74294700a8fb39e679, type: 3}
+  m_Script: {fileID: 11500000, guid: 048d2fd541e5d8a43a0dfcb0a359d379, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   anim: {fileID: 6529950160097543187}
@@ -237,11 +251,12 @@ MonoBehaviour:
   actorWielder: {fileID: 0}
   _weaponScriptable: {fileID: 11400000, guid: dfea369de36cde048b3f951f08541d05, type: 2}
   _weaponPhysics: {fileID: 1630916773381673146}
-  actorHitSound: {fileID: 11400000, guid: fc7b5a00970e656469c43cf634631693, type: 2}
-  wallHitSound: {fileID: 11400000, guid: 2dee26a68c8b6d14c9f1598aceb14c3a, type: 2}
-  weaponAudioSource: {fileID: 0}
+  actorHitSound: {fileID: 11400000, guid: 4ef7172c84fd22b4586d55e87fa9e529, type: 2}
+  wallHitSound: {fileID: 11400000, guid: fc7b5a00970e656469c43cf634631693, type: 2}
   weaponBreakSound: {fileID: 0}
-  weaponSwingSound: {fileID: 8300000, guid: ba516a66edb8f484ead196acac982b00, type: 3}
+  weaponSwingSound: {fileID: 0}
+  currentSide: 0
+  durability: 0
 --- !u!95 &6529950160097543187
 Animator:
   serializedVersion: 7
@@ -254,7 +269,7 @@ Animator:
   m_Avatar: {fileID: 0}
   m_Controller: {fileID: 9100000, guid: 67236f704e99ecb41a5e6a9220a260a9, type: 2}
   m_CullingMode: 0
-  m_UpdateMode: 0
+  m_UpdateMode: 1
   m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0

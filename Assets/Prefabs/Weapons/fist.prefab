@@ -93,7 +93,7 @@ GameObject:
   - component: {fileID: 9073983823355340072}
   - component: {fileID: 1109013575069055799}
   - component: {fileID: 2490751913895706594}
-  - component: {fileID: 6454901339996413761}
+  - component: {fileID: 710638030259047261}
   m_Layer: 15
   m_Name: FistsData
   m_TagString: ObjectWeapon
@@ -183,7 +183,7 @@ Animator:
   m_Avatar: {fileID: 0}
   m_Controller: {fileID: 9100000, guid: 66f4cc0d09f5ba44384a7dad77fdc3e9, type: 2}
   m_CullingMode: 0
-  m_UpdateMode: 0
+  m_UpdateMode: 1
   m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
@@ -223,7 +223,7 @@ CircleCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
@@ -291,7 +291,7 @@ MonoBehaviour:
   weaponBody: {fileID: 0}
   throwCollider: {fileID: 0}
   pickupCollider: {fileID: 0}
---- !u!114 &6454901339996413761
+--- !u!114 &710638030259047261
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -300,21 +300,20 @@ MonoBehaviour:
   m_GameObject: {fileID: 1931358901001870893}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4f2b7c4c185a0c74294700a8fb39e679, type: 3}
+  m_Script: {fileID: 11500000, guid: 048d2fd541e5d8a43a0dfcb0a359d379, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   anim: {fileID: 7498851668401721827}
-  hitbox: {fileID: 1109013575069055799}
+  hitbox: {fileID: 9073983823355340072}
   throwBox: {fileID: 5989834994661812141}
   sprite: {fileID: 3442740799414355683}
   damagedSprite: {fileID: 0}
-  trailSprite: {fileID: 0}
+  trailSprite: {fileID: 3442740799414355683}
   actorWielder: {fileID: 0}
   _weaponScriptable: {fileID: 11400000, guid: 04697dc785bc1b44c9ea901776758fbc, type: 2}
   _weaponPhysics: {fileID: 2490751913895706594}
   actorHitSound: {fileID: 11400000, guid: 4ef7172c84fd22b4586d55e87fa9e529, type: 2}
-  wallHitSound: {fileID: 11400000, guid: 2dee26a68c8b6d14c9f1598aceb14c3a, type: 2}
-  weaponAudioSource: {fileID: 0}
+  wallHitSound: {fileID: 11400000, guid: 4ef7172c84fd22b4586d55e87fa9e529, type: 2}
   weaponBreakSound: {fileID: 0}
   weaponSwingSound: {fileID: 0}
 --- !u!1 &7142411589276092687

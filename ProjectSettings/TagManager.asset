@@ -11,7 +11,8 @@ TagManager:
   - EquippedActive
   - ObjectPickup
   - WallMetal
-  - NPCHostile
+  - TeamMonster
+  - TeamScience
   layers:
   - Default
   - TransparentFX
@@ -19,8 +20,8 @@ TagManager:
   - 
   - Water
   - UI
-  - Collision
-  - CollisionActor
+  - WallCollision
+  - ThrownWeapon
   - Actor
   - 
   - Object
@@ -30,10 +31,10 @@ TagManager:
   - ObjectHigh
   - Damage
   - Parry
-  - 
+  - ObjectExcludeActor
   - Sound
   - 
-  - 
+  - PathfindingCollider
   - 
   - 
   - 

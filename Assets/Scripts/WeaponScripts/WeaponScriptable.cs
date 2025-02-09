@@ -27,6 +27,12 @@ public class WeaponScriptable : ScriptableObject
 	[field: SerializeField]
 	public float npcAttackRange { get; private set; } = 2F;
 
+	[field: SerializeField]
+	public WeaponDefs.prefabIndex prefabIndex { get; private set; } = WeaponDefs.prefabIndex.RULER;
+
+	[field: SerializeField]
+	public float secondaryDamage { get; private set; } = 2F;
+
 	/* Throwing fields */
 	[field: SerializeField]
 	public float throwDamage { get; private set; } = 1F;
@@ -53,6 +59,10 @@ public class WeaponScriptable : ScriptableObject
 	public float equipPosX = 0.38F;
 	public float equipPosY = 0.15F;
 	public float equipRotZ = -67.5F;
+
+	public float equipOtherPosX = -0.38F;
+	public float equipOtherPosY = -0.625F;
+	public float equipOtherRotZ = -115F;
 
 	[field: SerializeField]
 	/* In percent */

@@ -2,12 +2,16 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Threading.Tasks;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using UnityEngine.U2D;
+using static ActorDefs;
 using static EffectDefs;
+using static UnityEngine.GraphicsBuffer;
+using static WeaponDefs;
 
 /*
  * Actor class:
@@ -17,39 +21,7 @@ using static EffectDefs;
 
 public class Actor : MonoBehaviour
 {
-	public struct ActorData
-	{
-		public float health;
-		public float maxHealth;
-
-		public float maxSpeed;
-		public float moveSpeed;
-
-		public float acceleration;
-		public float deceleration;
-
-		public float hearingRange;
-		public float sightAngle;
-		public float sightRange;
-
-		public float frightenedDistance;
-	};
-
-	public enum detectMode
-	{
-		nul = -1,
-		idle = 0,
-		suspicious = 1,
-		seeking = 2,
-		lost = 3,
-		hostile = 4,
-		frightened = 5,
-		getWeapon = 6
-	};
-
 	public AudioSource actorAudioSource;
-
-	public PlayerHUD hud;
 
 	public ActorScriptable _actorScriptable;
 	public ActorData actorData;
@@ -57,6 +29,7 @@ public class Actor : MonoBehaviour
 
 	private Actor attackTarget;
 	private Vector3 moveTarget;
+	public bool movementLocked = false;
 	public Vector3 currMoveVector;
 
 	public LayerMask pickupLayer;
@@ -79,52 +52,56 @@ public class Actor : MonoBehaviour
 	public GameObject corpsePrefab;
 
 	private SpriteRenderer sprite;
-	private SpriteRenderer weaponSprite;
 
 	private float speedCheck;
 
+	private string setSide = null;
+
 	public bool invincible = false;
+
+	public bool initialized = false;
 
 	public void Start()
 	{
+		initialized = false;
 		speedCheck = 0;
 		attackTarget = null;
-		gameManager = GameManager.Instance;
 		activeSlots = new MutationInterface[MutationDefs.MAX_SLOTS];
 		sprite = GetComponent<SpriteRenderer>();
 		initActorData();
-	}
-
-	public void Update()
-	{
-		/* TODO: if game manager is null, just don't bother equipping fists.
-		   But it shouldn't work like that, gameManager should be singleton*/
-		if (gameManager != null && (equippedWeapon == null || equippedWeaponInt == null))
-		{
-			equipEmpty();
-		}
+		initialized = true;
 	}
 
 	public void FixedUpdate()
 	{
-		speedCheck -= Time.deltaTime;
+		if (speedCheck > 0)
+		{
+			speedCheck -= Time.deltaTime;
+		}
 	}
 
 	private void initActorData()
 	{
-		actorData.health = _actorScriptable.health;
-		actorData.maxHealth = _actorScriptable.health;
+		gameManager = GameManager.Instance;
 
-		actorData.maxSpeed = _actorScriptable.maxSpeed;
-		actorData.moveSpeed = _actorScriptable.moveSpeed;
-		actorData.acceleration = _actorScriptable.acceleration;
-		actorData.deceleration = _actorScriptable.deceleration;
+		if (this != gameManager.playerStats.player)
+		{
+			actorData.armor = _actorScriptable.armor;
+			actorData.health = _actorScriptable.health;
+			actorData.maxHealth = _actorScriptable.health;
+			actorData.shield = 0;
 
-		actorData.hearingRange = _actorScriptable.hearingRange;
-		actorData.sightAngle = _actorScriptable.sightAngle;
-		actorData.sightRange = _actorScriptable.sightRange;
+			actorData.maxSpeed = _actorScriptable.maxSpeed;
+			actorData.moveSpeed = _actorScriptable.moveSpeed;
+			actorData.acceleration = _actorScriptable.acceleration;
+			actorData.deceleration = _actorScriptable.deceleration;
 
-		actorData.frightenedDistance = _actorScriptable.frightenedDistance;
+			actorData.hearingRange = _actorScriptable.hearingRange;
+			actorData.sightAngle = _actorScriptable.sightAngle;
+			actorData.sightRange = _actorScriptable.sightRange;
+
+			actorData.frightenedDistance = _actorScriptable.frightenedDistance;
+		}
 
 		for (int i = 0; i < gameObject.transform.childCount; i++)
 		{
@@ -142,6 +119,11 @@ public class Actor : MonoBehaviour
 			{
 				this.behaviorList.Add(foundScript);
 			}
+		}
+
+		if (gameManager != null && (equippedWeapon == null || equippedWeaponInt == null))
+		{
+			equipEmpty();
 		}
 	}
 
@@ -186,18 +168,22 @@ public class Actor : MonoBehaviour
 		Vector3 aimDir = new Vector3(pointerPos.x, pointerPos.y, 0) - this.transform.position;
 		Vector3 translate = new Vector3(Random.Range(0.2F * Mathf.Sign(aimDir.x), 0.6F * Mathf.Sign(aimDir.x)), Random.Range(0.2F * Mathf.Sign(aimDir.y), 0.6F * Mathf.Sign(aimDir.y)), 0);
 
-		equippedWeapon.transform.Translate(translate, Space.World);
-		equippedWeapon.transform.Rotate(new Vector3(0, 0, Random.Range(-45, 45)), Space.Self);
-		weaponSprite.sortingLayerName = WeaponDefs.SORT_LAYER_GROUND;
+		if (equippedWeapon != null)
+		{
+			equippedWeapon.transform.Translate(translate, Space.World);
+			equippedWeapon.transform.Rotate(new Vector3(0, 0, Random.Range(-45, 45)), Space.Self);
+			setWeaponLayer(WeaponDefs.SORT_LAYER_GROUND);
 
-		resetEquip();
+			resetEquip();
+		}
 	}
 
 	public void dropItem()
 	{
+		Vector3 droppedPosition = new Vector3(this.transform.position.x, this.transform.position.y);
 		foreach (GameObject item in droppedItems)
 		{
-			GameObject newDrop = Instantiate(item, this.transform.position, this.transform.rotation, this.transform.parent);
+			GameObject newDrop = Instantiate(item, droppedPosition, this.transform.rotation, this.transform.parent);
 			newDrop.transform.Rotate(new Vector3(0, 0, Random.Range(-45, 45)), Space.Self);
 
 			Cell newCell = newDrop.GetComponent<Cell>();
@@ -208,6 +194,13 @@ public class Actor : MonoBehaviour
 				{
 					newCell.generateCount(npcData.cellDropMin, npcData.cellDropMax);
 				}
+			}
+			float randX = Random.Range(-0.5F, -.5F);
+			float randY = Random.Range(-0.5F, -.5F);
+			if (!Physics2D.BoxCast(new Vector2(droppedPosition.x + randX, droppedPosition.y + randY), new Vector2(0.01F, 0.01F), 0, Vector2.up, 0.01F, gameManager.unwalkableLayers))
+			{
+				droppedPosition.x += randX;
+				droppedPosition.y += randY;
 			}
 		}
 	}
@@ -280,7 +273,11 @@ public class Actor : MonoBehaviour
 			}
 			else if (equippedWeaponInt.getType() == WeaponType.UNARMED)
 			{
-				Destroy(equippedWeapon);
+				/* only destroy copies of the basic fist weapon, not muations */
+				if (equippedWeapon.GetComponentInChildren<MutationInterface>() == null)
+				{
+					Destroy(equippedWeapon);
+				}
 			}
 			else
 			{
@@ -290,14 +287,22 @@ public class Actor : MonoBehaviour
 		equippedWeapon = tempWeap.gameObject;
 		equippedWeaponInt = tempWeapInt;
 
-		equippedWeapon.transform.SetParent(this.transform, true);
-		weaponSprite = equippedWeapon.GetComponentInChildren<SpriteRenderer>();
-		weaponSprite.sortingLayerName = WeaponDefs.SORT_LAYER_CHARS;
-		equippedWeaponInt.setStartingPosition();
+		/* TODO: slightly hacky way for MBeast to work*/
+		if (equippedWeapon.GetComponent<MutationInterface>() == null)
+		{
+			equippedWeapon.transform.SetParent(this.transform, true);
+			setWeaponLayer(WeaponDefs.SORT_LAYER_CHARS);
+			equippedWeaponInt.setStartingPosition(true);
+		}
 
 		WeaponDefs.setWeaponTag(equippedWeapon, WeaponDefs.EQUIPPED_WEAPON_TAG);
 
 		equippedWeaponInt.setActorToHold(this);
+
+		if (setSide != null)
+		{
+			setAttackOnly(setSide);
+		}
 
 		return true;
 	}
@@ -312,16 +317,12 @@ public class Actor : MonoBehaviour
 		return attackTarget;
 	}
 
-	public Camera getCamera()
-	{
-		return Camera.main;
-	}
 	public GameObject instantiateActive(GameObject prefab)
 	{
 		GameObject activePrefab = Instantiate(prefab, new Vector3(0, 0, 0), Quaternion.identity);
 		MutationInterface mutScript = activePrefab.GetComponentInChildren<MutationInterface>();
 
-		activePrefab.transform.SetParent(this.gameObject.transform, false);
+		activePrefab.transform.SetParent(mutationHolder.transform, false);
 		mutScript.setStartingPosition();
 		WeaponDefs.setWeaponTag(activePrefab, WeaponDefs.EQUIPPED_ACTIVE_TAG);
 
@@ -359,7 +360,7 @@ public class Actor : MonoBehaviour
 			return false;
 		}
 
-		if (this.tag.Equals(ActorDefs.npcTag) && targetActor.tag.Equals(ActorDefs.npcTag))
+		if (this.tag.Equals(targetActor.tag))
 		{
 			return false;
 		}
@@ -424,7 +425,7 @@ public class Actor : MonoBehaviour
 		actorBody.velocity = moveVector;
 	}
 
-	public bool pickupItem()
+	public bool pickup()
 	{
 		Collider2D[] hitTargets1 = Physics2D.OverlapCircleAll(this.transform.position + (transform.up * ActorDefs.GLOBAL_PICKUP_OFFSET), ActorDefs.GLOBAL_PICKUP_RANGE, this.pickupLayer);
 		Collider2D[] hitTargets2 = Physics2D.OverlapCircleAll(this.transform.position, ActorDefs.GLOBAL_PICKUP_RANGE, this.pickupLayer);
@@ -432,44 +433,96 @@ public class Actor : MonoBehaviour
 		hitTargets1.CopyTo(hitTargets, 0);
 		hitTargets2.CopyTo(hitTargets, hitTargets1.Length);
 
+		return pickup(hitTargets);
+	}
+
+	public bool pickup(Collider2D[] hitTargets)
+	{
 		List<GameObject> pickupList = new List<GameObject>();
 
 		foreach (Collider2D target in hitTargets)
 		{
-			GameObject targetObject = target.gameObject;
-
-			PickupBox pickupBox = target.gameObject.GetComponent<PickupBox>();
-			if (pickupBox != null && pickupBox.hasPickup())
+			if (pickupItem(target.gameObject))
 			{
-				targetObject = pickupBox.getPickup();
-			}
-
-			/* Make sure to only pickup valid objects. This will be expanded on eventually */
-			if (WeaponDefs.canWeaponBePickedUp(targetObject))
-			{
-				Debug.Log("Picking up: " + targetObject.transform.gameObject.name);
-				if (this.equip(targetObject.transform.gameObject))
-				{
-					//Make sure to only pick up one weapon
-					return true;
-				}
-			}
-
-			/* TODO: Probably a better way to do this */
-			if (this.tag == ActorDefs.playerTag)
-			{
-				if (PickupDefs.canBePickedUp(target.gameObject))
-				{
-					Debug.Log("Picking up: " + target.gameObject.transform.parent.gameObject.name);
-					PickupInterface pickup = target.gameObject.transform.parent.gameObject.GetComponent<PickupInterface>();
-					if (pickup != null)
-					{
-						pickup.pickup(this);
-						return true;
-					}
-				}
+				return true;
 			}
 		}
+
+		return false;
+	}
+
+	public bool pickupItem(GameObject target)
+	{
+		if (target == null)
+		{
+			return false;
+		}
+
+		/* Make sure to only pickup valid objects. This will be expanded on eventually */
+		if (WeaponDefs.canWeaponBePickedUp(target))
+		{
+			Debug.Log("Picking up: " + target.transform.gameObject.name);
+			if (this.equip(target.transform.gameObject))
+			{
+				//Make sure to only pick up one weapon, but pickups are ok
+				pickupItemPlayer(target, true);
+				return true;
+			}
+		}
+
+		PickupBox pickupBox = target.GetComponent<PickupBox>();
+		if (pickupBox != null && pickupBox.hasPickup())
+		{
+			target = pickupBox.getPickup();
+			if (target == null)
+			{
+				return false;
+			}
+		}
+
+		/* TODO: Probably a better way to do this */
+		if (this.tag == ActorDefs.playerTag)
+		{
+			return pickupItemPlayer(target, false);
+		}
+
+		return false;
+	}
+
+	public bool pickupItemPlayer(GameObject target, bool onlyPickup)
+	{
+		if (PickupDefs.canBePickedUp(target))
+		{
+			PickupInterface pickup = target.transform.gameObject.GetComponentInChildren<PickupInterface>();
+			if (pickup == null)
+			{
+				pickup = target.transform.gameObject.GetComponentInParent<PickupInterface>();
+			}
+			if (pickup != null)
+			{
+				Debug.Log("Picking up: " + pickup);
+				pickup.pickup(this);
+				return true;
+			}
+		}
+		else if (WeaponDefs.canWeaponBePickedUp(target) && !onlyPickup)
+		{
+			Debug.Log("Picking up: " + target.transform.gameObject.name);
+			if (this.equip(target.transform.gameObject))
+			{
+				//Make sure to only pick up one weapon
+				return true;
+			}
+		}
+
+		/* TODO: trying to put a pickup on the ground if it's not valid */
+		/*
+		else if (pickupBox != null)
+		{
+			target.transform.SetParent(null, false);
+			target.transform.SetPositionAndRotation(transform.position, target.transform.rotation);
+			target.transform.RotateAround(target.transform.position, Vector3.forward, Random.Range(0, 360));
+		}*/
 
 		return false;
 	}
@@ -477,6 +530,23 @@ public class Actor : MonoBehaviour
 	public void setAttackTarget(Actor targetActor)
 	{
 		attackTarget = targetActor;
+	}
+
+	public void setAttackOnly(string animStateSide)
+	{
+		BasicWeapon weaponScript = equippedWeapon.GetComponentInChildren<BasicWeapon>();
+		if (weaponScript == null)
+		{
+			return;
+		}
+
+		bool toSet = animStateSide == WeaponDefs.ANIM_BOOL_ONLY_RIGHT;
+		weaponScript.anim.SetBool(WeaponDefs.ANIM_BOOL_ONLY_RIGHT, toSet);
+		weaponScript.anim.SetBool(WeaponDefs.ANIM_BOOL_ONLY_LEFT, !toSet);
+		weaponScript.anim.SetTrigger(WeaponDefs.ANIM_TRIGGER_SWAP_SIDE);
+		equippedWeaponInt.setStartingPosition(toSet);
+
+		setSide = animStateSide;
 	}
 
 	public void setColor(Color newColor)
@@ -505,6 +575,23 @@ public class Actor : MonoBehaviour
 		}
 	}
 
+	public void setActorCollision(bool toSet)
+	{
+		if (toSet)
+		{
+			actorBody.excludeLayers = 0;
+		}
+		else
+		{
+			actorBody.excludeLayers = LayerMask.GetMask(new string[] { GameManager.OBJECT_MID_LAYER, GameManager.ACTOR_LAYER });
+		}
+	}
+
+	public void setMovementLocked(bool locked)
+	{
+		movementLocked = locked;
+	}
+
 	/* Changes the actor's max speed to the given value.
 	 * If changedSpeed is negative, will reset to the actor's base speed.
 	 */
@@ -522,11 +609,25 @@ public class Actor : MonoBehaviour
 		}
 	}
 
+	private void setWeaponLayer(string layerName)
+	{
+		SpriteRenderer[] allSprites = equippedWeapon.GetComponentsInChildren<SpriteRenderer>();
+		foreach (SpriteRenderer temp in allSprites)
+		{
+			temp.sortingLayerName = layerName;
+		}
+	}
+
 	/* Logic to handle taking damage from any source
 	 * only applies effects that originate from this actor
 	 * returns actual damage taken (health cannot be negative)
 	 */
 	public float takeDamage(float damage)
+	{
+		return takeDamage(damage, null);
+	}
+
+	public float takeDamage(float damage, Actor sourceActor)
 	{
 		if (this.invincible)
 		{
@@ -534,7 +635,35 @@ public class Actor : MonoBehaviour
 		}
 
 		float startingHealth = actorData.health;
-		actorData.health -= damage;
+		/* make sure we dont go negative armor like a dumb */
+		float damageTaken = actorData.armor > damage ? 0 : (damage - actorData.armor);
+
+		if (damageTaken <= 0)
+		{
+			return 0;
+		}
+
+		/* take damage from shield first */
+		if (actorData.shield > 0)
+		{
+			float shieldDamage;
+			if (damageTaken > actorData.shield)
+			{
+				shieldDamage = actorData.shield;
+			}
+			else
+			{
+				shieldDamage = damageTaken;
+			}
+			damageTaken -= shieldDamage;
+			actorData.shield -= shieldDamage;
+			if (this.tag.Equals(ActorDefs.playerTag))
+			{
+				/* shields will be lost on the HUD when damage is taken */
+				gameManager.signalUpdateShieldEvent(actorData.shield);
+			}
+		}
+		actorData.health -= damageTaken;
 		actorData.health = actorData.health < 0 ? 0 : actorData.health;
 
 		if (actorData.health <= 0.0F)
@@ -542,14 +671,56 @@ public class Actor : MonoBehaviour
 			this.kill();
 		}
 
-		if (this.tag.Equals(ActorDefs.playerTag))
+		if (damageTaken > 0)
 		{
-			EffectDefs.effectApply(this, gameManager.effectManager.iFrame1);
-			hud.updateHealth(actorData.health);
+			if (this.tag.Equals(ActorDefs.playerTag))
+			{
+				EffectDefs.effectApply(this, gameManager.effectManager.iFrame1);
+				gameManager.signalUpdateHealthEvent(actorData.health);
+			}
+			else
+			{
+				EffectDefs.effectApply(this, gameManager.effectManager.iFrame0);
+			}
 		}
-		else
+
+		if (sourceActor != null)
 		{
-			EffectDefs.effectApply(this, gameManager.effectManager.iFrame0);
+			if (sourceActor.tag == ActorDefs.playerTag || this.tag == ActorDefs.playerTag)
+			{
+				/* TODO:
+				 * hardcoded bad, but w/e
+				 * hitstop for different amounts of damage
+				 */
+				float hitstopLength;
+				float hitstopSpeed;
+				if (damage < 1)
+				{
+					hitstopLength = 0;
+					hitstopSpeed = 1F;
+				}
+				else if (damage < 1.5)
+				{
+					hitstopLength = HITSTOP_LENGTH_SMALL;
+					hitstopSpeed = HITSTOP_SPD_NORMAL;
+				}
+				else if (damage < 2.5)
+				{
+					hitstopLength = HITSTOP_LENGTH_MID;
+					hitstopSpeed = HITSTOP_SPD_NORMAL;
+				}
+				else if (damage < 4)
+				{
+					hitstopLength = HITSTOP_LENGTH_HIGH;
+					hitstopSpeed = HITSTOP_SPD_HIGH;
+				}
+				else
+				{
+					hitstopLength = HITSTOP_LENGTH_MASSIVE;
+					hitstopSpeed = HITSTOP_SPD_HIGH;
+				}
+				gameManager.hitstop(hitstopLength, hitstopSpeed);
+			}
 		}
 
 		return startingHealth - actorData.health;
@@ -567,7 +738,7 @@ public class Actor : MonoBehaviour
 
 		if (this.tag.Equals(ActorDefs.playerTag))
 		{
-			hud.updateHealth(actorData.health);
+			gameManager.signalUpdateHealthEvent(actorData.health);
 		}
 
 		return startingHealth - actorData.health;
@@ -587,7 +758,7 @@ public class Actor : MonoBehaviour
 		}
 
 		Vector3 aimDir = new Vector3(throwTargetPos.x, throwTargetPos.y, 0) - this.transform.position;
-		
+		setWeaponLayer(WeaponDefs.SORT_LAYER_GROUND);
 		this.equippedWeaponInt.throwWeapon(Vector3.ClampMagnitude(aimDir, 1));
 
 		resetEquip();
@@ -595,7 +766,7 @@ public class Actor : MonoBehaviour
 
 	public void triggerDamageEffects(Actor target)
 	{
-		var mutationList = mutationHolder.GetComponents<MonoBehaviour>();
+		var mutationList = mutationHolder.GetComponentsInChildren<MutationInterface>();
 
 		foreach (MutationInterface mutation in mutationList)
 		{
@@ -603,14 +774,6 @@ public class Actor : MonoBehaviour
 			{
 				mutation.trigger(target);
 			}
-		}
-	}
-
-	public void useAction(short index)
-	{
-		if (activeSlots[index] != null)
-		{
-			activeSlots[index].trigger(this);
 		}
 	}
 
@@ -624,14 +787,11 @@ public class Actor : MonoBehaviour
 
 		equipEmpty();
 	}
-	private void equipEmpty()
+
+	public void equipEmpty()
 	{
 		GameObject fistPrefab = instantiateWeapon(gameManager.weapPFist);
 
 		equip(fistPrefab.transform.gameObject);
-	}
-
-	private void updatePointer()
-	{
 	}
 }

@@ -5,9 +5,19 @@ using UnityEngine;
 
 public class AutoDoor : MonoBehaviour
 {
+	public enum doorType
+	{
+		AUTO = 0,
+		MANUAL = 1,
+		REMOTE = 2
+	}
+	public doorType _doorType = doorType.AUTO;
+
 	private bool open;
 	public bool locked;
 	public SpriteRenderer lockSprite;
+
+	//private bool stuck = false;
 
 	public PickupDefs.keycardType lockType;
 
@@ -22,16 +32,7 @@ public class AutoDoor : MonoBehaviour
 	private void Start()
 	{
 		/* Set color */
-		switch (lockType)
-		{
-			case PickupDefs.keycardType.BLUE:
-				keycardColor = GameManager.COLOR_BLUE;
-				break;
-			case PickupDefs.keycardType.RED:
-			default:
-				keycardColor = GameManager.COLOR_RED;
-				break;
-		}
+		keycardColor = PickupDefs.getKeycardColor(lockType);
 
 		open = false;
 		if (locked)
@@ -44,20 +45,34 @@ public class AutoDoor : MonoBehaviour
 		}
 
 		gameManager = GameManager.Instance;
+		if (gameManager != null && _doorType == doorType.AUTO)
+		{
+			gameManager.powerChangedEvent += handlePowerOutage;
+		}
+	}
+
+	private void OnDestroy()
+	{
+		if (gameManager != null && null != (gameManager = GameManager.Instance))
+		{
+			gameManager.powerChangedEvent -= handlePowerOutage;
+		}
 	}
 
 	private void FixedUpdate()
 	{
+		if (_doorType == doorType.AUTO)
+		{
+			Collider2D[] hit = Physics2D.OverlapBoxAll(gameObject.transform.position, new Vector2(detectSize, detectSize), 0, gameManager.actorLayers);
+			if (!open && !locked && hit.Length > 0)
+			{
+				doorOpen();
+			}
 
-		Collider2D[] hit = Physics2D.OverlapBoxAll(gameObject.transform.position, new Vector2(detectSize, detectSize), 0, gameManager.actorLayers);
-		if (!open && !locked && hit.Length > 0)
-		{
-			doorOpen();
-		}
-		
-		if(open && hit.Length <= 0)
-		{
-			doorClose();
+			if (open && hit.Length <= 0)
+			{
+				doorClose();
+			}
 		}
 	}
 
@@ -73,6 +88,25 @@ public class AutoDoor : MonoBehaviour
 		open = false;
 	}
 
+	public void doorToggle(bool force)
+	{
+		if ((force || !locked) && _doorType != doorType.AUTO)
+		{
+			if (open)
+			{
+				doorClose();
+			}
+			else
+			{
+				doorOpen();
+			}
+		}
+		else if (force && locked)
+		{
+			doorUnlock();
+		}
+	}
+
 	public void doorLock()
 	{
 		locked = true;
@@ -83,5 +117,18 @@ public class AutoDoor : MonoBehaviour
 	{
 		locked = false;
 		lockSprite.color = GameManager.COLOR_GREEN;
+	}
+
+	public bool isOpen()
+	{
+		return open;
+	}
+
+	private void handlePowerOutage(bool powerOn)
+	{
+		//TODO
+		if (!locked)
+		{
+		}
 	}
 }

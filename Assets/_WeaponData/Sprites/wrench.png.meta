@@ -6,7 +6,7 @@ TextureImporter:
       213: -2761387464772835428
     second: wrench_0
   externalObjects: {}
-  serializedVersion: 12
+  serializedVersion: 13
   mipmaps:
     mipMapMode: 0
     enableMipMap: 0
@@ -80,6 +80,7 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
@@ -92,6 +93,20 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Windows Store Apps
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
@@ -120,12 +135,12 @@ TextureImporter:
       weights: []
     outline: []
     physicsShape:
-    - - {x: -5, y: -11}
-      - {x: 0, y: -11}
-      - {x: 4, y: -6}
-      - {x: 2, y: 11}
-      - {x: 0, y: 11}
-      - {x: -5, y: -2}
+    - - {x: 0, y: 1}
+      - {x: 0, y: -14}
+      - {x: 3, y: -14}
+      - {x: 3, y: 12}
+      - {x: 0, y: 12}
+      - {x: -3, y: 7}
     bones: []
     spriteID: 5e97eb03825dee720800000000000000
     internalID: 1537655665

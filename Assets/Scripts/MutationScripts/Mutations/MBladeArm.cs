@@ -5,6 +5,10 @@ public class MBladeArm : MonoBehaviour, MutationInterface
 {
 	public Sprite icon;
 
+	public string getDisplayName()
+	{
+		return "BLADE ARM";
+	}
 	public Sprite getIcon()
 	{
 		return icon;
@@ -26,10 +30,6 @@ public class MBladeArm : MonoBehaviour, MutationInterface
 
 	public MutationInterface mEquip(Actor actor)
 	{
-		/* Instantiate the weapon prefab, then equip it. */
-		GameObject bladeArmPrefab = actor.instantiateWeapon(actor.gameManager.weapPBladeArm);
-		actor.equip(bladeArmPrefab);
-
 		return this;
 	}
 	public void setStartingPosition()

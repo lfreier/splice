@@ -19,7 +19,7 @@ public class PlayerSecondaries : MonoBehaviour
 	void Update()
 	{
 		throwInputs();
-		activeInputs();
+		//activeInputs();
 	}
 
 	void throwInputs()
@@ -41,12 +41,25 @@ public class PlayerSecondaries : MonoBehaviour
 		short i = 0;
 		foreach (var action in _specialActions)
 		{
-			if (_specialActions[i] > 0 && _lastSpecialActions[i] == 0)
-			{
-				player.useAction(i);
-			}
 			_lastSpecialActions[i] = action;
 			i++;
+		}
+	}
+
+	public void stopMutationAnim(mutationType type)
+	{
+		switch (type)
+		{
+			case mutationType.mWing:
+				MBladeWing mWing = GetComponentInChildren<MBladeWing>();
+				if (mWing != null)
+				{
+					mWing.stopDash();
+				}
+				break;
+			case mutationType.mLimb:
+			default:
+				break;
 		}
 	}
 }

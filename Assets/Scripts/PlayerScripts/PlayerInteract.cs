@@ -11,7 +11,6 @@ public class PlayerInteract : MonoBehaviour
 	public Actor player;
 
 	public PlayerInputs inputs;
-	public PlayerInventory inventory;
 
 	private GameObject mutateHolder;
 
@@ -19,7 +18,6 @@ public class PlayerInteract : MonoBehaviour
 
 	private void Start()
 	{
-		inventory = new PlayerInventory();
 		mutateHolder = player.mutationHolder;
 		lastInteractInput = 0;
 	}
@@ -36,7 +34,7 @@ public class PlayerInteract : MonoBehaviour
 			//if unlocking a door, do not pick up weapons;
 			if (!interactWorld())
 			{
-				player.pickupItem();
+				player.pickup();
 			}
 		}
 		lastInteractInput = _interactInput;
@@ -52,21 +50,31 @@ public class PlayerInteract : MonoBehaviour
 			{
 				//TODO: implement mutation selection
 				MutationSelect mutateSelect = target.gameObject.GetComponent<MutationSelect>();
-				if (mutateSelect != null)
+				if (mutateSelect != null && !mutateSelect.isActivated)
 				{
 					mutateSelect.activateSelectMenu(this);
 					return true;
 				}
 			}
 
-			AutoDoor doorInteract = target.transform.parent.gameObject.GetComponent<AutoDoor>();
+			UsableInterface usable = target.transform.GetComponentInParent<UsableInterface>();
+			if (usable != null)
+			{
+				usable.use(player);
+			}
+
+			AutoDoor doorInteract = target.transform.GetComponentInParent<AutoDoor>();
 			if (doorInteract != null)
 			{
-				if (inventory.keycardCount[(int)doorInteract.lockType] > 0)
+				PlayerStats stats = player.gameManager.playerStats;
+				if (stats.keycardCount[(int)doorInteract.lockType] > 0)
 				{
-					inventory.keycardCount[(int)doorInteract.lockType] --;
-					doorInteract.doorUnlock();
-					return true;
+					if (doorInteract._doorType != AutoDoor.doorType.REMOTE)
+					{
+						doorInteract.doorUnlock();
+						stats.useKeycard((int)doorInteract.lockType);
+						return true;
+					}
 				}
 			}
 		}
@@ -75,26 +83,6 @@ public class PlayerInteract : MonoBehaviour
 
 	public void equipMutation(MutationInterface mut)
 	{
-		if (mut != null)
-		{
-			var existingMuts = mutateHolder.GetComponents(mut.GetType());
-			if (existingMuts.Length > 0)
-			{
-				/* the mutation already exists - return */
-				return;
-			}
-			MutationInterface newMut = (MutationInterface)mutateHolder.AddComponent(mut.GetType());
-			if (null != (newMut = newMut.mEquip(player)))
-			{
-				if (newMut.getMutationType() == mutationTrigger.ACTIVE_SLOT)
-				{
-					if (player.activeSlots[0] == null)
-					{
-						player.activeSlots[0] = newMut;
-						return;
-					}
-				}
-			}
-		}
+		player.gameManager.playerStats.equipMutation(mut);
 	}
 }

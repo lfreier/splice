@@ -12,6 +12,8 @@ public class Cell : MonoBehaviour, PickupInterface
 	public float attractForce = 100;
 	public Animator animator;
 
+	[SerializeField]
+	private Sprite icon;
 	GameManager gameManager;
 
 	// Use this for initialization
@@ -72,6 +74,12 @@ public class Cell : MonoBehaviour, PickupInterface
 		return cellCount;
 	}
 
+	public Sprite getIcon()
+	{
+		return icon;
+	}
+
+
 	public pickupType getPickupType()
 	{
 		return pickupType.CELL;
@@ -84,12 +92,7 @@ public class Cell : MonoBehaviour, PickupInterface
 
 	public void pickup(Actor actorTarget)
 	{
-		PlayerInteract interact = actorTarget.gameObject.GetComponent<PlayerInteract>();
-		if (interact != null)
-		{
-			interact.inventory.addItem(this);
-		}
-
+		gameManager.playerStats.addItem(this);
 		animator.SetTrigger(CELL_ANIM_TRIGGER);
 	}
 	

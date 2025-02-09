@@ -3,6 +3,8 @@ using UnityEngine;
 
 public interface MutationInterface
 {
+	public string getDisplayName();
+
 	public Sprite getIcon();
 
 	public string getId();

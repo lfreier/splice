@@ -1,9 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using static Actor;
+using static ActorDefs;
 
 /* Includes logic for basic enemy movement.
  * Also has to interact with 'AI' for detection and where to move.
@@ -18,20 +19,24 @@ public class EnemyMove : MonoBehaviour
 	public Vector2[] idlePath;
 	public float[] idlePathPauseTime;
 	private float idlePauseTimer;
-	private int pathIndex;
+	public int pathIndex;
 
 	private Vector2 idleLookTarget;
 	private Vector2 eyeStart;
 
 	public detectMode _detection;
 	private detectMode _oldDetection;
+	private detectMode _startingDetection;
 
 	float currentSpeed;
 	private float stateSpeedIncrease;
 	private float maxStateSpeed;
 
+	public LockBehind lockWhenSpotted;
+
 	/* moveTarget will always be where the actor moves. Takes priority over the actor's hostile target. */
-	private Vector3 moveTarget;
+	public Vector3 moveTarget;
+	private Vector3 lastMoveTarget;
 	private Vector3 attackTarget;
 	private Actor attackTargetActor;
 
@@ -43,18 +48,51 @@ public class EnemyMove : MonoBehaviour
 	private float stateTimer;
 	private static float HOSTILE_TIMER_LENGTH = 4;
 	private static float LOST_TIMER_LENGTH = 2;
+	private static float PATH_TIMER_LENGTH = 0.3F;
 	private static float SUS_TIMER_LENGTH = 5;
+
+	public Pathfinding pathfinder;
+	private bool usingPathfinding;
 
 	public GameManager gameManager;
 
 	void Start()
 	{
 		gameManager = GameManager.Instance;
-		_detection = detectMode.idle;
+		pathfinder = new Pathfinding();
+		//pathfinder.grid = new PathGrid();
+		pathfinder.startPathfinding = false;
+		usingPathfinding = false;
+		LevelData levelData = gameManager.levelManager.currLevelData;
+		//pathfinder.grid.init(levelData.gridWorldSize, levelData.nodeRadius);
+		
+		PathColliderHelper colliderHelper = GetComponentInChildren<PathColliderHelper>();
+		if (colliderHelper != null)
+		{
+			colliderHelper.pathfinder = this.pathfinder;
+		}
+
+		/*
+		for (int i = 0; i < idlePath.Length; i ++)
+		{
+			PathNode temp = pathfinder.grid.nodeFromWorldPosition(idlePath[i]);
+			idlePath[i] = temp.position;
+		}
+		*/
+
+		if (_detection != detectMode.wandering && _detection != detectMode.nul)
+		{
+			_detection = detectMode.idle;
+		}
+		_startingDetection = _detection;
 		attackTargetActor = null;
+
 		pathIndex = 0;
 		idlePauseTimer = 0;
+		pathfinder.pathingTimer = 0;
 		idleLookTarget = transform.position + transform.up * 0.5F;
+
+		moveTarget = lastMoveTarget = actorBody.transform.position;
 	}
 
 	void FixedUpdate()
@@ -70,32 +108,31 @@ public class EnemyMove : MonoBehaviour
 		 * attackTargetActor is going to be null if the target can no longer be detected, e.g. the player moves out of sight range
 		 * Then the NPC should move to the last known location
 		 */
-		hearHostiles();
-		attackTargetActor = seeHostiles();
+		if (_detection != detectMode.nul && _detection != detectMode.forced)
+		{
+			hearHostiles();
+			attackTargetActor = seeHostiles();
+		}
 
 		/*  determine move target based on current state */
-		if (_detection == detectMode.idle && idlePath.Length > 0)
+		if ((_detection == detectMode.idle || _detection == detectMode.forced) && idlePath.Length > 0)
 		{
 			/* If at a path position, go to next */
-			if (((Vector2)actorBody.transform.position -  idlePath[pathIndex]).magnitude < 0.5F)
+			if (((Vector2)actorBody.transform.position -  idlePath[pathIndex]).magnitude < moveTargetError)
 			{
-				if (pathIndex >= idlePath.Length - 1)
+				if (pathIndex < idlePathPauseTime.Length)
 				{
-					pathIndex = 0;
-					if (idlePathPauseTime.Length > 0)
-					{
-						idlePauseTimer = idlePathPauseTime[0];
-					}
-				}
-				else
-				{
-					pathIndex++;
-					if (idlePathPauseTime.Length >= pathIndex - 1)
-					{
-						idlePauseTimer = idlePathPauseTime[pathIndex - 1];
-					}
+					idlePauseTimer = idlePathPauseTime[pathIndex];
 				}
 
+				pathIndex++;
+				/* reset at at the end of the array */
+				if (pathIndex >= idlePath.Length)
+				{
+					pathIndex = 0;
+					//this is done to make the forced state work
+					_detection = detectMode.idle;
+				}
 			}
 			
 			if (idlePauseTimer <= 0)
@@ -108,7 +145,7 @@ public class EnemyMove : MonoBehaviour
 				idlePauseTimer -= Time.deltaTime;
 			}
 		}
-		else if (_detection != detectMode.idle)
+		else if (_detection != detectMode.idle && _detection != detectMode.forced)
 		{
 			/* first, pickup a weapon if needed */
 			if (actor.isUnarmed())
@@ -156,6 +193,11 @@ public class EnemyMove : MonoBehaviour
 
 		handleEdges();
 
+		stateSpeedIncrease = _actorData.acceleration * _actorData.moveSpeed;
+		maxStateSpeed = _actorData.maxSpeed;
+
+		setStateMoveSpeed();
+
 		/*  determine move speed based on current state */
 		moveUpdate();
 	}
@@ -168,15 +210,21 @@ public class EnemyMove : MonoBehaviour
 		{
 			oldMoveInput = moveInput;
 			currentSpeed += stateSpeedIncrease;
+			
 		}
 		else
 		{
 			currentSpeed -= _actorData.deceleration * _actorData.moveSpeed;
 		}
 
+		lastMoveTarget = moveTarget;
+
 		currentSpeed = Mathf.Clamp(currentSpeed, 0, maxStateSpeed);
 
-		actor.Move(new Vector3(oldMoveInput.x * currentSpeed, oldMoveInput.y * currentSpeed));
+		if (!actor.movementLocked)
+		{
+			actor.Move(new Vector3(oldMoveInput.x * currentSpeed, oldMoveInput.y * currentSpeed));
+		}
 	}
 
 	private void calcMoveInput()
@@ -186,8 +234,65 @@ public class EnemyMove : MonoBehaviour
 			return;
 		}
 
-		Vector2 diff = moveTarget - this.transform.position;
-		moveInput = Vector2.ClampMagnitude(diff, 1F); 
+		/* only start pathfinding on a collision
+		 * when starting pathfinding, wait for the timer before changing moveTarget
+		 *
+		 */
+		Vector2 diff;
+		if (pathfinder != null && pathfinder.startPathfinding && pathfinder.pathingTimer <= 0)
+		{
+			Debug.Log("Finding path for: " + gameObject.name);
+			var tempTimer = System.Diagnostics.Stopwatch.StartNew();
+			pathfinder.findPath(actorBody.transform.position, moveTarget);
+			tempTimer.Stop();
+			Debug.Log("Pathfinding took " + tempTimer.ElapsedMilliseconds + " milliseconds");
+			usingPathfinding = true;
+			pathfinder.pathingTimer = PATH_TIMER_LENGTH;
+		}
+
+		if (usingPathfinding)
+		{
+			Vector3 newTarget;
+			/* if move target changes, then stop using pathfinding */
+			if (pathfinder.startPathfinding == false && (lastMoveTarget - moveTarget).magnitude > moveTargetError)
+			{
+				usingPathfinding = false;
+				diff = moveTarget - this.transform.position;
+				moveInput = Vector2.ClampMagnitude(diff, 1F);
+				return;
+			}
+			if (pathfinder.pathingTimer > 0)
+			{
+				pathfinder.pathingTimer -= Time.deltaTime;
+			}
+
+			newTarget = pathfinder.getNextMove(actorBody.transform.position, moveTargetError);
+			if (newTarget == null || (newTarget - actorBody.transform.position).magnitude <= moveTargetError)
+			{
+				diff = moveTarget - this.transform.position;
+				moveInput = Vector2.ClampMagnitude(diff, 1F);
+				return;
+			}
+
+			pathfinder.startPathfinding = false;
+			diff = newTarget - this.transform.position;
+			if (diff.magnitude > moveTargetError)
+			{
+				diff *= 1 / diff.magnitude;
+			}
+		}
+		else
+		{
+			diff = moveTarget - this.transform.position;
+		}
+
+		moveInput = Vector2.ClampMagnitude(diff, 1F);
+		
+		/* smooths out idle pathing */
+		if (_detection == detectMode.idle && idlePauseTimer == 0)
+		{
+			moveInput = diff.normalized;
+		}
 	}
 
 	private Collider2D findNearestWeapon(float withinRange)
@@ -255,16 +360,16 @@ public class EnemyMove : MonoBehaviour
 				_actorData.sightAngle = actor._actorScriptable.sightAngle * 1.5F;
 				stateTimer = SUS_TIMER_LENGTH;
 				break;
+			case detectMode.wandering:
+				_actorData.sightAngle = actor._actorScriptable.sightAngle;
+				moveTarget = transform.position + transform.up;
+				stateTimer = LOST_TIMER_LENGTH;
+				break;
 			default:
 				_actorData.sightAngle = actor._actorScriptable.sightAngle;
 				stateTimer = 0;
 				break;
 		}
-
-		stateSpeedIncrease = _actorData.acceleration * _actorData.moveSpeed;
-		maxStateSpeed = _actorData.maxSpeed;
-
-		setStateMoveSpeed();
 	}
 
 	private void handleArmedStates()
@@ -293,6 +398,7 @@ public class EnemyMove : MonoBehaviour
 				actorBody.rotation = actor.aimAngle(attackTarget);
 				break;
 			case detectMode.lost:
+			case detectMode.wandering:
 				/* Move in a random direction */
 				if (stateTimer <= 0)
 				{
@@ -300,11 +406,22 @@ public class EnemyMove : MonoBehaviour
 					float temp = Random.Range(2F, 4F);
 					moveTarget = transform.position + new Vector3(temp * Mathf.Sin(radAngle), temp * Mathf.Cos(radAngle), 0);
 					actorBody.rotation = actor.aimAngle(moveTarget);
-					stateTimer = LOST_TIMER_LENGTH;
+					if (_detection == detectMode.wandering)
+					{
+						stateTimer = SUS_TIMER_LENGTH + Random.Range(0, SUS_TIMER_LENGTH);
+					}
+					else
+					{
+						stateTimer = LOST_TIMER_LENGTH;
+					}
 				}
 				else
 				{
 					stateTimer -= Time.deltaTime;
+					if (_detection == detectMode.wandering)
+					{
+						moveTarget = eyeStart;
+					}
 				}
 				break;
 			case detectMode.suspicious:
@@ -344,7 +461,7 @@ public class EnemyMove : MonoBehaviour
 
 				if (Vector3.Magnitude(moveTarget - this.transform.position) <= ActorDefs.NPC_TRY_PICKUP_RANGE)
 				{
-					if (actor.pickupItem())
+					if (actor.pickup())
 					{
 						_detection = detectMode.hostile;
 						/* face attack target */
@@ -366,7 +483,7 @@ public class EnemyMove : MonoBehaviour
 		actorBody.rotation = actor.aimAngle(attackTarget);
 		if (stateTimer <= 0)
 		{
-			_detection = detectMode.idle;
+			_detection = _startingDetection;
 		}
 		else
 		{
@@ -465,6 +582,17 @@ public class EnemyMove : MonoBehaviour
 				_detection = detectMode.hostile;
 				actor.setAttackTarget(targetActor);
 				attackTarget = targetActor.transform.position;
+
+				if (lockWhenSpotted != null)
+				{
+					Collider2D[] actorColliders = new Collider2D[rayHit.rigidbody.attachedColliderCount];
+					rayHit.rigidbody.GetAttachedColliders(actorColliders);
+					if (actorColliders.Length > 0)
+					{
+						lockWhenSpotted.OnTriggerEnter2D(actorColliders[0]);
+					}
+				}
+
 				return targetActor;
 			}
 		}
@@ -522,6 +650,10 @@ public class EnemyMove : MonoBehaviour
 	{
 		switch (_detection)
 		{
+			case detectMode.wandering:
+				stateSpeedIncrease /= 4;
+				maxStateSpeed /= 4;
+				break;
 			case detectMode.idle:
 				stateSpeedIncrease /= 2;
 				maxStateSpeed /= 2;

@@ -223,8 +223,8 @@ GameObject:
   - component: {fileID: 3442740799414355683}
   - component: {fileID: 6529950160097543187}
   - component: {fileID: 6110609152592325587}
-  - component: {fileID: 6376094926111057244}
   - component: {fileID: 6751201215276469441}
+  - component: {fileID: 3952245092306356305}
   m_Layer: 15
   m_Name: BladeArmData
   m_TagString: ObjectWeapon
@@ -316,7 +316,7 @@ Animator:
   m_Avatar: {fileID: 0}
   m_Controller: {fileID: 9100000, guid: 5b8b012b99330cd45a563b5ed4101732, type: 2}
   m_CullingMode: 0
-  m_UpdateMode: 0
+  m_UpdateMode: 1
   m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
@@ -372,31 +372,6 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 0.6, y: 1.4}
   m_EdgeRadius: 0
---- !u!114 &6376094926111057244
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1931358901001870893}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4f2b7c4c185a0c74294700a8fb39e679, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  anim: {fileID: 6529950160097543187}
-  hitbox: {fileID: 6110609152592325587}
-  throwBox: {fileID: 5168576159283970348}
-  sprite: {fileID: 3442740799414355683}
-  damagedSprite: {fileID: 0}
-  trailSprite: {fileID: 1116959855127200068}
-  actorWielder: {fileID: 0}
-  _weaponScriptable: {fileID: 11400000, guid: e3de2277a3cbfa547b5ebe62311afece, type: 2}
-  _weaponPhysics: {fileID: 1630916773381673146}
-  actorHitSound: {fileID: 11400000, guid: 2dee26a68c8b6d14c9f1598aceb14c3a, type: 2}
-  wallHitSound: {fileID: 11400000, guid: 14171c28ed3adca408d74c2da5276215, type: 2}
-  weaponBreakSound: {fileID: 0}
-  weaponSwingSound: {fileID: 0}
 --- !u!114 &6751201215276469441
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -410,6 +385,33 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   icon: {fileID: 21300000, guid: 68da08f931c788247ae84c485f4fc911, type: 3}
+--- !u!114 &3952245092306356305
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1931358901001870893}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 048d2fd541e5d8a43a0dfcb0a359d379, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  anim: {fileID: 6529950160097543187}
+  hitbox: {fileID: 6110609152592325587}
+  throwBox: {fileID: 5168576159283970348}
+  sprite: {fileID: 3442740799414355683}
+  damagedSprite: {fileID: 0}
+  trailSprite: {fileID: 1116959855127200068}
+  actorWielder: {fileID: 0}
+  _weaponScriptable: {fileID: 11400000, guid: e3de2277a3cbfa547b5ebe62311afece, type: 2}
+  _weaponPhysics: {fileID: 1630916773381673146}
+  actorHitSound: {fileID: 11400000, guid: fc7b5a00970e656469c43cf634631693, type: 2}
+  wallHitSound: {fileID: 11400000, guid: 14171c28ed3adca408d74c2da5276215, type: 2}
+  weaponBreakSound: {fileID: 0}
+  weaponSwingSound: {fileID: 0}
+  currentSide: 0
+  durability: 0
 --- !u!1 &4928944941135937805
 GameObject:
   m_ObjectHideFlags: 0

@@ -12,7 +12,8 @@ GameObject:
   - component: {fileID: 7807334658758258804}
   - component: {fileID: 7568629544581041799}
   - component: {fileID: 8105130860012542933}
-  m_Layer: 7
+  - component: {fileID: 4060485766027452596}
+  m_Layer: 13
   m_Name: table_small
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -51,6 +52,8 @@ SpriteRenderer:
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 0
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -98,9 +101,9 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 1
-  m_LinearDrag: 0
-  m_AngularDrag: 0.05
+  m_Mass: 5
+  m_LinearDrag: 8
+  m_AngularDrag: 10
   m_GravityScale: 1
   m_Material: {fileID: 0}
   m_IncludeLayers:
@@ -111,7 +114,7 @@ Rigidbody2D:
     m_Bits: 0
   m_Interpolate: 0
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 0
 --- !u!58 &8105130860012542933
 CircleCollider2D:
@@ -149,3 +152,17 @@ CircleCollider2D:
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
   m_Radius: 0.8
+--- !u!114 &4060485766027452596
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2248485062928932828}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e0430fdafca962d409e83d3c13ca6875, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _obstacleScriptable: {fileID: 11400000, guid: 93504fb53eb5b1144b11a3ef537b6a59, type: 2}
+  obstacleBody: {fileID: 7568629544581041799}

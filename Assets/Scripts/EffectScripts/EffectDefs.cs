@@ -15,6 +15,12 @@ public class EffectDefs
 
 	public static void effectApply(Actor target, EffectScriptable effectData)
 	{
+		if (effectData == null)
+		{
+			Debug.Log("Cannot apply null effect");
+			return;
+		}
+
 		/* create new effect, attach it, and initialize it */
 		GameObject prefab = GameObject.Instantiate(effectData.effectPrefab, Vector3.zero, Quaternion.identity);
 		EffectInterface newEffect = prefab.GetComponent<EffectInterface>();

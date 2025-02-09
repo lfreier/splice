@@ -17,8 +17,15 @@ public class ObstacleScriptable : ScriptableObject
 	public float maxObstacleForce { get; private set; } = 8000F;
 
 	[field: SerializeField]
+	public ObstacleDefs.type type { get; private set; } = ObstacleDefs.type.NORMAL;
+
+	[field: SerializeField]
 	public float weaponDurabilityDamage { get; private set; } = 0.1F;
 
 	[field: SerializeField]
 	public float weaponHitMult { get; private set; } = 2F;
+
+	[field: SerializeField]
+	/* Internal weight 'class' - determines if an obstacle can be moved in certain situations (like being grabbed by the limb) */
+	public weightClass weight { get; private set; } = weightClass.MID;
 }

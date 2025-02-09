@@ -49,6 +49,8 @@ SpriteRenderer:
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 0
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -95,6 +97,7 @@ GameObject:
   - component: {fileID: 8640932896577420383}
   - component: {fileID: 4977772254644910428}
   - component: {fileID: 7042054641042475375}
+  - component: {fileID: 3543781274744704360}
   m_Layer: 31
   m_Name: auto_door1
   m_TagString: WallMetal
@@ -135,6 +138,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8bac3524cf569fb47b960a381baa8a15, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _doorType: 0
   locked: 0
   lockSprite: {fileID: 5132895676981951594}
   lockType: 0
@@ -162,6 +166,19 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &3543781274744704360
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3983673098902023322}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf336abf081bc2246bab9dfaca64e293, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  guid: 
 --- !u!1 &6108448246285527577
 GameObject:
   m_ObjectHideFlags: 0
@@ -289,6 +306,8 @@ SpriteRenderer:
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 0
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -335,7 +354,7 @@ GameObject:
   - component: {fileID: 3165877840904289851}
   - component: {fileID: 452065695543157134}
   - component: {fileID: 4559284024274786769}
-  m_Layer: 6
+  m_Layer: 14
   m_Name: auto_door1 (1)
   m_TagString: WallMetal
   m_Icon: {fileID: 0}
@@ -374,6 +393,8 @@ SpriteRenderer:
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 0
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -504,6 +525,8 @@ SpriteRenderer:
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 0
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -550,7 +573,7 @@ GameObject:
   - component: {fileID: 5393002915436178959}
   - component: {fileID: 3233932905664839279}
   - component: {fileID: 3858416088514600466}
-  m_Layer: 6
+  m_Layer: 14
   m_Name: auto_door1
   m_TagString: WallMetal
   m_Icon: {fileID: 0}
@@ -589,6 +612,8 @@ SpriteRenderer:
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 0
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:

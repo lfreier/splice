@@ -12,7 +12,9 @@ GameObject:
   - component: {fileID: 2401958165635604429}
   - component: {fileID: 2737905760543029366}
   - component: {fileID: 4294341438885202313}
-  m_Layer: 7
+  - component: {fileID: 490808859570672265}
+  - component: {fileID: -2692900505047113629}
+  m_Layer: 14
   m_Name: file_cabinet1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -52,6 +54,8 @@ SpriteRenderer:
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 0
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -73,8 +77,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 919069219
-  m_SortingLayer: 2
+  m_SortingLayerID: 2129607759
+  m_SortingLayer: 3
   m_SortingOrder: -1
   m_Sprite: {fileID: 21300000, guid: b50da72eed94a0343a687d9aa9e96602, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -99,9 +103,9 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 1
-  m_LinearDrag: 0
-  m_AngularDrag: 0.05
+  m_Mass: 5
+  m_LinearDrag: 8
+  m_AngularDrag: 10
   m_GravityScale: 1
   m_Material: {fileID: 0}
   m_IncludeLayers:
@@ -160,6 +164,37 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 3, y: 1.1}
   m_EdgeRadius: 0
+--- !u!114 &490808859570672265
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3301648032349487571}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e0430fdafca962d409e83d3c13ca6875, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _obstacleScriptable: {fileID: 11400000, guid: 93504fb53eb5b1144b11a3ef537b6a59, type: 2}
+  obstacleBody: {fileID: 2737905760543029366}
+  spriteRenderer: {fileID: 0}
+  secondSprite: {fileID: 0}
+  knockVelocityThreshold: 0.5
+  knockOverDrag: 2.5
+--- !u!114 &-2692900505047113629
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3301648032349487571}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf336abf081bc2246bab9dfaca64e293, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  guid: file_cabinet1_28c68567-7f3d-4ed2-a913-27782b811a69
 --- !u!1 &3899731082446351483
 GameObject:
   m_ObjectHideFlags: 0
@@ -253,7 +288,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f174b3609e3249846a06f650e5eb86b8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pickup: {fileID: 1192526033329145194, guid: 667ae61a41d03f34bb1259307cf06291, type: 3}
+  pickup:
+  - {fileID: 1192526033329145194, guid: 667ae61a41d03f34bb1259307cf06291, type: 3}
 --- !u!114 &1910654144285547258
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -287,6 +323,8 @@ SpriteRenderer:
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 0
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -308,8 +346,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 919069219
-  m_SortingLayer: 2
+  m_SortingLayerID: 2129607759
+  m_SortingLayer: 3
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: cf4bb8dee61f2cc4e90d6652d29334e1, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}

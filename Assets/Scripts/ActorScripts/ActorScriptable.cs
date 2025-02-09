@@ -7,6 +7,9 @@ public class ActorScriptable : ScriptableObject
 {
 
 	[field: SerializeField]
+	public float armor { get; private set; } = 0F;
+
+	[field: SerializeField]
 	public float health { get; private set; } = 2F;
 
 	[field: SerializeField]
@@ -38,6 +41,6 @@ public class ActorScriptable : ScriptableObject
 	public float frightenedDistance { get; private set; } = 3F;
 
 	[field: SerializeField]
-	/*  */
-	public float knockbackResist { get; private set; } = 5F;
+	/* ratio between 0 and 1 */
+	public float knockbackResist { get; private set; } = 0.5F;
 }

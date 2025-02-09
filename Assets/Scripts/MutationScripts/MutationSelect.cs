@@ -1,32 +1,22 @@
 ﻿using System.Collections;
 using UnityEngine;
-using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
-using static UnityEngine.GraphicsBuffer;
 
 public class MutationSelect : MonoBehaviour
 {
 	public GameObject[] mutationPrefabs;
 
-	public bool startingSelect = false;
+	public bool isActivated;
 
 	private PlayerInteract interact;
 
 	private CameraHandler camHandler;
 
 	private AsyncOperation op;
-	private GameManager gameManager;
 
 	private void Start()
 	{
-		gameManager = GameManager.Instance;
-		if (gameManager != null && startingSelect)
-		{
-			if (!gameManager.startWithSelect)
-			{
-				this.gameObject.SetActive(false);
-			}
-		}
+		isActivated = false;
 	}
 
 	private void Update()
@@ -44,13 +34,14 @@ public class MutationSelect : MonoBehaviour
 
 	public void activateSelectMenu(PlayerInteract player)
 	{
+		isActivated = true;
 		interact = player;
 		camHandler = Camera.main.transform.GetComponent<CameraHandler>();
 		if (camHandler != null)
 		{
 			camHandler.stopCam(true);
 		}
-		op = SceneManager.LoadSceneAsync(SceneDefs.MUTATION_SELECT_SCENE, LoadSceneMode.Additive);
+		op = SceneManager.LoadSceneAsync((int)SceneDefs.SCENE.MUTATION_SELECT, LoadSceneMode.Additive);
 		op.allowSceneActivation = true;
 	}
 
