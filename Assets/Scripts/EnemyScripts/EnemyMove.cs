@@ -395,6 +395,15 @@ public class EnemyMove : MonoBehaviour
 				{
 					_detection = detectMode.lost;
 				}
+				if (stateTimer <= 0)
+				{
+					_detection = detectMode.lost;
+					stateTimer = LOST_TIMER_LENGTH;
+				}
+				else
+				{
+					stateTimer -= Time.deltaTime;
+				}
 				actorBody.rotation = actor.aimAngle(attackTarget);
 				break;
 			case detectMode.lost:

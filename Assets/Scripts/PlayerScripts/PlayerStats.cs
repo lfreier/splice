@@ -277,6 +277,7 @@ public class PlayerStats
 					{
 						equipMutation(mutInt);
 						GameObject.Destroy(mut);
+						showMutationBar();
 					}
 				}
 			}
