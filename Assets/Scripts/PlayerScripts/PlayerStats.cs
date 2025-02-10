@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Threading.Tasks;
 using UnityEngine;
 using static PickupDefs;
 
@@ -28,6 +29,7 @@ public class PlayerStats
 	
 	private GameObject[] mutationList;
 	public GameObject weaponEquipped;
+	public int weaponCharge;
 
 	public PlayerHUD playerHUD;
 
@@ -240,7 +242,7 @@ public class PlayerStats
 		}
 	}
 
-	public void loadPlayerData(Actor playerActor)
+	public async Task loadPlayerData(Actor playerActor)
 	{
 		player = playerActor;
 
@@ -330,6 +332,12 @@ public class PlayerStats
 			{
 				weaponEquipped.SetActive(false);
 				weaponEquipped.transform.SetParent(gameManager.gameObject.transform);
+				SwingBatteryWeapon swing = weaponEquipped.GetComponentInChildren<SwingBatteryWeapon>();
+				if (swing != null)
+				{
+					weaponCharge = swing.filledBatteries;
+					swing.startingCharge = weaponCharge;
+				}
 			}
 		}
 		else
