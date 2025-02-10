@@ -127,7 +127,7 @@ public class LevelManager : MonoBehaviour
 						await Task.Delay(10);
 					}
 					gameManager.playerStats.player = playerActor;
-					gameManager.playerStats.loadPlayerData(playerActor);
+					await gameManager.playerStats.loadPlayerData(playerActor);
 				}
 			}
 
@@ -402,6 +402,13 @@ public class LevelManager : MonoBehaviour
 				weapSave.basicData.xPosition = parent.position.x;
 				weapSave.basicData.yPosition = parent.position.y;
 				weapSave.basicData.rotation = weapon._weaponPhysics.weaponBody.rotation;
+
+				SwingBatteryWeapon swing = weapon.gameObject.GetComponentInChildren<SwingBatteryWeapon>();
+				if (swing != null)
+				{
+					weapSave.basicData.option = swing.filledBatteries;
+				}
+
 				weaponTable.Add(item.Key, weapSave);
 				continue;
 			}

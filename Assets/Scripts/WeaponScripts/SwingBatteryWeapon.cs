@@ -72,6 +72,24 @@ public class SwingBatteryWeapon : BasicWeapon
 		filledBatteries = (int)newCount;
 	}
 
+	public void setBatteries(int toSet)
+	{
+		float newCount = Mathf.Min(maxBatteries, toSet);
+
+		int i = 0;
+		for (i = 0; i < newCount; i++)
+		{
+			batterySprites[i].enabled = true;
+		}
+		for ( ; i < maxBatteries; i ++)
+		{
+			batterySprites[i].enabled = false;
+		}
+		filledBatteries = (int)newCount;
+
+		isInit = true;
+	}
+
 	public override float getWeaponDamage()
 	{
 		if (filledBatteries > 0)
@@ -87,7 +105,7 @@ public class SwingBatteryWeapon : BasicWeapon
 		{
 			maxBatteries = batterySprites.Length;
 		}
-		fillBatteries((int)startingCharge);
+		setBatteries((int)startingCharge);
 
 		baseSprite = sprite.sprite;
 	}
