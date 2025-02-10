@@ -58,6 +58,7 @@ public class ActorDefs
 
 		toReturn.health = toCopy.health;
 		toReturn.maxHealth = toCopy.maxHealth;
+		toReturn.armor = toCopy.armor;
 		toReturn.shield = 0;
 
 		toReturn.maxSpeed = toCopy.maxSpeed;
