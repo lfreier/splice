@@ -278,12 +278,10 @@ public class PlayerStats
 					if (mutInt != null)
 					{
 						equipMutation(mutInt);
-						GameObject.Destroy(mut);
 						showMutationBar();
 					}
 				}
 			}
-			mutationList = null;
 		}
 
 		if (weaponEquipped != null)
