@@ -19,7 +19,7 @@ MonoBehaviour:
   <moveSpeed>k__BackingField: 0.2
   <acceleration>k__BackingField: 0.3
   <deceleration>k__BackingField: 0.15
-  <hearingRange>k__BackingField: 9
+  <hearingRange>k__BackingField: 8
   <sightRange>k__BackingField: 6
   <sightAngle>k__BackingField: 130
   <frightenedDistance>k__BackingField: 0

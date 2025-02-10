@@ -16,6 +16,7 @@ MonoBehaviour:
   <collisionDamageThreshold>k__BackingField: 15
   <collisionDamage>k__BackingField: 1
   <maxObstacleForce>k__BackingField: 12000
-  <weaponDurabilityDamage>k__BackingField: 0.05
+  <type>k__BackingField: 0
+  <weaponDurabilityDamage>k__BackingField: 0
   <weaponHitMult>k__BackingField: 1.6
   <weight>k__BackingField: 1
