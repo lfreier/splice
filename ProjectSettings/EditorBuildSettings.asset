@@ -41,5 +41,8 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/LevelOffice.unity
     guid: 3de157fe2c6e72d4397220fd5c879db4
+  - enabled: 1
+    path: Assets/Scenes/HubScene.unity
+    guid: c716571d9e89d7d499e71f16ee7427c6
   m_configObjects: {}
   m_UseUCBPForAssetBundles: 0

@@ -56,6 +56,7 @@ public class Actor : MonoBehaviour
 	private float speedCheck;
 
 	private string setSide = null;
+	private string oneSidePermanent = null;
 
 	public bool invincible = false;
 
@@ -299,11 +300,6 @@ public class Actor : MonoBehaviour
 
 		equippedWeaponInt.setActorToHold(this);
 
-		if (setSide != null)
-		{
-			setAttackOnly(setSide);
-		}
-
 		return true;
 	}
 
@@ -532,7 +528,7 @@ public class Actor : MonoBehaviour
 		attackTarget = targetActor;
 	}
 
-	public void setAttackOnly(string animStateSide)
+	public void setAttackOnly(string animStateSide, bool permanent)
 	{
 		BasicWeapon weaponScript = equippedWeapon.GetComponentInChildren<BasicWeapon>();
 		if (weaponScript == null)
@@ -540,13 +536,28 @@ public class Actor : MonoBehaviour
 			return;
 		}
 
-		bool toSet = animStateSide == WeaponDefs.ANIM_BOOL_ONLY_RIGHT;
+		if (permanent && System.String.IsNullOrEmpty(oneSidePermanent))
+		{
+			oneSidePermanent = animStateSide;
+		}
+		if (System.String.IsNullOrEmpty(animStateSide) && System.String.IsNullOrEmpty(oneSidePermanent))
+		{
+			setSide = null;
+			weaponScript.anim.SetBool(WeaponDefs.ANIM_BOOL_ONLY_RIGHT, false);
+			weaponScript.anim.SetBool(WeaponDefs.ANIM_BOOL_ONLY_LEFT, false);
+			return;
+		}
+
+		// set to permanent if set
+		string setString = System.String.IsNullOrEmpty(oneSidePermanent) ? animStateSide : oneSidePermanent;
+
+		bool toSet = setString == WeaponDefs.ANIM_BOOL_ONLY_RIGHT;
 		weaponScript.anim.SetBool(WeaponDefs.ANIM_BOOL_ONLY_RIGHT, toSet);
 		weaponScript.anim.SetBool(WeaponDefs.ANIM_BOOL_ONLY_LEFT, !toSet);
 		weaponScript.anim.SetTrigger(WeaponDefs.ANIM_TRIGGER_SWAP_SIDE);
 		equippedWeaponInt.setStartingPosition(toSet);
 
-		setSide = animStateSide;
+		setSide = setString;
 	}
 
 	public void setColor(Color newColor)
@@ -636,7 +647,15 @@ public class Actor : MonoBehaviour
 
 		float startingHealth = actorData.health;
 		/* make sure we dont go negative armor like a dumb */
-		float damageTaken = actorData.armor > damage ? 0 : (damage - actorData.armor);
+		float damageTaken = damage;
+		if (actorData.armor > 0)
+		{
+			damageTaken = actorData.armor > damage ? 0 : (damage - actorData.armor);
+			if (damage > 0 && damageTaken == 0)
+			{
+				damageTaken = 0.5F;
+			}
+		}
 
 		if (damageTaken <= 0)
 		{

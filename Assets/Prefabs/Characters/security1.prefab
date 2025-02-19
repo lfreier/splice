@@ -13,6 +13,14 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 11400000, guid: 16f7ba50317fbc64f9b1238e213c50ed, type: 2}
     - target: {fileID: 2023260988043286838, guid: f3bb2ddd86bcc0544af59b764dd961fa, type: 3}
+      propertyPath: cellDropMax
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 2023260988043286838, guid: f3bb2ddd86bcc0544af59b764dd961fa, type: 3}
+      propertyPath: cellDropMin
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 2023260988043286838, guid: f3bb2ddd86bcc0544af59b764dd961fa, type: 3}
       propertyPath: spriteList.Array.size
       value: 1
       objectReference: {fileID: 0}

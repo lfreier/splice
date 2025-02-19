@@ -138,7 +138,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bf336abf081bc2246bab9dfaca64e293, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  guid: 
+  guid: scalpel_d6faed61-d8c7-4630-a3a7-d1cf443cc314
 --- !u!1 &1931358901001870893
 GameObject:
   m_ObjectHideFlags: 0
@@ -257,7 +257,9 @@ MonoBehaviour:
   weaponBreakSound: {fileID: 0}
   weaponSwingSound: {fileID: 0}
   currentSide: 0
+  attackOnlyRight: 1
   durability: 0
+  isInit: 0
 --- !u!95 &6529950160097543187
 Animator:
   serializedVersion: 7
@@ -615,13 +617,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7691247651057040972}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0.30070576, w: 0.953717}
-  m_LocalPosition: {x: -0.3481821, y: 0.061393917, z: 0}
+  m_LocalRotation: {x: 0, y: 0, z: 0.42261827, w: 0.9063079}
+  m_LocalPosition: {x: -0.42209533, y: -0.15763459, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3398982447540545742}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 35}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 50}
 --- !u!212 &1376748707928612415
 SpriteRenderer:
   m_ObjectHideFlags: 0

@@ -60,7 +60,7 @@ public class LevelManager : MonoBehaviour
 
 	public GameObject[] savedActors;
 
-	public static int NUM_SAVE_STATIONS = 2;
+	public static int NUM_SAVE_STATIONS = 5;
 	public bool[] usedSavedStations = new bool[NUM_SAVE_STATIONS];
 
 	public Dictionary<string, GUIDWatcher>	guidTable = new Dictionary<string, GUIDWatcher>();
@@ -77,7 +77,13 @@ public class LevelManager : MonoBehaviour
 		levelStartSpawn = 0,
 		levelStartSaveSpawn = 1,
 		levelOfficeSpawn = 2,
-		levelOfficeSaveSpawn = 3
+		levelOfficeSaveSpawn = 3,
+		levelHubSpawn = 4,
+		levelHubSaveSpawn = 5,
+		levelWarehouseSpawn = 6,
+		levelWarehouseSaveSpawn = 7,
+		levelArchSpawn = 8,
+		levelArchSaveSpawn = 9
 	}
 
 	public CameraHandler camHandler;

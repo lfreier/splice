@@ -28,6 +28,8 @@ public abstract class BasicWeapon : MonoBehaviour, WeaponInterface
 
 	public bool currentSide;
 
+	public bool attackOnlyRight;
+
 	private GameManager gameManager;
 
 	public float durability;
@@ -186,6 +188,14 @@ public abstract class BasicWeapon : MonoBehaviour, WeaponInterface
 		{
 			secondaryAction.setActorToHold(actor);
 		}
+		if (attackOnlyRight)
+		{
+			actorWielder.setAttackOnly(WeaponDefs.ANIM_BOOL_ONLY_RIGHT, false);
+		}
+		else
+		{
+			actorWielder.setAttackOnly("", false);
+		}
 	}
 
 	public void setHitbox(bool toggle)
@@ -243,13 +253,13 @@ public abstract class BasicWeapon : MonoBehaviour, WeaponInterface
 
 	public bool toggleCollider()
 	{
-		if (trailSprite != null)
-		{
-			trailSprite.enabled = !trailSprite.enabled;
-		}
 		if (hitbox == null)
 		{
 			return false;
+		}
+		if (trailSprite != null)
+		{
+			trailSprite.enabled = !trailSprite.enabled;
 		}
 		return hitbox.enabled = !hitbox.enabled;
 	}

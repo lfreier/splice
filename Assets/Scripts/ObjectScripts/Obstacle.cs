@@ -13,7 +13,10 @@ public class Obstacle : MonoBehaviour
 	private bool physicsEnabled = false;
 	private bool thresholdPassed = false;
 	private float velocityThreshold = 0.05F;
-	public float knockVelocityThreshold = 0.5F;
+	public float knockVelocityThreshold = 5F;
+	public float angVelocityThreshold = 20F;
+
+	private float thresholdTimer;
 
 	public float knockOverDrag = 3F;
 
@@ -45,17 +48,26 @@ public class Obstacle : MonoBehaviour
 		}
 		else if (physicsEnabled && obstacleBody != null)
 		{
-			if (obstacleBody.velocity.magnitude > knockVelocityThreshold)
+			if (thresholdPassed)
+			{
+				thresholdTimer -= Time.deltaTime;
+				if (thresholdTimer <= 0)
+				{
+					obstacleBody.bodyType = obstacleType;
+					physicsEnabled = false;
+					thresholdPassed = false;
+					obstacleBody.drag *= knockOverDrag;
+					thresholdTimer = 0;
+				}
+			}
+			//TODO: angular velocity
+			if (obstacleBody.velocity.magnitude > knockVelocityThreshold || Mathf.Abs(obstacleBody.angularVelocity) > angVelocityThreshold)
 			{
 				thresholdPassed = true;
+				thresholdTimer = 0.15F;
 			}
-			if (thresholdPassed && obstacleBody.velocity.magnitude <= knockVelocityThreshold)
-			{
-				obstacleBody.bodyType = obstacleType;
-				physicsEnabled = false;
-				thresholdPassed = false;
-				obstacleBody.drag *= knockOverDrag;
-			}
+
+			Debug.Log("Velocities: " + obstacleBody.velocity.magnitude + " " + obstacleBody.angularVelocity);
 		}
 	}
 

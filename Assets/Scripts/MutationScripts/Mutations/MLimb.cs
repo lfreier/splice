@@ -307,7 +307,7 @@ public class MLimb : MonoBehaviour, MutationInterface
 		gm.playerAbilityReleaseEvent += abilityInputReleased;
 
 		/* when limb is equipped, player can only attach from the right side */
-		wielder.setAttackOnly(WeaponDefs.ANIM_BOOL_ONLY_RIGHT);
+		wielder.setAttackOnly(WeaponDefs.ANIM_BOOL_ONLY_RIGHT, true);
 
 		Debug.Log("Limb state is now idle");
 		limbState = retracted.IDLE;

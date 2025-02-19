@@ -15,21 +15,21 @@ MonoBehaviour:
   <arc>k__BackingField: 90
   <atkSpeed>k__BackingField: 0.2
   <canBeDropped>k__BackingField: 1
-  <damage>k__BackingField: 0.5
-  <durability>k__BackingField: 8
+  <damage>k__BackingField: 1
+  <durability>k__BackingField: 5
   <npcAttackRange>k__BackingField: 1.75
   <prefabIndex>k__BackingField: 2
   <secondaryDamage>k__BackingField: 1.5
   <throwDamage>k__BackingField: 1
   <throwDurabilityDamage>k__BackingField: 0.5
-  <throwSpeed>k__BackingField: 62
+  <throwSpeed>k__BackingField: 50
   <throwWeight>k__BackingField: 2
   <throwHurtSpeed>k__BackingField: 15
   <weaponType>k__BackingField: 1
-  equipPosX: 0.25
+  equipPosX: 0.375
   equipPosY: 0.25
-  equipRotZ: -35
-  equipOtherPosX: -0.1595761
-  equipOtherPosY: -0.03679
-  equipOtherRotZ: 35
-  <knockbackDamage>k__BackingField: 1.5
+  equipRotZ: -50
+  equipOtherPosX: -0.4625
+  equipOtherPosY: -0.625
+  equipOtherRotZ: 100
+  <knockbackDamage>k__BackingField: 0

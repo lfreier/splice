@@ -14,12 +14,15 @@ public class SceneDefs
 		WIN = 8,
 		SAVING = 9,
 		LEVEL_START = 10,
-		LEVEL_OFFICE = 11
+		LEVEL_OFFICE = 11,
+		LEVEL_HUB = 12,
+		LEVEL_WAREHOUSE = 13,
+		LEVEL_ARCH = 14
 	}
 
 	public static int[] BACKGROUND_SCENES = { (int)SCENE.MANAGER, (int)SCENE.PLAYER_HUD, (int)SCENE.LOADING, (int)SCENE.INVENTORY_HUD };
 
-	public static int NUM_SCENES = (int)SCENE.LEVEL_OFFICE + 1;
+	public static int NUM_SCENES = (int)SCENE.LEVEL_ARCH + 1;
 
 	public static bool isLevelScene(int toCheck)
 	{

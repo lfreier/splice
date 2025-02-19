@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: footstep
   m_EditorClassIdentifier: 
   <audioClip>k__BackingField: {fileID: 8300000, guid: 1d63fcbc8fcf97e4ab818c9c059d8ffe, type: 3}
-  <length>k__BackingField: 0.5
+  <length>k__BackingField: 0.2
   <radius>k__BackingField: 1
   <type>k__BackingField: 0
   <triggerSpeed>k__BackingField: 8

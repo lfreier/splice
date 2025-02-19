@@ -187,15 +187,23 @@ public class GameManager : MonoBehaviour
 				{
 					case (int)SCENE.LEVEL_START:
 						levelManager.lastSavedSpawn = (int)LevelManager.levelSpawnIndex.levelStartSpawn;
-						levelManager.lastSavedLevelIndex = (int)SCENE.LEVEL_START;
 						break;
 					case (int)SCENE.LEVEL_OFFICE:
 						levelManager.lastSavedSpawn = (int)LevelManager.levelSpawnIndex.levelOfficeSpawn;
-						levelManager.lastSavedLevelIndex = (int)SCENE.LEVEL_OFFICE;
+						break;
+					case (int)SCENE.LEVEL_HUB:
+						levelManager.lastSavedSpawn = (int)LevelManager.levelSpawnIndex.levelHubSpawn;
+						break;
+					case (int)SCENE.LEVEL_WAREHOUSE:
+						levelManager.lastSavedSpawn = (int)LevelManager.levelSpawnIndex.levelWarehouseSpawn;
+						break;
+					case (int)SCENE.LEVEL_ARCH:
+						levelManager.lastSavedSpawn = (int)LevelManager.levelSpawnIndex.levelArchSpawn;
 						break;
 					default:
 						break;
 				}
+				levelManager.lastSavedLevelIndex = currentScene;
 				await levelManager.startNewLevel(-1);
 				break;
 			}
