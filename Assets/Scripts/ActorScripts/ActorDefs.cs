@@ -9,15 +9,16 @@ public class ActorDefs
 	public static string teamScienceTag = "TeamScience";
 	public static string playerTag = "Player";
 
-	public static float GLOBAL_PICKUP_RANGE = 1F;
-	public static float GLOBAL_PICKUP_OFFSET = 0.6F;
+	public static float GLOBAL_PICKUP_RANGE = 0.75F;
+	public static float GLOBAL_PICKUP_RADIUS = 0.65F;
+	public static float GLOBAL_PICKUP_OFFSET = 0.25F;
 
 	public static float NPC_TRY_PICKUP_RANGE = 2F;
 
 	public static float PLAYER_WALK_SPEED = 0.4F;
 
-	public static float MAX_PARRY_FORCE= 2000F;
-	public static float MAX_HIT_FORCE = 3000F;
+	public static float MAX_PARRY_FORCE= 1000F;
+	public static float MAX_HIT_FORCE = 1500F;
 	public struct ActorData
 	{
 		public float armor;

@@ -4,9 +4,13 @@ using UnityEngine;
 public class PickupEngine : MonoBehaviour
 {
 	public SpriteRenderer pickupGlow;
+	private bool glowEnabled = true;
+	public SpriteRenderer pickupHighlight;
 	private Color glowColor;
 
-	public float glowTimer = 1F;
+	public bool onlyHighight = false;
+
+	public float glowTimer = 0.7F;
 	public float glowIncTimer = 0.1F;
 	public float glowChange = 0.1F;
 
@@ -24,12 +28,20 @@ public class PickupEngine : MonoBehaviour
 	{
 		timer = glowTimer;
 		incTimer = glowIncTimer;
-		glowColor = pickupGlow.color;
+		if (pickupGlow != null)
+		{
+			glowColor = pickupGlow.color;
+		}
 	}
 
 	// Update is called once per frame
 	void Update()
 	{
+		if (onlyHighight || pickupGlow == null)
+		{
+			return;
+		}
+
 		if (timer <= 0)
 		{
 			incTimer = glowIncTimer;
@@ -79,6 +91,28 @@ public class PickupEngine : MonoBehaviour
 
 	public void disableGlow()
 	{
-		pickupGlow.enabled = false;
+		glowEnabled = false;
+		if (pickupGlow != null)
+		{
+			pickupGlow.enabled = false;
+		}
+	}
+
+	public void enableHighlight()
+	{
+		if (pickupGlow != null)
+		{
+			pickupGlow.enabled = false;
+		}
+		pickupHighlight.enabled = true;
+	}
+
+	public void disableHighlight()
+	{
+		if (glowEnabled && pickupGlow != null)
+		{
+			pickupGlow.enabled = true;
+		}
+		pickupHighlight.enabled = false;
 	}
 }

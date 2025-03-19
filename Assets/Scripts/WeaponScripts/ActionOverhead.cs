@@ -65,6 +65,10 @@ public class ActionOverhead : MonoBehaviour, ActionInterface
 	/* called by the overhead animation */
 	public void startOverheadFrames()
 	{
+		if (weapon == null)
+		{
+			return;
+		}
 		if (actorWielder == null)
 		{
 			return;
@@ -95,12 +99,21 @@ public class ActionOverhead : MonoBehaviour, ActionInterface
 	/* called by the overhead animation */
 	public void startSweetspotFrames()
 	{
+		if (weapon == null)
+		{
+			return;
+		}
 		sweetSpotHitbox.enabled = true;
 	}
 
 	/* called by the overhead animation - resets sprites and data, but NOT hitbox */
 	public void stopOverhead()
 	{
+		if (weapon == null)
+		{
+			return;
+		}
+
 		//need to set startingPosition
 		weapon.setStartingPosition(weaponStartSide);
 
@@ -117,6 +130,10 @@ public class ActionOverhead : MonoBehaviour, ActionInterface
 	 */
 	public bool toggleHitbox()
 	{
+		if (weapon == null)
+		{
+			return false;
+		}
 		if (overheadHitbox.enabled)
 		{
 			//disable the dash

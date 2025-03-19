@@ -13,6 +13,8 @@ public interface WeaponInterface
 
 	public Actor getActorWielder();
 
+	public GameObject getGameObject();
+
 	public WeaponScriptable getScriptable();
 
 	public float getSpeed();
@@ -35,5 +37,5 @@ public interface WeaponInterface
 	
 	public void throwWeapon(Vector3 target);
 
-	public bool toggleCollider();
+	public bool toggleCollider(int enable);
 }

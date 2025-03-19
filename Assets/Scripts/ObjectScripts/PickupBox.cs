@@ -4,6 +4,7 @@ using UnityEngine;
 public class PickupBox : MonoBehaviour
 {
 	public GameObject[] pickup;
+	public Collider2D pickupCollider;
 
 	private int pickupIndex;
 
@@ -19,6 +20,10 @@ public class PickupBox : MonoBehaviour
 		if ((pickup == null || pickup.Length <= 0 || pickup[0] == null) && engine != null)
 		{
 			engine.disableGlow();
+			if (pickupCollider != null)
+			{
+				pickupCollider.enabled = false;
+			}
 		}
 	}
 

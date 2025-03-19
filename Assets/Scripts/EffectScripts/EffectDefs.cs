@@ -10,7 +10,10 @@ public class EffectDefs
 	{
 		NONE = 0,
 		STUN = 1,
-		IFRAME = 2
+		IFRAME = 2,
+		NOTICE = 3,
+		SEEKING = 4,
+		SUS = 5
 	}
 
 	public static void effectApply(Actor target, EffectScriptable effectData)
@@ -51,6 +54,6 @@ public class EffectDefs
 		prefab.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
 		
 		newEffect.init(effectData);
-		newEffect.start(target);
+		newEffect.startEffect(target);
 	}
 }

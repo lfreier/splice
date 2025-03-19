@@ -6,6 +6,7 @@ public class PlayerSecondaries : MonoBehaviour
 	public Actor player;
 
 	public PlayerInputs inputs;
+	public PlayerInteract playerInteract;
 
 	private float _throwInput;
 	private float lastThrowInput;
@@ -28,7 +29,18 @@ public class PlayerSecondaries : MonoBehaviour
 		_pointerPos = inputs.pointerPos();
 		if (_throwInput > 0 && lastThrowInput == 0)
 		{
+			PickupEngine engine = player.getEquippedWeapon().GetComponentInChildren<PickupEngine>();
+			
 			player.throwWeapon(new Vector3(_pointerPos.x, _pointerPos.y, 0));
+			
+			if (engine != null)
+			{
+				Collider2D pickupColl = engine.GetComponent<Collider2D>();
+				if (pickupColl != null)
+				{
+					playerInteract.OnTriggerExit2D(pickupColl);
+				}
+			}
 		}
 
 		lastThrowInput = _throwInput;

@@ -36,22 +36,26 @@ public class ActionParry : MonoBehaviour, ActionInterface
 
 	private void OnTriggerEnter2D(Collider2D collision)
 	{
-		WeaponInterface weapon = collision.gameObject.GetComponent<WeaponInterface>();
-		if (weapon != null)
+		Transform parent = collision.gameObject.transform.parent;
+		if (parent != null && null == parent.GetComponent<Actor>())
 		{
-			Actor target = weapon.getActorWielder();
-			if (target != null)
+			WeaponInterface weapon = parent.GetComponentInChildren<WeaponInterface>();
+			if (weapon != null)
 			{
-				attackerDisarm(target);
-				EffectDefs.effectApply(target, target.gameManager.effectManager.stunParry);
-				WeaponScriptable weapData = actorWielder.equippedWeaponInt.getScriptable();
-				
-				Vector3 force = Vector3.ClampMagnitude(target.actorBody.transform.position - actorWielder.transform.position, 1);
-				float forceMult = Mathf.Min(WeaponDefs.KNOCKBACK_MULT_PARRY * weapData.knockbackDamage * (1 - target._actorScriptable.knockbackResist), ActorDefs.MAX_PARRY_FORCE);
-				Debug.Log("Parry force: " + forceMult);
-				target.actorBody.AddForce(force * forceMult);
+				Actor target = weapon.getActorWielder();
+				if (target != null)
+				{
+					attackerDisarm(target);
+					EffectDefs.effectApply(target, target.gameManager.effectManager.stunParry);
+					WeaponScriptable weapData = actorWielder.equippedWeaponInt.getScriptable();
 
-				//actorWielder.actorAudioSource.PlayOneShot(actorWielder.gameManager.audioManager.parry);
+					Vector3 force = Vector3.ClampMagnitude(target.actorBody.transform.position - actorWielder.transform.position, 1);
+					float forceMult = Mathf.Min(WeaponDefs.KNOCKBACK_MULT_PARRY * weapData.knockbackDamage * (1 - target._actorScriptable.knockbackResist), ActorDefs.MAX_PARRY_FORCE);
+					Debug.Log("Parry force: " + forceMult);
+					target.actorBody.AddForce(force * forceMult);
+
+					//actorWielder.actorAudioSource.PlayOneShot(actorWielder.gameManager.audioManager.parry);
+				}
 			}
 		}
 	}

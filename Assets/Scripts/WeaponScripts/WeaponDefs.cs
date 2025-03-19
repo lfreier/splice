@@ -44,7 +44,8 @@ public static class WeaponDefs
 
 	public static float DURABILITY_DAMAGED_DIVIDER = 3F;
 
-	public static float KNOCKBACK_MULT_SWING = 1500F;
+	public static float KNOCKBACK_MULT_ACTOR = 600F;
+	public static float KNOCKBACK_MULT_OBSTACLE = 1500F;
 
 	public static bool canWeaponBePickedUp(GameObject target)
 	{
@@ -65,6 +66,15 @@ public static class WeaponDefs
 			{
 				secChild.tag = newTag;
 			}
+		}
+	}
+
+	public static void setObjectLayer(string layerName, GameObject obj)
+	{
+		SpriteRenderer[] allSprites = obj.GetComponentsInChildren<SpriteRenderer>();
+		foreach (SpriteRenderer temp in allSprites)
+		{
+			temp.sortingLayerName = layerName;
 		}
 	}
 }

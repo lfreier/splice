@@ -8,6 +8,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -2410750095788609518, guid: 688e9e8f1aed4354080a2f23ada1e0ca, type: 3}
+      propertyPath: guid
+      value: keycardBlue_b742ade1-fd92-4110-89bc-fb47688a062d
+      objectReference: {fileID: 0}
     - target: {fileID: 647760437655045498, guid: 688e9e8f1aed4354080a2f23ada1e0ca, type: 3}
       propertyPath: m_LocalPosition.x
       value: -9.865831

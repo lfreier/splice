@@ -41,6 +41,8 @@ public class Actor : MonoBehaviour
 
 	public MutationInterface[] activeSlots;
 
+	public bool isKnockedBack = false;
+
 	public GameObject[] droppedItems;
 
 	public GameManager gameManager;
@@ -50,6 +52,8 @@ public class Actor : MonoBehaviour
 
 	public Sprite corpseSprite;
 	public GameObject corpsePrefab;
+
+	public EConstant displayedEffect = null;
 
 	private SpriteRenderer sprite;
 
@@ -85,6 +89,8 @@ public class Actor : MonoBehaviour
 	{
 		gameManager = GameManager.Instance;
 
+		isKnockedBack = false;
+
 		if (this != gameManager.playerStats.player)
 		{
 			actorData.armor = _actorScriptable.armor;
@@ -102,6 +108,14 @@ public class Actor : MonoBehaviour
 			actorData.sightRange = _actorScriptable.sightRange;
 
 			actorData.frightenedDistance = _actorScriptable.frightenedDistance;
+		}
+		else
+		{
+			PlayerInteract interact = GetComponentInChildren<PlayerInteract>();
+			if (interact != null && gameManager.actorBehaviors.Contains(interact.GetType()))
+			{
+				this.behaviorList.Add(interact);
+			}
 		}
 
 		for (int i = 0; i < gameObject.transform.childCount; i++)
@@ -167,13 +181,26 @@ public class Actor : MonoBehaviour
 
 		/* Literally just getting positive/negatives */
 		Vector3 aimDir = new Vector3(pointerPos.x, pointerPos.y, 0) - this.transform.position;
-		Vector3 translate = new Vector3(Random.Range(0.2F * Mathf.Sign(aimDir.x), 0.6F * Mathf.Sign(aimDir.x)), Random.Range(0.2F * Mathf.Sign(aimDir.y), 0.6F * Mathf.Sign(aimDir.y)), 0);
+		Vector3 translate = new Vector3(Random.Range(0.25F * Mathf.Sign(aimDir.x), 0.375F * Mathf.Sign(aimDir.x)), Random.Range(0.25F * Mathf.Sign(aimDir.y), 0.375F * Mathf.Sign(aimDir.y)), 0);
 
 		if (equippedWeapon != null)
 		{
-			equippedWeapon.transform.Translate(translate, Space.World);
-			equippedWeapon.transform.Rotate(new Vector3(0, 0, Random.Range(-45, 45)), Space.Self);
-			setWeaponLayer(WeaponDefs.SORT_LAYER_GROUND);
+			float rand = Random.Range(0, 1);
+			rand = rand < 1 ? Random.Range(-60, -30) : Random.Range(30, 60);
+			equippedWeapon.transform.SetParent(null, true);
+			equippedWeapon.transform.SetPositionAndRotation(this.transform.position + translate, Quaternion.Euler(0, 0, equippedWeapon.transform.rotation.eulerAngles.z + rand));
+			setObjectLayer(WeaponDefs.SORT_LAYER_GROUND, equippedWeapon);
+
+			WeaponPhysics physics = equippedWeapon.GetComponentInChildren<WeaponPhysics>();
+			if (physics != null)
+			{
+				BasicWeapon weap = equippedWeapon.GetComponentInChildren<BasicWeapon>();
+				if (weap != null)
+				{
+					BoxCollider2D collider = physics.GetComponent<BoxCollider2D>();
+					moveFromCollider(collider, weap.transform.localPosition, equippedWeapon);
+				}
+			}
 
 			resetEquip();
 		}
@@ -186,6 +213,8 @@ public class Actor : MonoBehaviour
 		{
 			GameObject newDrop = Instantiate(item, droppedPosition, this.transform.rotation, this.transform.parent);
 			newDrop.transform.Rotate(new Vector3(0, 0, Random.Range(-45, 45)), Space.Self);
+
+			setObjectLayer(WeaponDefs.SORT_LAYER_GROUND, newDrop);
 
 			Cell newCell = newDrop.GetComponent<Cell>();
 			if (newCell != null)
@@ -202,6 +231,53 @@ public class Actor : MonoBehaviour
 			{
 				droppedPosition.x += randX;
 				droppedPosition.y += randY;
+			}
+
+			//don't do this for cells
+			if (newCell == null)
+			{
+				BoxCollider2D collider = newDrop.GetComponentInChildren<BoxCollider2D>();
+				//moveFromCollider(collider, newDrop);
+			}
+		}
+	}
+
+	private void moveFromCollider(BoxCollider2D collider, Vector2 offset, GameObject toMove)
+	{
+		if (collider != null)
+		{
+			Vector3 center = new Vector2(collider.bounds.min.x + collider.size.x / 2, collider.bounds.min.y + collider.size.y / 2);
+			List<RaycastHit2D> wallList = new List<RaycastHit2D>();
+			ContactFilter2D filter = new ContactFilter2D();
+			filter.SetLayerMask(gameManager.unwalkableLayers);
+
+			collider.Cast(collider.transform.position, collider.transform.rotation.eulerAngles.z, Vector2.left, filter, wallList, 0, false);
+
+			if (wallList == null || wallList.Count <= 0)
+			{
+				return;
+			}
+
+			float mult = 0;
+
+			for (int n = 0; n < 4; n++)
+			{
+				mult += 0.5F;
+				for (int i = -1; i <= 1; i++)
+				{
+					for (int j = -1; j <= 1; j++)
+					{
+						wallList = new List<RaycastHit2D>();
+						collider.Cast((Vector2)collider.transform.position + new Vector2(i * mult, j * mult), collider.transform.rotation.eulerAngles.z, Vector2.left, filter, wallList, 0, false);
+						
+						if (wallList == null || wallList.Count <= 0)
+						{
+							toMove.transform.SetPositionAndRotation((Vector2)collider.transform.position + new Vector2(i * mult, j * mult), toMove.transform.rotation);
+							Debug.Log("Moved " + toMove.name + " " + (n + 1) + " squares");
+							return;
+						}
+					}
+				}
 			}
 		}
 	}
@@ -272,7 +348,8 @@ public class Actor : MonoBehaviour
 			{
 				drop();
 			}
-			else if (equippedWeaponInt.getType() == WeaponType.UNARMED)
+			
+			if (equippedWeaponInt.getType() == WeaponType.UNARMED)
 			{
 				/* only destroy copies of the basic fist weapon, not muations */
 				if (equippedWeapon.GetComponentInChildren<MutationInterface>() == null)
@@ -292,7 +369,7 @@ public class Actor : MonoBehaviour
 		if (equippedWeapon.GetComponent<MutationInterface>() == null)
 		{
 			equippedWeapon.transform.SetParent(this.transform, true);
-			setWeaponLayer(WeaponDefs.SORT_LAYER_CHARS);
+			setObjectLayer(WeaponDefs.SORT_LAYER_CHARS, equippedWeapon);
 			equippedWeaponInt.setStartingPosition(true);
 		}
 
@@ -346,7 +423,7 @@ public class Actor : MonoBehaviour
 	}
 	public bool isStunned()
 	{
-		return behaviorList[0].enabled;
+		return !behaviorList[0].enabled;
 	}
 
 	public bool isTargetHostile(Actor targetActor)
@@ -417,8 +494,11 @@ public class Actor : MonoBehaviour
 
 	public void Move(Vector3 moveVector)
 	{
-		currMoveVector = new Vector3(moveVector.x, moveVector.y, moveVector.z);
-		actorBody.velocity = moveVector;
+		if (!isKnockedBack)
+		{
+			currMoveVector = new Vector3(moveVector.x, moveVector.y, moveVector.z);
+			actorBody.velocity = moveVector;
+		}
 	}
 
 	public bool pickup()
@@ -438,8 +518,18 @@ public class Actor : MonoBehaviour
 
 		foreach (Collider2D target in hitTargets)
 		{
+			if (target == null)
+			{
+				continue;
+			}
+
 			if (pickupItem(target.gameObject))
 			{
+				PickupEngine engine = target.gameObject.GetComponent<PickupEngine>();
+				if (engine != null)
+				{
+					engine.disableHighlight();
+				}
 				return true;
 			}
 		}
@@ -461,7 +551,7 @@ public class Actor : MonoBehaviour
 			if (this.equip(target.transform.gameObject))
 			{
 				//Make sure to only pick up one weapon, but pickups are ok
-				pickupItemPlayer(target, true);
+				//pickupItemPlayer(target, true);
 				return true;
 			}
 		}
@@ -577,6 +667,11 @@ public class Actor : MonoBehaviour
 				{
 					script.enabled = !toggle;
 				}
+				EnemyMove enemyMove = GetComponent<EnemyMove>();
+				if (enemyMove != null)
+				{
+					enemyMove.disableStun();
+				}
 				break;
 			case constantType.IFRAME:
 				this.invincible = toggle;
@@ -617,15 +712,6 @@ public class Actor : MonoBehaviour
 		{
 			Debug.Log("newSpeed: " + changedSpeed);
 			actorData.maxSpeed = changedSpeed;
-		}
-	}
-
-	private void setWeaponLayer(string layerName)
-	{
-		SpriteRenderer[] allSprites = equippedWeapon.GetComponentsInChildren<SpriteRenderer>();
-		foreach (SpriteRenderer temp in allSprites)
-		{
-			temp.sortingLayerName = layerName;
 		}
 	}
 
@@ -700,6 +786,15 @@ public class Actor : MonoBehaviour
 			else
 			{
 				EffectDefs.effectApply(this, gameManager.effectManager.iFrame0);
+				EnemyMove enemyMove = GetComponent<EnemyMove>();
+				if (enemyMove != null)
+				{
+					enemyMove.setStunResponse(sourceActor);
+					if (damageTaken >= 1F && (enemyMove._detection == detectMode.idle || enemyMove._detection == detectMode.suspicious || enemyMove._detection == detectMode.wandering) && !isStunned())
+					{
+						EffectDefs.effectApply(this, gameManager.effectManager.stun1);
+					}
+				}
 			}
 		}
 
@@ -777,7 +872,6 @@ public class Actor : MonoBehaviour
 		}
 
 		Vector3 aimDir = new Vector3(throwTargetPos.x, throwTargetPos.y, 0) - this.transform.position;
-		setWeaponLayer(WeaponDefs.SORT_LAYER_GROUND);
 		this.equippedWeaponInt.throwWeapon(Vector3.ClampMagnitude(aimDir, 1));
 
 		resetEquip();

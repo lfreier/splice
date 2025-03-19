@@ -102,12 +102,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bleed1: {fileID: 11400000, guid: 19c01944902b8b34ebd0f33dad44fc3a, type: 2}
   stunHalf: {fileID: 11400000, guid: d56cb6eaeed347642b2e0dd57748b9e8, type: 2}
+  stunThrow: {fileID: 11400000, guid: 7422d2d157bf8b34990fd1d9b5276485, type: 2}
   stunParry: {fileID: 11400000, guid: 865c7d3cf90638f468f04540f7cb4ea0, type: 2}
   stun1: {fileID: 11400000, guid: d92e4d46a82385f4c9f7e376918ad3bc, type: 2}
   stun3: {fileID: 11400000, guid: 87cc1f8670aa6ef48ad61bc0ba8c6f2d, type: 2}
   stunPermanent: {fileID: 11400000, guid: 5c2f8452a537f96468a2f60eb9ccaba3, type: 2}
   iFrame0: {fileID: 11400000, guid: 9a999b547a817c54bb898f5610914bde, type: 2}
   iFrame1: {fileID: 11400000, guid: 8cc20c6900a03f146a5a36c6cf287e80, type: 2}
+  sus1: {fileID: 11400000, guid: da5225351daae8641b0e7826d95b5c77, type: 2}
+  seeking1: {fileID: 11400000, guid: 6a2118023e54b0a44812440d4b09ff14, type: 2}
+  notice1: {fileID: 11400000, guid: f33396815ac2c3c4ba074c1515df6693, type: 2}
 --- !u!114 &4511755820635981177
 MonoBehaviour:
   m_ObjectHideFlags: 0

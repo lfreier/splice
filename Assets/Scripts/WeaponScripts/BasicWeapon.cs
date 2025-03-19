@@ -57,19 +57,6 @@ public abstract class BasicWeapon : MonoBehaviour, WeaponInterface
 		isInit = true;
 	}
 
-	void FixedUpdate()
-	{
-		// was just thrown, so give it initial speed
-		if (_weaponPhysics != null)
-		{
-			_weaponPhysics.calculateThrow();
-			if (!isActive() && hitbox != null)
-			{
-				hitbox.enabled = false;
-			}
-		}
-	}
-
 	virtual public bool attack(LayerMask targetLayer)
 	{
 		anim.SetTrigger(WeaponDefs.ANIM_TRIGGER_ATTACK);
@@ -118,6 +105,11 @@ public abstract class BasicWeapon : MonoBehaviour, WeaponInterface
 	public Actor getActorWielder()
 	{
 		return actorWielder;
+	}
+
+	public GameObject getGameObject()
+	{
+		return gameObject;
 	}
 
 	public float getSpeed()
@@ -214,11 +206,15 @@ public abstract class BasicWeapon : MonoBehaviour, WeaponInterface
 
 	public void setStartingPosition(bool side)
 	{
-		transform.parent.SetLocalPositionAndRotation(new Vector3(_weaponScriptable.equipPosX, _weaponScriptable.equipPosY, 0), Quaternion.Euler(0, 0, _weaponScriptable.equipRotZ));
 		if (!side)
 		{
 			transform.SetLocalPositionAndRotation(new Vector3(_weaponScriptable.equipOtherPosX, _weaponScriptable.equipOtherPosY, 0), Quaternion.Euler(0, 0, _weaponScriptable.equipOtherRotZ));
 		}
+		else
+		{
+			transform.SetLocalPositionAndRotation(new Vector3(_weaponScriptable.equipPosX, _weaponScriptable.equipPosY, 0), Quaternion.Euler(0, 0, _weaponScriptable.equipRotZ));
+		}
+		transform.parent.SetLocalPositionAndRotation(new Vector3(_weaponScriptable.equipPosX, _weaponScriptable.equipPosY, 0), Quaternion.Euler(0, 0, _weaponScriptable.equipRotZ));
 
 		anim.enabled = true;
 		currentSide = side;
@@ -241,17 +237,13 @@ public abstract class BasicWeapon : MonoBehaviour, WeaponInterface
 			return;
 		}
 
-		if (!currentSide)
-		{
-			anim.enabled = false;
-			transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.Euler(0, 0, 0));
-			transform.parent.SetPositionAndRotation(transform.parent.position - new Vector3(_weaponScriptable.equipOtherPosX, _weaponScriptable.equipOtherPosY, 0), Quaternion.Euler(0, 0, _weaponScriptable.equipOtherRotZ));
-		}
+		anim.enabled = false;
+		transform.parent.SetParent(null);
 
 		_weaponPhysics.startThrow(target, actorWielder);
 	}
 
-	public bool toggleCollider()
+	public bool toggleCollider(int enable)
 	{
 		if (hitbox == null)
 		{
@@ -259,9 +251,9 @@ public abstract class BasicWeapon : MonoBehaviour, WeaponInterface
 		}
 		if (trailSprite != null)
 		{
-			trailSprite.enabled = !trailSprite.enabled;
+			trailSprite.enabled = enable > 0;
 		}
-		return hitbox.enabled = !hitbox.enabled;
+		return hitbox.enabled = enable > 0;
 	}
 
 	public void toggleIFrames()
@@ -312,7 +304,7 @@ public abstract class BasicWeapon : MonoBehaviour, WeaponInterface
 			{
 				reduceDurability(durabilityDamage);
 			}
-			knockbackMult = 1 - actorHit._actorScriptable.knockbackResist;
+			knockbackMult = (1 - actorHit._actorScriptable.knockbackResist) * WeaponDefs.KNOCKBACK_MULT_ACTOR;
 			SoundDefs.createSound(actorHit.transform.position, actorHitSound);
 
 			maxForce = ActorDefs.MAX_HIT_FORCE;
@@ -320,6 +312,9 @@ public abstract class BasicWeapon : MonoBehaviour, WeaponInterface
 			{
 				maxForce = ActorDefs.MAX_PARRY_FORCE;
 			}
+
+			KnockbackTimer knockbackTimer = actorHit.AddComponent<KnockbackTimer>();
+			knockbackTimer.init(actorHit._actorScriptable.knockbackResist);
 
 			Debug.Log("Hit: " + collision.name + " for " + damage + " damage");
 		}
@@ -339,7 +334,7 @@ public abstract class BasicWeapon : MonoBehaviour, WeaponInterface
 			if (obstacle != null)
 			{
 				reduceDurability(obstacle._obstacleScriptable.weaponDurabilityDamage);
-				knockbackMult = obstacle._obstacleScriptable.weaponHitMult;
+				knockbackMult = obstacle._obstacleScriptable.weaponHitMult * WeaponDefs.KNOCKBACK_MULT_OBSTACLE;
 				maxForce = obstacle._obstacleScriptable.maxObstacleForce;
 				obstacle.knockOver();
 			}
@@ -350,7 +345,7 @@ public abstract class BasicWeapon : MonoBehaviour, WeaponInterface
 		if (hitBody != null)
 		{
 			Vector3 force = Vector3.ClampMagnitude(hitBody.transform.position - actorWielder.transform.position, 1);
-			float forceMult = Mathf.Min(WeaponDefs.KNOCKBACK_MULT_SWING * _weaponScriptable.knockbackDamage * knockbackMult, maxForce);
+			float forceMult = Mathf.Min(_weaponScriptable.knockbackDamage * knockbackMult, maxForce);
 			Debug.Log("Hit force on " + hitBody.name + ": " + forceMult);
 			hitBody.AddForce(force * forceMult);
 		}

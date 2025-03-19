@@ -27,6 +27,7 @@ public class EnemyMove : MonoBehaviour
 	public detectMode _detection;
 	private detectMode _oldDetection;
 	private detectMode _startingDetection;
+	private detectMode _nextDetection;
 
 	float currentSpeed;
 	private float stateSpeedIncrease;
@@ -46,13 +47,20 @@ public class EnemyMove : MonoBehaviour
 	private ActorData _actorData;
 
 	private float stateTimer;
+	private float stateTimerReset;
 	private static float HOSTILE_TIMER_LENGTH = 4;
 	private static float LOST_TIMER_LENGTH = 2;
 	private static float PATH_TIMER_LENGTH = 0.3F;
 	private static float SUS_TIMER_LENGTH = 5;
 
+	private float delayTimer;
+	private static float DELAY_TIMER_LENGTH = 0.35F;
+
 	public Pathfinding pathfinder;
 	private bool usingPathfinding;
+
+	private bool showNotice = true;
+	private bool showSus = true;
 
 	public GameManager gameManager;
 
@@ -114,6 +122,37 @@ public class EnemyMove : MonoBehaviour
 			attackTargetActor = seeHostiles();
 		}
 
+		/* if on delay timer, wait to transition */
+		if (_detection != detectMode.hostile)
+		{
+			if (delayTimer >= 0)
+			{
+				delayTimer -= Time.deltaTime;
+			}
+			if (delayTimer < 0 && attackTargetActor != null)
+			{
+				// create a new notice effect
+				if ((actor.displayedEffect == null || actor.displayedEffect.effectScriptable.constantEffectType > EffectDefs.constantType.NOTICE) && showNotice)
+				{
+					EffectDefs.effectApply(actor, gameManager.effectManager.notice1);
+					showNotice = false;
+					/*Vector3 vpPos = Camera.main.WorldToViewportPoint(transform.position);
+					if (vpPos.x >= 0f && vpPos.x <= 1f && vpPos.y >= 0f && vpPos.y <= 1f && vpPos.z > 0f)
+					{
+
+					}*/
+				}
+
+				actor.setAttackTarget(attackTargetActor);
+				attackTarget = attackTargetActor.transform.position;
+				delayTimer = 0;
+
+				_detection = detectMode.hostile;
+				handleEdges();
+				_oldDetection = _detection;
+			}
+		}
+
 		/*  determine move target based on current state */
 		if ((_detection == detectMode.idle || _detection == detectMode.forced) && idlePath.Length > 0)
 		{
@@ -165,6 +204,7 @@ public class EnemyMove : MonoBehaviour
 
 		if (_detection == detectMode.frightened)
 		{
+			showSus = false;
 			if (attackTargetActor != null)
 			{
 				/* face target of fright */
@@ -323,6 +363,13 @@ public class EnemyMove : MonoBehaviour
 	}
 	private void handleEdges()
 	{
+		if (_nextDetection != detectMode.nul)
+		{
+			_oldDetection = _detection;
+			_detection = _nextDetection;
+			_nextDetection = detectMode.nul;
+		}
+
 		if (!(_oldDetection != _detection || maxStateSpeed == 0))
 		{
 			return;
@@ -334,6 +381,7 @@ public class EnemyMove : MonoBehaviour
 				if (actor.isUnarmed() && findNearestWeapon(_actorData.sightRange) != null)
 				{
 					_detection = detectMode.getWeapon;
+					stateTimer = HOSTILE_TIMER_LENGTH;
 				}
 				return;
 			default:
@@ -345,13 +393,20 @@ public class EnemyMove : MonoBehaviour
 				actorBody.rotation = actor.aimAngle(idleLookTarget);
 				break;
 			case detectMode.hostile:
+				showSus = false;
 				_actorData.sightAngle = actor._actorScriptable.sightAngle * 1.5F;
 				stateTimer = HOSTILE_TIMER_LENGTH;
 				break;
 			case detectMode.seeking:
+				showSus = true;
+				showNotice = true;
 				_actorData.sightAngle = actor._actorScriptable.sightAngle * 1.5F;
+				stateTimer = HOSTILE_TIMER_LENGTH;
+				actorBody.rotation = actor.aimAngle(attackTarget);
 				break;
 			case detectMode.lost:
+				showSus = true;
+				showNotice = true;
 				_actorData.sightAngle = actor._actorScriptable.sightAngle * 1.5F;
 				moveTarget = transform.position + transform.up;
 				stateTimer = LOST_TIMER_LENGTH;
@@ -370,6 +425,24 @@ public class EnemyMove : MonoBehaviour
 				stateTimer = 0;
 				break;
 		}
+
+		stateTimerReset = stateTimer;
+
+		if (_detection == detectMode.seeking || _detection == detectMode.lost || _detection == detectMode.suspicious)
+		{
+			// create a new Sus effect
+			if ((actor.displayedEffect == null || actor.displayedEffect.effectScriptable.constantEffectType > EffectDefs.constantType.SEEKING) && showSus)
+			{
+				if (_detection == detectMode.seeking || _detection == detectMode.lost)
+				{
+					EffectDefs.effectApply(actor, gameManager.effectManager.seeking1);
+				}
+				else if (actor.displayedEffect == null || actor.displayedEffect.effectScriptable.constantEffectType > EffectDefs.constantType.SUS)
+				{
+					EffectDefs.effectApply(actor, gameManager.effectManager.sus1);
+				}
+			}
+		}
 	}
 
 	private void handleArmedStates()
@@ -382,6 +455,7 @@ public class EnemyMove : MonoBehaviour
 				{
 					_detection = detectMode.seeking;
 					stateTimer = HOSTILE_TIMER_LENGTH;
+					stateTimerReset = stateTimer;
 				}
 				else
 				{
@@ -399,6 +473,7 @@ public class EnemyMove : MonoBehaviour
 				{
 					_detection = detectMode.lost;
 					stateTimer = LOST_TIMER_LENGTH;
+					stateTimerReset = stateTimer;
 				}
 				else
 				{
@@ -418,10 +493,12 @@ public class EnemyMove : MonoBehaviour
 					if (_detection == detectMode.wandering)
 					{
 						stateTimer = SUS_TIMER_LENGTH + Random.Range(0, SUS_TIMER_LENGTH);
+						stateTimerReset = stateTimer;
 					}
 					else
 					{
 						stateTimer = LOST_TIMER_LENGTH;
+						stateTimerReset = stateTimer;
 					}
 				}
 				else
@@ -477,6 +554,17 @@ public class EnemyMove : MonoBehaviour
 						actorBody.rotation = actor.aimAngle(attackTarget);
 					}
 				}
+
+				if (stateTimer <= 0)
+				{
+					_detection = detectMode.lost;
+					stateTimer = LOST_TIMER_LENGTH;
+					stateTimerReset = stateTimer;
+				}
+				else
+				{
+					stateTimer -= Time.deltaTime;
+				}
 				break;
 			case detectMode.suspicious:
 				handleSuspiciousState();
@@ -493,6 +581,11 @@ public class EnemyMove : MonoBehaviour
 		if (stateTimer <= 0)
 		{
 			_detection = _startingDetection;
+			if (actor.displayedEffect != null)
+			{
+				Destroy(actor.displayedEffect.gameObject);
+				actor.displayedEffect = null;
+			}
 		}
 		else
 		{
@@ -505,7 +598,7 @@ public class EnemyMove : MonoBehaviour
 		RaycastHit2D[] heardSound = Physics2D.CircleCastAll(new Vector2(this.transform.position.x, this.transform.position.y), _actorData.hearingRange, Vector2.zero, _actorData.hearingRange, gameManager.soundLayer);
 
 		/* States that should override hearing */
-		if (_detection == detectMode.getWeapon || _detection == detectMode.hostile || heardSound.Length == 0)
+		if (_detection == detectMode.getWeapon || _detection == detectMode.hostile || _detection == detectMode.frightened || heardSound.Length == 0)
 		{
 			return;
 		}
@@ -554,15 +647,12 @@ public class EnemyMove : MonoBehaviour
 				switch (soundScript.scriptable.type)
 				{
 					case SoundDefs.SoundType.CLANG:
-						if (_detection != detectMode.hostile && _detection != detectMode.getWeapon && _detection != detectMode.frightened)
-						{
-							_detection = detectMode.seeking;
-						}
+						_detection = detectMode.seeking;
 						break;
 					case SoundDefs.SoundType.THUD:
 					case SoundDefs.SoundType.TAP:
 					default:
-						if (_detection == detectMode.lost || _detection == detectMode.seeking || _detection == detectMode.hostile)
+						if (_detection == detectMode.lost || _detection == detectMode.seeking)
 						{
 							_detection = detectMode.seeking;
 						}
@@ -570,6 +660,7 @@ public class EnemyMove : MonoBehaviour
 						{
 							_detection = detectMode.suspicious;
 							handleEdges();
+							_oldDetection = _detection;
 						}
 						break;
 				}
@@ -588,7 +679,32 @@ public class EnemyMove : MonoBehaviour
 			Actor targetActor = rayHit.rigidbody.gameObject.GetComponent<Actor>();
 			if (targetActor != null && actor.isTargetHostile(targetActor))
 			{
-				_detection = detectMode.hostile;
+				if ((_detection == detectMode.idle || _detection == detectMode.suspicious) && delayTimer <= 0)
+				{
+					delayTimer = DELAY_TIMER_LENGTH;
+					// create a new Sus effect
+					if ((actor.displayedEffect == null || actor.displayedEffect.effectScriptable.constantEffectType > EffectDefs.constantType.SUS) && showSus)
+					{
+						EffectDefs.effectApply(actor, gameManager.effectManager.sus1);
+					}
+					_detection = detectMode.suspicious;
+					handleEdges();
+					_oldDetection = _detection;
+				}
+				else if (_detection == detectMode.seeking)
+				{
+					// create a new notice effect
+					if ((actor.displayedEffect == null || actor.displayedEffect.effectScriptable.constantEffectType > EffectDefs.constantType.NOTICE) && showNotice)
+					{
+						EffectDefs.effectApply(actor, gameManager.effectManager.notice1);
+						showNotice = false;
+					}
+					_detection = detectMode.hostile;
+					handleEdges();
+					_oldDetection = _detection;
+				}
+
+				stateTimer = stateTimerReset;
 				actor.setAttackTarget(targetActor);
 				attackTarget = targetActor.transform.position;
 
@@ -653,6 +769,22 @@ public class EnemyMove : MonoBehaviour
 		}
 
 		return null;
+	}
+
+	public void disableStun()
+	{
+		// create a new Sus effect
+		if (showSus && _detection == detectMode.suspicious)
+		{
+				EffectDefs.effectApply(actor, gameManager.effectManager.sus1);
+		}
+	}
+
+	public void setStunResponse(Actor sourceActor)
+	{
+		attackTarget = sourceActor.transform.position;
+		_nextDetection = detectMode.seeking;
+		attackTargetActor = sourceActor;
 	}
 
 	private void setStateMoveSpeed()

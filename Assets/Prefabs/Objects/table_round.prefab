@@ -77,7 +77,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 919069219
   m_SortingLayer: 2
-  m_SortingOrder: -1
+  m_SortingOrder: -2
   m_Sprite: {fileID: 21300000, guid: bd73130372f8562438c2b43b622648dd, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -169,4 +169,5 @@ MonoBehaviour:
   spriteRenderer: {fileID: 0}
   secondSprite: {fileID: 0}
   knockVelocityThreshold: 0.5
+  angVelocityThreshold: 1
   knockOverDrag: 3

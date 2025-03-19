@@ -72,7 +72,7 @@ public class EBleed : MonoBehaviour, EffectInterface
 		}
 	}
 
-	public void start(Actor target)
+	public void startEffect(Actor target)
 	{
 		attachedActor = target;
 

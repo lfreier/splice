@@ -28,7 +28,7 @@ public class StabWeapon : MonoBehaviour, WeaponInterface
 		durability = _weaponScriptable.durability;
 		id = this.gameObject.name;
 		secondaryAction = GetComponent<ActionInterface>();
-		_weaponPhysics.linkInterface(this);
+		//_weaponPhysics.linkInterface(this);
 	}
 
 	void FixedUpdate()
@@ -64,6 +64,11 @@ public class StabWeapon : MonoBehaviour, WeaponInterface
 	{
 		anim.StopPlayback();
 		hitbox.enabled = false;
+	}
+
+	public GameObject getGameObject()
+	{
+		return gameObject;
 	}
 
 	public WeaponScriptable getScriptable()
@@ -136,7 +141,7 @@ public class StabWeapon : MonoBehaviour, WeaponInterface
 		_weaponPhysics.startThrow(target, actorWielder);
 	}
 
-	public bool toggleCollider()
+	public bool toggleCollider(int nable)
 	{
 		return hitbox.enabled = !hitbox.enabled;
 	}

@@ -76,7 +76,7 @@ public class PlayerCamera : MonoBehaviour
 
 		if (!rotateLocked)
 		{
-			player.actorBody.MoveRotation(aimAngle);
+			player.actorBody.rotation = aimAngle;
 		}
 		lastAimAngle = aimAngle;
 	}

@@ -14,5 +14,5 @@ public interface EffectInterface
 
 	public void tick(float seconds);
 
-	public void start(Actor target);
+	public void startEffect(Actor target);
 }

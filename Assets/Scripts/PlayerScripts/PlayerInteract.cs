@@ -1,5 +1,8 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
+using static UnityEngine.GraphicsBuffer;
 
 public class PlayerInteract : MonoBehaviour
 {
@@ -12,18 +15,26 @@ public class PlayerInteract : MonoBehaviour
 
 	public PlayerInputs inputs;
 
-	private GameObject mutateHolder;
-
 	public LayerMask interactLayer;
+
+	public CircleCollider2D interactCollider;
+	public List<Collider2D> highlightList;
+	public Collider2D highlightedCollider = null;
 
 	private void Start()
 	{
-		mutateHolder = player.mutationHolder;
 		lastInteractInput = 0;
 	}
 	void Update()
 	{
 		interactInputs();
+		/*
+		Collider2D[] hitTargets1 = Physics2D.OverlapCircleAll(this.transform.position + (transform.up * ActorDefs.GLOBAL_PICKUP_OFFSET), ActorDefs.GLOBAL_PICKUP_RADIUS, player.pickupLayer);
+		Collider2D[] hitTargets2 = Physics2D.OverlapCircleAll(this.transform.position, ActorDefs.GLOBAL_PICKUP_RADIUS, player.pickupLayer);
+		Collider2D[] hitTargets = new Collider2D[hitTargets1.Length + hitTargets2.Length];
+		hitTargets1.CopyTo(hitTargets, 0);
+		hitTargets2.CopyTo(hitTargets, hitTargets1.Length);
+		*/
 	}
 
 	void interactInputs()
@@ -34,7 +45,15 @@ public class PlayerInteract : MonoBehaviour
 			//if unlocking a door, do not pick up weapons;
 			if (!interactWorld())
 			{
-				player.pickup();
+				if (player.pickup(new Collider2D[]{ highlightedCollider}))
+				{
+					highlightedCollider = null;
+					highlightList.Remove(highlightedCollider);
+				}
+			}
+			else
+			{
+				//disable highlight?
 			}
 		}
 		lastInteractInput = _interactInput;
@@ -42,7 +61,7 @@ public class PlayerInteract : MonoBehaviour
 
 	bool interactWorld()
 	{
-		Collider2D[] hitTargets = Physics2D.OverlapCircleAll(this.transform.position, ActorDefs.GLOBAL_PICKUP_RANGE, this.interactLayer);
+		Collider2D[] hitTargets = Physics2D.OverlapCircleAll(interactCollider.transform.position, interactCollider.radius, this.interactLayer);
 
 		foreach (Collider2D target in hitTargets)
 		{
@@ -61,6 +80,7 @@ public class PlayerInteract : MonoBehaviour
 			if (usable != null)
 			{
 				usable.use(player);
+				return true;
 			}
 
 			AutoDoor doorInteract = target.transform.GetComponentInParent<AutoDoor>();
@@ -84,5 +104,114 @@ public class PlayerInteract : MonoBehaviour
 	public void equipMutation(MutationInterface mut)
 	{
 		player.gameManager.playerStats.equipMutation(mut);
+	}
+
+	private void updateHighlightedItem()
+	{
+		float min = 500;
+		Collider2D closest = null;
+
+		if (highlightList.Count <= 0)
+		{
+			highlightedCollider = null;
+			return;
+		}
+
+		//highlight the one to pick up
+		foreach (Collider2D coll in highlightList)
+		{
+			if (coll != null)
+			{
+				float diffMag = Mathf.Abs(((Vector2)player.transform.position - coll.ClosestPoint(interactCollider.transform.position)).magnitude);
+				if (diffMag <= min)
+				{
+					min = diffMag;
+					closest = coll;
+				}
+				if (diffMag > 2 * interactCollider.radius || coll.tag.Equals(WeaponDefs.EQUIPPED_WEAPON_TAG))
+				{
+					PickupEngine engine = coll.gameObject.GetComponent<PickupEngine>();
+					if (engine != null)
+					{
+						//disable highlight
+						engine.disableHighlight();
+					}
+					highlightList.Remove(coll);
+					updateHighlightedItem();
+					return;
+				}
+			}
+			else
+			{
+				highlightList.Remove(coll);
+				updateHighlightedItem();
+				return;
+			}
+		}
+
+		if (highlightList.Count <= 0)
+		{
+			highlightedCollider = null;
+			return;
+		}
+
+		foreach (Collider2D coll in highlightList)
+		{
+			PickupEngine engine = coll.GetComponent<PickupEngine>();
+			if (engine != null)
+			{
+				if (coll == closest)
+				{
+					//enable highlight
+					engine.enableHighlight();
+					highlightedCollider = coll;
+				}
+				else
+				{
+					//disable highlight
+					engine.disableHighlight();
+				}
+			}
+		}
+	}
+
+	public void OnTriggerEnter2D(Collider2D collision)
+	{
+		if (collision != null && !collision.tag.Equals(WeaponDefs.EQUIPPED_WEAPON_TAG))
+		{
+			if (!highlightList.Contains(collision))
+			{
+				highlightList.Add(collision);
+			}
+			updateHighlightedItem();
+		}
+	}
+
+	public void OnTriggerStay2D(Collider2D collision)
+	{
+		if (collision != null && !collision.tag.Equals(WeaponDefs.EQUIPPED_WEAPON_TAG))
+		{
+			if (!highlightList.Contains(collision))
+			{
+				highlightList.Add(collision);
+			}
+			updateHighlightedItem();
+		}
+	}
+
+	public void OnTriggerExit2D(Collider2D collision)
+	{
+		if (collision != null && !collision.tag.Equals(WeaponDefs.EQUIPPED_WEAPON_TAG))
+		{
+			PickupEngine engine = collision.gameObject.GetComponent<PickupEngine>();
+			if (engine != null)
+			{
+				//disable highlight
+				engine.disableHighlight();
+			}
+			
+			highlightList.Remove(collision);
+			updateHighlightedItem();
+		}
 	}
 }

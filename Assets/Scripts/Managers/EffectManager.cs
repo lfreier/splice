@@ -8,6 +8,7 @@ public class EffectManager : MonoBehaviour
 	public EffectScriptable bleed1;
 
 	public EffectScriptable stunHalf;
+	public EffectScriptable stunThrow;
 	public EffectScriptable stunParry;
 	public EffectScriptable stun1;
 	public EffectScriptable stun3;
@@ -15,6 +16,10 @@ public class EffectManager : MonoBehaviour
 
 	public EffectScriptable iFrame0;
 	public EffectScriptable iFrame1;
+
+	public EffectScriptable sus1;
+	public EffectScriptable seeking1;
+	public EffectScriptable notice1;
 
 	public static EffectManager Instance
 	{

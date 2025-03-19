@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ef8256f3a9799a945bdcdb0bc9439850, type: 3}
   m_Name: levelStartSave
   m_EditorClassIdentifier: 
-  spawnPosition: {x: 26, y: 12}
+  spawnPosition: {x: 22, y: 25}
   spawnRotation: 0

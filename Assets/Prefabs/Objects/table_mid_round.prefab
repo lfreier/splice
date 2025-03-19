@@ -77,7 +77,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 919069219
   m_SortingLayer: 2
-  m_SortingOrder: -1
+  m_SortingOrder: -2
   m_Sprite: {fileID: 21300000, guid: 5aa54f44a07caba41a6d284f460bf66e, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -166,3 +166,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _obstacleScriptable: {fileID: 11400000, guid: 93504fb53eb5b1144b11a3ef537b6a59, type: 2}
   obstacleBody: {fileID: 7568629544581041799}
+  spriteRenderer: {fileID: 0}
+  secondSprite: {fileID: 0}
+  knockVelocityThreshold: 1
+  angVelocityThreshold: 1
+  knockOverDrag: 3
