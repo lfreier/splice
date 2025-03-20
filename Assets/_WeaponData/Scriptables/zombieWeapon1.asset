@@ -18,6 +18,7 @@ MonoBehaviour:
   <damage>k__BackingField: 1
   <durability>k__BackingField: -1
   <npcAttackRange>k__BackingField: 2
+  <prefabIndex>k__BackingField: 0
   <secondaryDamage>k__BackingField: 2
   <throwDamage>k__BackingField: 0
   <throwDurabilityDamage>k__BackingField: 0
@@ -31,4 +32,4 @@ MonoBehaviour:
   equipOtherPosX: 0
   equipOtherPosY: 0
   equipOtherRotZ: 0
-  <knockbackDamage>k__BackingField: 2
+  <knockbackDamage>k__BackingField: 1.6

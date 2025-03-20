@@ -145,7 +145,7 @@ public class MBladeWing : MonoBehaviour, MutationInterface
 			Actor actorHit = collision.transform.GetComponentInChildren<Actor>();
 			if (actorHit != null && actorWielder.isTargetHostile(actorHit))
 			{
-				actorHit.takeDamage(mutationScriptable.damage);
+				actorHit.takeDamage(mutationScriptable.damage, actorWielder);
 				continue;
 			}
 
