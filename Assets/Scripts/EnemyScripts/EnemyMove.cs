@@ -782,6 +782,10 @@ public class EnemyMove : MonoBehaviour
 
 	public void setStunResponse(Actor sourceActor)
 	{
+		if (sourceActor == null)
+		{
+			return;
+		}
 		attackTarget = sourceActor.transform.position;
 		_nextDetection = detectMode.seeking;
 		attackTargetActor = sourceActor;

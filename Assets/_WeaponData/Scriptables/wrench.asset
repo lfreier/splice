@@ -32,4 +32,4 @@ MonoBehaviour:
   equipOtherPosX: -0.16
   equipOtherPosY: -0.84
   equipOtherRotZ: 135
-  <knockbackDamage>k__BackingField: 2.8
+  <knockbackDamage>k__BackingField: 2.4

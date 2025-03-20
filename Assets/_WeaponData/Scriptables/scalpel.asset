@@ -28,7 +28,7 @@ MonoBehaviour:
   <weaponType>k__BackingField: 1
   equipPosX: 0.375
   equipPosY: 0.25
-  equipRotZ: -50
+  equipRotZ: 10
   equipOtherPosX: -0.4625
   equipOtherPosY: -0.625
   equipOtherRotZ: 100

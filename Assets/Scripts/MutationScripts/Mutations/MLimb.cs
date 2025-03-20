@@ -453,7 +453,7 @@ public class MLimb : MonoBehaviour, MutationInterface
 		{
 			actorHit.actorBody.AddForce(1000 * (this.gameObject.transform.parent.position - actorHit.transform.position));
 			actorWielder.triggerDamageEffects(actorHit);
-			actorHit.takeDamage(mutationScriptable.damage);
+			actorHit.takeDamage(mutationScriptable.damage, actorWielder);
 			Debug.Log("Hit: " + collision.name + " for " + mutationScriptable.damage + " damage");
 		}
 		else
