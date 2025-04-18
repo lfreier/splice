@@ -73,7 +73,7 @@ public class LoadingHandler : MonoBehaviour
 		loadingCanvas.gameObject.SetActive(showLoadingScreen);
 		if (showLoadingScreen)
 		{
-			SceneManager.SetActiveScene(SceneManager.GetSceneByBuildIndex((int)SceneDefs.SCENE.LOADING));
+			SceneManager.SetActiveScene(SceneManager.GetSceneByBuildIndex(SceneDefs.SCENE_INDEX_MASK[(int)SceneDefs.SCENE.LOADING]));
 		}
 
 		if (unloadLevel)

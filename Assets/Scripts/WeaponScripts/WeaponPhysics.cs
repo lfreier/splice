@@ -6,7 +6,7 @@ using UnityEngine.InputSystem.XR;
 
 public class WeaponPhysics : MonoBehaviour
 {
-	private WeaponInterface _weapon;
+	private BasicWeapon _weapon;
 	private WeaponScriptable _weaponScriptable;
 
 	private float currentSpeed;
@@ -170,6 +170,7 @@ public class WeaponPhysics : MonoBehaviour
 
 	private void OnTriggerEnter2D(Collider2D collision)
 	{
+		bool bouncedOffActor = false;
 		if (_lastThrowMove.magnitude > 0)
 		{
 			Actor actorHit = collision.gameObject.GetComponent<Actor>();
@@ -185,11 +186,34 @@ public class WeaponPhysics : MonoBehaviour
 				{	
 					actorHit.drop();
 					_weapon.reduceDurability(_weaponScriptable.throwDurabilityDamage);
+
+					if (_weaponScriptable.soundActorHit != null)
+					{
+						AudioClip toPlay;
+						bouncedOffActor = true;
+						gameManager.audioManager.soundHash.TryGetValue(_weaponScriptable.soundActorHit.name, out toPlay);
+						if (toPlay != null)
+						{
+							_weapon.weaponAudioPlayer.PlayOneShot(toPlay);
+						}
+					}
 				}
 
 				EffectDefs.effectApply(actorHit, actorHit.gameManager.effectManager.stunThrow);
 			}
 
+			if (!bouncedOffActor)
+			{
+				if (_weaponScriptable.soundObstacleHit != null)
+				{
+					AudioClip toPlay;
+					gameManager.audioManager.soundHash.TryGetValue(_weaponScriptable.soundObstacleHit.name, out toPlay);
+					if (toPlay != null)
+					{
+						_weapon.weaponAudioPlayer.PlayOneShot(toPlay);
+					}
+				}
+			}
 			currentSpeed /= 2;
 			_throwMove = _lastThrowMove * (1 + (1/_weaponScriptable.throwWeight)) * -1;
 		}

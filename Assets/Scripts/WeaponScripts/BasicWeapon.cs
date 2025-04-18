@@ -20,11 +20,10 @@ public abstract class BasicWeapon : MonoBehaviour, WeaponInterface
 	public WeaponScriptable _weaponScriptable;
 	public WeaponPhysics _weaponPhysics;
 
+	public AudioSource weaponAudioPlayer;
+
 	public SoundScriptable actorHitSound;
 	public SoundScriptable wallHitSound;
-
-	public AudioClip weaponBreakSound;
-	public AudioClip weaponSwingSound;
 
 	public bool currentSide;
 
@@ -35,6 +34,8 @@ public abstract class BasicWeapon : MonoBehaviour, WeaponInterface
 	public float durability;
 
 	public bool isInit = false;
+
+	private bool soundMade = false;
 
 	void Start()
 	{
@@ -59,10 +60,19 @@ public abstract class BasicWeapon : MonoBehaviour, WeaponInterface
 
 	virtual public bool attack(LayerMask targetLayer)
 	{
+		soundMade = false;
 		anim.SetTrigger(WeaponDefs.ANIM_TRIGGER_ATTACK);
 		//lastTargetLayer = targetLayer;
 		actorWielder.invincible = false;
-		//actorWielder.actorAudioSource.PlayOneShot(weaponSwingSound);
+		if (_weaponScriptable.soundSwing != null)
+		{
+			AudioClip toPlay;
+			gameManager.audioManager.soundHash.TryGetValue(_weaponScriptable.soundSwing.name, out toPlay);
+			if (toPlay != null)
+			{
+				weaponAudioPlayer.PlayOneShot(toPlay);
+			}
+		}
 
 		return true;
 	}
@@ -166,6 +176,15 @@ public abstract class BasicWeapon : MonoBehaviour, WeaponInterface
 
 		if (durability <= 0)
 		{
+			if (_weaponScriptable.soundBreak != null)
+			{
+				AudioClip toPlay;
+				gameManager.audioManager.soundHash.TryGetValue(_weaponScriptable.soundBreak.name, out toPlay);
+				if (toPlay != null)
+				{
+					actorWielder.actorAudioSource.PlayOneShot(toPlay);
+				}
+			}
 			this.actorWielder.drop();
 			Debug.Log("Weapon broke: " + this.name);
 			//actorWielder.actorAudioSource.PlayOneShot(weaponBreakSound);
@@ -306,6 +325,15 @@ public abstract class BasicWeapon : MonoBehaviour, WeaponInterface
 			}
 			knockbackMult = (1 - actorHit._actorScriptable.knockbackResist) * WeaponDefs.KNOCKBACK_MULT_ACTOR;
 			SoundDefs.createSound(actorHit.transform.position, actorHitSound);
+			if (_weaponScriptable.soundActorHit != null)
+			{
+				AudioClip toPlay;
+				gameManager.audioManager.soundHash.TryGetValue(_weaponScriptable.soundActorHit.name, out toPlay);
+				if (toPlay != null)
+				{
+					weaponAudioPlayer.PlayOneShot(toPlay);
+				}
+			}
 
 			maxForce = ActorDefs.MAX_HIT_FORCE;
 			if (actorWielder.isStunned())
@@ -323,10 +351,15 @@ public abstract class BasicWeapon : MonoBehaviour, WeaponInterface
 			if (collision.tag == SoundDefs.TAG_WALL_METAL)
 			{
 				SoundDefs.createSound(actorWielder.transform.position, wallHitSound);
-			}
-			else
-			{
-				SoundDefs.createSound(actorWielder.transform.position, actorHitSound);
+				if (_weaponScriptable.soundWallHit != null)
+				{
+					AudioClip toPlay;
+					gameManager.audioManager.soundHash.TryGetValue(_weaponScriptable.soundWallHit.name, out toPlay);
+					if (toPlay != null)
+					{
+						weaponAudioPlayer.PlayOneShot(toPlay);
+					}
+				}
 			}
 			Debug.Log("Hit: " + collision.name + " for no damage");
 
@@ -337,6 +370,17 @@ public abstract class BasicWeapon : MonoBehaviour, WeaponInterface
 				knockbackMult = obstacle._obstacleScriptable.weaponHitMult * WeaponDefs.KNOCKBACK_MULT_OBSTACLE;
 				maxForce = obstacle._obstacleScriptable.maxObstacleForce;
 				obstacle.knockOver();
+
+				if (_weaponScriptable.soundObstacleHit != null && !soundMade && knockbackMult != 0)
+				{
+					AudioClip toPlay;
+					soundMade = true;
+					gameManager.audioManager.soundHash.TryGetValue(_weaponScriptable.soundObstacleHit.name, out toPlay);
+					if (toPlay != null)
+					{
+						weaponAudioPlayer.PlayOneShot(toPlay);
+					}
+				}
 			}
 		}
 

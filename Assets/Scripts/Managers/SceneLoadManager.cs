@@ -21,7 +21,7 @@ public class SceneLoadManager
 
 		for (i = 0; i < scenes.Length; i++)
 		{
-			operationGroup.operations.Add(SceneManager.LoadSceneAsync(scenes[i], LoadSceneMode.Additive)); 
+			operationGroup.operations.Add(SceneManager.LoadSceneAsync(SCENE_INDEX_MASK[scenes[i]], LoadSceneMode.Additive)); 
 			OnSceneLoaded.Invoke(scenes[i]);
 		}
 
@@ -33,9 +33,13 @@ public class SceneLoadManager
 
 		for (i = 0; i < scenes.Length; i++)
 		{
-			if (isLevelScene(scenes[i]))
+			if (isLevelScene((SCENE)scenes[i]))
 			{
-				SceneManager.SetActiveScene(SceneManager.GetSceneByBuildIndex(scenes[i]));
+				if ((SCENE)scenes[i] == SCENE.MANAGER)
+				{
+					Debug.Log("ALERT 1");
+				}
+				SceneManager.SetActiveScene(SceneManager.GetSceneByBuildIndex(SCENE_INDEX_MASK[scenes[i]]));
 				break;
 			}
 		}
@@ -48,7 +52,7 @@ public class SceneLoadManager
 		int[] sceneArr = new int[SceneManager.sceneCount];
 		for (int i = 0; i < sceneArr.Length; i ++)
 		{
-			sceneArr[i] = SceneManager.GetSceneAt(i).buildIndex;
+			sceneArr[i] = SCENE_BUILD_MASK[SceneManager.GetSceneAt(i).buildIndex];
 		}
 		await UnloadScenes(unloadBgScenes, sceneArr);
 	}
@@ -59,13 +63,13 @@ public class SceneLoadManager
 
 		for (int i = scenes.Length - 1; i >= 0; i--)
 		{
-			Scene sceneAt = SceneManager.GetSceneByBuildIndex(scenes[i]);
+			Scene sceneAt = SceneManager.GetSceneByBuildIndex(SCENE_INDEX_MASK[scenes[i]]);
 			if (!sceneAt.isLoaded)
 			{
 				continue;
 			}
 
-			if (sceneAt.buildIndex == (int)SCENE.MANAGER || (!unloadBgScenes && !isValidUnload(sceneAt.buildIndex)))
+			if (SCENE_BUILD_MASK[sceneAt.buildIndex] == (int)SCENE.MANAGER || (!unloadBgScenes && !isValidUnload(SCENE_BUILD_MASK[sceneAt.buildIndex])))
 			{
 				continue;
 			}

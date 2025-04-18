@@ -23,6 +23,9 @@ public class PlayerMove : MonoBehaviour
 	private float soundTimer;
 	private bool firstStep = false;
 
+	private bool createSoundNext = false;
+	private Vector2 nextPosition = Vector2.zero;
+
 	private bool movementLocked;
 
 	public PlayerInputs inputs;
@@ -52,6 +55,7 @@ public class PlayerMove : MonoBehaviour
 		gameManager.movementLockedEvent += lockMovement;
 		gameManager.movementUnlockedEvent += unlockMovement;
 		movementLocked = false;
+		createSoundNext = false;
 		currentSpeed = 0;
 	}
 
@@ -87,18 +91,23 @@ public class PlayerMove : MonoBehaviour
 				if (footstepTimer > footstepScriptable.threshold)
 				{
 					footstepTimer = 0;
-					SoundDefs.createSound(player.transform.position, footstepScriptable);
 
 					if (soundTimer > playerData.maxSpeed / 45 || firstStep)
 					{
 						soundTimer = 0;
 						firstStep = false;
-						if (player.actorAudioSource != null && footstepScriptable.audioClip != null)
+
+						/* play audio */
+						AudioClip footstepClip;
+						if (player.actorAudioSource != null && footstepScriptable.audioClip != null
+							&& player.gameManager.audioManager.soundHash.TryGetValue(footstepScriptable.audioClip.name, out footstepClip))
 						{
-							//TODO: enable when adding sound
-							//player.actorAudioSource.PlayOneShot(footstepScriptable.audioClip, 0.25F);
+							player.actorAudioSource.PlayOneShot(footstepClip, 0.2F);
 						}
 					}
+
+					createSoundNext = true;
+					nextPosition = player.transform.position;
 				}
 			}
 			else
@@ -111,6 +120,13 @@ public class PlayerMove : MonoBehaviour
 		else
 		{
 			currentSpeed -= playerData.deceleration * playerData.moveSpeed;
+		}
+
+		if (createSoundNext)
+		{
+			createSoundNext = false;
+			SoundDefs.createSound(player.transform.position, footstepScriptable);
+			nextPosition = Vector2.zero;
 		}
 
 		if (!movementLocked)

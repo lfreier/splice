@@ -87,14 +87,13 @@ public class PlayerInteract : MonoBehaviour
 			if (doorInteract != null)
 			{
 				PlayerStats stats = player.gameManager.playerStats;
-				if (stats.keycardCount[(int)doorInteract.lockType] > 0)
+				if (stats.keycardCount[(int)doorInteract.lockType] > 0
+					&& doorInteract._doorType != AutoDoor.doorType.REMOTE 
+					&& doorInteract.locked)
 				{
-					if (doorInteract._doorType != AutoDoor.doorType.REMOTE)
-					{
 						doorInteract.doorUnlock();
 						stats.useKeycard((int)doorInteract.lockType);
 						return true;
-					}
 				}
 			}
 		}

@@ -162,7 +162,7 @@ MonoBehaviour:
   _weaponScriptable: {fileID: 11400000, guid: e744bc13b53668d4cbd7a81ba7a28b45, type: 2}
   _weaponPhysics: {fileID: 7442844587533451577}
   actorHitSound: {fileID: 11400000, guid: 4ef7172c84fd22b4586d55e87fa9e529, type: 2}
-  wallHitSound: {fileID: 11400000, guid: 2dee26a68c8b6d14c9f1598aceb14c3a, type: 2}
+  wallHitSound: {fileID: 11400000, guid: fc7b5a00970e656469c43cf634631693, type: 2}
   weaponBreakSound: {fileID: 0}
   weaponSwingSound: {fileID: 0}
   currentSide: 0
@@ -287,6 +287,7 @@ MonoBehaviour:
   weaponBody: {fileID: 461899199207549515}
   throwCollider: {fileID: 8029730490479019659}
   pickupCollider: {fileID: 2666023793495350712}
+  attachedWeapon: {fileID: 0}
   topObject: {fileID: 1192526033329145194}
 --- !u!50 &461899199207549515
 Rigidbody2D:

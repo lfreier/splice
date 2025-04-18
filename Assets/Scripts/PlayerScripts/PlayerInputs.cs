@@ -110,7 +110,7 @@ public class PlayerInputs: MonoBehaviour
 			for (int j = 0; j < SceneManager.sceneCount; j++)
 			{
 				Scene curr = SceneManager.GetSceneAt(j);
-				if (curr.buildIndex == (int)SceneDefs.SCENE.PAUSE)
+				if (curr.buildIndex == SceneDefs.SCENE_INDEX_MASK[(int)SceneDefs.SCENE.PAUSE])
 				{
 					SceneManager.UnloadSceneAsync(curr.buildIndex);
 					continue;

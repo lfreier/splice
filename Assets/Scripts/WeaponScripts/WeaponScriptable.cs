@@ -33,6 +33,21 @@ public class WeaponScriptable : ScriptableObject
 	[field: SerializeField]
 	public float secondaryDamage { get; private set; } = 2F;
 
+	[field: SerializeField]
+	public AudioClip soundActorHit { get; private set; } = null;
+
+	[field: SerializeField]
+	public AudioClip soundBreak { get; private set; } = null;
+
+	[field: SerializeField]
+	public AudioClip soundObstacleHit { get; private set; } = null;
+
+	[field: SerializeField]
+	public AudioClip soundSwing { get; private set; } = null;
+
+	[field: SerializeField]
+	public AudioClip soundWallHit { get; private set; } = null;
+
 	/* Throwing fields */
 	[field: SerializeField]
 	public float throwDamage { get; private set; } = 1F;

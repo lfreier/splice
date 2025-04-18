@@ -12,6 +12,7 @@ using static ActorDefs;
 using static EffectDefs;
 using static UnityEngine.GraphicsBuffer;
 using static WeaponDefs;
+using static SceneDefs;
 
 /*
  * Actor class:
@@ -470,6 +471,10 @@ public class Actor : MonoBehaviour
 		dropItem();
 		if (corpsePrefab != null)
 		{
+			if (!isLevelScene((SCENE)SCENE_BUILD_MASK[SceneManager.GetActiveScene().buildIndex]))
+			{
+				SceneManager.SetActiveScene(gameObject.scene);
+			}
 			GameObject newCorpse = Instantiate(corpsePrefab, transform.position, transform.rotation);
 			SpriteRenderer newSprite = newCorpse.GetComponent<SpriteRenderer>();
 			newCorpse.transform.Rotate(0, 0, Random.Range(-20, 20));

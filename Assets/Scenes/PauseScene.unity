@@ -390,8 +390,8 @@ RectTransform:
   - {fileID: 1057535116}
   m_Father: {fileID: 798559243}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.35043752, y: 0.201}
-  m_AnchorMax: {x: 0.65152085, y: 0.7944815}
+  m_AnchorMin: {x: 0.3, y: 0.05}
+  m_AnchorMax: {x: 0.7, y: 0.95}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -414,11 +414,13 @@ MonoBehaviour:
   - {fileID: 1057535118}
   - {fileID: 1678693514}
   - {fileID: 1757612357}
+  fadeInText: []
   fadeChange: 0.6
   menuCanvas: {fileID: 798559242}
   menuCam: {fileID: 0}
   eventSystem: {fileID: 1808270837}
   audioListener: {fileID: 0}
+  menuMusic: {fileID: 0}
 --- !u!222 &1122879507
 CanvasRenderer:
   m_ObjectHideFlags: 0

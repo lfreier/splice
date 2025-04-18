@@ -93,6 +93,7 @@ public class EnemyMove : MonoBehaviour
 			_detection = detectMode.idle;
 		}
 		_startingDetection = _detection;
+		_nextDetection = detectMode.nul;
 		attackTargetActor = null;
 
 		pathIndex = 0;
@@ -604,7 +605,10 @@ public class EnemyMove : MonoBehaviour
 		}
 
 		/* by default, handle the edge case since a new sound was heard */
-		_oldDetection = detectMode.idle;
+		if (heardSound.Length > 0)
+		{
+			_oldDetection = _startingDetection;
+		}
 
 		float loudest = 0;
 		foreach (RaycastHit2D target in heardSound)
@@ -679,7 +683,7 @@ public class EnemyMove : MonoBehaviour
 			Actor targetActor = rayHit.rigidbody.gameObject.GetComponent<Actor>();
 			if (targetActor != null && actor.isTargetHostile(targetActor))
 			{
-				if ((_detection == detectMode.idle || _detection == detectMode.suspicious) && delayTimer <= 0)
+				if ((_detection == detectMode.idle || _detection == detectMode.wandering || _detection == detectMode.suspicious) && delayTimer <= 0)
 				{
 					delayTimer = DELAY_TIMER_LENGTH;
 					// create a new Sus effect

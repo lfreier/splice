@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: levelStart
   m_EditorClassIdentifier: 
   spawnPosition: {x: -148.375, y: 12}
-  spawnRotation: 0
+  spawnRotation: -90

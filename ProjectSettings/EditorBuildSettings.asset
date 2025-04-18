@@ -36,6 +36,9 @@ EditorBuildSettings:
     path: Assets/Scenes/SavingScene.unity
     guid: 5ab19b90ceb885443b32472a390e969c
   - enabled: 1
+    path: Assets/Scenes/TutorialScene.unity
+    guid: 4f50fef9332238c49b633b24791d6a34
+  - enabled: 1
     path: Assets/Scenes/LevelStart.unity
     guid: 2cda990e2423bbf4892e6590ba056729
   - enabled: 1

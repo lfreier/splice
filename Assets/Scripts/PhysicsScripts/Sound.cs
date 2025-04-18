@@ -6,12 +6,8 @@ public class Sound : MonoBehaviour
 	public float timer;
 
 	public SoundScriptable scriptable;
+	public CircleCollider2D soundCollider;
 
-	// Use this for initialization
-	void Start()
-	{
-
-	}
 	void FixedUpdate()
 	{
 		timer -= Time.deltaTime;
@@ -22,9 +18,15 @@ public class Sound : MonoBehaviour
 		}
 	}
 
-	public void start(SoundScriptable scriptable)
+	public void startSound(SoundScriptable scriptable)
 	{
 		this.timer = scriptable.length;
 		this.scriptable = scriptable;
+
+		if (scriptable != null && soundCollider != null)
+		{
+			soundCollider.radius = scriptable.radius;
+			gameObject.SetActive(true);
+		}
 	}
 }

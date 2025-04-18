@@ -1,33 +1,60 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class AudioManager : MonoBehaviour
 {
 	private static AudioManager instance = null;
 
-	private GameManager gameManager;
+	public GameObject soundPrefab;
 
 	public AudioListener listener;
 
-	public AudioClip cellCollectPop;
+	public Dictionary<string, AudioClip> soundHash = new Dictionary<string, AudioClip>();
 
-	public AudioClip actorDeath1;
-	public AudioClip actorDeath2;
-	public AudioClip actorDeath3;
+	public AudioClip[] clipsRef;
 
-	public AudioClip doorClose;
-	public AudioClip doorOpen;
-	public AudioClip doorUnlock;
-
-	public AudioClip footstep;
+	public AudioClip footstepCarpet;
 
 	public AudioClip heartPump;
 
-	public AudioClip parry;
+	public AudioClip parrySuccess;
 
 	public AudioClip playerDeath;
 
-	public AudioClip wallMetal;
+	public AudioClip weaponFistSwing;
+	public AudioClip weaponFistWallHit;
+	public AudioClip weaponFistObstacleHit;
+	//public AudioClip weaponFistActorHit;
+
+	public AudioClip weaponMetalSwing;
+	public AudioClip weaponMetalWallHit;
+	public AudioClip weaponMetalObstacleHit;
+	public AudioClip weaponMetalActorHit;
+	public AudioClip weaponMetalBreak;
+
+	public AudioClip weaponStunSwing;
+	public AudioClip weaponStunHit;
+	public AudioClip weaponStunObstacleHit;
+	public AudioClip weaponStunActorHit;
+	public AudioClip weaponStunBreak;
+
+	public AudioClip weaponScalpelSwing;
+	public AudioClip weaponScalpelWallHit;
+	public AudioClip weaponScalpelObstacleHit;
+	public AudioClip weaponScalpelActorHit;
+	public AudioClip weaponScalpelBreak;
+
+	public AudioClip weaponWrenchSwing;
+	public AudioClip weaponWrenchWallHit;
+	public AudioClip weaponWrenchObstacleHit;
+	//public AudioClip weaponWrenchActorHit;
+	public AudioClip weaponWrenchBreak;
+
+	public AudioClip sciDeath1;
+	public AudioClip sciDeath2;
+	public AudioClip sciDeath3;
+	public AudioClip sciDeath4;
 
 	public static AudioManager Instance
 	{
@@ -46,6 +73,11 @@ public class AudioManager : MonoBehaviour
 		else
 		{
 			instance = this;
+		}
+
+		foreach (AudioClip clip in clipsRef)
+		{
+			soundHash.Add(clip.name, clip);
 		}
 	}
 

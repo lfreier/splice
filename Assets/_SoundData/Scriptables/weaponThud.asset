@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fb55f236f4211e041aae60ee7c308f35, type: 3}
   m_Name: weaponThud
   m_EditorClassIdentifier: 
-  <audioClip>k__BackingField: {fileID: 8300000, guid: 4c2c32d027a647344b46a42d17e9997c, type: 3}
+  <audioClip>k__BackingField: {fileID: 0}
   <length>k__BackingField: 0.5
   <radius>k__BackingField: 4
   <type>k__BackingField: 2

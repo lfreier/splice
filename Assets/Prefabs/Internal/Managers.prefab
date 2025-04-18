@@ -124,19 +124,52 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1b80ca114488feb40bc2654abc0e764e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  soundPrefab: {fileID: 2250974812238864123, guid: c66734f07c557f84eafe715df431c494, type: 3}
   listener: {fileID: 0}
-  cellCollectPop: {fileID: 0}
-  actorDeath1: {fileID: 0}
-  actorDeath2: {fileID: 0}
-  actorDeath3: {fileID: 0}
-  doorClose: {fileID: 0}
-  doorOpen: {fileID: 0}
-  doorUnlock: {fileID: 0}
-  footstep: {fileID: 8300000, guid: 1d63fcbc8fcf97e4ab818c9c059d8ffe, type: 3}
+  clipsRef:
+  - {fileID: 8300000, guid: e6f6ffe36f325ca4abce64eed89f5918, type: 3}
+  - {fileID: 8300000, guid: 476020a61a2d6c74f9603fe2db63bfd1, type: 3}
+  - {fileID: 8300000, guid: 326b5e0372a1b524981c314e98186593, type: 3}
+  - {fileID: 8300000, guid: 1d63fcbc8fcf97e4ab818c9c059d8ffe, type: 3}
+  - {fileID: 8300000, guid: 00c4d84d13047d54d92519e56b2f9958, type: 3}
+  - {fileID: 8300000, guid: d625c6e00795a224995b036683d25b38, type: 3}
+  - {fileID: 8300000, guid: 152261d29304ef5488d53ce1c9eb9bf0, type: 3}
+  - {fileID: 8300000, guid: e59c7e023e0cb8f41baf11a0a41e47a5, type: 3}
+  - {fileID: 8300000, guid: fad49cc5955cf434c9046ace9b42a7b7, type: 3}
+  - {fileID: 8300000, guid: 906f85267add4704b851251eeb89405d, type: 3}
+  - {fileID: 8300000, guid: 4ebf89c51850dc945aeecf8d50d17329, type: 3}
+  - {fileID: 8300000, guid: 64fd037e2d68657488f3657381b81080, type: 3}
+  - {fileID: 8300000, guid: 619d131918b5d2d479edd3587d18d37c, type: 3}
+  footstepCarpet: {fileID: 0}
   heartPump: {fileID: 0}
-  parry: {fileID: 8300000, guid: acf0ab68899702345b836a505f63bbe1, type: 3}
+  parrySuccess: {fileID: 0}
   playerDeath: {fileID: 0}
-  wallMetal: {fileID: 0}
+  weaponFistSwing: {fileID: 0}
+  weaponFistWallHit: {fileID: 0}
+  weaponFistObstacleHit: {fileID: 0}
+  weaponMetalSwing: {fileID: 0}
+  weaponMetalWallHit: {fileID: 0}
+  weaponMetalObstacleHit: {fileID: 0}
+  weaponMetalActorHit: {fileID: 0}
+  weaponMetalBreak: {fileID: 0}
+  weaponStunSwing: {fileID: 0}
+  weaponStunHit: {fileID: 0}
+  weaponStunObstacleHit: {fileID: 0}
+  weaponStunActorHit: {fileID: 0}
+  weaponStunBreak: {fileID: 0}
+  weaponScalpelSwing: {fileID: 0}
+  weaponScalpelWallHit: {fileID: 0}
+  weaponScalpelObstacleHit: {fileID: 0}
+  weaponScalpelActorHit: {fileID: 0}
+  weaponScalpelBreak: {fileID: 0}
+  weaponWrenchSwing: {fileID: 0}
+  weaponWrenchWallHit: {fileID: 0}
+  weaponWrenchObstacleHit: {fileID: 0}
+  weaponWrenchBreak: {fileID: 0}
+  sciDeath1: {fileID: 0}
+  sciDeath2: {fileID: 0}
+  sciDeath3: {fileID: 0}
+  sciDeath4: {fileID: 0}
 --- !u!114 &9086022366862896558
 MonoBehaviour:
   m_ObjectHideFlags: 0

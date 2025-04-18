@@ -22,14 +22,14 @@ public class SaveStation : MonoBehaviour, UsableInterface
 			for (int j = 0; j < SceneManager.sceneCount; j++)
 			{
 				Scene curr = SceneManager.GetSceneAt(j);
-				if (curr.buildIndex == (int)SCENE.SAVING)
+				if (curr.buildIndex == SCENE_INDEX_MASK[(int)SCENE.SAVING])
 				{
 					SceneManager.UnloadSceneAsync(curr.buildIndex);
 					continue;
 				}
 			}
 
-			SceneManager.LoadSceneAsync((int)SCENE.SAVING, LoadSceneMode.Additive);
+			SceneManager.LoadSceneAsync(SCENE_INDEX_MASK[(int)SCENE.SAVING], LoadSceneMode.Additive);
 		}
 	}
 }

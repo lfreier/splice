@@ -20,6 +20,11 @@ MonoBehaviour:
   <npcAttackRange>k__BackingField: 3
   <prefabIndex>k__BackingField: 4
   <secondaryDamage>k__BackingField: 2
+  <soundActorHit>k__BackingField: {fileID: 8300000, guid: 64fd037e2d68657488f3657381b81080, type: 3}
+  <soundBreak>k__BackingField: {fileID: 0}
+  <soundObstacleHit>k__BackingField: {fileID: 0}
+  <soundSwing>k__BackingField: {fileID: 8300000, guid: 619d131918b5d2d479edd3587d18d37c, type: 3}
+  <soundWallHit>k__BackingField: {fileID: 0}
   <throwDamage>k__BackingField: 1
   <throwDurabilityDamage>k__BackingField: 0.5
   <throwSpeed>k__BackingField: 50

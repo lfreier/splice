@@ -166,7 +166,7 @@ public class GameManager : MonoBehaviour
 		maxPickups[(int)PickupDefs.usableType.REFILL] = pickupMaxScriptable.refillMax;
 
 		/* load necessary background scenes now */
-		await SceneManager.LoadSceneAsync((int)SCENE.LOADING, LoadSceneMode.Additive);
+		await SceneManager.LoadSceneAsync(SCENE_INDEX_MASK[(int)SCENE.LOADING], LoadSceneMode.Additive);
 
 		while (loadingHandler == null){}
 		loadingHandler.reloadHUD = true;
@@ -180,9 +180,9 @@ public class GameManager : MonoBehaviour
 		for (int i = 0; i < SceneManager.sceneCount; i++)
 		{
 			Scene curr = SceneManager.GetSceneAt(i);
-			if (SceneDefs.isLevelScene(curr.buildIndex))
+			if (SceneDefs.isLevelScene((SCENE)SCENE_BUILD_MASK[curr.buildIndex]))
 			{
-				currentScene = curr.buildIndex;
+				currentScene = SCENE_BUILD_MASK[curr.buildIndex];
 				switch (currentScene)
 				{
 					case (int)SCENE.LEVEL_START:

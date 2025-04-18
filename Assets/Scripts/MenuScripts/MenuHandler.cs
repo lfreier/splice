@@ -13,6 +13,11 @@ public class MenuHandler : MonoBehaviour
 	public Image[] menuOptions;
 	public TextMeshProUGUI[] fadeInText;
 
+	public Image holdToFillImage;
+	public float holdTimerLength = 0;
+	private float holdTimer = 0;
+	private bool isHeld = false;
+
 	private bool transitioning = false;
 	private bool loadDone = false;
 	private bool showLoading = false;
@@ -46,13 +51,13 @@ public class MenuHandler : MonoBehaviour
 	{
 		for (int i = 0; i <  SceneManager.sceneCount; i++)
 		{
-			if (SceneManager.GetSceneAt(i).buildIndex == (int)SCENE.MANAGER)
+			if (SceneManager.GetSceneAt(i).buildIndex == SCENE_INDEX_MASK[(int)SCENE.MANAGER])
 			{
 				return;
 			}
 		}
 
-		await SceneManager.LoadSceneAsync((int)SCENE.MANAGER, LoadSceneMode.Additive);
+		await SceneManager.LoadSceneAsync(SCENE_INDEX_MASK[(int)SCENE.MANAGER], LoadSceneMode.Additive);
 		buttonsLocked = false;
 	}
 
@@ -70,6 +75,30 @@ public class MenuHandler : MonoBehaviour
 	{
 		gameManager.closeMenusEvent -= killMenuScenes;
 		gameManager.startMusicEvent -= killMenuMusic;
+	}
+
+	public void Update()
+	{
+		/* only used for hold to click menu buttons */
+
+		//increment timer
+		if (isHeld && holdTimerLength > 0 && holdToFillImage != null && Time.timeScale <= 0)
+		{
+			holdTimer += Time.fixedDeltaTime;
+			holdToFillImage.fillAmount = holdTimer / holdTimerLength;
+			if (holdTimer >= holdTimerLength)
+			{
+				holdTimer = 0;
+				isHeld = false;
+				resumeGame();
+			}
+		}
+		//decrement timer
+		else if (holdTimer > 0)
+		{
+			holdTimer -= Time.fixedDeltaTime;
+			holdToFillImage.fillAmount = holdTimer / holdTimerLength;
+		}
 	}
 
 	public async void LateUpdate()
@@ -126,12 +155,23 @@ public class MenuHandler : MonoBehaviour
 				/* only disable the loading screen, don't destroy it */
 				if (this.gameObject.scene.buildIndex != (int)SCENE.LOADING)
 				{
-					int[] temp = { this.gameObject.scene.buildIndex };
+					int[] temp = { SCENE_BUILD_MASK[this.gameObject.scene.buildIndex] };
 					await gameManager.loadingHandler.forceUnloadScenes(temp);
 				}
 				gameManager.loadingHandler.reset();
+				SceneManager.SetActiveScene(SceneManager.GetSceneByBuildIndex(SCENE_INDEX_MASK[gameManager.currentScene]));
 			}
 		}
+	}
+
+	public void OnPointerDown()
+	{
+		isHeld = true;
+	}
+
+	public void OnPointerUp()
+	{
+		isHeld = false;
 	}
 
 	public void killMenuMusic(MusicScriptable music)
@@ -144,7 +184,8 @@ public class MenuHandler : MonoBehaviour
 
 	public void killMenuScenes()
 	{
-		if (this.gameObject.scene.buildIndex == (int)SCENE.PAUSE)
+		SCENE sceneIndex = (SCENE)SCENE_BUILD_MASK[this.gameObject.scene.buildIndex];
+		if (sceneIndex == SCENE.PAUSE || sceneIndex == SCENE.TUTORIAL)
 		{
 			currentAlpha = desiredAlpha;
 			currentAlpha2 = desiredAlpha2;
@@ -238,7 +279,12 @@ public class MenuHandler : MonoBehaviour
 		gameManager.resetLevel();
 
 		gameManager.currentScene = nextScene;
-		SceneManager.SetActiveScene(SceneManager.GetSceneByBuildIndex(nextScene));
+
+		if ((SCENE)nextScene == SCENE.MANAGER)
+		{
+			Debug.Log("ALERT 3");
+		}
+		SceneManager.SetActiveScene(SceneManager.GetSceneByBuildIndex(SCENE_INDEX_MASK[nextScene]));
 
 		fadeOutScene();
 	}
