@@ -9,7 +9,7 @@ public class SavePopup : MonoBehaviour
 
 	private void Update()
 	{
-		waitTime -= Time.deltaTime;
+		waitTime -= Time.unscaledDeltaTime;
 		if(waitTime <= 0)
 		{
 			menu.fadeOutScene();

@@ -14065,6 +14065,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3970107339149695218, guid: 937376f06b7ba5e4691ec97964f49f1f, type: 3}
+      propertyPath: playerSpawnIndex
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3970107339149695218, guid: 937376f06b7ba5e4691ec97964f49f1f, type: 3}
       propertyPath: saveStationSpawnIndex
       value: 1
       objectReference: {fileID: 0}

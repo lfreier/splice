@@ -14,7 +14,7 @@ public class SceneDefs
 		WIN = 8,
 		SAVING = 9,
 		TUTORIAL = 10,
-		TEMP11 = 11,
+		STATION_MENU = 11,
 		TEMP12 = 12,
 		TEMP13 = 13,
 		TEMP14 = 14,
@@ -32,11 +32,11 @@ public class SceneDefs
 
 	//index is SCENE index
 	//value is build index
-	public static int[] SCENE_INDEX_MASK = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 11, 12, 13, 23, 24 };
+	public static int[] SCENE_INDEX_MASK = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 12, 13, 14, 23, 24 };
 
 	//index is build index
 	//value is SCENE index
-	public static int[] SCENE_BUILD_MASK = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 20, 21, 22, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24 };
+	public static int[] SCENE_BUILD_MASK = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 20, 21, 22, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24 };
 
 	public static int[] BACKGROUND_SCENES = { SCENE_INDEX_MASK[(int)SCENE.MANAGER], SCENE_INDEX_MASK[(int)SCENE.PLAYER_HUD], SCENE_INDEX_MASK[(int)SCENE.LOADING], SCENE_INDEX_MASK[(int)SCENE.INVENTORY_HUD] };
 

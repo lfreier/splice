@@ -176,6 +176,11 @@ public class GameManager : MonoBehaviour
 		playerStats = new PlayerStats();
 		playerStats.gameManager = this;
 
+		for (int i = 0; i < levelManager.saveStationUses.Length; i ++)
+		{
+			levelManager.saveStationUses[i] = 1;
+		}
+
 		/* This is mainly for debugging - making sure we set the level if we don't load it */
 		for (int i = 0; i < SceneManager.sceneCount; i++)
 		{
@@ -301,6 +306,30 @@ public class GameManager : MonoBehaviour
 			}
 		}
 		await loadingHandler.LoadSceneGroup(bgScenes.ToArray(), false, false);
+	}
+
+	public void loadPausedScene(Actor playerActor, SCENE toLoad)
+	{
+		Time.timeScale = 0;
+
+		for (int j = 0; j < SceneManager.sceneCount; j++)
+		{
+			Scene curr = SceneManager.GetSceneAt(j);
+			if (curr.buildIndex == SCENE_INDEX_MASK[(int)toLoad])
+			{
+				SceneManager.UnloadSceneAsync(curr.buildIndex);
+				continue;
+			}
+		}
+
+		SceneManager.LoadSceneAsync((int)toLoad, LoadSceneMode.Additive);
+		playerActor.gameManager.levelManager.camHandler.stopCam(true);
+
+		PlayerInputs inputs = playerActor.GetComponentInChildren<PlayerInputs>();
+		if (inputs != null)
+		{
+			inputs.paused = true;
+		}
 	}
 
 	public async void resetLevel()

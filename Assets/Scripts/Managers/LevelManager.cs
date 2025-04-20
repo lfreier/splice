@@ -61,7 +61,7 @@ public class LevelManager : MonoBehaviour
 	public GameObject[] savedActors;
 
 	public static int NUM_SAVE_STATIONS = 5;
-	public bool[] usedSavedStations = new bool[NUM_SAVE_STATIONS];
+	public int[] saveStationUses = new int[NUM_SAVE_STATIONS];
 
 	public Dictionary<string, GUIDWatcher>	guidTable = new Dictionary<string, GUIDWatcher>();
 	Dictionary<string, ActorSaveData>		actorTable = new Dictionary<string, ActorSaveData>();
@@ -204,7 +204,7 @@ public class LevelManager : MonoBehaviour
 						{
 							if (dataSave.isPresent && door.locked)
 							{
-								door.doorUnlock();
+								door.doorUnlockQuiet();
 							}
 						}
 						else
@@ -274,7 +274,7 @@ public class LevelManager : MonoBehaviour
 					{
 						if (saveTable.TryGetValue(item.Key, out dataSave))
 						{
-							usedSavedStations[dataSave.option] = dataSave.isPresent;
+							saveStationUses[dataSave.option] = dataSave.isPresent ? 1 : 0;
 						}
 					}
 					continue;
@@ -421,7 +421,7 @@ public class LevelManager : MonoBehaviour
 			SaveStation save = guid.GetComponentInChildren<SaveStation>();
 			if (save != null)
 			{
-				dataSave.isPresent = usedSavedStations[save.saveStationNumIndex];
+				dataSave.isPresent = saveStationUses[save.saveStationNumIndex] == 0 ? false : true;
 				dataSave.option = save.saveStationNumIndex;
 				saveTable.Add(item.Key, dataSave);
 				continue;

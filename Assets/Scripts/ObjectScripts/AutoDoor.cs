@@ -47,7 +47,7 @@ public class AutoDoor : MonoBehaviour
 		}
 		else
 		{
-			doorUnlock();
+			doorUnlockQuiet();
 		}
 
 		gameManager = GameManager.Instance;
@@ -147,6 +147,13 @@ public class AutoDoor : MonoBehaviour
 				doorAudioPlayer.PlayOneShot(toPlay);
 			}
 		}
+	}
+
+
+	public void doorUnlockQuiet()
+	{
+		locked = false;
+		lockSprite.color = GameManager.COLOR_GREEN;
 	}
 
 	public bool isOpen()

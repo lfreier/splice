@@ -13,28 +13,12 @@ public class TutorialSceneLoader : MonoBehaviour
 	private void OnTriggerEnter2D(Collider2D collision)
 	{
 		Actor actor = collision.transform.GetComponent<Actor>();
-		if (actor != null && actor.tag == ActorDefs.playerTag && tutorialImage != null)
+		if (actor != null && actor.tag == ActorDefs.playerTag)
 		{
 			triggered = true;
-			Time.timeScale = 0;
-
-			for (int j = 0; j < SceneManager.sceneCount; j++)
+			if (tutorialImage != null)
 			{
-				Scene curr = SceneManager.GetSceneAt(j);
-				if (curr.buildIndex == SceneDefs.SCENE_INDEX_MASK[(int)SceneDefs.SCENE.TUTORIAL])
-				{
-					SceneManager.UnloadSceneAsync(curr.buildIndex);
-					continue;
-				}
-			}
-
-			SceneManager.LoadSceneAsync((int)SceneDefs.SCENE.TUTORIAL, LoadSceneMode.Additive);
-			actor.gameManager.levelManager.camHandler.stopCam(true);
-
-			PlayerInputs inputs = actor.GetComponentInChildren<PlayerInputs>();
-			if (inputs != null)
-			{
-				inputs.paused = true;
+				actor.gameManager.loadPausedScene(actor, SceneDefs.SCENE.TUTORIAL);
 			}
 		}
 	}

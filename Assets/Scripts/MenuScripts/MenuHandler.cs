@@ -84,7 +84,7 @@ public class MenuHandler : MonoBehaviour
 		//increment timer
 		if (isHeld && holdTimerLength > 0 && holdToFillImage != null && Time.timeScale <= 0)
 		{
-			holdTimer += Time.fixedDeltaTime;
+			holdTimer += Time.fixedUnscaledDeltaTime;
 			holdToFillImage.fillAmount = holdTimer / holdTimerLength;
 			if (holdTimer >= holdTimerLength)
 			{
@@ -96,7 +96,7 @@ public class MenuHandler : MonoBehaviour
 		//decrement timer
 		else if (holdTimer > 0)
 		{
-			holdTimer -= Time.fixedDeltaTime;
+			holdTimer -= Time.fixedUnscaledDeltaTime;
 			holdToFillImage.fillAmount = holdTimer / holdTimerLength;
 		}
 	}
@@ -119,9 +119,9 @@ public class MenuHandler : MonoBehaviour
 				loadDone = true;
 			}
 
-			currentAlpha = Mathf.MoveTowards(currentAlpha, desiredAlpha, fadeChange * Time.deltaTime);
-			currentAlpha2 = Mathf.MoveTowards(currentAlpha2, desiredAlpha2, fadeChange / 2 * Time.deltaTime);
-			currentAlpha3 = Mathf.MoveTowards(currentAlpha3, desiredAlpha3, fadeChange * Time.deltaTime);
+			currentAlpha = Mathf.MoveTowards(currentAlpha, desiredAlpha, fadeChange * Time.unscaledDeltaTime);
+			currentAlpha2 = Mathf.MoveTowards(currentAlpha2, desiredAlpha2, fadeChange / 2 * Time.unscaledDeltaTime);
+			currentAlpha3 = Mathf.MoveTowards(currentAlpha3, desiredAlpha3, fadeChange * Time.unscaledDeltaTime);
 
 			if (backgroundImage != null)
 			{
