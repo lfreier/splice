@@ -16,7 +16,13 @@ MonoBehaviour:
   <atkSpeed>k__BackingField: 0.6
   <canBeDropped>k__BackingField: 1
   <damage>k__BackingField: 1.5
+  <description>k__BackingField: LONG REACHING AND DURABLE BLUNT INSTRUMENT.\r\nBEST
+    RECOMMENDATION FOR COMMON IMPROVISED WEAPONS.\r\nONLY FLAW IS HEAVY AND SLOW
+    SWING SPEED.\r\n\r\nTEST PARTICIPANTS SEEM TO USE A SECONDARY OVERHEAD SWING
+    AS A SURPRISE ATTACK.
   <durability>k__BackingField: 8
+  <icon>k__BackingField: {fileID: 21300000, guid: b59df8067e216b646b4added9c132755, type: 3}
+  <displayName>k__BackingField: WRENCH
   <npcAttackRange>k__BackingField: 3
   <prefabIndex>k__BackingField: 4
   <secondaryDamage>k__BackingField: 2

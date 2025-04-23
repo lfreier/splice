@@ -9,7 +9,7 @@ using static SceneDefs;
 
 public class GameOver : MonoBehaviour
 {
-	public int sceneIndex;
+	public SCENE sceneIndex;
 
 	public Camera gameOverCam;
 
@@ -67,7 +67,7 @@ public class GameOver : MonoBehaviour
 		{
 			Debug.Log("ALERT 2");
 		}
-		SceneManager.SetActiveScene(SceneManager.GetSceneByBuildIndex(SCENE_INDEX_MASK[sceneIndex]));
+		SceneManager.SetActiveScene(SceneManager.GetSceneByBuildIndex(SCENE_INDEX_MASK[(int)sceneIndex]));
 		currentAlpha = 0;
 		if (deathHeartImage != null)
 		{

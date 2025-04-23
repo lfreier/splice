@@ -415,7 +415,9 @@ MonoBehaviour:
   - {fileID: 1678693514}
   - {fileID: 1757612357}
   fadeInText: []
-  fadeChange: 0.6
+  holdToFillImage: {fileID: 0}
+  holdTimerLength: 0
+  fadeChange: 0.75
   menuCanvas: {fileID: 798559242}
   menuCam: {fileID: 0}
   eventSystem: {fileID: 1808270837}

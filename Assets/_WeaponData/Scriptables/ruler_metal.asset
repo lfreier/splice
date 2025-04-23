@@ -16,7 +16,11 @@ MonoBehaviour:
   <atkSpeed>k__BackingField: 0.25
   <canBeDropped>k__BackingField: 1
   <damage>k__BackingField: 1
+  <description>k__BackingField: MORE DURABLE THAN ITS WOODEN COUNTERPART.\r\nITS
+    BLUNT POWER IS THE SAME.
   <durability>k__BackingField: 6
+  <icon>k__BackingField: {fileID: 21300000, guid: 8302e85c4bb3cef44b0b4872dbce3d83, type: 3}
+  <displayName>k__BackingField: METERSTICK_METAL
   <npcAttackRange>k__BackingField: 2.5
   <prefabIndex>k__BackingField: 1
   <secondaryDamage>k__BackingField: 2

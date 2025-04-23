@@ -4,19 +4,13 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using static SceneDefs;
 
-public class StationMenuScreen : MonoBehaviour
+public class StationMenuScreen : StationScreen
 {
-	public StationMenuManager menuManager;
-	private SaveStation station;
-
 	public TextMeshProUGUI saveText;
 
-	private GameManager gameManager;
-
-	public void init()
+	public override void init(StationMenuManager manager)
 	{
-		gameManager = GameManager.Instance;
-		station = menuManager.station;
+		base.init(manager);
 		setSaveText();
 	}
 
@@ -52,7 +46,31 @@ public class StationMenuScreen : MonoBehaviour
 		}
 	}
 
-	public void onExitButton()
+	public void onScanButton()
+	{
+		if (menuManager != null && menuManager.scanScreen != null)
+		{
+			menuManager.changeScreen(menuManager.scanScreen);
+		}
+	}
+
+	public void onDatabaseButton()
+	{
+		if (menuManager != null && menuManager.databaseScreen != null)
+		{
+			menuManager.changeScreen(menuManager.databaseScreen);
+		}
+	}
+
+	public void onMutationButton()
+	{
+		if (menuManager != null && menuManager.mutationScreen != null)
+		{
+			menuManager.changeScreen(menuManager.mutationScreen);
+		}
+	}
+
+	public override void onExitButton()
 	{
 		menuManager.exitMenu();
 	}

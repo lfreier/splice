@@ -16,10 +16,21 @@ MonoBehaviour:
   <atkSpeed>k__BackingField: 0.45
   <canBeDropped>k__BackingField: 1
   <damage>k__BackingField: 1
+  <description>k__BackingField: EXTREMELY EFFECTIVE AT NON-LETHALLY SUBDUING TEST
+    PARTICIPANTS.\r\nREMIND SECURITY STAFF TO KEEP BATTERY RECHARGE ON HAND AT ALL
+    TIMES.\r\n\r\nPLASTIC DURABILITY IS SUBOPTIMAL.\r\nINSTRUMENT DURABILITY DEPLETES
+    WHETHER CHARGED OR NOT.
   <durability>k__BackingField: 8
+  <icon>k__BackingField: {fileID: 21300000, guid: 62ada997e66b99941b96cd11d998e648, type: 3}
+  <displayName>k__BackingField: STUN_STICK
   <npcAttackRange>k__BackingField: 2.5
   <prefabIndex>k__BackingField: 3
   <secondaryDamage>k__BackingField: 2
+  <soundActorHit>k__BackingField: {fileID: 0}
+  <soundBreak>k__BackingField: {fileID: 0}
+  <soundObstacleHit>k__BackingField: {fileID: 0}
+  <soundSwing>k__BackingField: {fileID: 0}
+  <soundWallHit>k__BackingField: {fileID: 0}
   <throwDamage>k__BackingField: 1
   <throwDurabilityDamage>k__BackingField: 0.5
   <throwSpeed>k__BackingField: 54

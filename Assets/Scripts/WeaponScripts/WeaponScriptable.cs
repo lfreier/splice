@@ -22,7 +22,16 @@ public class WeaponScriptable : ScriptableObject
 	public float damage { get; private set; } = 2F;
 
 	[field: SerializeField]
+	public string description { get; private set; } = "";
+
+	[field: SerializeField]
 	public float durability { get; private set; } = 2F;
+
+	[field: SerializeField]
+	public Sprite icon { get; private set; } = null;
+
+	[field: SerializeField]
+	public string displayName { get; private set; } = "";
 
 	[field: SerializeField]
 	public float npcAttackRange { get; private set; } = 2F;

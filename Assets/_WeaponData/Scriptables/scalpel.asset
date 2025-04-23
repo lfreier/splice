@@ -16,10 +16,20 @@ MonoBehaviour:
   <atkSpeed>k__BackingField: 0.2
   <canBeDropped>k__BackingField: 1
   <damage>k__BackingField: 1
+  <description>k__BackingField: EXTREMELY SHORT RANGE BUT QUICK.\r\nSURPRISINGLY
+    EFFECTIVE AT CAUSING TEARS\r\nIN ARMORED SECURITY UNIFORMS.\r\n\r\nADVISABLE 
+    TO FIND OTHER BLADED INSTRUMENTS.
   <durability>k__BackingField: 5
+  <icon>k__BackingField: {fileID: 21300000, guid: 75a5f130401eceb4bb129dc5f5975e6a, type: 3}
+  <displayName>k__BackingField: SCALPEL
   <npcAttackRange>k__BackingField: 1.75
   <prefabIndex>k__BackingField: 2
   <secondaryDamage>k__BackingField: 1.5
+  <soundActorHit>k__BackingField: {fileID: 0}
+  <soundBreak>k__BackingField: {fileID: 0}
+  <soundObstacleHit>k__BackingField: {fileID: 0}
+  <soundSwing>k__BackingField: {fileID: 0}
+  <soundWallHit>k__BackingField: {fileID: 0}
   <throwDamage>k__BackingField: 1
   <throwDurabilityDamage>k__BackingField: 0.5
   <throwSpeed>k__BackingField: 50

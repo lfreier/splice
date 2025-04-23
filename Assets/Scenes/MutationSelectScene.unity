@@ -311,10 +311,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d07dd0f11fee0d24dbdb4140930e1dcc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sceneBuildIndex: 6
+  sceneIndex: 7
   gameOverCam: {fileID: 0}
   deathHeartImage: {fileID: 0}
   fadeInImages: []
+  fadeInText: []
   desiredAlpha: 1
   fadeInChange: 0.75
   finalPumpScale: 0
@@ -336,11 +337,15 @@ MonoBehaviour:
   backgroundImage: {fileID: 0}
   filterImage: {fileID: 1262930414}
   menuOptions: []
-  fadeChange: 0.7
+  fadeInText: []
+  holdToFillImage: {fileID: 0}
+  holdTimerLength: 0
+  fadeChange: 0.8
   menuCanvas: {fileID: 798559242}
   menuCam: {fileID: 0}
   eventSystem: {fileID: 1808270837}
   audioListener: {fileID: 0}
+  menuMusic: {fileID: 0}
 --- !u!1 &1262930412
 GameObject:
   m_ObjectHideFlags: 0

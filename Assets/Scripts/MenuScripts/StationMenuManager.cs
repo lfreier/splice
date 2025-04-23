@@ -9,24 +9,29 @@ public class StationMenuManager : MonoBehaviour
 	public AudioListener audioListener;
 	public EventSystem eventSystem;
 
-	public StationMenuScreen currentMenu;
+	[field: HideInInspector]
+	public StationScreen currentScreen;
+
+	public GameObject menuScreen;
+	public GameObject scanScreen;
+	public GameObject databaseScreen;
+	public GameObject mutationScreen;
 
 	[field: HideInInspector]
 	public SaveStation station;
 
 	private GameManager gameManager;
 
-	// Use this for initialization
 	void Start()
 	{
 		gameManager = GameManager.Instance;
-		if (currentMenu == null)
+		if (currentScreen == null)
 		{
-			currentMenu = GetComponentInChildren<StationMenuScreen>();
+			currentScreen = GetComponentInChildren<StationScreen>();
 		}
-		if (currentMenu != null)
+		if (currentScreen != null)
 		{
-			currentMenu.menuManager = this;
+			currentScreen.menuManager = this;
 		}
 
 		foreach (SaveStation allStation in FindObjectsByType<SaveStation>(FindObjectsSortMode.None))
@@ -38,22 +43,28 @@ public class StationMenuManager : MonoBehaviour
 			}
 		}
 
-		currentMenu.init();
+		currentScreen.init(this);
 	}
 
-	public void enterDatabaseMenu()
+	public void backToMenu()
 	{
-
+		changeScreen(menuScreen);
 	}
 
-	public void enterScanMenu()
+	public void changeScreen(GameObject screenPrefab)
 	{
+		GameObject newScreen = Instantiate(screenPrefab, this.transform);
+		newScreen.SetActive(true);
+		currentScreen.gameObject.SetActive(false);
+		Destroy(currentScreen.gameObject);
 
-	}
-
-	public void enterSaveMenu()
-	{
-
+		StationScreen screenScript = newScreen.GetComponentInChildren<StationScreen>();
+		if (screenScript == null)
+		{
+			return;
+		}
+		currentScreen = screenScript;
+		currentScreen.init(this);
 	}
 
 	public async void exitMenu()

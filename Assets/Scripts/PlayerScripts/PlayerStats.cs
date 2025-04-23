@@ -29,6 +29,7 @@ public class PlayerStats
 	
 	private GameObject[] mutationList;
 	public GameObject weaponEquipped;
+	public GameObject limbGrabbedObject;
 	public int weaponCharge;
 
 	public PlayerHUD playerHUD;
@@ -279,6 +280,14 @@ public class PlayerStats
 					{
 						equipMutation(mutInt);
 						showMutationBar();
+
+						MLimb mLimb = playerActor.mutationHolder.GetComponentInChildren<MLimb>();
+						if (mLimb != null && limbGrabbedObject != null)
+						{
+							GameObject spawnedObject = GameObject.Instantiate(limbGrabbedObject);
+							spawnedObject.SetActive(true);
+							mLimb.addObjectToLimb(spawnedObject.transform);
+						}
 					}
 				}
 			}
@@ -321,6 +330,21 @@ public class PlayerStats
 			mutationList[i] = GameObject.Instantiate(playerActor.mutationHolder.transform.GetChild(i).gameObject);
 			mutationList[i].SetActive(false);
 			mutationList[i].transform.SetParent(gameManager.gameObject.transform);
+			MLimb limb = mutationList[i].GetComponentInChildren<MLimb>();
+			if (limb != null && limb.heldRigidbody != null)
+			{
+				limb.heldRigidbody.gameObject.transform.SetParent(null);
+				if (limbGrabbedObject == null)
+				{
+					limbGrabbedObject = GameObject.Instantiate(limb.heldRigidbody.gameObject);
+					if (limbGrabbedObject != null)
+					{
+						limbGrabbedObject.SetActive(false);
+						limbGrabbedObject.transform.SetParent(gameManager.gameObject.transform);
+						GameObject.Destroy(limb.heldRigidbody.gameObject);
+					}
+				}
+			}
 		}
 
 		if (!playerActor.isUnarmed())
