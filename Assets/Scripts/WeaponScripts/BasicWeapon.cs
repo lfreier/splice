@@ -211,7 +211,7 @@ public abstract class BasicWeapon : MonoBehaviour, WeaponInterface
 
 	public void setHitbox(bool toggle)
 	{
-		if (hitbox != null)
+		if (hitbox != null && !(attackOnlyRight & !currentSide))
 		{
 			hitbox.enabled = toggle;
 		}

@@ -3,5 +3,5 @@ using UnityEngine;
 
 public interface UsableInterface
 {
-	public void use(Actor user);
+	public bool use(Actor user);
 }

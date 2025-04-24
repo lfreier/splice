@@ -192,11 +192,13 @@ MonoBehaviour:
   behaviorList: []
   mutationHolder: {fileID: 8081907558892302357}
   effectHolder: {fileID: 8153268800123022767}
+  isKnockedBack: 0
   droppedItems:
   - {fileID: 7098409054979973783, guid: 0bd2a725f32769444a75c53a2af17124, type: 3}
   gameManager: {fileID: 0}
   corpseSprite: {fileID: 21300000, guid: 59c0f10706b1377459650f8d2109ca69, type: 3}
   corpsePrefab: {fileID: 2911627580042638205, guid: 9bdd8350a0e30434eaadda3861d39b89, type: 3}
+  displayedEffect: {fileID: 0}
   invincible: 0
   initialized: 0
 --- !u!114 &8181113457589132258
@@ -216,6 +218,7 @@ MonoBehaviour:
   moveTargetError: 0.15
   idlePath: []
   idlePathPauseTime: []
+  pathIndex: 0
   _detection: 0
   lockWhenSpotted: {fileID: 0}
   moveTarget: {x: 0, y: 0, z: 0}
@@ -309,7 +312,7 @@ AudioSource:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 0
+      value: 1
       inSlope: 0
       outSlope: 0
       tangentMode: 0

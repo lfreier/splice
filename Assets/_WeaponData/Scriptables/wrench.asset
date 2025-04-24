@@ -27,10 +27,10 @@ MonoBehaviour:
   <prefabIndex>k__BackingField: 4
   <secondaryDamage>k__BackingField: 2
   <soundActorHit>k__BackingField: {fileID: 8300000, guid: 64fd037e2d68657488f3657381b81080, type: 3}
-  <soundBreak>k__BackingField: {fileID: 0}
-  <soundObstacleHit>k__BackingField: {fileID: 0}
+  <soundBreak>k__BackingField: {fileID: 8300000, guid: 6c9dd0732611a3b4c823bb5ec13774bc, type: 3}
+  <soundObstacleHit>k__BackingField: {fileID: 8300000, guid: c21af221fd44e4b4c9e199fafaf7865b, type: 3}
   <soundSwing>k__BackingField: {fileID: 8300000, guid: 619d131918b5d2d479edd3587d18d37c, type: 3}
-  <soundWallHit>k__BackingField: {fileID: 0}
+  <soundWallHit>k__BackingField: {fileID: 8300000, guid: f1e1c1d9322f5ea4e8c0109fa1ff9ece, type: 3}
   <throwDamage>k__BackingField: 1
   <throwDurabilityDamage>k__BackingField: 0.5
   <throwSpeed>k__BackingField: 50

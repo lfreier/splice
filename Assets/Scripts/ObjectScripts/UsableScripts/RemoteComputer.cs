@@ -54,11 +54,11 @@ public class RemoteComputer : MonoBehaviour, UsableInterface
 		}
 	}
 
-	public void use(Actor user)
+	public bool use(Actor user)
 	{
 		if (!gm.levelManager.hasPower())
 		{
-			return;
+			return false;
 		}
 
 		if (worldObjects != null && worldObjects.Length > 0)
@@ -72,5 +72,6 @@ public class RemoteComputer : MonoBehaviour, UsableInterface
 				}
 			}
 		}
+		return true;
 	}
 }

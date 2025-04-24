@@ -25,10 +25,10 @@ MonoBehaviour:
   <npcAttackRange>k__BackingField: 1.75
   <prefabIndex>k__BackingField: 2
   <secondaryDamage>k__BackingField: 1.5
-  <soundActorHit>k__BackingField: {fileID: 0}
+  <soundActorHit>k__BackingField: {fileID: 8300000, guid: 452eb1799a0507345a52ab8cba2f39c2, type: 3}
   <soundBreak>k__BackingField: {fileID: 0}
-  <soundObstacleHit>k__BackingField: {fileID: 0}
-  <soundSwing>k__BackingField: {fileID: 0}
+  <soundObstacleHit>k__BackingField: {fileID: 8300000, guid: 34905a83bc880094284de96e6eafebf0, type: 3}
+  <soundSwing>k__BackingField: {fileID: 8300000, guid: 38f20f1eef3c44f45aec8373ffbc1ba8, type: 3}
   <soundWallHit>k__BackingField: {fileID: 0}
   <throwDamage>k__BackingField: 1
   <throwDurabilityDamage>k__BackingField: 0.5

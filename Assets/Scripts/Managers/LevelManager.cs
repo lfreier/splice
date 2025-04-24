@@ -17,7 +17,8 @@ public class LevelManager : MonoBehaviour
 		WEAPON = 3,
 		PICKUP = 4,
 		BOX = 5,
-		SAVE = 6
+		SAVE = 6,
+		TUTORIAL = 7
 	}
 
 	public struct BasicSaveData
@@ -71,6 +72,7 @@ public class LevelManager : MonoBehaviour
 	Dictionary<string, BasicSaveData>		pickupBoxTable = new Dictionary<string, BasicSaveData>();
 	Dictionary<string, BasicSaveData>		pickupTable = new Dictionary<string, BasicSaveData>();
 	Dictionary<string, BasicSaveData>		saveTable = new Dictionary<string, BasicSaveData>();
+	Dictionary<string, BasicSaveData>		tutorialTable = new Dictionary<string, BasicSaveData>();
 
 	public enum levelSpawnIndex
 	{
@@ -278,6 +280,24 @@ public class LevelManager : MonoBehaviour
 						}
 					}
 					continue;
+				case idType.TUTORIAL:
+					TutorialSceneLoader tut = item.Value.guid.GetComponent<TutorialSceneLoader>();
+					GameObject tutObj = item.Value.guid.gameObject;
+					if (tut != null)
+					{
+						if (tutorialTable.TryGetValue(item.Key, out dataSave))
+						{
+							if (!dataSave.isPresent && tutObj != null)
+							{
+								Destroy(tutObj);
+							}
+						}
+						else if (tutObj != null)
+						{
+							Destroy(tutObj);
+						}
+					}
+					continue;
 				default:
 					//not in any table, this shouldn't happen
 					continue;
@@ -424,6 +444,13 @@ public class LevelManager : MonoBehaviour
 				dataSave.isPresent = saveStationUses[save.saveStationNumIndex] == 0 ? false : true;
 				dataSave.option = save.saveStationNumIndex;
 				saveTable.Add(item.Key, dataSave);
+				continue;
+			}
+			TutorialSceneLoader tut = guid.GetComponent<TutorialSceneLoader>();
+			if (tut != null)
+			{
+				dataSave.isPresent = true;
+				tutorialTable.Add(item.Key, dataSave);
 				continue;
 			}
 		}

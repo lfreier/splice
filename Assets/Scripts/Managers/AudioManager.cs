@@ -45,12 +45,6 @@ public class AudioManager : MonoBehaviour
 	public AudioClip weaponScalpelActorHit;
 	public AudioClip weaponScalpelBreak;
 
-	public AudioClip weaponWrenchSwing;
-	public AudioClip weaponWrenchWallHit;
-	public AudioClip weaponWrenchObstacleHit;
-	//public AudioClip weaponWrenchActorHit;
-	public AudioClip weaponWrenchBreak;
-
 	public AudioClip sciDeath1;
 	public AudioClip sciDeath2;
 	public AudioClip sciDeath3;

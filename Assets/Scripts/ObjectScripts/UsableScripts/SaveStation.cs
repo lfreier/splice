@@ -13,10 +13,11 @@ public class SaveStation : MonoBehaviour, UsableInterface
 
 	public bool inUse = false;
 
-	public void use(Actor user)
+	public bool use(Actor user)
 	{
 		inUse = true;
 		playerActor = user;
 		user.gameManager.loadPausedScene(user, SCENE.STATION_MENU);
+		return true;
 	}
 }

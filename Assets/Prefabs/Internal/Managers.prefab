@@ -133,13 +133,20 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 1d63fcbc8fcf97e4ab818c9c059d8ffe, type: 3}
   - {fileID: 8300000, guid: 00c4d84d13047d54d92519e56b2f9958, type: 3}
   - {fileID: 8300000, guid: d625c6e00795a224995b036683d25b38, type: 3}
+  - {fileID: 8300000, guid: 452eb1799a0507345a52ab8cba2f39c2, type: 3}
+  - {fileID: 8300000, guid: 34905a83bc880094284de96e6eafebf0, type: 3}
+  - {fileID: 8300000, guid: 38f20f1eef3c44f45aec8373ffbc1ba8, type: 3}
   - {fileID: 8300000, guid: 152261d29304ef5488d53ce1c9eb9bf0, type: 3}
   - {fileID: 8300000, guid: e59c7e023e0cb8f41baf11a0a41e47a5, type: 3}
   - {fileID: 8300000, guid: fad49cc5955cf434c9046ace9b42a7b7, type: 3}
   - {fileID: 8300000, guid: 906f85267add4704b851251eeb89405d, type: 3}
   - {fileID: 8300000, guid: 4ebf89c51850dc945aeecf8d50d17329, type: 3}
   - {fileID: 8300000, guid: 64fd037e2d68657488f3657381b81080, type: 3}
+  - {fileID: 8300000, guid: 6c9dd0732611a3b4c823bb5ec13774bc, type: 3}
+  - {fileID: 8300000, guid: c21af221fd44e4b4c9e199fafaf7865b, type: 3}
   - {fileID: 8300000, guid: 619d131918b5d2d479edd3587d18d37c, type: 3}
+  - {fileID: 8300000, guid: f1e1c1d9322f5ea4e8c0109fa1ff9ece, type: 3}
+  - {fileID: 8300000, guid: e23518aefad167d48978ca894e044931, type: 3}
   footstepCarpet: {fileID: 0}
   heartPump: {fileID: 0}
   parrySuccess: {fileID: 0}
@@ -162,10 +169,6 @@ MonoBehaviour:
   weaponScalpelObstacleHit: {fileID: 0}
   weaponScalpelActorHit: {fileID: 0}
   weaponScalpelBreak: {fileID: 0}
-  weaponWrenchSwing: {fileID: 0}
-  weaponWrenchWallHit: {fileID: 0}
-  weaponWrenchObstacleHit: {fileID: 0}
-  weaponWrenchBreak: {fileID: 0}
   sciDeath1: {fileID: 0}
   sciDeath2: {fileID: 0}
   sciDeath3: {fileID: 0}
@@ -194,5 +197,5 @@ MonoBehaviour:
   - {fileID: 11400000, guid: e0060532721259a478dd135a6355e1b0, type: 2}
   lastSavedAtStation: 0
   savedActors: []
-  usedSavedStations: 0000
+  saveStationUses: 0000000000000000000000000000000000000000
   camHandler: {fileID: 0}

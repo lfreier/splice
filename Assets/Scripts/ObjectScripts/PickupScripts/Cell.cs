@@ -12,6 +12,9 @@ public class Cell : MonoBehaviour, PickupInterface
 	public float attractForce = 100;
 	public Animator animator;
 
+	public AudioClip cellPopSound;
+	public AudioSource cellAudioPlayer;
+
 	[SerializeField]
 	private Sprite icon;
 	GameManager gameManager;
@@ -104,6 +107,15 @@ public class Cell : MonoBehaviour, PickupInterface
 			if (target.tag == ActorDefs.playerTag)
 			{
 				pickup(target);
+				AudioClip toPlay;
+				if (cellPopSound != null)
+				{
+					gameManager.audioManager.soundHash.TryGetValue(cellPopSound.name, out toPlay);
+					if (toPlay != null)
+					{
+						cellAudioPlayer.PlayOneShot(toPlay);
+					}
+				}
 			}
 		}
 	}

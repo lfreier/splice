@@ -42,10 +42,11 @@ public class PlayerInteract : MonoBehaviour
 		_interactInput = inputs.interactInput();
 		if (_interactInput > 0 && lastInteractInput == 0)
 		{
+			Collider2D[] currColl = new Collider2D[] { highlightedCollider };
 			//if unlocking a door, do not pick up weapons;
-			if (!interactWorld())
+			if (!interactWorld(currColl))
 			{
-				if (player.pickup(new Collider2D[]{ highlightedCollider}))
+				if (player.pickup(currColl))
 				{
 					highlightedCollider = null;
 					highlightList.Remove(highlightedCollider);
@@ -53,18 +54,22 @@ public class PlayerInteract : MonoBehaviour
 			}
 			else
 			{
-				//disable highlight?
+				highlightedCollider = null;
+				highlightList.Remove(highlightedCollider);
 			}
 		}
 		lastInteractInput = _interactInput;
 	}
 
-	bool interactWorld()
+	bool interactWorld(Collider2D[] highlighted)
 	{
-		Collider2D[] hitTargets = Physics2D.OverlapCircleAll(interactCollider.transform.position, interactCollider.radius, this.interactLayer);
-
-		foreach (Collider2D target in hitTargets)
+		foreach (Collider2D target in highlighted)
 		{
+			bool ret = false;
+			if (target == null)
+			{
+				continue;
+			}
 			if (MutationDefs.isMutationSelect(target.gameObject))
 			{
 				//TODO: implement mutation selection
@@ -72,32 +77,33 @@ public class PlayerInteract : MonoBehaviour
 				if (mutateSelect != null && !mutateSelect.isActivated)
 				{
 					mutateSelect.activateSelectMenu(this);
-					return true;
+					ret = true;
 				}
 			}
 
 			UsableInterface usable = target.transform.GetComponentInParent<UsableInterface>();
 			if (usable != null)
 			{
-				usable.use(player);
-				return true;
-			}
-
-			AutoDoor doorInteract = target.transform.GetComponentInParent<AutoDoor>();
-			if (doorInteract != null)
-			{
-				PlayerStats stats = player.gameManager.playerStats;
-				if (stats.keycardCount[(int)doorInteract.lockType] > 0
-					&& doorInteract._doorType != AutoDoor.doorType.REMOTE 
-					&& doorInteract.locked)
+				if (usable.use(player))
 				{
-						doorInteract.doorUnlock();
-						stats.useKeycard((int)doorInteract.lockType);
-						return true;
+					ret = true;
 				}
+			}
+			if (ret)
+			{
+				PickupEngine engine = target.gameObject.GetComponent<PickupEngine>();
+				if (engine != null)
+				{
+					engine.disableHighlight();
+				}
+				return true;
 			}
 		}
 		return false;
+	}
+	private bool doorShouldHighlight(AutoDoor door)
+	{
+		return !(door != null && (!door.locked || (door.locked && !door.playerHasKey(player.gameManager.playerStats))));
 	}
 
 	public void equipMutation(MutationInterface mut)
@@ -127,8 +133,10 @@ public class PlayerInteract : MonoBehaviour
 					min = diffMag;
 					closest = coll;
 				}
-				if (diffMag > 2 * interactCollider.radius || coll.tag.Equals(WeaponDefs.EQUIPPED_WEAPON_TAG))
-				{
+				AutoDoor door = coll.gameObject.GetComponentInParent<AutoDoor>();
+				if (diffMag > 2 * interactCollider.radius || coll.tag.Equals(WeaponDefs.EQUIPPED_WEAPON_TAG)
+					|| !doorShouldHighlight(door))
+					{
 					PickupEngine engine = coll.gameObject.GetComponent<PickupEngine>();
 					if (engine != null)
 					{
@@ -178,6 +186,11 @@ public class PlayerInteract : MonoBehaviour
 	{
 		if (collision != null && !collision.tag.Equals(WeaponDefs.EQUIPPED_WEAPON_TAG))
 		{
+			AutoDoor door = collision.gameObject.GetComponentInParent<AutoDoor>();
+			if (!doorShouldHighlight(door))
+			{
+				return;
+			}
 			if (!highlightList.Contains(collision))
 			{
 				highlightList.Add(collision);
@@ -190,6 +203,11 @@ public class PlayerInteract : MonoBehaviour
 	{
 		if (collision != null && !collision.tag.Equals(WeaponDefs.EQUIPPED_WEAPON_TAG))
 		{
+			AutoDoor door = collision.gameObject.GetComponentInParent<AutoDoor>();
+			if (!doorShouldHighlight(door))
+			{
+				return;
+			}
 			if (!highlightList.Contains(collision))
 			{
 				highlightList.Add(collision);
@@ -202,6 +220,11 @@ public class PlayerInteract : MonoBehaviour
 	{
 		if (collision != null && !collision.tag.Equals(WeaponDefs.EQUIPPED_WEAPON_TAG))
 		{
+			AutoDoor door = collision.gameObject.GetComponentInParent<AutoDoor>();
+			if (!doorShouldHighlight(door))
+			{
+				return;
+			}
 			PickupEngine engine = collision.gameObject.GetComponent<PickupEngine>();
 			if (engine != null)
 			{

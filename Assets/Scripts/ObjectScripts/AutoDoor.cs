@@ -1,9 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
+using Unity.VisualScripting.Antlr3.Runtime.Misc;
 using UnityEngine;
 
-public class AutoDoor : MonoBehaviour
+public class AutoDoor : MonoBehaviour, UsableInterface
 {
 	public enum doorType
 	{
@@ -167,5 +168,24 @@ public class AutoDoor : MonoBehaviour
 		if (!locked)
 		{
 		}
+	}
+
+	public bool playerHasKey(PlayerStats stats)
+	{
+		return stats.keycardCount[(int)lockType] > 0
+			&& _doorType != AutoDoor.doorType.REMOTE
+			&& locked;
+	}
+
+	public virtual bool use(Actor user)
+	{
+		PlayerStats stats = user.gameManager.playerStats;
+		if (playerHasKey(stats))
+		{
+			doorUnlock();
+			stats.useKeycard((int)lockType);
+			return true;
+		}
+		return false;
 	}
 }
