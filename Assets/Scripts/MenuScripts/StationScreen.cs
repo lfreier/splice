@@ -14,7 +14,7 @@ public abstract class StationScreen : MonoBehaviour
 		menuManager = manager;
 	}
 
-	public virtual void onExitButton()
+	public virtual void onBackButton()
 	{
 		menuManager.backToMenu();
 	}

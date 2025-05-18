@@ -2,15 +2,25 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 using static SceneDefs;
 
 public class StationMenuScreen : StationScreen
 {
 	public TextMeshProUGUI saveText;
+	public Button mutationButton;
 
 	public override void init(StationMenuManager manager)
 	{
 		base.init(manager);
+		if (gameManager.levelManager.stationShowMut)
+		{
+			mutationButton.gameObject.SetActive(true);
+		}
+		else
+		{
+			mutationButton.gameObject.SetActive(false);
+		}
 		setSaveText();
 	}
 
@@ -23,10 +33,10 @@ public class StationMenuScreen : StationScreen
 
 		LevelManager levelManager = gameManager.levelManager;
 
-		if (levelManager.saveStationUses[station.saveStationNumIndex] > 0)
+		if (levelManager.saveStationUses[(int)station.saveStationNumIndex] > 0)
 		{
 			levelManager.lastSavedSpawn = station.playerSpawnIndex;
-			levelManager.saveStationUses[station.saveStationNumIndex]--;
+			levelManager.saveStationUses[(int)station.saveStationNumIndex]--;
 			gameManager.save(station.playerActor);
 			levelManager.lastSavedAtStation = true;
 
@@ -70,13 +80,13 @@ public class StationMenuScreen : StationScreen
 		}
 	}
 
-	public override void onExitButton()
+	public override void onBackButton()
 	{
 		menuManager.exitMenu();
 	}
 
 	private void setSaveText()
 	{
-		saveText.text = "SAVE (" + gameManager.levelManager.saveStationUses[station.saveStationNumIndex] + ")";
+		saveText.text = "SAVE (" + gameManager.levelManager.saveStationUses[(int)station.saveStationNumIndex] + ")";
 	}
 }

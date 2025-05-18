@@ -13,6 +13,7 @@ public class Keycard : MonoBehaviour, PickupInterface
 
 	void Start()
 	{
+		PickupDefs.setLayer(gameObject);
 		gameManager = GameManager.Instance;
 		init();
 	}

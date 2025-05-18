@@ -4,6 +4,7 @@ using static ActorDefs;
 public class ActorDefs
 {
 	public static string actorLayer = "Actor";
+	public static string corpseLayer = "Corpse";
 	public static string npcTag = "NPC";
 	public static string teamMonsterTag = "TeamMonster";
 	public static string teamScienceTag = "TeamScience";
@@ -52,6 +53,11 @@ public class ActorDefs
 		wandering = 7,
 		forced = 8
 	};
+
+	public enum corpseType
+	{
+		HUMAN = 0
+	}
 
 	public static ActorData copyData(ActorData toCopy)
 	{

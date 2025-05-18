@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 5752996092239956300}
   - component: {fileID: 559333153663262681}
   m_Layer: 5
-  m_Name: ExitButton
+  m_Name: BackButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -85,7 +85,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 207385307936557510}
         m_TargetAssemblyTypeName: StationScreen, Assembly-CSharp
-        m_MethodName: onExitButton
+        m_MethodName: onBackButton
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -358,7 +358,7 @@ GameObject:
   - component: {fileID: 8284603453834906862}
   - component: {fileID: 2333880536760598010}
   m_Layer: 5
-  m_Name: ExitButtonText
+  m_Name: BackButtonText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

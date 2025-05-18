@@ -12,5 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ef8256f3a9799a945bdcdb0bc9439850, type: 3}
   m_Name: levelWarehouse
   m_EditorClassIdentifier: 
-  spawnPosition: {x: -140, y: -37}
-  spawnRotation: 0
+  spawnPosition: {x: -140.375, y: -32}
+  spawnRotation: -90
+  elevatorIndex: 3
+  floorName: FLOOR 3 WEST
+  sceneIndex: 23
+  spawnIndex: 8

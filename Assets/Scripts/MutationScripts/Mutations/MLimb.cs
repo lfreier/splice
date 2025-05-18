@@ -15,9 +15,10 @@ public class MLimb : MonoBehaviour, MutationInterface
 	public float grabOffset = 0.3125F;
 	public float grabPickupRange = 0.75F;
 	public float objectReleaseForce = 20000F;
-	public float releaseTargetOffset = 2F;
 
 	public LayerMask grabLayers;
+
+	public MGrabber grabber;
 
 	public enum retracted {
 		IDLE = 0,
@@ -26,10 +27,6 @@ public class MLimb : MonoBehaviour, MutationInterface
 	};
 
 	public retracted limbState;
-
-	public GameObject grabbedObject;
-	public Rigidbody2D heldRigidbody;
-	private Obstacle heldObstacle;
 
 	private bool collisionHit;
 
@@ -64,9 +61,9 @@ public class MLimb : MonoBehaviour, MutationInterface
 	{
 		if (limbState == retracted.IDLE)
 		{
-			if (heldRigidbody != null)
+			if (grabber.heldRigidbody != null)
 			{
-				releaseHeldObject();
+				grabber.releaseHeldObject(objectReleaseForce);
 				return;
 			}
 			anim.SetTrigger(WeaponDefs.ANIM_TRIGGER_ATTACK);
@@ -82,9 +79,9 @@ public class MLimb : MonoBehaviour, MutationInterface
 		*/
 		else if (limbState == retracted.RETRACTED)
 		{
-			if (heldRigidbody != null)
+			if (grabber.heldRigidbody != null)
 			{
-				releaseHeldObject();
+				grabber.releaseHeldObject(objectReleaseForce);
 			}
 			Debug.Log("Limb state is now idle from releasing");
 			limbState = retracted.IDLE;
@@ -109,21 +106,9 @@ public class MLimb : MonoBehaviour, MutationInterface
 
 		if (limbState == retracted.ACTIVE)
 		{
-			Transform handTransform = transform.GetChild(0);
-			Vector3 handGrabPos = handTransform.position + (handTransform.up * grabOffset);
-
-			Collider2D[] hitTargets = Physics2D.OverlapCircleAll(handGrabPos, grabPickupRange, grabLayers);
-			foreach (Collider2D target in hitTargets)
+			if (grabber.grabObjects(grabLayers, grabPickupRange, weightClass.MID, true))
 			{
-				if (grabTargetCollider(target))
-				{
-					/* grabbed object found */
-					break;
-				}
-				else
-				{
-					continue;
-				}
+				anim.SetTrigger("Retract");
 			}
 		}
 		else if (limbState == retracted.RETRACTED)
@@ -136,190 +121,6 @@ public class MLimb : MonoBehaviour, MutationInterface
 		{
 			//do nothing
 		}
-	}
-
-	/* returns true if the target collider is grabbed
-	 * a.k.a true to break, false to continue
-	 */
-	public bool grabTargetCollider(Collider2D target)
-	{
-		/* weapon has to only check for parent, because of equipped weapons */
-		WeaponInterface weapon = target.GetComponentInParent<WeaponInterface>();
-
-		PickupBox box = target.GetComponentInChildren<PickupBox>();
-		Obstacle obstacle = target.GetComponentInChildren<Obstacle>();
-		Actor actor = target.GetComponentInChildren<Actor>();
-		PickupInterface pickup = target.GetComponentInChildren<PickupInterface>();
-
-		if (weapon != null)
-		{
-			if (WeaponDefs.canWeaponBePickedUp(target.gameObject))
-			{
-				if (checkGrabObject(target.gameObject.transform, null, 0))
-				{
-					return true;
-				}
-			}
-			return false;
-		}
-
-		if (obstacle == null)
-		{
-			obstacle = target.GetComponentInParent<Obstacle>();
-		}
-		if (obstacle != null && obstacle._obstacleScriptable.weight <= weightClass.MID)
-		{
-			int cost = mutationScriptable.mutCost;
-			if (obstacle._obstacleScriptable.weight == weightClass.MID)
-			{
-				cost = Mathf.RoundToInt(mutationScriptable.values[0]);
-			}
-			Rigidbody2D objBody = target.GetComponentInChildren<Rigidbody2D>();
-			if (objBody == null)
-			{
-				objBody = target.GetComponentInParent<Rigidbody2D>();
-			}
-			if (objBody != null)
-			{
-				/* Now hold the object and wait to release */
-				if (checkGrabObject(target.gameObject.transform, null, cost))
-				{
-					heldRigidbody = objBody;
-					heldRigidbody.simulated = false;
-					heldObstacle = obstacle;
-					WeaponDefs.setObjectLayer(WeaponDefs.SORT_LAYER_CHARS, heldObstacle.gameObject);
-					return true;
-				}
-				return false;
-			}
-		}
-
-		if (actor == null)
-		{
-			actor = target.GetComponentInParent<Actor>();
-		}
-		if (actor != null)
-		{
-			Rigidbody2D objBody = target.GetComponentInChildren<Rigidbody2D>();
-			if (objBody == null)
-			{
-				objBody = target.GetComponentInParent<Rigidbody2D>();
-			}
-			if (objBody != null && actor.name != actorWielder.name)
-			{
-				/* Now hold the object and wait to release */
-				if (checkGrabObject(target.gameObject.transform, actor, mutationScriptable.mutCost))
-				{
-					heldRigidbody = objBody;
-					heldRigidbody.simulated = false;
-					return true;
-				}
-				return false;
-			}
-		}
-
-		if (box == null)
-		{
-			box = target.GetComponentInParent<PickupBox>();
-		}
-		/* if trying to grab a pickup box, pick up the whole thing */
-		if (box != null && obstacle == null)
-		{
-			GameObject boxPickup = box.getPickup();
-			if (boxPickup != null)
-			{
-				if (checkGrabObject(boxPickup.transform, null, 0))
-				{
-					return true;
-				}
-				return false;
-			}
-		}
-
-		if (pickup == null)
-		{
-			pickup = target.GetComponentInParent<PickupInterface>();
-		}
-		if (pickup != null)
-		{
-			if (checkGrabObject(target.gameObject.transform, null, 0))
-			{
-				return true;
-			}
-		}
-
-		return false;
-	}
-
-	public void addObjectToLimb(Transform objectTransform)
-	{
-		grabbedObject = objectTransform.gameObject;
-
-		Rigidbody2D objBody = grabbedObject.GetComponentInChildren<Rigidbody2D>();
-		if (objBody == null)
-		{
-			objBody = grabbedObject.GetComponentInParent<Rigidbody2D>();
-		}
-		if (objBody != null)
-		{
-			heldRigidbody = objBody;
-			heldRigidbody.simulated = false;
-
-			Obstacle obstacle = grabbedObject.GetComponentInChildren<Obstacle>();
-			if (obstacle == null)
-			{
-				obstacle = grabbedObject.GetComponentInParent<Obstacle>();
-			}
-			if (obstacle != null)
-			{
-				heldObstacle = obstacle;
-				WeaponDefs.setObjectLayer(WeaponDefs.SORT_LAYER_CHARS, heldObstacle.gameObject);
-
-				Transform handTransform = transform.GetChild(0);
-				Vector3 handGrabPos = handTransform.position + (handTransform.up * grabOffset);
-				grabbedObject.transform.SetParent(handTransform);
-				grabbedObject.transform.SetPositionAndRotation(handGrabPos, grabbedObject.transform.rotation);
-			}
-		}
-	}
-
-	private bool checkGrabObject(Transform currChild, Actor grabbedActor, int cost)
-	{
-		while (currChild != null)
-		{
-			if (currChild.parent == null)
-			{
-				/* only spend mut energy for certain objects */
-				float currMutEnergy = gameManager.playerStats.getMutationBar();
-				if (currMutEnergy >= cost)
-				{
-					grabbedObject = currChild.gameObject;
-
-					Transform handTransform = transform.GetChild(0);
-					Vector3 handGrabPos = handTransform.position + (handTransform.up * grabOffset);
-					grabbedObject.transform.SetParent(handTransform);
-					grabbedObject.transform.SetPositionAndRotation(handGrabPos, grabbedObject.transform.rotation);
-
-					if (cost > 0)
-					{
-						gameManager.playerStats.changeMutationBar(-mutationScriptable.mutCost);
-					}
-					if (grabbedActor != null)
-					{
-						EffectDefs.effectApply(grabbedActor, grabbedActor.gameManager.effectManager.stunPermanent);
-					}
-					anim.SetTrigger("Retract");
-					return true;
-				}
-				else
-				{
-					heldRigidbody = null;
-				}
-			}
-			currChild = currChild.parent;
-		}
-
-		return false;
 	}
 
 	private void interactInputReleased()
@@ -359,6 +160,10 @@ public class MLimb : MonoBehaviour, MutationInterface
 		gameManager.playerAbilityEvent += abilityInputPressed;
 		gameManager.playerAbilityReleaseEvent += abilityInputReleased;
 
+		grabber.grabOffset = grabOffset;
+		grabber.mutCost1 = mutationScriptable.mutCost;
+		grabber.mutCost2 = Mathf.RoundToInt(mutationScriptable.values[0]);
+
 		/* when limb is equipped, player can only attach from the right side */
 		wielder.setAttackOnly(WeaponDefs.ANIM_BOOL_ONLY_RIGHT, true);
 
@@ -381,7 +186,7 @@ public class MLimb : MonoBehaviour, MutationInterface
 	{
 		//if holding the button, get ready to release
 		//otherwise, just pickup
-		if (heldRigidbody != null)
+		if (grabber.heldRigidbody != null)
 		{
 			Debug.Log("Limb state is now retracted from animation");
 			limbState = retracted.RETRACTED;
@@ -392,47 +197,12 @@ public class MLimb : MonoBehaviour, MutationInterface
 			limbState = retracted.IDLE;
 		}
 
-		if (grabbedObject != null && heldRigidbody == null)
+		if (grabber.grabbedObject != null && grabber.heldRigidbody == null)
 		{
-			actorWielder.pickupItem(grabbedObject);
+			actorWielder.pickupItem(grabber.grabbedObject);
 		}
 
-		grabbedObject = null;
-	}
-
-	private void releaseHeldObject()
-	{
-		float releaseForce = objectReleaseForce;
-		heldRigidbody.simulated = true;
-		heldRigidbody.transform.SetParent(null, true);
-
-		Vector3 releaseTarget = actorWielder.transform.position + (actorWielder.transform.up * releaseTargetOffset);
-		CollisionExclusion exclusion = heldRigidbody.AddComponent<CollisionExclusion>();
-
-		/* Disable collisions for short amount of time to avoid player collision */
-		Collider2D[] colliders1 = new Collider2D[actorWielder.actorBody.attachedColliderCount];
-		actorWielder.actorBody.GetAttachedColliders(colliders1);
-		Collider2D[] colliders2 = new Collider2D[heldRigidbody.attachedColliderCount];
-		heldRigidbody.GetAttachedColliders(colliders2);
-		exclusion.init(0.1F, colliders1, colliders2);
-		if (heldObstacle != null)
-		{
-			heldObstacle.enablePhysics();
-			releaseForce = Mathf.Min(objectReleaseForce, heldObstacle._obstacleScriptable.maxObstacleForce);
-			WeaponDefs.setObjectLayer(WeaponDefs.SORT_LAYER_GROUND, heldObstacle.gameObject);
-		}
-
-		Actor grabbedActor = heldRigidbody.GetComponentInChildren<Actor>();
-		if (grabbedActor != null)
-		{
-			EffectDefs.effectApply(grabbedActor, grabbedActor.gameManager.effectManager.stun1);
-			releaseForce = objectReleaseForce / 4.5F;
-		}
-
-		heldRigidbody.AddForce(Vector2.ClampMagnitude(releaseTarget - heldRigidbody.transform.position, 1) * releaseForce);
-		heldRigidbody = null;
-		heldObstacle = null;
-		grabbedActor = null;
+		grabber.grabbedObject = null;
 	}
 
 	public void setStartingPosition()
@@ -444,6 +214,7 @@ public class MLimb : MonoBehaviour, MutationInterface
 	{
 		actorWielder = wielder;
 		gameManager = GameManager.Instance;
+		grabber.wielder = wielder;
 	}
 
 	public void temp()
@@ -515,5 +286,10 @@ public class MLimb : MonoBehaviour, MutationInterface
 		{
 			Debug.Log("Hit: " + collision.name);
 		}
+	}
+
+	Sprite[] MutationInterface.getTutorialSprites()
+	{
+		return mutationScriptable.tutorialSprites;
 	}
 }

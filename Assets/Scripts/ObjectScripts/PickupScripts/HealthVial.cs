@@ -12,7 +12,7 @@ public class HealthVial : MonoBehaviour, PickupInterface
 	// Use this for initialization
 	void Start()
 	{
-
+		PickupDefs.setLayer(gameObject);
 	}
 	public int getCount()
 	{

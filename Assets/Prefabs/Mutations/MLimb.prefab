@@ -55,12 +55,11 @@ MonoBehaviour:
   grabOffset: 0.3125
   grabPickupRange: 0.75
   objectReleaseForce: 14000
-  releaseTargetOffset: 5
   grabLayers:
     serializedVersion: 2
     m_Bits: 10496
+  grabber: {fileID: 2114900825467429921}
   limbState: 0
-  grabbedObject: {fileID: 0}
   anim: {fileID: 8933251707191168394}
   hitbox: {fileID: 7320995253066623991}
   hitboxHand: {fileID: 3613807178347147794}
@@ -197,6 +196,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3832172899805545125}
   - component: {fileID: 1447867813621797614}
+  - component: {fileID: 2114900825467429921}
   - component: {fileID: 3613807178347147794}
   - component: {fileID: 7370535791528397256}
   m_Layer: 10
@@ -275,6 +275,27 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &2114900825467429921
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4020751351249933552}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b3915a781b1e56644a0e1098b2e2b564, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  wielder: {fileID: 0}
+  grabOffset: 0
+  mutCost1: 0
+  mutCost2: 0
+  grabbingTransforms:
+  - {fileID: 3832172899805545125}
+  holdingTransform: {fileID: 3832172899805545125}
+  grabbedObject: {fileID: 0}
+  heldRigidbody: {fileID: 0}
 --- !u!61 &3613807178347147794
 BoxCollider2D:
   m_ObjectHideFlags: 0

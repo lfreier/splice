@@ -23,6 +23,7 @@ public class Cell : MonoBehaviour, PickupInterface
 	void Start()
 	{
 		gameManager = GameManager.Instance;
+		PickupDefs.setLayer(gameObject);
 		init();
 	}
 

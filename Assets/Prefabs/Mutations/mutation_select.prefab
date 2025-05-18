@@ -51,7 +51,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mutationPrefabs:
   - {fileID: 869377620814106126, guid: f3a8bd5cc9868d34daeeca1cb142e3c4, type: 3}
-  - {fileID: 3279388766364700584, guid: 60c128a3aea613c438eeb70f8c97eee7, type: 3}
+  - {fileID: 869377620814106126, guid: b9e71e13dd89afd4081d2401b1c1e187, type: 3}
   - {fileID: 4878587490104917525, guid: c1e65fecc886f9b49b05444180df6926, type: 3}
   isActivated: 0
 --- !u!212 &7052002624918970383
@@ -246,7 +246,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 850694283
   m_SortingLayer: 1
-  m_SortingOrder: 2
+  m_SortingOrder: 1
   m_Sprite: {fileID: 21300000, guid: 259e64eb12374b748adbeeeac611d498, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -332,7 +332,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 850694283
   m_SortingLayer: 1
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_Sprite: {fileID: 21300000, guid: 387c8d0a31211dd4fbb87b27a7d88f0f, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0

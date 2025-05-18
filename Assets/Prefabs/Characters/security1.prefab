@@ -9,6 +9,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 740460995545239096, guid: f3bb2ddd86bcc0544af59b764dd961fa, type: 3}
+      propertyPath: corpsePrefab
+      value: 
+      objectReference: {fileID: 5154943660721874716, guid: 16aded05e0d6fd34aa3f4d6e93b96eaa, type: 3}
+    - target: {fileID: 740460995545239096, guid: f3bb2ddd86bcc0544af59b764dd961fa, type: 3}
       propertyPath: _actorScriptable
       value: 
       objectReference: {fileID: 11400000, guid: 16f7ba50317fbc64f9b1238e213c50ed, type: 2}
@@ -92,6 +96,10 @@ PrefabInstance:
       propertyPath: m_WasSpriteAssigned
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 7622839753614861741, guid: f3bb2ddd86bcc0544af59b764dd961fa, type: 3}
+      propertyPath: guid
+      value: security1_25e7dc4b-38f6-4568-8c5b-21dcd2a3cbdb
+      objectReference: {fileID: 0}
     - target: {fileID: 7904725563872449456, guid: f3bb2ddd86bcc0544af59b764dd961fa, type: 3}
       propertyPath: m_Name
       value: security1
@@ -124,6 +132,10 @@ PrefabInstance:
     - target: {fileID: 1192526033329145194, guid: a1116bc9fda44684eb2ea2c225fe5c2b, type: 3}
       propertyPath: m_Name
       value: stunStick
+      objectReference: {fileID: 0}
+    - target: {fileID: 1660069332914784402, guid: a1116bc9fda44684eb2ea2c225fe5c2b, type: 3}
+      propertyPath: guid
+      value: security1_17d4e751-33b4-418d-91e5-954c9a58b9a1
       objectReference: {fileID: 0}
     - target: {fileID: 3398982447540545742, guid: a1116bc9fda44684eb2ea2c225fe5c2b, type: 3}
       propertyPath: m_LocalPosition.x

@@ -13,6 +13,7 @@ TagManager:
   - WallMetal
   - TeamMonster
   - TeamScience
+  - PlayerAlly
   layers:
   - Default
   - TransparentFX
@@ -23,7 +24,7 @@ TagManager:
   - WallCollision
   - ThrownWeapon
   - Actor
-  - 
+  - Corpse
   - Object
   - ObjectPickup
   - ObjectInteract

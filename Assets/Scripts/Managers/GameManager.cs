@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Unity.VisualScripting.Antlr3.Runtime.Misc;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using static GameManager;
@@ -43,6 +42,9 @@ public class GameManager : MonoBehaviour
 	public delegate void PlayerAbilityReleaseEvent();
 	public event PlayerAbilityReleaseEvent playerAbilityReleaseEvent;
 
+	public delegate void PlayerSecondaryEvent();
+	public event PlayerSecondaryEvent playerSecondaryEvent;
+
 	public delegate void RotationLockedEvent();
 	public event RotationLockedEvent rotationLockedEvent;
 	public delegate void RotationUnlockedEvent();
@@ -69,11 +71,18 @@ public class GameManager : MonoBehaviour
 
 	public LoadingHandler loadingHandler = null;
 
+	public GameObject[] basicPrefabs;
+
 	public GameObject[] weaponPrefabs;
+
+	public GameObject[] zombiePrefabs;
+
+	public GameObject clickPrefab;
 
 	public GameObject mutPBeast;
 	public GameObject mutPBladeWing;
 	public GameObject mutPLimb;
+	public GameObject mutPSpore;
 
 	public GameObject weapPBladeArm;
 	public GameObject weapPFist;
@@ -119,14 +128,6 @@ public class GameManager : MonoBehaviour
 	public static Color COLOR_IFRAME	= new Color(0.9F, 0.3F, 0.3F, 1F);
 
 	public List<Type> actorBehaviors = new List<Type>();
-
-	private Dictionary<string, ActorScriptable> actorScriptables = new Dictionary<string, ActorScriptable>();
-	private Dictionary<string, EffectScriptable> effectScriptables = new Dictionary<string, EffectScriptable>();
-	private Dictionary<string, MutationScriptable> mutationScriptables = new Dictionary<string, MutationScriptable>();
-	private Dictionary<string, SoundScriptable> soundScriptables = new Dictionary<string, SoundScriptable>();
-	private Dictionary<string, WeaponScriptable> weaponScriptables = new Dictionary<string, WeaponScriptable>();
-
-	private Dictionary<string, MutationInterface> mutations = new Dictionary<string, MutationInterface>();
 
 	private float hitstopLength;
 
@@ -191,19 +192,19 @@ public class GameManager : MonoBehaviour
 				switch (currentScene)
 				{
 					case (int)SCENE.LEVEL_START:
-						levelManager.lastSavedSpawn = (int)LevelManager.levelSpawnIndex.levelStartSpawn;
+						levelManager.lastSavedSpawn = LevelManager.levelSpawnIndex.levelStartSpawn;
 						break;
 					case (int)SCENE.LEVEL_OFFICE:
-						levelManager.lastSavedSpawn = (int)LevelManager.levelSpawnIndex.levelOfficeSpawn;
+						levelManager.lastSavedSpawn = LevelManager.levelSpawnIndex.levelOfficeSpawn;
 						break;
 					case (int)SCENE.LEVEL_HUB:
-						levelManager.lastSavedSpawn = (int)LevelManager.levelSpawnIndex.levelHubSpawn;
+						levelManager.lastSavedSpawn = LevelManager.levelSpawnIndex.levelHubSpawn;
 						break;
 					case (int)SCENE.LEVEL_WAREHOUSE:
-						levelManager.lastSavedSpawn = (int)LevelManager.levelSpawnIndex.levelWarehouseSpawn;
+						levelManager.lastSavedSpawn = LevelManager.levelSpawnIndex.levelWarehouseSpawn;
 						break;
 					case (int)SCENE.LEVEL_ARCH:
-						levelManager.lastSavedSpawn = (int)LevelManager.levelSpawnIndex.levelArchSpawn;
+						levelManager.lastSavedSpawn = LevelManager.levelSpawnIndex.levelArchSpawn;
 						break;
 					default:
 						break;
@@ -234,10 +235,16 @@ public class GameManager : MonoBehaviour
 	public void gameOver(Actor player)
 	{
 		CameraHandler camHan = Camera.main.GetComponent<CameraHandler>();
-		camHan.enabled = false;
+		if (camHan != null)
+		{
+			camHan.enabled = false;
+		}
 		Camera.main.transform.position = player.transform.position;
 		AudioListener audio = Camera.main.GetComponent<AudioListener>();
-		audio.enabled = false;
+		if (audio != null)
+		{
+			audio.enabled = false;
+		}
 		SceneManager.LoadScene((int)SCENE.GAME_OVER, LoadSceneMode.Additive);
 	}
 
@@ -263,7 +270,7 @@ public class GameManager : MonoBehaviour
 		*/
 	}
 
-	public async void nextLevel(Actor player, int nextSceneIndex, int spawnIndex)
+	public async void nextLevel(Actor player, SCENE nextSceneIndex, int spawnIndex)
 	{
 		CameraHandler camHan = Camera.main.GetComponent<CameraHandler>();
 		camHan.enabled = false;
@@ -275,11 +282,11 @@ public class GameManager : MonoBehaviour
 		//TODO: when able to go back to previous levels, this should be the general idea
 		//int lastScene = currentScene;
 		//await levelManager.saveLevelState(lastScene);
-		currentScene = nextSceneIndex;
+		currentScene = (int)nextSceneIndex;
 
 		await loadingHandler.LoadSceneGroup(new int[] { currentScene }, true, true);
 
-		levelManager.lastSavedSpawn = spawnIndex;
+		levelManager.lastSavedSpawn = (LevelManager.levelSpawnIndex)spawnIndex;
 		levelManager.lastSavedLevelIndex = currentScene;
 		levelManager.lastSavedAtStation = false;
 		await levelManager.startNewLevel(spawnIndex);
@@ -335,13 +342,13 @@ public class GameManager : MonoBehaviour
 	public async void resetLevel()
 	{
 		playerStats.resetCounts();
-		await levelManager.startNewLevel(levelManager.lastSavedSpawn);
+		await levelManager.startNewLevel((int)levelManager.lastSavedSpawn);
 	}
 
-	public async void save(Actor player)
+	public void save(Actor player)
 	{
 		playerStats.savePlayerData(player);
-		await levelManager.saveLevelState(currentScene);
+		levelManager.saveLevelState(currentScene);
 		levelManager.lastSavedLevelIndex = currentScene;
 	}
 
@@ -397,6 +404,11 @@ public class GameManager : MonoBehaviour
 	public void signalPlayerAbilityReleaseEvent()
 	{
 		playerAbilityReleaseEvent?.Invoke();
+	}
+
+	public void signalPlayerSecondaryEvent()
+	{
+		playerSecondaryEvent?.Invoke();
 	}
 
 	public void signalRotationLocked()

@@ -15,8 +15,6 @@ public class PlayerInteract : MonoBehaviour
 
 	public PlayerInputs inputs;
 
-	public LayerMask interactLayer;
-
 	public CircleCollider2D interactCollider;
 	public List<Collider2D> highlightList;
 	public Collider2D highlightedCollider = null;

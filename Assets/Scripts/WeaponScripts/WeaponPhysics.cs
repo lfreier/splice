@@ -17,7 +17,7 @@ public class WeaponPhysics : MonoBehaviour
 	public Actor throwingActor;
 
 	public Rigidbody2D weaponBody;
-	public Collider2D throwCollider;
+	public BoxCollider2D throwCollider;
 	public Collider2D pickupCollider;
 
 	public BasicWeapon attachedWeapon;
@@ -133,7 +133,11 @@ public class WeaponPhysics : MonoBehaviour
 				gameObject.layer = LayerMask.NameToLayer(GameManager.OBJECT_LAYER);
 				throwCollider.enabled = false;
 				pickupCollider.enabled = true;
-				WeaponDefs.setObjectLayer(WeaponDefs.SORT_LAYER_GROUND, topObject);
+				Collider2D[] hits = Physics2D.OverlapPointAll(throwCollider.attachedRigidbody.transform.position, LayerMask.NameToLayer("ObjectMid"));
+				if (hits == null || hits.Length <= 0)
+				{
+					WeaponDefs.setObjectLayer(WeaponDefs.SORT_LAYER_GROUND, topObject);
+				}
 
 				_lastThrowMove = new Vector3(0, 0, 0);
 				currentSpeed = 0;

@@ -5,6 +5,7 @@ using UnityEngine;
 public class MutationHandler : MonoBehaviour
 {
 	public List<mutationType> heldMutations;
+	public MutationInterface majorMutation;
 
 	private void Start()
 	{
@@ -34,6 +35,13 @@ public class MutationHandler : MonoBehaviour
 				if (wing != null)
 				{
 					return wing;
+				}
+				break;
+			case mutationType.mSpore:
+				MSpore spore = GetComponentInChildren<MSpore>();
+				if (spore != null)
+				{
+					return spore;
 				}
 				break;
 			default:

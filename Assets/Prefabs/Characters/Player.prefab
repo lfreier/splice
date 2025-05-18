@@ -115,9 +115,6 @@ MonoBehaviour:
   numActions: 2
   player: {fileID: 2619173141771756631}
   inputs: {fileID: 6943335213408515552}
-  interactLayer:
-    serializedVersion: 2
-    m_Bits: 6144
   interactCollider: {fileID: 2901297514304923269}
   highlightList: []
   highlightedCollider: {fileID: 0}
@@ -395,7 +392,7 @@ MonoBehaviour:
   droppedItems: []
   gameManager: {fileID: 0}
   corpseSprite: {fileID: 21300000, guid: b7905905191945542b186516bd848bc6, type: 3}
-  corpsePrefab: {fileID: 2911627580042638205, guid: 9bdd8350a0e30434eaadda3861d39b89, type: 3}
+  corpsePrefab: {fileID: 5154943660721874716, guid: 11609515e407e6848a37ae2e3540ea2d, type: 3}
   displayedEffect: {fileID: 0}
   invincible: 0
   initialized: 0
@@ -498,7 +495,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 0}
-  m_PlayOnAwake: 1
+  m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
   Loop: 0

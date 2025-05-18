@@ -17,8 +17,13 @@ public class StationMenuManager : MonoBehaviour
 	public GameObject databaseScreen;
 	public GameObject mutationScreen;
 
+	public GameObject elevatorScreen;
+
 	[field: HideInInspector]
 	public SaveStation station;
+
+	[field: HideInInspector]
+	public Elevator elevator;
 
 	private GameManager gameManager;
 
@@ -40,6 +45,20 @@ public class StationMenuManager : MonoBehaviour
 			{
 				station = allStation;
 				break;
+			}
+		}
+
+		if (station == null)
+		{
+			foreach (Elevator trigger in FindObjectsByType<Elevator>(FindObjectsSortMode.None))
+			{
+				if (trigger.inUse)
+				{
+					elevator = trigger;
+					changeScreen(elevatorScreen);
+					/* make sure not to init twice */
+					return;
+				}
 			}
 		}
 
@@ -69,8 +88,16 @@ public class StationMenuManager : MonoBehaviour
 
 	public async void exitMenu()
 	{
-		station.inUse = false;
-		station.playerActor = null;
+		if (station != null)
+		{
+			station.inUse = false;
+			station.playerActor = null;
+		}
+		else if (elevator != null)
+		{
+			elevator.inUse = false;
+			elevator.playerActor = null;
+		}
 
 		if (audioListener != null)
 		{

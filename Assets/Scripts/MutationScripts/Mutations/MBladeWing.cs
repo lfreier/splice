@@ -163,4 +163,9 @@ public class MBladeWing : MonoBehaviour, MutationInterface
 		actorWielder.gameManager.signalMovementUnlocked();
 		actorWielder.gameManager.signalRotationUnlocked();
 	}
+
+	Sprite[] MutationInterface.getTutorialSprites()
+	{
+		return mutationScriptable.tutorialSprites;
+	}
 }

@@ -14,6 +14,12 @@ public class ObstacleScriptable : ScriptableObject
 	public float collisionDamage { get; private set; } = 1F;
 
 	[field: SerializeField]
+	public float durability { get; private set; } = 3F;
+
+	[field: SerializeField]
+	public float heldDamageBonus { get; private set; } = 1F;
+
+	[field: SerializeField]
 	public float maxObstacleForce { get; private set; } = 8000F;
 
 	[field: SerializeField]

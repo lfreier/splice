@@ -8,6 +8,11 @@ public class Refill : MonoBehaviour, PickupInterface
 	[SerializeField]
 	private Sprite icon;
 
+	void Start()
+	{
+		PickupDefs.setLayer(gameObject);
+	}
+
 	public int getCount()
 	{
 		return cellAmount;

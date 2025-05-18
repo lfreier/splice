@@ -2,12 +2,13 @@
 using Unity.VisualScripting.Antlr3.Runtime;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using static LevelManager;
 using static SceneDefs;
 
 public class SaveStation : MonoBehaviour, UsableInterface
 {
-	public int playerSpawnIndex = 0;
-	public int saveStationNumIndex = 0;
+	public levelSpawnIndex playerSpawnIndex = 0;
+	public saveStationIndex saveStationNumIndex = 0;
 
 	public Actor playerActor;
 

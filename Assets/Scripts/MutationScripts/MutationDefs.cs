@@ -17,6 +17,7 @@ public static class MutationDefs
 
 	public static string NAME_BEAST = "BEAST";
 	public static string NAME_LIMB  = "LIMB";
+	public static string NAME_SPORE = "SPORE";
 	public static string NAME_WINGS = "WINGS";
 
 	public static short MAX_SLOTS = 2;
@@ -37,7 +38,8 @@ public enum mutationType
 {
 	mBeast = 0,
 	mLimb = 1,
-	mWing = 2
+	mWing = 2,
+	mSpore = 3
 };
 
 public enum mutationTrigger

@@ -52,15 +52,37 @@ MonoBehaviour:
   effectManager: {fileID: 4654381731306417788}
   levelManager: {fileID: 9086022366862896558}
   loadingHandler: {fileID: 0}
+  basicPrefabs:
+  - {fileID: 2911627580042638205, guid: 9bdd8350a0e30434eaadda3861d39b89, type: 3}
+  - {fileID: 5154943660721874716, guid: 0832ca598afa0004e9784aea94e4f138, type: 3}
+  - {fileID: 5154943660721874716, guid: 114b1030758b8c44083100e773e1b895, type: 3}
+  - {fileID: 5154943660721874716, guid: c4183d0f9c5e8c048affea0841ae0d21, type: 3}
+  - {fileID: 5154943660721874716, guid: 16aded05e0d6fd34aa3f4d6e93b96eaa, type: 3}
+  - {fileID: 5154943660721874716, guid: bc27f21ea7cd69f409408371d5e0ebb7, type: 3}
+  - {fileID: 5154943660721874716, guid: 11609515e407e6848a37ae2e3540ea2d, type: 3}
+  - {fileID: 5154943660721874716, guid: e0be5d8d69acd2a4786385a0ff5cf35a, type: 3}
+  - {fileID: 5154943660721874716, guid: 04de3c618a3e3814d8e15c1fa758ceeb, type: 3}
+  - {fileID: 4718064208568494967, guid: 4180ff820cbdc364dad7f89087822eec, type: 3}
+  - {fileID: 608380240518538002, guid: 16367c997bdbd5e44ae7a5c563f8c28a, type: 3}
+  - {fileID: 7759880110565179527, guid: 5faef6d126fd21c4e924a1c7c05e34bc, type: 3}
+  - {fileID: 7128427971435259476, guid: 804662000644b26429c1c15c0bd5b84f, type: 3}
+  - {fileID: 7011714338143177268, guid: 9ef8a21d6c357f7458ad312c5fc21997, type: 3}
+  - {fileID: 7011714338143177268, guid: 80474d91634d572439a3916ff6fa4649, type: 3}
+  - {fileID: 2817554636129167509, guid: 582acd8aa4deb5444863988866b6f9b0, type: 3}
+  - {fileID: 5154943660721874716, guid: 942159b155f5d1e4997260b9f85b6bf9, type: 3}
   weaponPrefabs:
   - {fileID: 1192526033329145194, guid: 667ae61a41d03f34bb1259307cf06291, type: 3}
   - {fileID: 1192526033329145194, guid: e68bd7edcb08749459b30946014ecd34, type: 3}
   - {fileID: 1192526033329145194, guid: 95f4e5b3291ade544a04604f4830459e, type: 3}
   - {fileID: 1192526033329145194, guid: a1116bc9fda44684eb2ea2c225fe5c2b, type: 3}
   - {fileID: 1192526033329145194, guid: 4b343bd6d0e62c94da28557b01dd8918, type: 3}
+  zombiePrefabs:
+  - {fileID: 6203879125526305423, guid: 9c960d4f03b2281428f20639255b8420, type: 3}
+  clickPrefab: {fileID: 6059981090291065645, guid: 95ed8de2f7dd80a47ab648332df12f07, type: 3}
   mutPBeast: {fileID: 3279388766364700584, guid: 60c128a3aea613c438eeb70f8c97eee7, type: 3}
   mutPBladeWing: {fileID: 869377620814106126, guid: f3a8bd5cc9868d34daeeca1cb142e3c4, type: 3}
   mutPLimb: {fileID: 4878587490104917525, guid: c1e65fecc886f9b49b05444180df6926, type: 3}
+  mutPSpore: {fileID: 869377620814106126, guid: b9e71e13dd89afd4081d2401b1c1e187, type: 3}
   weapPBladeArm: {fileID: 1192526033329145194, guid: 94cfaef694721d248982433f4c181c99, type: 3}
   weapPFist: {fileID: 1192526033329145194, guid: 3111e231717f3ba4fb9b5fb229a2e6d3, type: 3}
   actorLayers:
@@ -193,9 +215,27 @@ MonoBehaviour:
   levelSpawns:
   - {fileID: 11400000, guid: d005fe9a0a0fcff499c05a01ade00cb0, type: 2}
   - {fileID: 11400000, guid: 4de7098faac9dc340ad110acfe45724a, type: 2}
+  - {fileID: 11400000, guid: 05d12f222020d054295902ce121e924f, type: 2}
   - {fileID: 11400000, guid: cffedb1562eb6c548ac70982e90766f9, type: 2}
   - {fileID: 11400000, guid: e0060532721259a478dd135a6355e1b0, type: 2}
+  - {fileID: 11400000, guid: 33517daee327eb141a36085c4322391c, type: 2}
+  - {fileID: 11400000, guid: 2f5d9256aa6369f46ae54c4e9feb0194, type: 2}
+  - {fileID: 11400000, guid: df03cd5ca9695184d83d7d10f51779f8, type: 2}
+  - {fileID: 11400000, guid: f5f5a14ed8c598c4286ea77f7b686839, type: 2}
+  - {fileID: 11400000, guid: 177d4197158b59c44a9ac1021d3356fa, type: 2}
+  - {fileID: 11400000, guid: c7d0145f0136a28469f05a541c12f099, type: 2}
+  - {fileID: 11400000, guid: 177d4197158b59c44a9ac1021d3356fa, type: 2}
+  - {fileID: 11400000, guid: 177d4197158b59c44a9ac1021d3356fa, type: 2}
   lastSavedAtStation: 0
   savedActors: []
   saveStationUses: 0000000000000000000000000000000000000000
+  elevatorSpawns:
+  - {fileID: 0}
+  - {fileID: 11400000, guid: 2f5d9256aa6369f46ae54c4e9feb0194, type: 2}
+  - {fileID: 11400000, guid: 05d12f222020d054295902ce121e924f, type: 2}
+  - {fileID: 11400000, guid: cffedb1562eb6c548ac70982e90766f9, type: 2}
+  - {fileID: 11400000, guid: 33517daee327eb141a36085c4322391c, type: 2}
+  - {fileID: 11400000, guid: f5f5a14ed8c598c4286ea77f7b686839, type: 2}
+  - {fileID: 11400000, guid: c7d0145f0136a28469f05a541c12f099, type: 2}
+  elevatorAvailable: 00000000000000
   camHandler: {fileID: 0}

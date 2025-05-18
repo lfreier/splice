@@ -191,6 +191,7 @@ public class Actor : MonoBehaviour
 			equippedWeapon.transform.SetParent(null, true);
 			equippedWeapon.transform.SetPositionAndRotation(this.transform.position + translate, Quaternion.Euler(0, 0, equippedWeapon.transform.rotation.eulerAngles.z + rand));
 			setObjectLayer(WeaponDefs.SORT_LAYER_GROUND, equippedWeapon);
+			setWeaponTag(equippedWeapon, WeaponDefs.OBJECT_WEAPON_TAG);
 
 			WeaponPhysics physics = equippedWeapon.GetComponentInChildren<WeaponPhysics>();
 			if (physics != null)
@@ -200,6 +201,7 @@ public class Actor : MonoBehaviour
 				{
 					BoxCollider2D collider = physics.GetComponent<BoxCollider2D>();
 					moveFromCollider(collider, weap.transform.localPosition, equippedWeapon);
+					weap.actorWielder = null;
 				}
 			}
 
@@ -215,8 +217,6 @@ public class Actor : MonoBehaviour
 			GameObject newDrop = Instantiate(item, droppedPosition, this.transform.rotation, this.transform.parent);
 			newDrop.transform.Rotate(new Vector3(0, 0, Random.Range(-45, 45)), Space.Self);
 
-			setObjectLayer(WeaponDefs.SORT_LAYER_GROUND, newDrop);
-
 			Cell newCell = newDrop.GetComponent<Cell>();
 			if (newCell != null)
 			{
@@ -226,6 +226,12 @@ public class Actor : MonoBehaviour
 					newCell.generateCount(npcData.cellDropMin, npcData.cellDropMax);
 				}
 			}
+			else
+			{
+				/* cells should be on top layer */
+				setObjectLayer(WeaponDefs.SORT_LAYER_GROUND, newDrop);
+			}
+
 			float randX = Random.Range(-0.5F, -.5F);
 			float randY = Random.Range(-0.5F, -.5F);
 			if (!Physics2D.BoxCast(new Vector2(droppedPosition.x + randX, droppedPosition.y + randY), new Vector2(0.01F, 0.01F), 0, Vector2.up, 0.01F, gameManager.unwalkableLayers))
@@ -434,7 +440,8 @@ public class Actor : MonoBehaviour
 			return false;
 		}
 
-		if (this.tag.Equals(targetActor.tag))
+		if (this.tag.Equals(targetActor.tag)
+			|| (tag.Contains(playerTag) && targetActor.tag.Contains(playerTag)))
 		{
 			return false;
 		}
@@ -476,12 +483,13 @@ public class Actor : MonoBehaviour
 				SceneManager.SetActiveScene(gameObject.scene);
 			}
 			GameObject newCorpse = Instantiate(corpsePrefab, transform.position, transform.rotation);
-			SpriteRenderer newSprite = newCorpse.GetComponent<SpriteRenderer>();
 			newCorpse.transform.Rotate(0, 0, Random.Range(-20, 20));
 
-			if (newSprite != null)
+			Corpse script = newCorpse.GetComponent<Corpse>();
+			if (script != null)
 			{
-				newSprite.sprite = corpseSprite;
+				script.actorData = copyData(this.actorData);
+				script.corpseSprite.sprite = this.corpseSprite;
 			}
 		}
 		
@@ -795,7 +803,7 @@ public class Actor : MonoBehaviour
 				if (enemyMove != null)
 				{
 					enemyMove.setStunResponse(sourceActor);
-					if (damageTaken >= 1F && (enemyMove._detection == detectMode.idle || enemyMove._detection == detectMode.suspicious || enemyMove._detection == detectMode.wandering) && !isStunned())
+					if (damageTaken >= 1F && (enemyMove._detection == detectMode.idle || enemyMove._detection == detectMode.suspicious || enemyMove._detection == detectMode.wandering) && !isStunned() && !enemyMove.summoned)
 					{
 						EffectDefs.effectApply(this, gameManager.effectManager.stun1);
 					}

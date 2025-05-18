@@ -9,6 +9,7 @@ public class PlayerInputs: MonoBehaviour
 
 	private float attackAction;
 	private float secondaryAttackAction;
+	private float lastSecondaryAttackAction;
 
 	private float cycleActiveAction;
 	private float lastCycleActiveAction;
@@ -72,6 +73,7 @@ public class PlayerInputs: MonoBehaviour
 
 		//attack inputs
 		attackAction = attack.action.ReadValue<float>();
+		lastSecondaryAttackAction = secondaryAttackAction;
 		secondaryAttackAction = secondaryAttack.action.ReadValue<float>();
 
 		//mouse inputs
@@ -179,6 +181,10 @@ public class PlayerInputs: MonoBehaviour
 		if (cycleActiveAction != 0 && lastCycleActiveAction == 0)
 		{
 			gameManager.playerStats.cycleActiveItem();
+		}
+		if (secondaryAttackAction != 0 && lastSecondaryAttackAction == 0)
+		{
+			gameManager.signalPlayerSecondaryEvent();
 		}
 	}
 }

@@ -353,7 +353,9 @@ MonoBehaviour:
   menuOptions:
   - {fileID: 874628899}
   fadeInText: []
-  fadeChange: 0.8
+  holdToFillImage: {fileID: 0}
+  holdTimerLength: 0
+  fadeChange: 1
   menuCanvas: {fileID: 798559242}
   menuCam: {fileID: 0}
   eventSystem: {fileID: 0}
@@ -380,6 +382,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   menu: {fileID: 1122879505}
+  waitTime: 0.2
 --- !u!1 &1262930412
 GameObject:
   m_ObjectHideFlags: 0

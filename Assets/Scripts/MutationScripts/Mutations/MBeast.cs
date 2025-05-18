@@ -48,6 +48,15 @@ public class MBeast : BasicWeapon, MutationInterface
 	private BoxCollider2D playerCollider;
 	private Vector2 playerColliderSize;
 
+	public MGrabber grabber;
+	public float objectReleaseForce = 20000F;
+	public float grabOffset = 0.3125F;
+	public float grabPickupRange = 0.5F;
+
+	private bool attackWithObstacle = false;
+
+	public LayerMask grabLayers;
+
 	private void OnDestroy()
 	{
 		GameManager.Instance.playerAbilityEvent -= abilityInputPressed;
@@ -102,8 +111,27 @@ public class MBeast : BasicWeapon, MutationInterface
 	private void abilityInputPressed()
 	{
 		float currMutEnergy = actorWielder.gameManager.playerStats.getMutationBar();
-		if (buffTimer > 0  || currMutEnergy < mutScriptable.mutCost)
+		if ((buffTimer > 0  || currMutEnergy < mutScriptable.mutCost) && !transformActive)
 		{
+			return;
+		}
+
+		if (transformActive && grabber.heldRigidbody != null)
+		{
+			/* let go */
+			grabber.releaseHeldObject(objectReleaseForce);
+			return;
+		}
+		else if (transformActive && grabber.heldRigidbody == null)
+		{
+			/* try to grab object */
+			if (grabber.grabObjects(grabLayers, grabPickupRange, weightClass.LIGHT, false))
+			{
+				if (grabber.heldObstacle != null)
+				{
+					grabber.heldObstacle.beingHeld = true;
+				}
+			}
 			return;
 		}
 
@@ -217,6 +245,10 @@ public class MBeast : BasicWeapon, MutationInterface
 			beastSprites = gameObject.GetComponentsInChildren<SpriteRenderer>();
 		}
 
+		grabber.grabOffset = grabOffset;
+		grabber.mutCost1 = 0;
+		grabber.mutCost2 = 0;
+
 		attackTimer = 0;
 		currState = atkState.IDLE;
 		animationRunning = false;
@@ -241,6 +273,7 @@ public class MBeast : BasicWeapon, MutationInterface
 
 		return this;
 	}
+
 	public void setStartingPosition()
 	{
 
@@ -249,6 +282,7 @@ public class MBeast : BasicWeapon, MutationInterface
 	public void setWielder(Actor wielder)
 	{
 		actorWielder = wielder;
+		grabber.wielder = wielder;
 	}
 
 	public void startDash()
@@ -301,6 +335,8 @@ public class MBeast : BasicWeapon, MutationInterface
 		}
 		startingShield = 0;
 
+		grabber.releaseHeldObject(objectReleaseForce);
+
 		actorWielder.equipEmpty();
 
 		anim.SetTrigger(MutationDefs.TRIGGER_STOP_TRANSFORM);
@@ -310,27 +346,36 @@ public class MBeast : BasicWeapon, MutationInterface
 		EffectDefs.effectApply(actorWielder, actorWielder.gameManager.effectManager.stunParry);
 	}
 
-	/* 0 - left 
+	/* 3 - left 
 	 * 1 - right
 	 * 2 - overhead
 	 */
-	public void toggleBeastHitbox(int sideToToggle)
+	public void toggleBeastHitbox(int toggle)
 	{
-		Collider2D checkInitial;
-		if (sideToToggle == 0 && leftArmColl != null)
+		bool enable = toggle > 0;
+		int sideToToggle = Mathf.Abs(toggle);
+
+		if (sideToToggle == 3 && leftArmColl != null)
 		{
-			checkInitial = leftArmColl;
-			leftArmColl.enabled = !leftArmColl.enabled;
+			leftArmColl.enabled = enable;
 		}
 		else if (sideToToggle == 1 && rightArmColl != null)
 		{
-			checkInitial = rightArmColl;
-			rightArmColl.enabled = !rightArmColl.enabled;
+			if (grabber.heldObstacle != null && grabber.heldObstacle.beingHeld)
+			{
+				/* don't enable right fist hitbox when holding something */
+				//grabber.heldObstacle.obstacleBody.simulated = enable;
+				grabber.heldObstacleCollider.isTrigger = true;
+				grabber.heldObstacle.gameObject.layer = enable ? LayerMask.NameToLayer(GameManager.DAMAGE_LAYER) : grabber.heldObstacle.startingLayer;
+				attackWithObstacle = enable;
+				rightArmColl.enabled = false;
+				return;
+			}
+			rightArmColl.enabled = enable;
 		}
 		else if (sideToToggle == 2 && overheadColl != null)
 		{
-			checkInitial = overheadColl;
-			overheadColl.enabled = !overheadColl.enabled;
+			overheadColl.enabled = enable;
 		}
 	}
 
@@ -347,7 +392,21 @@ public class MBeast : BasicWeapon, MutationInterface
 		}
 		else if (currState != atkState.IDLE)
 		{
-			weaponHit(collision, _weaponScriptable.damage, 0);
+			Obstacle bashingObstacle = grabber.heldObstacle;
+			if (bashingObstacle != null && bashingObstacle.beingHeld && attackWithObstacle)
+			{
+				weaponHit(collision, _weaponScriptable.damage + bashingObstacle._obstacleScriptable.heldDamageBonus, 0);
+				bashingObstacle.reduceDurability(1);
+			}
+			else
+			{
+				weaponHit(collision, _weaponScriptable.damage, 0);
+			}
 		}
+	}
+
+	Sprite[] MutationInterface.getTutorialSprites()
+	{
+		return mutScriptable.tutorialSprites;
 	}
 }

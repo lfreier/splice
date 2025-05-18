@@ -8,6 +8,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -2410750095788609518, guid: 688e9e8f1aed4354080a2f23ada1e0ca, type: 3}
+      propertyPath: basicPrefabIndex
+      value: 14
+      objectReference: {fileID: 0}
     - target: {fileID: 647760437655045498, guid: 688e9e8f1aed4354080a2f23ada1e0ca, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.78586483
@@ -62,7 +66,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4190192775242081158, guid: 688e9e8f1aed4354080a2f23ada1e0ca, type: 3}
       propertyPath: m_Name
-      value: keycard Variant
+      value: keycardYellow
       objectReference: {fileID: 0}
     - target: {fileID: 4676146276259819351, guid: 688e9e8f1aed4354080a2f23ada1e0ca, type: 3}
       propertyPath: _keycardType

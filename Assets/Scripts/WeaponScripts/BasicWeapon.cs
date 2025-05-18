@@ -53,6 +53,7 @@ public abstract class BasicWeapon : MonoBehaviour, WeaponInterface
 		{
 			_weaponPhysics.linkInterface(this);
 		}
+		PickupDefs.setLayer(gameObject);
 		init();
 
 		isInit = true;
@@ -185,7 +186,6 @@ public abstract class BasicWeapon : MonoBehaviour, WeaponInterface
 					actorWielder.actorAudioSource.PlayOneShot(toPlay);
 				}
 			}
-			this.actorWielder.drop();
 			Debug.Log("Weapon broke: " + this.name);
 			//actorWielder.actorAudioSource.PlayOneShot(weaponBreakSound);
 			//might need to wait for sound to play out
@@ -260,6 +260,7 @@ public abstract class BasicWeapon : MonoBehaviour, WeaponInterface
 		transform.parent.SetParent(null);
 
 		_weaponPhysics.startThrow(target, actorWielder);
+		actorWielder = null;
 	}
 
 	public bool toggleCollider(int enable)
@@ -392,6 +393,11 @@ public abstract class BasicWeapon : MonoBehaviour, WeaponInterface
 			float forceMult = Mathf.Min(_weaponScriptable.knockbackDamage * knockbackMult, maxForce);
 			Debug.Log("Hit force on " + hitBody.name + ": " + forceMult);
 			hitBody.AddForce(force * forceMult);
+		}
+
+		if (durability <= 0)
+		{
+			actorWielder.drop();
 		}
 
 		return actorHit;

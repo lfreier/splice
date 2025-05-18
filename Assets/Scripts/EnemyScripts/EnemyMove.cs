@@ -57,10 +57,12 @@ public class EnemyMove : MonoBehaviour
 	private static float DELAY_TIMER_LENGTH = 0.35F;
 
 	public Pathfinding pathfinder;
-	private bool usingPathfinding;
+	public bool usingPathfinding;
 
 	private bool showNotice = true;
 	private bool showSus = true;
+
+	public bool summoned = false;
 
 	public GameManager gameManager;
 
@@ -133,7 +135,7 @@ public class EnemyMove : MonoBehaviour
 			if (delayTimer < 0 && attackTargetActor != null)
 			{
 				// create a new notice effect
-				if ((actor.displayedEffect == null || actor.displayedEffect.effectScriptable.constantEffectType > EffectDefs.constantType.NOTICE) && showNotice)
+				if ((actor.displayedEffect == null || actor.displayedEffect.effectScriptable.constantEffectType > EffectDefs.constantType.NOTICE) && showNotice && !summoned)
 				{
 					EffectDefs.effectApply(actor, gameManager.effectManager.notice1);
 					showNotice = false;
@@ -434,11 +436,11 @@ public class EnemyMove : MonoBehaviour
 			// create a new Sus effect
 			if ((actor.displayedEffect == null || actor.displayedEffect.effectScriptable.constantEffectType > EffectDefs.constantType.SEEKING) && showSus)
 			{
-				if (_detection == detectMode.seeking || _detection == detectMode.lost)
+				if ((_detection == detectMode.seeking || _detection == detectMode.lost) && !summoned)
 				{
 					EffectDefs.effectApply(actor, gameManager.effectManager.seeking1);
 				}
-				else if (actor.displayedEffect == null || actor.displayedEffect.effectScriptable.constantEffectType > EffectDefs.constantType.SUS)
+				else if ((actor.displayedEffect == null || actor.displayedEffect.effectScriptable.constantEffectType > EffectDefs.constantType.SUS) && !summoned)
 				{
 					EffectDefs.effectApply(actor, gameManager.effectManager.sus1);
 				}
@@ -651,8 +653,6 @@ public class EnemyMove : MonoBehaviour
 				switch (soundScript.scriptable.type)
 				{
 					case SoundDefs.SoundType.CLANG:
-						_detection = detectMode.seeking;
-						break;
 					case SoundDefs.SoundType.THUD:
 					case SoundDefs.SoundType.TAP:
 					default:
@@ -687,7 +687,7 @@ public class EnemyMove : MonoBehaviour
 				{
 					delayTimer = DELAY_TIMER_LENGTH;
 					// create a new Sus effect
-					if ((actor.displayedEffect == null || actor.displayedEffect.effectScriptable.constantEffectType > EffectDefs.constantType.SUS) && showSus)
+					if ((actor.displayedEffect == null || actor.displayedEffect.effectScriptable.constantEffectType > EffectDefs.constantType.SUS) && showSus && !summoned)
 					{
 						EffectDefs.effectApply(actor, gameManager.effectManager.sus1);
 					}
@@ -698,7 +698,7 @@ public class EnemyMove : MonoBehaviour
 				else if (_detection == detectMode.seeking)
 				{
 					// create a new notice effect
-					if ((actor.displayedEffect == null || actor.displayedEffect.effectScriptable.constantEffectType > EffectDefs.constantType.NOTICE) && showNotice)
+					if ((actor.displayedEffect == null || actor.displayedEffect.effectScriptable.constantEffectType > EffectDefs.constantType.NOTICE) && showNotice && !summoned)
 					{
 						EffectDefs.effectApply(actor, gameManager.effectManager.notice1);
 						showNotice = false;
@@ -778,9 +778,9 @@ public class EnemyMove : MonoBehaviour
 	public void disableStun()
 	{
 		// create a new Sus effect
-		if (showSus && _detection == detectMode.suspicious)
+		if (showSus && _detection == detectMode.suspicious && !summoned)
 		{
-				EffectDefs.effectApply(actor, gameManager.effectManager.sus1);
+			EffectDefs.effectApply(actor, gameManager.effectManager.sus1);
 		}
 	}
 
@@ -797,6 +797,11 @@ public class EnemyMove : MonoBehaviour
 
 	private void setStateMoveSpeed()
 	{
+		if (summoned)
+		{
+			return;
+		}
+
 		switch (_detection)
 		{
 			case detectMode.wandering:
@@ -804,8 +809,8 @@ public class EnemyMove : MonoBehaviour
 				maxStateSpeed /= 4;
 				break;
 			case detectMode.idle:
-				stateSpeedIncrease /= 2;
-				maxStateSpeed /= 2;
+				stateSpeedIncrease /= 2.5F;
+				maxStateSpeed /= 2.5F;
 				break;
 			case detectMode.seeking:
 			case detectMode.suspicious:

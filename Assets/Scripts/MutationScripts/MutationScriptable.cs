@@ -13,6 +13,9 @@ public class MutationScriptable : ScriptableObject
 	public mutationTrigger trigger { get; private set; } = mutationTrigger.IS_WEAPON;
 
 	[field: SerializeField]
+	public Sprite[] tutorialSprites { get; private set; } = null;
+
+	[field: SerializeField]
 	public EffectScriptable effectScriptable { get; private set; } = null;
 
 	[field: SerializeField]

@@ -50,4 +50,9 @@ public class MBleed : MonoBehaviour, MutationInterface
 	{
 
 	}
+
+	Sprite[] MutationInterface.getTutorialSprites()
+	{
+		return mutationScriptable.tutorialSprites;
+	}
 }

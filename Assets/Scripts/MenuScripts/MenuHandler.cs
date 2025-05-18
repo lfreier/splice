@@ -138,6 +138,10 @@ public class MenuHandler : MonoBehaviour
 
 			for (int i = 0; i < menuOptions.Length; i ++)
 			{
+				if (menuOptions[i] == null)
+				{
+					continue;
+				}
 				menuOptions[i].color = new Color(menuOptions[i].color.r, menuOptions[i].color.g, menuOptions[i].color.b, currentAlpha);
 			}
 			for (int i = 0; fadeInText != null && i < fadeInText.Length; i++)
@@ -162,16 +166,6 @@ public class MenuHandler : MonoBehaviour
 				SceneManager.SetActiveScene(SceneManager.GetSceneByBuildIndex(SCENE_INDEX_MASK[gameManager.currentScene]));
 			}
 		}
-	}
-
-	public void OnPointerDown()
-	{
-		isHeld = true;
-	}
-
-	public void OnPointerUp()
-	{
-		isHeld = false;
 	}
 
 	public void killMenuMusic(MusicScriptable music)

@@ -51,7 +51,7 @@ public class PlayerStats
 	public bool addItem(PickupInterface pickup)
 	{
 		bool resetIcon = false;
-		if (playerHUD.activeItemIcon.enabled == false)
+		if (playerHUD.activeItemIcon != null && playerHUD.activeItemIcon.enabled == false)
 		{
 			resetIcon = true;
 		}
@@ -180,6 +180,7 @@ public class PlayerStats
 			}
 
 			GameObject mutPrefab;
+			MutationHandler mutHandle = player.mutationHolder.GetComponent<MutationHandler>();
 			switch (mut.getId())
 			{
 				case "MBeast":
@@ -190,6 +191,9 @@ public class PlayerStats
 					break;
 				case "MLimb":
 					mutPrefab = player.instantiateActive(gameManager.mutPLimb);
+					break;
+				case "MSpore":
+					mutPrefab = player.instantiateActive(gameManager.mutPSpore);
 					break;
 				default:
 					return;
@@ -203,6 +207,7 @@ public class PlayerStats
 					if (player.activeSlots[0] == null)
 					{
 						player.activeSlots[0] = newMut;
+						mutHandle.majorMutation = newMut;
 						showMutationBar();
 						return;
 					}
@@ -243,7 +248,7 @@ public class PlayerStats
 		}
 	}
 
-	public async Task loadPlayerData(Actor playerActor)
+	public void loadPlayerData(Actor playerActor)
 	{
 		player = playerActor;
 
@@ -286,7 +291,7 @@ public class PlayerStats
 						{
 							GameObject spawnedObject = GameObject.Instantiate(limbGrabbedObject);
 							spawnedObject.SetActive(true);
-							mLimb.addObjectToLimb(spawnedObject.transform);
+							mLimb.grabber.addObjectToGrabber(spawnedObject.transform);
 						}
 					}
 				}
@@ -331,17 +336,21 @@ public class PlayerStats
 			mutationList[i].SetActive(false);
 			mutationList[i].transform.SetParent(gameManager.gameObject.transform);
 			MLimb limb = mutationList[i].GetComponentInChildren<MLimb>();
-			if (limb != null && limb.heldRigidbody != null)
+			if (limb != null)
 			{
-				limb.heldRigidbody.gameObject.transform.SetParent(null);
-				if (limbGrabbedObject == null)
+				if (limb.grabber != null && limb.grabber.heldRigidbody != null)
 				{
-					limbGrabbedObject = GameObject.Instantiate(limb.heldRigidbody.gameObject);
-					if (limbGrabbedObject != null)
+					MGrabber grabber = limb.grabber;
+					grabber.heldRigidbody.gameObject.transform.SetParent(null);
+					if (limbGrabbedObject == null)
 					{
-						limbGrabbedObject.SetActive(false);
-						limbGrabbedObject.transform.SetParent(gameManager.gameObject.transform);
-						GameObject.Destroy(limb.heldRigidbody.gameObject);
+						limbGrabbedObject = GameObject.Instantiate(grabber.heldRigidbody.gameObject);
+						if (limbGrabbedObject != null)
+						{
+							limbGrabbedObject.SetActive(false);
+							limbGrabbedObject.transform.SetParent(gameManager.gameObject.transform);
+							GameObject.Destroy(grabber.heldRigidbody.gameObject);
+						}
 					}
 				}
 			}
@@ -371,6 +380,7 @@ public class PlayerStats
 	/* TODO: player stats/HUD are poorly connected with one another*/
 	public void showMutationBar()
 	{
+		gameManager.levelManager.stationShowMut = true;
 		playerHUD.mutationFillCanvas.enabled = true;
 		playerHUD.mutationBGFillCanvas.enabled = true;
 		playerHUD.mutationOutline.enabled = true;

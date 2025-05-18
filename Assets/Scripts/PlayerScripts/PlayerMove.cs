@@ -102,7 +102,7 @@ public class PlayerMove : MonoBehaviour
 						if (player.actorAudioSource != null && footstepScriptable.audioClip != null
 							&& player.gameManager.audioManager.soundHash.TryGetValue(footstepScriptable.audioClip.name, out footstepClip))
 						{
-							player.actorAudioSource.PlayOneShot(footstepClip, 0.2F);
+							player.actorAudioSource.PlayOneShot(footstepClip, 0.4F);
 						}
 					}
 

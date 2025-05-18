@@ -39,4 +39,9 @@ public class MBladeArm : MonoBehaviour, MutationInterface
 	public void setWielder(Actor wielder)
 	{
 	}
+
+	Sprite[] MutationInterface.getTutorialSprites()
+	{
+		return null;
+	}
 }

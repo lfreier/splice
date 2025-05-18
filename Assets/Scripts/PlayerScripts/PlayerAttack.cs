@@ -19,10 +19,11 @@ public class PlayerAttack : MonoBehaviour
 		{
 			player.attack();
 		}
-
+		/*
 		else if(inputs.secondaryAttackInput() > 0)
 		{
 			player.attackSecondary();
 		}
+		*/
 	}
 }

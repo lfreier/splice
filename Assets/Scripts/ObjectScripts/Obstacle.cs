@@ -16,14 +16,23 @@ public class Obstacle : MonoBehaviour
 	public float knockVelocityThreshold = 5F;
 	public float angVelocityThreshold = 20F;
 
+	public float durability;
+
+	public bool beingHeld;
+
 	private float thresholdTimer;
+
+	public int startingLayer;
 
 	public float knockOverDrag = 3F;
 
 	// Use this for initialization
 	void Start()
 	{
+		startingLayer = gameObject.layer;
 		obstacleType = obstacleBody.bodyType;
+		durability = _obstacleScriptable.durability;
+		beingHeld = false;
 		physicsEnabled = false;
 	}
 
@@ -73,6 +82,16 @@ public class Obstacle : MonoBehaviour
 
 	private void pushByDamage(WeaponInterface weapon)
 	{
+	}
+
+	public void reduceDurability(float amount)
+	{
+		durability -= amount;
+		if (durability <= 0)
+		{
+			beingHeld = false;
+			Destroy(this.gameObject);
+		}
 	}
 
 	public void enablePhysics()
@@ -129,7 +148,26 @@ public class Obstacle : MonoBehaviour
 					EffectDefs.effectApply(actorHit, actorHit.gameManager.effectManager.stunHalf);
 					/* hitstop if player is hit */
 					actorHit.takeDamage(_obstacleScriptable.collisionDamage, actorHit);
+					return;
 				}
+			}
+		}
+	}
+
+	private void OnTriggerEnter2D(Collider2D collision)
+	{
+		Actor actorHit = collision.gameObject.GetComponent<Actor>();
+		if (actorHit != null)
+		{
+			/* obstacle is being held by player */
+			if (beingHeld)
+			{
+				MBeast playerBeast = GetComponentInParent<MBeast>();
+				if (playerBeast != null)
+				{
+					playerBeast.triggerCollision(collision);
+				}
+				return;
 			}
 		}
 	}

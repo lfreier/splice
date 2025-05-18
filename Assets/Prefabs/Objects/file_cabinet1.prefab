@@ -262,12 +262,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e0430fdafca962d409e83d3c13ca6875, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _obstacleScriptable: {fileID: 11400000, guid: 93504fb53eb5b1144b11a3ef537b6a59, type: 2}
+  _obstacleScriptable: {fileID: 11400000, guid: c00726c4a5ef63745b0b402c7edad770, type: 2}
   obstacleBody: {fileID: 2737905760543029366}
   spriteRenderer: {fileID: 0}
   secondSprite: {fileID: 0}
   knockVelocityThreshold: 0.5
   angVelocityThreshold: 20
+  durability: 0
+  beingHeld: 0
+  startingLayer: 0
   knockOverDrag: 2.5
 --- !u!114 &-2692900505047113629
 MonoBehaviour:
@@ -379,6 +382,7 @@ MonoBehaviour:
   pickup:
   - {fileID: 1192526033329145194, guid: 667ae61a41d03f34bb1259307cf06291, type: 3}
   pickupCollider: {fileID: 9217224372537934285}
+  pickupSendForce: 1000
 --- !u!114 &1910654144285547258
 MonoBehaviour:
   m_ObjectHideFlags: 0

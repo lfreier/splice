@@ -9,6 +9,14 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 740460995545239096, guid: f3bb2ddd86bcc0544af59b764dd961fa, type: 3}
+      propertyPath: corpsePrefab
+      value: 
+      objectReference: {fileID: 5154943660721874716, guid: e0be5d8d69acd2a4786385a0ff5cf35a, type: 3}
+    - target: {fileID: 740460995545239096, guid: f3bb2ddd86bcc0544af59b764dd961fa, type: 3}
+      propertyPath: corpseSprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 3ba71e11f03a20e4aa72cd4ba3803b29, type: 3}
+    - target: {fileID: 740460995545239096, guid: f3bb2ddd86bcc0544af59b764dd961fa, type: 3}
       propertyPath: _actorScriptable
       value: 
       objectReference: {fileID: 11400000, guid: db2b067c492f63d4698d6d90e5b23199, type: 2}
@@ -91,6 +99,10 @@ PrefabInstance:
     - target: {fileID: 6162639131189426590, guid: f3bb2ddd86bcc0544af59b764dd961fa, type: 3}
       propertyPath: m_WasSpriteAssigned
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7622839753614861741, guid: f3bb2ddd86bcc0544af59b764dd961fa, type: 3}
+      propertyPath: guid
+      value: experiment_2539b0d2-75d6-47cc-a777-0c8b306de127
       objectReference: {fileID: 0}
     - target: {fileID: 7904725563872449456, guid: f3bb2ddd86bcc0544af59b764dd961fa, type: 3}
       propertyPath: m_Name

@@ -44,6 +44,8 @@ public class GUID : MonoBehaviour
 
 	public string guid;
 
+	public int basicPrefabIndex;
+
 	private async void Start()
 	{
 		if (System.String.IsNullOrEmpty(guid))
@@ -74,7 +76,7 @@ public class GUID : MonoBehaviour
 				}
 				else if (gameObject.GetComponent<PickupInterface>() != null)
 				{
-					newWatcher.idType = LevelManager.idType.PICKUP;
+					newWatcher.idType = LevelManager.idType.BASIC;
 				}
 				else if (gameObject.GetComponentInChildren<PickupBox>() != null)
 				{
@@ -90,7 +92,11 @@ public class GUID : MonoBehaviour
 				}
 				else if (gameObject.GetComponentInChildren<TutorialSceneLoader>() != null)
 				{
-					newWatcher.idType = LevelManager.idType.TUTORIAL;
+					newWatcher.idType = LevelManager.idType.BASIC;
+				}
+				else if (gameObject.GetComponentInChildren<Corpse>() != null)
+				{
+					newWatcher.idType = LevelManager.idType.BASIC;
 				}
 				else
 				{
