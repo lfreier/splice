@@ -7,6 +7,8 @@ public class PickupBox : MonoBehaviour
 	public Collider2D pickupCollider;
 	public int pickupSendForce = 700;
 
+	public int pickupSendTorque = 400;
+
 	private int pickupIndex;
 
 	private void Start()
@@ -65,7 +67,7 @@ public class PickupBox : MonoBehaviour
 					Vector2 pushDirection = Vector2.ClampMagnitude((-transform.up) + (transform.right * Random.Range(0, 1F)) + (transform.right * Random.Range(-1F, 0)), 1);
 					Debug.Log("Push direction: " + pushDirection);
 					body.AddForce(pickupSendForce * pushDirection);
-					body.AddTorque(Random.Range(-20F, 20F));
+					body.AddTorque(Random.Range(-pickupSendTorque, pickupSendTorque));
 					pickupHolder = null;
 				}
 			}

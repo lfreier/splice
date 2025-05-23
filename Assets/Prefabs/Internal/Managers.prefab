@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 4654381731306417788}
   - component: {fileID: 4511755820635981177}
   - component: {fileID: 9086022366862896558}
+  - component: {fileID: 3122103705114267649}
   m_Layer: 0
   m_Name: Managers
   m_TagString: Untagged
@@ -51,40 +52,8 @@ MonoBehaviour:
   audioManager: {fileID: 4511755820635981177}
   effectManager: {fileID: 4654381731306417788}
   levelManager: {fileID: 9086022366862896558}
+  prefabManager: {fileID: 3122103705114267649}
   loadingHandler: {fileID: 0}
-  basicPrefabs:
-  - {fileID: 2911627580042638205, guid: 9bdd8350a0e30434eaadda3861d39b89, type: 3}
-  - {fileID: 5154943660721874716, guid: 0832ca598afa0004e9784aea94e4f138, type: 3}
-  - {fileID: 5154943660721874716, guid: 114b1030758b8c44083100e773e1b895, type: 3}
-  - {fileID: 5154943660721874716, guid: c4183d0f9c5e8c048affea0841ae0d21, type: 3}
-  - {fileID: 5154943660721874716, guid: 16aded05e0d6fd34aa3f4d6e93b96eaa, type: 3}
-  - {fileID: 5154943660721874716, guid: bc27f21ea7cd69f409408371d5e0ebb7, type: 3}
-  - {fileID: 5154943660721874716, guid: 11609515e407e6848a37ae2e3540ea2d, type: 3}
-  - {fileID: 5154943660721874716, guid: e0be5d8d69acd2a4786385a0ff5cf35a, type: 3}
-  - {fileID: 5154943660721874716, guid: 04de3c618a3e3814d8e15c1fa758ceeb, type: 3}
-  - {fileID: 4718064208568494967, guid: 4180ff820cbdc364dad7f89087822eec, type: 3}
-  - {fileID: 608380240518538002, guid: 16367c997bdbd5e44ae7a5c563f8c28a, type: 3}
-  - {fileID: 7759880110565179527, guid: 5faef6d126fd21c4e924a1c7c05e34bc, type: 3}
-  - {fileID: 7128427971435259476, guid: 804662000644b26429c1c15c0bd5b84f, type: 3}
-  - {fileID: 7011714338143177268, guid: 9ef8a21d6c357f7458ad312c5fc21997, type: 3}
-  - {fileID: 7011714338143177268, guid: 80474d91634d572439a3916ff6fa4649, type: 3}
-  - {fileID: 2817554636129167509, guid: 582acd8aa4deb5444863988866b6f9b0, type: 3}
-  - {fileID: 5154943660721874716, guid: 942159b155f5d1e4997260b9f85b6bf9, type: 3}
-  weaponPrefabs:
-  - {fileID: 1192526033329145194, guid: 667ae61a41d03f34bb1259307cf06291, type: 3}
-  - {fileID: 1192526033329145194, guid: e68bd7edcb08749459b30946014ecd34, type: 3}
-  - {fileID: 1192526033329145194, guid: 95f4e5b3291ade544a04604f4830459e, type: 3}
-  - {fileID: 1192526033329145194, guid: a1116bc9fda44684eb2ea2c225fe5c2b, type: 3}
-  - {fileID: 1192526033329145194, guid: 4b343bd6d0e62c94da28557b01dd8918, type: 3}
-  zombiePrefabs:
-  - {fileID: 6203879125526305423, guid: 9c960d4f03b2281428f20639255b8420, type: 3}
-  clickPrefab: {fileID: 6059981090291065645, guid: 95ed8de2f7dd80a47ab648332df12f07, type: 3}
-  mutPBeast: {fileID: 3279388766364700584, guid: 60c128a3aea613c438eeb70f8c97eee7, type: 3}
-  mutPBladeWing: {fileID: 869377620814106126, guid: f3a8bd5cc9868d34daeeca1cb142e3c4, type: 3}
-  mutPLimb: {fileID: 4878587490104917525, guid: c1e65fecc886f9b49b05444180df6926, type: 3}
-  mutPSpore: {fileID: 869377620814106126, guid: b9e71e13dd89afd4081d2401b1c1e187, type: 3}
-  weapPBladeArm: {fileID: 1192526033329145194, guid: 94cfaef694721d248982433f4c181c99, type: 3}
-  weapPFist: {fileID: 1192526033329145194, guid: 3111e231717f3ba4fb9b5fb229a2e6d3, type: 3}
   actorLayers:
     serializedVersion: 2
     m_Bits: 256
@@ -93,23 +62,24 @@ MonoBehaviour:
     m_Bits: 64
   findWeaponLayers:
     serializedVersion: 2
-    m_Bits: 18496
+    m_Bits: 542784
   lineOfSightLayers:
     serializedVersion: 2
     m_Bits: 16704
   excludeCollisionLayers:
     serializedVersion: 2
-    m_Bits: 123264
+    m_Bits: 647552
   soundLayer:
     serializedVersion: 2
     m_Bits: 262144
   unwalkableLayers:
     serializedVersion: 2
-    m_Bits: 24640
+    m_Bits: 548928
   pickupMaxScriptable: {fileID: 11400000, guid: a26d4bab1861ef84f8bf71a966c96f8c, type: 2}
   maxPickups: 0000000000000000010000000100000001000000
   isLoaded: 0
   currentScene: 0
+  currentSaveSlot: 0
 --- !u!114 &4654381731306417788
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -209,6 +179,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gridPosition: {x: 0, y: 0, z: 0}
   currLevelData: {fileID: 0}
+  stationShowMut: 0
   playerPrefab: {fileID: 4454810878759323063, guid: ade1a49a0d089d14ab68de3dd80ad968, type: 3}
   lastSavedSpawn: 0
   lastSavedLevelIndex: 0
@@ -237,5 +208,109 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 33517daee327eb141a36085c4322391c, type: 2}
   - {fileID: 11400000, guid: f5f5a14ed8c598c4286ea77f7b686839, type: 2}
   - {fileID: 11400000, guid: c7d0145f0136a28469f05a541c12f099, type: 2}
-  elevatorAvailable: 00000000000000
+  elevatorAvailable: 00000000000000000000000000000000000000000000000000000000
+  currSaveData:
+    sceneIndex: 0
+    actorTable:
+      keys: []
+      values: []
+    doorTable:
+      keys: []
+      values: []
+    weaponTable:
+      keys: []
+      values: []
+    pickupBoxTable:
+      keys: []
+      values: []
+    saveTable:
+      keys: []
+      values: []
+    basicsTable:
+      keys: []
+      values: []
+    elevatorAvailable: 00000000
+  currPlayerSaveData:
+    savedMutationData:
+      mutationBar: 0
+      maxMutationBar: 100
+    playerData:
+      armor: 0
+      health: 0
+      maxHealth: 0
+      shield: 0
+      maxSpeed: 0
+      moveSpeed: 0
+      acceleration: 0
+      deceleration: 0
+      hearingRange: 0
+      sightAngle: 0
+      sightRange: 0
+      frightenedDistance: 0
+    savedKeycardCount: 00000000000000000000000000000000
+    savedUsableItemCount: 000000000000000000000000
+    savedUsableItemSprite:
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    savedActiveItemIndex: -1
+    mutationPrefabList: 
+    savedCells: 0
+    equippedWeaponPrefab: -1
+    limbGrabbedObjectPrefab: -1
+    weaponCharge: 0
+    weaponDurability: 0
   camHandler: {fileID: 0}
+--- !u!114 &3122103705114267649
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7906487538385718882}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 159a24809863a2d428f4f50829e06fe8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  basicPrefabs:
+  - {fileID: 2911627580042638205, guid: 9bdd8350a0e30434eaadda3861d39b89, type: 3}
+  - {fileID: 5154943660721874716, guid: 0832ca598afa0004e9784aea94e4f138, type: 3}
+  - {fileID: 5154943660721874716, guid: 114b1030758b8c44083100e773e1b895, type: 3}
+  - {fileID: 5154943660721874716, guid: c4183d0f9c5e8c048affea0841ae0d21, type: 3}
+  - {fileID: 5154943660721874716, guid: 16aded05e0d6fd34aa3f4d6e93b96eaa, type: 3}
+  - {fileID: 5154943660721874716, guid: bc27f21ea7cd69f409408371d5e0ebb7, type: 3}
+  - {fileID: 5154943660721874716, guid: 11609515e407e6848a37ae2e3540ea2d, type: 3}
+  - {fileID: 5154943660721874716, guid: e0be5d8d69acd2a4786385a0ff5cf35a, type: 3}
+  - {fileID: 5154943660721874716, guid: 04de3c618a3e3814d8e15c1fa758ceeb, type: 3}
+  - {fileID: 4718064208568494967, guid: 4180ff820cbdc364dad7f89087822eec, type: 3}
+  - {fileID: 608380240518538002, guid: 16367c997bdbd5e44ae7a5c563f8c28a, type: 3}
+  - {fileID: 7759880110565179527, guid: 5faef6d126fd21c4e924a1c7c05e34bc, type: 3}
+  - {fileID: 7128427971435259476, guid: 804662000644b26429c1c15c0bd5b84f, type: 3}
+  - {fileID: 7011714338143177268, guid: 9ef8a21d6c357f7458ad312c5fc21997, type: 3}
+  - {fileID: 7011714338143177268, guid: 80474d91634d572439a3916ff6fa4649, type: 3}
+  - {fileID: 2817554636129167509, guid: 582acd8aa4deb5444863988866b6f9b0, type: 3}
+  - {fileID: 8516706236069428805, guid: aeccad39213565a4fa09c695bf303d8e, type: 3}
+  - {fileID: 8516706236069428805, guid: df8be071e55c233419871cedfa846ce5, type: 3}
+  - {fileID: 8516706236069428805, guid: 4158f5c6dbfc92c4e9b4fe6f1641691b, type: 3}
+  - {fileID: 2248485062928932828, guid: c8bd0daff5845a247b4c1be2f394b597, type: 3}
+  - {fileID: 3301648032349487571, guid: 33e90329716dc92428f06e25edc0f6e5, type: 3}
+  - {fileID: 7205356695832697737, guid: 033250931ea5b1144987d9bb0c46d192, type: 3}
+  - {fileID: 5485374406139878651, guid: a52b7671e46ffea4180a2e0715f07bf6, type: 3}
+  - {fileID: 67683403601192169, guid: 250cd1389fe9d2c4baf24e8fcabbc860, type: 3}
+  - {fileID: 67683403601192169, guid: 000025519a21dfb45bea7c033397ac82, type: 3}
+  - {fileID: 2248485062928932828, guid: a64550db68892374f900a5a006538169, type: 3}
+  weaponPrefabs:
+  - {fileID: 1192526033329145194, guid: 667ae61a41d03f34bb1259307cf06291, type: 3}
+  - {fileID: 1192526033329145194, guid: e68bd7edcb08749459b30946014ecd34, type: 3}
+  - {fileID: 1192526033329145194, guid: 95f4e5b3291ade544a04604f4830459e, type: 3}
+  - {fileID: 1192526033329145194, guid: a1116bc9fda44684eb2ea2c225fe5c2b, type: 3}
+  - {fileID: 1192526033329145194, guid: 4b343bd6d0e62c94da28557b01dd8918, type: 3}
+  zombiePrefabs:
+  - {fileID: 6203879125526305423, guid: 9c960d4f03b2281428f20639255b8420, type: 3}
+  clickPrefab: {fileID: 6059981090291065645, guid: 95ed8de2f7dd80a47ab648332df12f07, type: 3}
+  mutPBeast: {fileID: 3279388766364700584, guid: 60c128a3aea613c438eeb70f8c97eee7, type: 3}
+  mutPBladeWing: {fileID: 869377620814106126, guid: f3a8bd5cc9868d34daeeca1cb142e3c4, type: 3}
+  mutPLimb: {fileID: 4878587490104917525, guid: c1e65fecc886f9b49b05444180df6926, type: 3}
+  mutPSpore: {fileID: 869377620814106126, guid: b9e71e13dd89afd4081d2401b1c1e187, type: 3}
+  weapPFist: {fileID: 1192526033329145194, guid: 3111e231717f3ba4fb9b5fb229a2e6d3, type: 3}

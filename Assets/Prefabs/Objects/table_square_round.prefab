@@ -111,6 +111,7 @@ MonoBehaviour:
   beingHeld: 0
   startingLayer: 0
   knockOverDrag: 3
+  basicPrefabIndex: 25
 --- !u!50 &7568629544581041799
 Rigidbody2D:
   serializedVersion: 4

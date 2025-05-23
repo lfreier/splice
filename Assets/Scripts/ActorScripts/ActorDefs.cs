@@ -20,6 +20,8 @@ public class ActorDefs
 
 	public static float MAX_PARRY_FORCE= 1000F;
 	public static float MAX_HIT_FORCE = 1500F;
+
+	[System.Serializable]
 	public struct ActorData
 	{
 		public float armor;

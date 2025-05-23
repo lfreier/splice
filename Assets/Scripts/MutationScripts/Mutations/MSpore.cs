@@ -28,7 +28,7 @@ public class MSpore : MonoBehaviour, MutationInterface
 	private void abilityInputPressed()
 	{
 		//TODO: play animation
-		RaycastHit2D[] corpses = Physics2D.CircleCastAll(pInteract.interactCollider.transform.position, ActorDefs.GLOBAL_PICKUP_RADIUS, Vector2.zero, ActorDefs.GLOBAL_PICKUP_RADIUS, LayerMask.NameToLayer(ActorDefs.corpseLayer));
+		RaycastHit2D[] corpses = Physics2D.CircleCastAll(pInteract.interactCollider.bounds.center, ActorDefs.GLOBAL_PICKUP_RADIUS, Vector2.zero, ActorDefs.GLOBAL_PICKUP_RADIUS, LayerMask.GetMask(ActorDefs.corpseLayer));
 		if (corpses == null)
 		{
 			return;
@@ -49,7 +49,7 @@ public class MSpore : MonoBehaviour, MutationInterface
 	private void abilitySecondaryPressed()
 	{
 		Vector2 pointerLoc = pInputs.pointerPos();
-		GameObject click = Instantiate(wielder.gameManager.clickPrefab, pointerLoc, Quaternion.identity, null);
+		GameObject click = Instantiate(wielder.gameManager.prefabManager.clickPrefab, pointerLoc, Quaternion.identity, null);
 
 		for (int i = 0; i < summons.Count; i++)
 		{
@@ -70,9 +70,9 @@ public class MSpore : MonoBehaviour, MutationInterface
 
 	public bool raiseZombie(Corpse corpse)
 	{
-		if (corpse != null && corpse.corpseSprite != null && wielder.gameManager.zombiePrefabs.Length > (int)corpse.type)
+		if (corpse != null && corpse.corpseSprite != null && wielder.gameManager.prefabManager.zombiePrefabs.Length > (int)corpse.type)
 		{
-			GameObject newZombie = Instantiate(wielder.gameManager.zombiePrefabs[(int)corpse.type], corpse.transform.position, corpse.transform.rotation, null);
+			GameObject newZombie = Instantiate(wielder.gameManager.prefabManager.zombiePrefabs[(int)corpse.type], corpse.transform.position, corpse.transform.rotation, null);
 			if (newZombie != null)
 			{
 				Destroy(corpse.corpseSprite);
@@ -116,7 +116,7 @@ public class MSpore : MonoBehaviour, MutationInterface
 		pInteract = wielder.gameObject.GetComponentInChildren<PlayerInteract>();
 		if (pInteract != null && pInteract.interactCollider != null)
 		{
-			pInteract.interactCollider.includeLayers |= (1 << LayerMask.NameToLayer("Corpse"));
+			pInteract.interactCollider.includeLayers |= (1 << LayerMask.NameToLayer(ActorDefs.corpseLayer));
 		}
 	}
 

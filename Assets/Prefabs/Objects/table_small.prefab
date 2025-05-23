@@ -174,3 +174,4 @@ MonoBehaviour:
   beingHeld: 0
   startingLayer: 0
   knockOverDrag: 3
+  basicPrefabIndex: 19

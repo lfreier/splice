@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 2401958165635604429}
   - component: {fileID: 2737905760543029366}
   - component: {fileID: 4294341438885202313}
-  m_Layer: 13
+  m_Layer: 19
   m_Name: shelves_industrial2
   m_TagString: Untagged
   m_Icon: {fileID: 0}

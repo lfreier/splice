@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 12485bce966292c44ae90699429e6b84, type: 3}
-  m_Name: table_round
+  m_Name: obstacle_heavy
   m_EditorClassIdentifier: 
   <actorPushForce>k__BackingField: 5
   <collisionDamageThreshold>k__BackingField: 15

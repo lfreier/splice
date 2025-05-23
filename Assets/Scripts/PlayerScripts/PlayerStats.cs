@@ -25,10 +25,12 @@ public class PlayerStats
 	public int petriCellAmount = 0;
 	private MutationDefs.MutationData mutationData;
 	private MutationDefs.MutationData savedMutationData;
+
 	private ActorDefs.ActorData playerData;
-	
+
 	private GameObject[] mutationList;
-	public GameObject weaponEquipped;
+	public GameObject equippedWeaponObject;
+	public BasicWeapon equippedWeapon;
 	public GameObject limbGrabbedObject;
 	public int weaponCharge;
 
@@ -43,9 +45,6 @@ public class PlayerStats
 		mutationData = new MutationDefs.MutationData();
 		mutationData.maxMutationBar = 100;
 		mutationData.mutationBar = 0;
-		savedMutationData = new MutationDefs.MutationData();
-		savedMutationData.maxMutationBar = 100;
-		savedMutationData.mutationBar = 0;
 	}
 
 	public bool addItem(PickupInterface pickup)
@@ -184,16 +183,16 @@ public class PlayerStats
 			switch (mut.getId())
 			{
 				case "MBeast":
-					mutPrefab = player.instantiateActive(gameManager.mutPBeast);
+					mutPrefab = player.instantiateActive(gameManager.prefabManager.mutPBeast);
 					break;
 				case "MBladeWing":
-					mutPrefab = player.instantiateActive(gameManager.mutPBladeWing);
+					mutPrefab = player.instantiateActive(gameManager.prefabManager.mutPBladeWing);
 					break;
 				case "MLimb":
-					mutPrefab = player.instantiateActive(gameManager.mutPLimb);
+					mutPrefab = player.instantiateActive(gameManager.prefabManager.mutPLimb);
 					break;
 				case "MSpore":
-					mutPrefab = player.instantiateActive(gameManager.mutPSpore);
+					mutPrefab = player.instantiateActive(gameManager.prefabManager.mutPSpore);
 					break;
 				default:
 					return;
@@ -298,9 +297,9 @@ public class PlayerStats
 			}
 		}
 
-		if (weaponEquipped != null)
+		if (equippedWeaponObject != null)
 		{
-			GameObject spawnedWeapon = GameObject.Instantiate(weaponEquipped);
+			GameObject spawnedWeapon = GameObject.Instantiate(equippedWeaponObject);
 			if (spawnedWeapon != null)
 			{
 				spawnedWeapon.SetActive(true);
@@ -358,12 +357,17 @@ public class PlayerStats
 
 		if (!playerActor.isUnarmed())
 		{
-			weaponEquipped = GameObject.Instantiate(playerActor.getEquippedWeapon());
-			if (weaponEquipped != null)
+			equippedWeaponObject = GameObject.Instantiate(playerActor.getEquippedWeapon());
+			if (equippedWeaponObject != null)
 			{
-				weaponEquipped.SetActive(false);
-				weaponEquipped.transform.SetParent(gameManager.gameObject.transform);
-				SwingBatteryWeapon swing = weaponEquipped.GetComponentInChildren<SwingBatteryWeapon>();
+				equippedWeaponObject.SetActive(false);
+				equippedWeaponObject.transform.SetParent(gameManager.gameObject.transform);
+				BasicWeapon weap = equippedWeaponObject.GetComponentInChildren<BasicWeapon>();
+				if (weap != null)
+				{
+					equippedWeapon = weap;
+				}
+				SwingBatteryWeapon swing = equippedWeaponObject.GetComponentInChildren<SwingBatteryWeapon>();
 				if (swing != null)
 				{
 					weaponCharge = swing.filledBatteries;
@@ -373,7 +377,70 @@ public class PlayerStats
 		}
 		else
 		{
-			weaponEquipped = null;
+			equippedWeaponObject = null;
+		}
+	}
+
+	public void copySavedPlayerData(PlayerSaveData data)
+	{
+		if (gameManager == null)
+		{
+			gameManager = GameManager.Instance;
+		}
+
+		data.playerData = ActorDefs.copyData(playerData);
+
+		data.savedMutationData.maxMutationBar = savedMutationData.maxMutationBar;
+		data.savedMutationData.mutationBar = savedMutationData.mutationBar;
+
+		data.savedCells = savedCells;
+
+		savedKeycardCount.CopyTo(data.savedKeycardCount, 0);
+		savedUsableItemCount.CopyTo(data.savedUsableItemCount, 0);
+		savedUsableItemSprite.CopyTo(data.savedUsableItemSprite, 0);
+		data.savedActiveItemIndex = savedActiveItemIndex;
+
+		data.mutationPrefabList = new int[mutationList.Length];
+		int i = 0;
+		foreach (GameObject mutObj in mutationList)
+		{
+			MutationInterface mut = mutObj.GetComponentInChildren<MutationInterface>();
+			if (mut != null)
+			{
+				switch (mut.getId())
+				{
+					case "MBeast":
+						data.mutationPrefabList[i] = (int)mutationType.mBeast;
+						break;
+					case "MLimb":
+						data.mutationPrefabList[i] = (int)mutationType.mLimb;
+						break;
+					case "MBladeWing":
+						data.mutationPrefabList[i] = (int)mutationType.mWing;
+						break;
+					case "MSpore":
+						data.mutationPrefabList[i] = (int)mutationType.mSpore;
+						break;
+					default:
+						return;
+				}
+			}
+			i++;
+		}
+
+		if (limbGrabbedObject != null)
+		{
+			Obstacle obs = limbGrabbedObject.GetComponentInChildren<Obstacle>();
+			if (obs != null)
+			{
+				data.limbGrabbedObjectPrefab = obs.basicPrefabIndex;
+			}
+		}
+		if (equippedWeapon != null)
+		{
+			data.equippedWeaponPrefab = (int)equippedWeapon._weaponScriptable.prefabIndex;
+			data.weaponCharge = weaponCharge;
+			data.weaponDurability = equippedWeapon.durability;
 		}
 	}
 

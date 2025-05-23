@@ -26,6 +26,8 @@ public class Obstacle : MonoBehaviour
 
 	public float knockOverDrag = 3F;
 
+	public int basicPrefabIndex;
+
 	// Use this for initialization
 	void Start()
 	{

@@ -183,7 +183,14 @@ public abstract class BasicWeapon : MonoBehaviour, WeaponInterface
 				gameManager.audioManager.soundHash.TryGetValue(_weaponScriptable.soundBreak.name, out toPlay);
 				if (toPlay != null)
 				{
-					actorWielder.actorAudioSource.PlayOneShot(toPlay);
+					if (actorWielder == null)
+					{
+						gameManager.playerStats.player.actorAudioSource.PlayOneShot(toPlay);
+					}
+					else
+					{
+						actorWielder.actorAudioSource.PlayOneShot(toPlay);
+					}
 				}
 			}
 			Debug.Log("Weapon broke: " + this.name);

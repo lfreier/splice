@@ -133,7 +133,7 @@ public class WeaponPhysics : MonoBehaviour
 				gameObject.layer = LayerMask.NameToLayer(GameManager.OBJECT_LAYER);
 				throwCollider.enabled = false;
 				pickupCollider.enabled = true;
-				Collider2D[] hits = Physics2D.OverlapPointAll(throwCollider.attachedRigidbody.transform.position, LayerMask.NameToLayer("ObjectMid"));
+				Collider2D[] hits = Physics2D.OverlapPointAll(throwCollider.attachedRigidbody.transform.position, LayerMask.GetMask("ObjectMid"));
 				if (hits == null || hits.Length <= 0)
 				{
 					WeaponDefs.setObjectLayer(WeaponDefs.SORT_LAYER_GROUND, topObject);

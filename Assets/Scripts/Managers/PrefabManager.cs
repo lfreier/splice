@@ -1,0 +1,20 @@
+﻿using System.Collections;
+using UnityEngine;
+
+public class PrefabManager : MonoBehaviour
+{
+	public GameObject[] basicPrefabs;
+
+	public GameObject[] weaponPrefabs;
+
+	public GameObject[] zombiePrefabs;
+
+	public GameObject clickPrefab;
+
+	public GameObject mutPBeast;
+	public GameObject mutPBladeWing;
+	public GameObject mutPLimb;
+	public GameObject mutPSpore;
+
+	public GameObject weapPFist;
+}

@@ -103,6 +103,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _obstacleScriptable: {fileID: 11400000, guid: a2811ce4e4b248345876f991c2424669, type: 2}
   obstacleBody: {fileID: 5488563473241676063}
+  spriteRenderer: {fileID: 0}
+  secondSprite: {fileID: 0}
+  knockVelocityThreshold: 5
+  angVelocityThreshold: 20
+  durability: 0
+  beingHeld: 0
+  startingLayer: 0
+  knockOverDrag: 3
+  basicPrefabIndex: 23
 --- !u!50 &5488563473241676063
 Rigidbody2D:
   serializedVersion: 4

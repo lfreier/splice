@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
@@ -241,7 +242,11 @@ public class MenuHandler : MonoBehaviour
 		showLoading = true;
 		gameManager.levelManager.guidTable.Clear();
 		await gameManager.loadingHandler.LoadSceneGroup(hudScene, showLoading, false);
-		nextScene = gameManager.currentScene;
+		nextScene = gameManager.levelManager.lastSavedLevelIndex;
+
+		gameManager.saveManager.loadAllData();
+		gameManager.saveManager.loadPlayerDataFromDisk(gameManager.currentSaveSlot);
+
 		buttonsLocked = false;
 		startGame(true);
 	}
@@ -252,6 +257,15 @@ public class MenuHandler : MonoBehaviour
 		nextScene = gManager.currentScene;
 		Time.timeScale = 1;
 		fadeOutScene();
+	}
+
+	public void startGameFromSaveSlot(int saveSlot)
+	{
+		GameManager gManager = GameManager.Instance;
+		gManager.currentSaveSlot = saveSlot;
+		gManager.saveManager.loadAllData();
+		gManager.saveManager.loadPlayerDataFromDisk(saveSlot);
+		startGame(false);
 	}
 
 	public async void startGame(bool reset)
@@ -265,12 +279,15 @@ public class MenuHandler : MonoBehaviour
 		gameManager = GameManager.Instance;
 		Time.timeScale = 1;
 		int[] nextLevel = { nextScene };
+
 		gameManager.loadingHandler.reloadHUD = true;
 		gameManager.loadingHandler.resetPlayerData = !reset;
 		gameManager.levelManager.guidTable.Clear();
 		await gameManager.loadingHandler.LoadSceneGroup(nextLevel, showLoading, false);
 		showLoading = false;
-		gameManager.resetLevel();
+
+		gameManager.playerStats.resetCounts();
+		await gameManager.levelManager.startNewLevel((int)gameManager.levelManager.lastSavedSpawn, (int)gameManager.levelManager.lastSavedLevelIndex);
 
 		gameManager.currentScene = nextScene;
 

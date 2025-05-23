@@ -22,6 +22,7 @@ public static class MutationDefs
 
 	public static short MAX_SLOTS = 2;
 
+	[System.Serializable]
 	public struct MutationData
 	{
 		public int mutationBar;

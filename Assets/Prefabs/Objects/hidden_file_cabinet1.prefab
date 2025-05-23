@@ -90,6 +90,10 @@ PrefabInstance:
       propertyPath: guid
       value: hidden_file_cabinet1_7e6a7991-8bf2-45e0-ab17-b63489662e1a
       objectReference: {fileID: 0}
+    - target: {fileID: 490808859570672265, guid: 33e90329716dc92428f06e25edc0f6e5, type: 3}
+      propertyPath: basicPrefabIndex
+      value: 21
+      objectReference: {fileID: 0}
     - target: {fileID: 708756412421474848, guid: 33e90329716dc92428f06e25edc0f6e5, type: 3}
       propertyPath: m_LocalPosition.x
       value: -31.4375
@@ -145,6 +149,10 @@ PrefabInstance:
     - target: {fileID: 4294341438885202313, guid: 33e90329716dc92428f06e25edc0f6e5, type: 3}
       propertyPath: m_Offset.x
       value: 1.0625
+      objectReference: {fileID: 0}
+    - target: {fileID: 5786573321178543111, guid: 33e90329716dc92428f06e25edc0f6e5, type: 3}
+      propertyPath: pickupSendTorque
+      value: 400
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

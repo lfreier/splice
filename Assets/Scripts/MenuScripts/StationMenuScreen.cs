@@ -37,7 +37,7 @@ public class StationMenuScreen : StationScreen
 		{
 			levelManager.lastSavedSpawn = station.playerSpawnIndex;
 			levelManager.saveStationUses[(int)station.saveStationNumIndex]--;
-			gameManager.save(station.playerActor);
+			gameManager.save(station.playerActor, gameManager.currentScene);
 			levelManager.lastSavedAtStation = true;
 
 			for (int j = 0; j < SceneManager.sceneCount; j++)

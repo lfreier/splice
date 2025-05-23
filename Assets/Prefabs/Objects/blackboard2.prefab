@@ -111,6 +111,7 @@ MonoBehaviour:
   beingHeld: 0
   startingLayer: 0
   knockOverDrag: 3
+  basicPrefabIndex: 24
 --- !u!50 &5488563473241676063
 Rigidbody2D:
   serializedVersion: 4
@@ -175,7 +176,7 @@ BoxCollider2D:
   m_Offset: {x: 0, y: 0.1}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
+    pivot: {x: 0.5, y: 0}
     oldSize: {x: 2, y: 0.125}
     newSize: {x: 4, y: 0.25}
     adaptiveTilingThreshold: 0.5

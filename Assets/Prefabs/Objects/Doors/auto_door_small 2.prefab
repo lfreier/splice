@@ -11,10 +11,10 @@ GameObject:
   - component: {fileID: 8640932896577420383}
   - component: {fileID: 4977772254644910428}
   - component: {fileID: 7042054641042475375}
-  - component: {fileID: -3852587581707897694}
-  - component: {fileID: -5347489193445295576}
+  - component: {fileID: -6027405149353618657}
+  - component: {fileID: 1903478245221492862}
   m_Layer: 31
-  m_Name: auto_door_small 1
+  m_Name: auto_door_small 2
   m_TagString: WallMetal
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -60,7 +60,7 @@ MonoBehaviour:
   doorOpenSound: {fileID: 8300000, guid: 476020a61a2d6c74f9603fe2db63bfd1, type: 3}
   doorCloseSound: {fileID: 8300000, guid: e6f6ffe36f325ca4abce64eed89f5918, type: 3}
   doorUnlockSound: {fileID: 8300000, guid: 326b5e0372a1b524981c314e98186593, type: 3}
-  doorAudioPlayer: {fileID: -5347489193445295576}
+  doorAudioPlayer: {fileID: 1903478245221492862}
 --- !u!95 &7042054641042475375
 Animator:
   serializedVersion: 7
@@ -83,7 +83,7 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &-3852587581707897694
+--- !u!114 &-6027405149353618657
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -95,8 +95,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bf336abf081bc2246bab9dfaca64e293, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  guid: auto_door_small 1_5b649280-d4cf-43f5-ab60-82328e3e276f
---- !u!82 &-5347489193445295576
+  guid: auto_door_small_e42544f6-daae-471c-9f42-d0a8285c0212
+--- !u!82 &1903478245221492862
 AudioSource:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -203,8 +203,8 @@ GameObject:
   m_Component:
   - component: {fileID: 8390505994285524847}
   - component: {fileID: 5135885295816266729}
-  - component: {fileID: 1147737300489715531}
-  - component: {fileID: 2695481239674465673}
+  - component: {fileID: 591067210886379295}
+  - component: {fileID: 7920162234325235070}
   m_Layer: 11
   m_Name: interact
   m_TagString: Untagged
@@ -273,7 +273,7 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1.5, y: 0.5625}
   m_EdgeRadius: 0
---- !u!114 &1147737300489715531
+--- !u!114 &591067210886379295
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -286,12 +286,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pickupGlow: {fileID: 0}
-  pickupHighlight: {fileID: 2695481239674465673}
+  pickupHighlight: {fileID: 7920162234325235070}
   onlyHighight: 1
   glowTimer: 0.7
   glowIncTimer: 0.1
   glowChange: 0.1
---- !u!212 &2695481239674465673
+--- !u!212 &7920162234325235070
 SpriteRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

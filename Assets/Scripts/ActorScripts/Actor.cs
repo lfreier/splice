@@ -916,7 +916,7 @@ public class Actor : MonoBehaviour
 
 	public void equipEmpty()
 	{
-		GameObject fistPrefab = instantiateWeapon(gameManager.weapPFist);
+		GameObject fistPrefab = instantiateWeapon(gameManager.prefabManager.weapPFist);
 
 		equip(fistPrefab.transform.gameObject);
 	}

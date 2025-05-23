@@ -36,7 +36,7 @@ public class ElevatorMenuScene : StationScreen
 		elevatorSpawnList = new List<PlayerSpawnScriptable>();
 		for (int i = 1; i < gameManager.levelManager.elevatorAvailable.Length && i < maxElevatorsShown; i ++)
 		{
-			if (!gameManager.levelManager.elevatorAvailable[i])
+			if (gameManager.levelManager.elevatorAvailable[i] <= 0)
 			{
 				continue;
 			}
@@ -56,7 +56,7 @@ public class ElevatorMenuScene : StationScreen
 					TextMeshProUGUI text = newButton.GetComponentInChildren<TextMeshProUGUI>();
 					if (text != null)
 					{
-						if (manager.elevator != null && manager.elevator.nextSpawn != null && i == (int)manager.elevator.nextSpawn.elevatorIndex)
+						if (manager.elevator != null && manager.elevator.nextSpawn != null && i == (int)manager.elevator.nextSpawn.elevatorIndex && gameManager.levelManager.elevatorAvailable[i] == 1)
 						{
 							text.text = "*" + gameManager.levelManager.elevatorSpawns[i].floorName + "*";
 						}
@@ -75,7 +75,8 @@ public class ElevatorMenuScene : StationScreen
 
 	public void moveToFloor(GameObject button)
 	{
-		for (int i = 0; i < gameManager.levelManager.elevatorAvailable.Length && i < maxElevatorsShown; i++)
+		LevelManager levelManager = gameManager.levelManager;
+		for (int i = 0; i < levelManager.elevatorAvailable.Length && i < maxElevatorsShown; i++)
 		{
 			if (i >= buttonList.Count)
 			{
@@ -88,6 +89,22 @@ public class ElevatorMenuScene : StationScreen
 					menuManager.exitMenu();
 					break;
 				}
+				
+				/* save when moving to the next floor for the first time */
+				if (levelManager.elevatorAvailable[(int)elevatorSpawnList[i].elevatorIndex] == 1)
+				{
+					levelManager.lastSavedSpawn = elevatorSpawnList[i].spawnIndex;
+					levelManager.lastSavedAtStation = false;
+
+					/* save current level and but set last saved level to next */
+					gameManager.save(menuManager.elevator.playerActor, (int)elevatorSpawnList[i].sceneIndex);
+
+					if (menuManager.elevator.isExitElevator)
+					{
+						levelManager.elevatorAvailable[(int)elevatorSpawnList[i].elevatorIndex] = 2;
+					}
+				}
+
 				gameManager.nextLevel(menuManager.elevator.playerActor, elevatorSpawnList[i].sceneIndex, (int)elevatorSpawnList[i].spawnIndex);
 				break;
 			}

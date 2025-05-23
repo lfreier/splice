@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 1875987824677127388}
   - component: {fileID: 6299431877498410997}
   m_Layer: 14
-  m_Name: glass_door
+  m_Name: glass_door_sprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -97,7 +97,7 @@ GameObject:
   - component: {fileID: 1781767798155795011}
   - component: {fileID: 6227489825252855774}
   m_Layer: 14
-  m_Name: glass_door1 (1)
+  m_Name: auto_door1 (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -260,6 +260,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   guid: glass_door_a1f23506-813e-4c42-851c-61900b3a774f
+  basicPrefabIndex: 0
 --- !u!1 &6108448246285527577
 GameObject:
   m_ObjectHideFlags: 0
@@ -423,7 +424,7 @@ GameObject:
   - component: {fileID: 8079807222369471063}
   - component: {fileID: 3966517857385333273}
   m_Layer: 14
-  m_Name: glass_door
+  m_Name: glass_door_sprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -595,7 +596,7 @@ GameObject:
   - component: {fileID: 5393002915436178959}
   - component: {fileID: 3858416088514600466}
   m_Layer: 14
-  m_Name: glass_door1
+  m_Name: auto_door1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

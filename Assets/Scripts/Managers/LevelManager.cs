@@ -20,6 +20,7 @@ public class LevelManager : MonoBehaviour
 		SAVE = 6
 	}
 
+	[System.Serializable]
 	public struct BasicSaveData
 	{
 		public float xPosition;
@@ -30,6 +31,7 @@ public class LevelManager : MonoBehaviour
 		public int prefabIndex;
 	};
 
+	[System.Serializable]
 	public struct ActorSaveData
 	{
 		public ActorData actorData;
@@ -38,6 +40,7 @@ public class LevelManager : MonoBehaviour
 		public int idlePathIndex;
 	};
 
+	[System.Serializable]
 	public struct WeaponSaveData
 	{
 		public BasicSaveData basicData;
@@ -88,17 +91,14 @@ public class LevelManager : MonoBehaviour
 		TOTAL = 7
 	}
 	public static int NUM_ELEVATORS = (int)elevatorIndex.TOTAL;
-	public bool[] elevatorAvailable;
+	public int[] elevatorAvailable = new int[NUM_ELEVATORS];
 
 	public Dictionary<string, GUIDWatcher>	guidTable = new Dictionary<string, GUIDWatcher>();
-	Dictionary<string, ActorSaveData>		actorTable = new Dictionary<string, ActorSaveData>();
-	Dictionary<string, BasicSaveData>		doorTable = new Dictionary<string, BasicSaveData>();
-	Dictionary<string, WeaponSaveData>		weaponTable = new Dictionary<string, WeaponSaveData>();
-	Dictionary<string, WeaponSaveData>		weaponSpawnTable = new Dictionary<string, WeaponSaveData>();
-	Dictionary<string, BasicSaveData>		pickupBoxTable = new Dictionary<string, BasicSaveData>();
-	Dictionary<string, BasicSaveData>		saveTable = new Dictionary<string, BasicSaveData>();
-	Dictionary<string, BasicSaveData>		basicsTable = new Dictionary<string, BasicSaveData>();
-	Dictionary<string, BasicSaveData>		basicSpawnTable = new Dictionary<string, BasicSaveData>();
+	public Dictionary<string, BasicSaveData> basicSpawnTable = new Dictionary<string, BasicSaveData>();
+	public Dictionary<string, WeaponSaveData> weaponSpawnTable = new Dictionary<string, WeaponSaveData>();
+
+	public SaveData currSaveData;
+	public PlayerSaveData currPlayerSaveData;
 
 	public enum levelSpawnIndex
 	{
@@ -121,7 +121,7 @@ public class LevelManager : MonoBehaviour
 
 	private GameManager gameManager;
 
-	public async Task startNewLevel(int spawnIndex)
+	public async Task startNewLevel(int spawnIndex, int levelIndex)
 	{
 		if (gameManager == null)
 		{
@@ -153,7 +153,7 @@ public class LevelManager : MonoBehaviour
 				tempPlayer.transform.SetPositionAndRotation(levelSpawns[spawnIndex].spawnPosition, Quaternion.identity);
 				tempPlayer.transform.Rotate(new Vector3(0, 0, levelSpawns[spawnIndex].spawnRotation));
 				tempPlayer.SetActive(true);
-				
+
 				camHandler.player = tempPlayer;
 
 				playerActor = tempPlayer.GetComponent<Actor>();
@@ -168,9 +168,10 @@ public class LevelManager : MonoBehaviour
 				}
 			}
 
-			if (lastSavedAtStation)
+			/* don't load the level state if it's a new level */
+			if (SceneDefs.isLevelScene((SceneDefs.SCENE)levelIndex) && (lastSavedAtStation || gameManager.saveManager.levelSaveData[levelIndex] != null))
 			{
-				await loadLevelState(lastSavedLevelIndex);
+				await loadLevelState(gameManager.saveManager.levelSaveData[levelIndex]);
 			}
 
 			Time.timeScale = 1;
@@ -187,10 +188,10 @@ public class LevelManager : MonoBehaviour
 		}
 	}
 
-	public async Task loadLevelState(int sceneIndex)
+	public async Task loadLevelState(SaveData saveData)
 	{
-		weaponSpawnTable = new Dictionary<string, WeaponSaveData>(weaponTable);
-		basicSpawnTable = new Dictionary<string, BasicSaveData>(basicsTable);
+		weaponSpawnTable = new Dictionary<string, WeaponSaveData>(saveData.weaponTable);
+		basicSpawnTable = new Dictionary<string, BasicSaveData>(saveData.basicsTable);
 
 		//for each GUID
 		//if it has a component that matches a table,
@@ -203,7 +204,7 @@ public class LevelManager : MonoBehaviour
 				case idType.ACTOR:
 					ActorSaveData actorSave = new();
 					Actor actor = item.Value.guid.GetComponent<Actor>();
-					if (actorTable.TryGetValue(item.Key, out actorSave))
+					if (saveData.actorTable.TryGetValue(item.Key, out actorSave))
 					{
 						if (actor != null)
 						{
@@ -228,6 +229,7 @@ public class LevelManager : MonoBehaviour
 							if (ai != null)
 							{
 								ai.pathIndex = actorSave.idlePathIndex;
+								ai._detection = (detectMode)actorSave.detectionState;
 							}
 						}
 					}
@@ -247,7 +249,7 @@ public class LevelManager : MonoBehaviour
 					AutoDoor door = item.Value.guid.GetComponent<AutoDoor>();
 					if (door != null)
 					{
-						if (doorTable.TryGetValue(item.Key, out dataSave))
+						if (saveData.doorTable.TryGetValue(item.Key, out dataSave))
 						{
 							if (dataSave.isPresent && door.locked)
 							{
@@ -266,7 +268,7 @@ public class LevelManager : MonoBehaviour
 					if (weapon != null)
 					{
 						WeaponSaveData weapSave;
-						if (weaponTable.TryGetValue(item.Key, out weapSave))
+						if (saveData.weaponTable.TryGetValue(item.Key, out weapSave))
 						{
 							spawnWeapon(weapon, weapSave);
 							/* necessary for cabinet pickups */
@@ -284,7 +286,7 @@ public class LevelManager : MonoBehaviour
 					PickupBox box = item.Value.guid.GetComponentInChildren<PickupBox>();
 					if (box != null)
 					{
-						if (pickupBoxTable.TryGetValue(item.Key, out dataSave))
+						if (saveData.pickupBoxTable.TryGetValue(item.Key, out dataSave))
 						{
 							if (!dataSave.isPresent && box.hasPickup())
 							{
@@ -301,7 +303,7 @@ public class LevelManager : MonoBehaviour
 					SaveStation save = item.Value.guid.GetComponentInChildren<SaveStation>();
 					if (save != null)
 					{
-						if (saveTable.TryGetValue(item.Key, out dataSave))
+						if (saveData.saveTable.TryGetValue(item.Key, out dataSave))
 						{
 							saveStationUses[dataSave.option] = dataSave.isPresent ? 1 : 0;
 						}
@@ -314,7 +316,7 @@ public class LevelManager : MonoBehaviour
 					GameObject basicObj = item.Value.guid.gameObject;
 					if (tut != null || corpse != null || pickup != null)
 					{
-						if (basicsTable.TryGetValue(item.Key, out dataSave))
+						if (saveData.basicsTable.TryGetValue(item.Key, out dataSave))
 						{
 							if (!dataSave.isPresent && basicObj != null)
 							{
@@ -338,7 +340,7 @@ public class LevelManager : MonoBehaviour
 		foreach (var weap in weaponSpawnTable)
 		{
 			/* need to spawn these weapons */
-			GameObject newWeap = Instantiate(gameManager.weaponPrefabs[weap.Value.prefabIndex]);
+			GameObject newWeap = Instantiate(gameManager.prefabManager.weaponPrefabs[weap.Value.prefabIndex]);
 			BasicWeapon weapon = newWeap.GetComponentInChildren<BasicWeapon>();
 
 			while (true)
@@ -370,7 +372,7 @@ public class LevelManager : MonoBehaviour
 		foreach (var basic in basicSpawnTable)
 		{
 			/* need to spawn these objects */
-			GameObject newBasic = Instantiate(gameManager.basicPrefabs[basic.Value.prefabIndex]);
+			GameObject newBasic = Instantiate(gameManager.prefabManager.basicPrefabs[basic.Value.prefabIndex]);
 
 			newBasic.transform.SetPositionAndRotation(new Vector2(basic.Value.xPosition, basic.Value.yPosition), Quaternion.Euler(0, 0, basic.Value.rotation));
 		}
@@ -378,6 +380,10 @@ public class LevelManager : MonoBehaviour
 
 	public void saveLevelState(int sceneIndex)
 	{
+		currSaveData = new SaveData();
+		currSaveData.sceneIndex = sceneIndex;
+		elevatorAvailable.CopyTo(currSaveData.elevatorAvailable, 0);
+
 		//clear all component tables
 		//for each GUID
 		//if it has a component that matches a table,
@@ -411,27 +417,28 @@ public class LevelManager : MonoBehaviour
 				if (ai != null)
 				{
 					actorSave.idlePathIndex = ai.pathIndex;
+					actorSave.detectionState = (int)ai._detection;
 				}
 
-				actorTable.Add(item.Key, actorSave);
+				currSaveData.actorTable.Add(item.Key, actorSave);
 				continue;
 			}
 			AutoDoor door = guid.GetComponent<AutoDoor>();
 			if (door != null)
 			{
 				dataSave.isPresent = !door.locked;
-				doorTable.Add(item.Key, dataSave);
+				currSaveData.doorTable.Add(item.Key, dataSave);
 				continue;
 			}
 			PickupBox box = guid.GetComponentInChildren<PickupBox>();
 			if (box != null)
 			{
 				dataSave.isPresent = box.hasPickup();
-				pickupBoxTable.Add(item.Key, dataSave);
+				currSaveData.pickupBoxTable.Add(item.Key, dataSave);
 				continue;
 			}
 			BasicWeapon weapon = guid.GetComponentInChildren<BasicWeapon>();
-			if (weapon != null)
+			if (weapon != null && weapon.getType() != WeaponType.UNARMED)
 			{
 				WeaponSaveData weapSave = new();
 				/* equip weapon to actors */
@@ -470,7 +477,7 @@ public class LevelManager : MonoBehaviour
 					weapSave.basicData.option = swing.filledBatteries;
 				}
 
-				weaponTable.Add(item.Key, weapSave);
+				currSaveData.weaponTable.Add(item.Key, weapSave);
 				continue;
 			}
 			SaveStation save = guid.GetComponentInChildren<SaveStation>();
@@ -478,7 +485,7 @@ public class LevelManager : MonoBehaviour
 			{
 				dataSave.isPresent = saveStationUses[(int)save.saveStationNumIndex] == 0 ? false : true;
 				dataSave.option = (int)save.saveStationNumIndex;
-				saveTable.Add(item.Key, dataSave);
+				currSaveData.saveTable.Add(item.Key, dataSave);
 				continue;
 			}
 			TutorialSceneLoader tut = guid.GetComponent<TutorialSceneLoader>();
@@ -491,7 +498,7 @@ public class LevelManager : MonoBehaviour
 				dataSave.yPosition = guid.transform.position.y;
 				dataSave.rotation = guid.transform.rotation.eulerAngles.z;
 				dataSave.prefabIndex = guid.basicPrefabIndex;
-				basicsTable.Add(item.Key, dataSave);
+				currSaveData.basicsTable.Add(item.Key, dataSave);
 				continue;
 			}
 		}

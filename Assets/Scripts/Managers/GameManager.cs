@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Unity.PlasticSCM.Editor.WebApi;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using static GameManager;
@@ -68,24 +69,9 @@ public class GameManager : MonoBehaviour
 	public AudioManager audioManager;
 	public EffectManager effectManager;
 	public LevelManager levelManager;
+	public PrefabManager prefabManager;
 
 	public LoadingHandler loadingHandler = null;
-
-	public GameObject[] basicPrefabs;
-
-	public GameObject[] weaponPrefabs;
-
-	public GameObject[] zombiePrefabs;
-
-	public GameObject clickPrefab;
-
-	public GameObject mutPBeast;
-	public GameObject mutPBladeWing;
-	public GameObject mutPLimb;
-	public GameObject mutPSpore;
-
-	public GameObject weapPBladeArm;
-	public GameObject weapPFist;
 
 	public LayerMask actorLayers;
 	public LayerMask collisionLayer;
@@ -100,9 +86,11 @@ public class GameManager : MonoBehaviour
 	public int[] maxPickups = new int[PickupDefs.MAX_USABLE_ITEM_TYPE + 1];
 
 	public PlayerStats playerStats;
+	public SaveManager saveManager;
 
 	public bool isLoaded = false;
 	public int currentScene = -1;
+	public int currentSaveSlot = 0;
 
 	public static string ACTOR_LAYER					= "Actor";
 	public static string DAMAGE_LAYER					= "Damage";
@@ -177,6 +165,8 @@ public class GameManager : MonoBehaviour
 		playerStats = new PlayerStats();
 		playerStats.gameManager = this;
 
+		saveManager = new SaveManager();
+
 		for (int i = 0; i < levelManager.saveStationUses.Length; i ++)
 		{
 			levelManager.saveStationUses[i] = 1;
@@ -210,7 +200,7 @@ public class GameManager : MonoBehaviour
 						break;
 				}
 				levelManager.lastSavedLevelIndex = currentScene;
-				await levelManager.startNewLevel(-1);
+				await levelManager.startNewLevel(-1, -1);
 				break;
 			}
 		}
@@ -279,17 +269,19 @@ public class GameManager : MonoBehaviour
 		audio.enabled = false;
 		loadingHandler.reloadHUD = true;
 
+		levelManager.saveLevelState(currentScene);
+		saveManager.levelSaveData[currentScene] = levelManager.currSaveData;
+		
+
 		//TODO: when able to go back to previous levels, this should be the general idea
 		//int lastScene = currentScene;
-		//await levelManager.saveLevelState(lastScene);
 		currentScene = (int)nextSceneIndex;
 
 		await loadingHandler.LoadSceneGroup(new int[] { currentScene }, true, true);
 
-		levelManager.lastSavedSpawn = (LevelManager.levelSpawnIndex)spawnIndex;
-		levelManager.lastSavedLevelIndex = currentScene;
-		levelManager.lastSavedAtStation = false;
-		await levelManager.startNewLevel(spawnIndex);
+		levelManager.currSaveData = null;
+
+		await levelManager.startNewLevel(spawnIndex, (int)nextSceneIndex);
 	}
 
 	public async void loadBackgroundScenes()
@@ -339,17 +331,15 @@ public class GameManager : MonoBehaviour
 		}
 	}
 
-	public async void resetLevel()
-	{
-		playerStats.resetCounts();
-		await levelManager.startNewLevel((int)levelManager.lastSavedSpawn);
-	}
-
-	public void save(Actor player)
+	public void save(Actor player, int levelSaveIndex)
 	{
 		playerStats.savePlayerData(player);
+		saveManager.savePlayerDataToDisk(currentSaveSlot);
+
 		levelManager.saveLevelState(currentScene);
-		levelManager.lastSavedLevelIndex = currentScene;
+		saveManager.saveDataToDisk(levelManager.currSaveData, 0);
+		saveManager.loadAllData();
+		levelManager.lastSavedLevelIndex = levelSaveIndex;
 	}
 
 	public void signalCloseMenusEvent()

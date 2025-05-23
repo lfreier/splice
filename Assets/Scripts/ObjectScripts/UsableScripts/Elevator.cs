@@ -28,21 +28,21 @@ public class Elevator : MonoBehaviour, UsableInterface
 	public bool use(Actor user)
 	{
 		/* unlock elevator for use */
-		levelManager.elevatorAvailable[index] = true;
+		levelManager.elevatorAvailable[index] = 2;
 
 		if (isExitElevator)
 		{
-			if (!levelManager.elevatorAvailable[(int)nextSpawn.elevatorIndex] && elevatorIndex != elevatorIndex.hub)
+			if (levelManager.elevatorAvailable[(int)nextSpawn.elevatorIndex] == 0)
 			{
-				levelManager.saveStationUses[(int)saveStationIndex.hub]++;
+				levelManager.elevatorAvailable[(int)nextSpawn.elevatorIndex] = 1;
+				levelManager.saveStationUses[(int)saveStationIndex.hub] = 1;
 			}
-			levelManager.elevatorAvailable[(int)nextSpawn.elevatorIndex] = true;
 		}
 
 		inUse = true;
 		playerActor = user;
 
-		if (isExitElevator || levelManager.elevatorAvailable[index])
+		if (isExitElevator || levelManager.elevatorAvailable[index] > 0)
 		{
 			/* show the elevator menu now */
 			gameManager.loadPausedScene(user, SCENE.STATION_MENU);

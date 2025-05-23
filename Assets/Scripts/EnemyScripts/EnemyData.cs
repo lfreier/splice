@@ -31,7 +31,7 @@ public class EnemyData : MonoBehaviour
 			actor.corpseSprite = corpseSpriteList[i];
 			if (corpseSpriteList.Length > 1)
 			{
-				actor.corpsePrefab = GameManager.Instance.basicPrefabs[i + corpsePrefabOffset];
+				actor.corpsePrefab = GameManager.Instance.prefabManager.basicPrefabs[i + corpsePrefabOffset];
 			}
 		}
 	}
