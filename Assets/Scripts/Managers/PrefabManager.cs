@@ -14,6 +14,8 @@ public class PrefabManager : MonoBehaviour
 	public GameObject mutPBeast;
 	public GameObject mutPBladeWing;
 	public GameObject mutPLimb;
+	public GameObject mutPRaptor;
+	public GameObject mutPSpider;
 	public GameObject mutPSpore;
 
 	public GameObject weapPFist;

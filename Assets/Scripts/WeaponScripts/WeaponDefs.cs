@@ -12,6 +12,14 @@ public static class WeaponDefs
 		WRENCH = 4
 	}
 
+	public enum atkState
+	{
+		IDLE = 0,
+		RIGHT = 1,
+		LEFT = 2,
+		OVERHEAD = 3
+	}
+
 	public static int MAX_PREFABS = 4;
 
 	public static string OBJECT_WEAPON_TAG			= "ObjectWeapon";

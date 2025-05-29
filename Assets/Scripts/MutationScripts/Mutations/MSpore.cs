@@ -6,6 +6,7 @@ using UnityEngine;
 public class MSpore : MonoBehaviour, MutationInterface
 {
 	public MutationScriptable mutationScriptable;
+
 	public Actor wielder;
 	public PlayerInteract pInteract;
 	public PlayerInputs pInputs;

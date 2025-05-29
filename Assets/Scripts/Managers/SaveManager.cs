@@ -56,6 +56,12 @@ public class SaveManager
 						case mutationType.mWing:
 							prefab = prefabManager.mutPBladeWing;
 							break;
+						case mutationType.mRaptor:
+							prefab = prefabManager.mutPRaptor;
+							break;
+						case mutationType.mSpider:
+							prefab = prefabManager.mutPSpore;
+							break;
 						case mutationType.mSpore:
 							prefab = prefabManager.mutPSpore;
 							break;

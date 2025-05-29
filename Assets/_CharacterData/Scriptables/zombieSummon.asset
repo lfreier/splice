@@ -15,7 +15,7 @@ MonoBehaviour:
   <armor>k__BackingField: 0
   <health>k__BackingField: 3
   <attackTimer>k__BackingField: 0.4
-  <maxSpeed>k__BackingField: 8
+  <maxSpeed>k__BackingField: 6.5
   <moveSpeed>k__BackingField: 0.2
   <acceleration>k__BackingField: 0.3
   <deceleration>k__BackingField: 0.15

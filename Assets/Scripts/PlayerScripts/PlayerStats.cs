@@ -191,6 +191,12 @@ public class PlayerStats
 				case "MLimb":
 					mutPrefab = player.instantiateActive(gameManager.prefabManager.mutPLimb);
 					break;
+				case "MRaptor":
+					mutPrefab = player.instantiateActive(gameManager.prefabManager.mutPRaptor);
+					break;
+				case "MSpider":
+					mutPrefab = player.instantiateActive(gameManager.prefabManager.mutPSpider);
+					break;
 				case "MSpore":
 					mutPrefab = player.instantiateActive(gameManager.prefabManager.mutPSpore);
 					break;
@@ -201,6 +207,8 @@ public class PlayerStats
 			MutationInterface newMut = (MutationInterface)mutPrefab.GetComponentInChildren(mut.GetType());
 			if (null != (newMut = newMut.mEquip(player)))
 			{
+				/* this is basically all major mutations
+				 *  'minor' mutations exist just for saving purposes */
 				if (newMut.getMutationType() == mutationTrigger.ACTIVE_SLOT)
 				{
 					if (player.activeSlots[0] == null)
@@ -417,6 +425,12 @@ public class PlayerStats
 						break;
 					case "MBladeWing":
 						data.mutationPrefabList[i] = (int)mutationType.mWing;
+						break;
+					case "MRaptor":
+						data.mutationPrefabList[i] = (int)mutationType.mRaptor;
+						break;
+					case "MSpider":
+						data.mutationPrefabList[i] = (int)mutationType.mSpider;
 						break;
 					case "MSpore":
 						data.mutationPrefabList[i] = (int)mutationType.mSpore;

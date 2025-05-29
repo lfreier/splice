@@ -1,16 +1,10 @@
 ﻿using System.Collections;
 using UnityEngine;
 using UnityEngine.UIElements;
+using static WeaponDefs;
 
 public class MBeast : BasicWeapon, MutationInterface
 {
-	private enum atkState
-	{
-		IDLE = 0,
-		RIGHT = 1,
-		LEFT = 2,
-		OVERHEAD  = 3
-	}
 
 	public MutationScriptable mutScriptable;
 	private int INDEX_SHIELD = 0;

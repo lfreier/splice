@@ -1,6 +1,5 @@
 ﻿using Unity.VisualScripting;
 using UnityEngine;
-using static UnityEngine.GraphicsBuffer;
 
 public abstract class BasicWeapon : MonoBehaviour, WeaponInterface
 {
@@ -29,13 +28,13 @@ public abstract class BasicWeapon : MonoBehaviour, WeaponInterface
 
 	public bool attackOnlyRight;
 
-	private GameManager gameManager;
+	protected GameManager gameManager;
 
 	public float durability;
 
 	public bool isInit = false;
 
-	private bool soundMade = false;
+	protected bool soundMade = false;
 
 	void Start()
 	{
@@ -230,7 +229,7 @@ public abstract class BasicWeapon : MonoBehaviour, WeaponInterface
 		currentSide = (side > 0);
 	}
 
-	public void setStartingPosition(bool side)
+	virtual public void setStartingPosition(bool side)
 	{
 		if (!side)
 		{
@@ -270,7 +269,7 @@ public abstract class BasicWeapon : MonoBehaviour, WeaponInterface
 		actorWielder = null;
 	}
 
-	public bool toggleCollider(int enable)
+	virtual public bool toggleCollider(int enable)
 	{
 		if (hitbox == null)
 		{

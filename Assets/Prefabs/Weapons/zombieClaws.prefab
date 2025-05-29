@@ -52,6 +52,8 @@ MonoBehaviour:
   weaponBody: {fileID: 2539849135012674436}
   throwCollider: {fileID: 5168576159283970348}
   pickupCollider: {fileID: 2666023793495350712}
+  attachedWeapon: {fileID: 0}
+  topObject: {fileID: 0}
 --- !u!50 &2539849135012674436
 Rigidbody2D:
   serializedVersion: 4
@@ -237,12 +239,13 @@ MonoBehaviour:
   actorWielder: {fileID: 0}
   _weaponScriptable: {fileID: 11400000, guid: a3084fa962441ad45a5409e1f364d1d4, type: 2}
   _weaponPhysics: {fileID: 1630916773381673146}
+  weaponAudioPlayer: {fileID: 0}
   actorHitSound: {fileID: 11400000, guid: 4ef7172c84fd22b4586d55e87fa9e529, type: 2}
   wallHitSound: {fileID: 11400000, guid: 2dee26a68c8b6d14c9f1598aceb14c3a, type: 2}
-  weaponBreakSound: {fileID: 0}
-  weaponSwingSound: {fileID: 0}
   currentSide: 0
+  attackOnlyRight: 0
   durability: 0
+  isInit: 0
   zombieAttacks:
   - {fileID: 11400000, guid: a3084fa962441ad45a5409e1f364d1d4, type: 2}
   - {fileID: 11400000, guid: a0d7f3874c458c54c8b7245edf2f6c9f, type: 2}
@@ -432,7 +435,7 @@ BoxCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0

@@ -359,7 +359,7 @@ public class Actor : MonoBehaviour
 			if (equippedWeaponInt.getType() == WeaponType.UNARMED)
 			{
 				/* only destroy copies of the basic fist weapon, not muations */
-				if (equippedWeapon.GetComponentInChildren<MutationInterface>() == null)
+				if (equippedWeapon.GetComponentInChildren<MutationInterface>() == null && equippedWeapon.GetComponentInChildren<ClawWeapon>())
 				{
 					Destroy(equippedWeapon);
 				}

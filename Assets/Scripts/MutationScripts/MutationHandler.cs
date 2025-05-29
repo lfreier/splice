@@ -37,6 +37,20 @@ public class MutationHandler : MonoBehaviour
 					return wing;
 				}
 				break;
+			case mutationType.mRaptor:
+				MRaptor raptor = GetComponentInChildren<MRaptor>();
+				if (raptor != null)
+				{
+					return raptor;
+				}
+				break;
+			case mutationType.mSpider:
+				MSpider spider = GetComponentInChildren<MSpider>();
+				if (spider != null)
+				{
+					return spider;
+				}
+				break;
 			case mutationType.mSpore:
 				MSpore spore = GetComponentInChildren<MSpore>();
 				if (spore != null)
