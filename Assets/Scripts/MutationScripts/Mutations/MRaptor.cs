@@ -15,13 +15,15 @@ public class MRaptor : MonoBehaviour, MutationInterface
 	private float transformTimer = 0F;
 
 	private Vector2 pounceTarget;
+	public float pounceDistance = 400F;
+	private float pounceDistanceMoved = 0F;
 
-	public float pounceSpeed;
+	public float pounceSpeed = 1200F;
 
 	public MutationScriptable mutationScriptable;
 	public GameObject raptorClawPrefab;
 
-	public ClawWeapon equippedClaw;
+	public ClawWeapon equippedClaw = null;
 
 	private GameManager gameManager;
 
@@ -34,7 +36,13 @@ public class MRaptor : MonoBehaviour, MutationInterface
 	{
 		if (pounceActive)
 		{
-			//every frame, move player towards
+			if (pounceDistanceMoved >= pounceDistance)
+			{
+				stopPounce(false);
+			}
+
+			//every frame, move player in pounce target direction
+			pounceDistanceMoved += pounceSpeed * Time.deltaTime;
 			actorWielder.Move(pounceTarget * pounceSpeed * Time.deltaTime);
 			//SoundDefs.createSound(actorWielder.transform.position, soundScriptable);
 		}
@@ -45,6 +53,28 @@ public class MRaptor : MonoBehaviour, MutationInterface
 			if (bufferTimer <= 0)
 			{
 				bufferTimer = 0;
+			}
+		}
+
+		if (transformTimer != 0)
+		{
+			transformTimer -= Time.deltaTime;
+			if (transformTimer <= 0)
+			{
+				if (equippedClaw == null)
+				{
+					transformTimer = 0;
+					actorWielder.equipEmpty();
+					bufferTimer = MutationDefs.RAPTOR_XFORM_BUFF_TIMER;
+				}
+				else if (equippedClaw != null && !equippedClaw.pounceAttackActive)
+				{
+					transformTimer = 0;
+					Destroy(equippedClaw.gameObject);
+					actorWielder.equipEmpty();
+					equippedClaw = null;
+					bufferTimer = MutationDefs.RAPTOR_XFORM_BUFF_TIMER;
+				}
 			}
 		}
 	}
@@ -59,11 +89,11 @@ public class MRaptor : MonoBehaviour, MutationInterface
 			{
 				actorWielder.gameManager.playerStats.changeMutationBar(-mutationScriptable.mutCost);
 			}
-			else
+			else if (transformTimer <= 0)
 			{
 				return;
 			}
-
+			Debug.Log("Starting pounce");
 			anim.SetTrigger(MutationDefs.TRIGGER_RAPTOR_PSTART);
 			bufferTimer = MutationDefs.ABILITY_BUFF_TIMER;
 		}
@@ -134,32 +164,48 @@ public class MRaptor : MonoBehaviour, MutationInterface
 
 		actorWielder.gameManager.signalMovementLocked();
 		actorWielder.gameManager.signalRotationLocked();
+		actorWielder.setActorCollision(false, new string[] { GameManager.OBJECT_MID_LAYER });
 
 		pounceActive = true;
+		pounceDistanceMoved = 0F;
 
-		actorWielder.setActorCollision(false);
-
-		raptorClawPrefab.SetActive(false);
-		GameObject clawObject = Instantiate(raptorClawPrefab);
-		if (clawObject != null)
+		if (transformTimer <= 0)
 		{
-			clawObject.SetActive(true);
-			actorWielder.equip(clawObject);
-			equippedClaw = clawObject.GetComponentInChildren<ClawWeapon>();
+			transformTimer = mutationScriptable.values[0];
 		}
+
+		if (equippedClaw == null)
+		{
+			raptorClawPrefab.SetActive(false);
+			GameObject clawObject = Instantiate(raptorClawPrefab);
+			if (clawObject != null)
+			{
+				clawObject.SetActive(true);
+				raptorClawPrefab.SetActive(true);
+				actorWielder.equip(clawObject);
+				equippedClaw = clawObject.GetComponentInChildren<ClawWeapon>();
+			}
+		}
+
+		pounceCollider.enabled = true;
 	}
 
-	public void stopPounce()
+	public void stopPounce(bool targetHit)
 	{
 		anim.SetTrigger(MutationDefs.TRIGGER_RAPTOR_PEND);
 
 		pounceActive = false;
-		actorWielder.setActorCollision(true);
+		pounceDistanceMoved = 0F;
 
 		pounceTarget = Vector3.zero;
+		pounceCollider.enabled = false;
 
-		actorWielder.gameManager.signalMovementUnlocked();
-		actorWielder.gameManager.signalRotationUnlocked();
+		if (!targetHit)
+		{
+			actorWielder.gameManager.signalMovementUnlocked();
+			actorWielder.gameManager.signalRotationUnlocked();
+		}
+		actorWielder.setActorCollision(true, null);
 	}
 
 	private void OnTriggerEnter2D(Collider2D collision)
@@ -172,10 +218,14 @@ public class MRaptor : MonoBehaviour, MutationInterface
 				EffectDefs.effectApply(actorHit, gameManager.effectManager.stun1);
 				if (equippedClaw != null)
 				{
+					stopPounce(true);
+					actorWielder.actorBody.velocity = Vector3.zero;
 					equippedClaw.triggerPounceAttack(actorHit, mutationScriptable.damage, actorWielder);
+					actorWielder.actorBody.rotation = actorWielder.aimAngle(actorHit.transform.position);
+					return;
 				}
 			}
-			stopPounce();
+			stopPounce(false);
 		}
 	}
 }

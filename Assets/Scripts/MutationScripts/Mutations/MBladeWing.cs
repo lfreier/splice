@@ -74,7 +74,7 @@ public class MBladeWing : MonoBehaviour, MutationInterface
 			dashTarget = Vector2.ClampMagnitude(playerIn.pointerPos() - (Vector2)actorWielder.transform.position, 1);
 		}
 
-		actorWielder.setActorCollision(false);
+		actorWielder.setActorCollision(false, new string[] { GameManager.OBJECT_MID_LAYER, GameManager.ACTOR_LAYER });
 	}
 
 	public string getDisplayName()
@@ -131,7 +131,7 @@ public class MBladeWing : MonoBehaviour, MutationInterface
 	public void stopDash()
 	{
 		dashActive = false;
-		actorWielder.setActorCollision(true);
+		actorWielder.setActorCollision(true, null);
 
 		//now, draw a cast for other collisions and do damage and such
 		Vector3 startPosition = dashStart + (Vector3.ClampMagnitude(actorWielder.transform.position - dashStart, 1) * (dashWidth / 2));

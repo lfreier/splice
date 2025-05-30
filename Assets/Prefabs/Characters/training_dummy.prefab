@@ -92,6 +92,10 @@ PrefabInstance:
       propertyPath: m_WasSpriteAssigned
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 7622839753614861741, guid: f3bb2ddd86bcc0544af59b764dd961fa, type: 3}
+      propertyPath: guid
+      value: training_dummy Variant_4b0f4d8c-01cc-479f-a065-a40b6c9b754b
+      objectReference: {fileID: 0}
     - target: {fileID: 7904725563872449456, guid: f3bb2ddd86bcc0544af59b764dd961fa, type: 3}
       propertyPath: m_Name
       value: training_dummy Variant

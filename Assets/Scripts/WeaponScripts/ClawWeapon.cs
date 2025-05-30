@@ -13,6 +13,19 @@ public class ClawWeapon : BasicWeapon
 	private Actor pounceSourceActor;
 	private Actor pounceActorToHit;
 	private float pounceDamage;
+	public bool pounceAttackActive = false;
+
+	public SpriteRenderer shredTrailSprite;
+	public SpriteRenderer shredTrailSprite2;
+
+	private void OnDestroy()
+	{
+		if (pounceSourceActor != null)
+		{
+			pounceSourceActor.gameManager.signalMovementUnlocked();
+			pounceSourceActor.gameManager.signalRotationUnlocked();
+		}
+	}
 
 	private void FixedUpdate()
 	{
@@ -39,6 +52,10 @@ public class ClawWeapon : BasicWeapon
 
 	override public bool attack(LayerMask targetLayer)
 	{
+		if (pounceAttackActive == true)
+		{
+			return false;
+		}
 		actorWielder.invincible = false;
 		soundMade = false;
 		clawAttackTimer = 0;
@@ -97,12 +114,41 @@ public class ClawWeapon : BasicWeapon
 		return false;
 	}
 
+
+	public void stopPounceAttack()
+	{
+		actorWielder.gameManager.signalMovementUnlocked();
+		actorWielder.gameManager.signalRotationUnlocked();
+		pounceAttackActive = false;
+
+
+		if (shredTrailSprite != null)
+		{
+			shredTrailSprite.enabled = false;
+		}
+
+		if (shredTrailSprite2 != null)
+		{
+			shredTrailSprite2.enabled = false;
+		}
+	}
+
+	public void toggleShredTrailSprite1(int toggle)
+	{
+		shredTrailSprite.enabled = toggle > 0;
+	}
+
+	public void toggleShredTrailSprite2(int toggle)
+	{
+		shredTrailSprite2.enabled = toggle > 0;
+	}
+
 	public void triggerPounceAttack(Actor actorToHit, float pounceDamagePerHit, Actor sourceActor)
 	{
 		pounceActorToHit = actorToHit;
 		pounceSourceActor = sourceActor;
 		pounceDamage = pounceDamagePerHit;
-
+		pounceAttackActive = true;
 		anim.SetTrigger(MutationDefs.TRIGGER_POUNCE_ATTACK);
 	}
 

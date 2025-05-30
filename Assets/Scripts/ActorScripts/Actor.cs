@@ -359,7 +359,7 @@ public class Actor : MonoBehaviour
 			if (equippedWeaponInt.getType() == WeaponType.UNARMED)
 			{
 				/* only destroy copies of the basic fist weapon, not muations */
-				if (equippedWeapon.GetComponentInChildren<MutationInterface>() == null && equippedWeapon.GetComponentInChildren<ClawWeapon>())
+				if (equippedWeapon.GetComponentInChildren<MutationInterface>() == null)
 				{
 					Destroy(equippedWeapon);
 				}
@@ -687,14 +687,17 @@ public class Actor : MonoBehaviour
 				}
 				break;
 			case constantType.IFRAME:
-				this.invincible = toggle;
+				if (this.tag == playerTag)
+				{
+					this.invincible = toggle;
+				}
 				break;
 			default:
 				break;
 		}
 	}
 
-	public void setActorCollision(bool toSet)
+	public void setActorCollision(bool toSet, string[] excludingLayers)
 	{
 		if (toSet)
 		{
@@ -702,7 +705,7 @@ public class Actor : MonoBehaviour
 		}
 		else
 		{
-			actorBody.excludeLayers = LayerMask.GetMask(new string[] { GameManager.OBJECT_MID_LAYER, GameManager.ACTOR_LAYER });
+			actorBody.excludeLayers = LayerMask.GetMask(excludingLayers);
 		}
 	}
 
