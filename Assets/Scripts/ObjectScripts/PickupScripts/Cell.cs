@@ -17,13 +17,14 @@ public class Cell : MonoBehaviour, PickupInterface
 
 	[SerializeField]
 	private Sprite icon;
+
+	private bool pickedUp = false;
+
 	GameManager gameManager;
 
 	// Use this for initialization
 	void Start()
 	{
-		gameManager = GameManager.Instance;
-		PickupDefs.setLayer(gameObject);
 		init();
 	}
 
@@ -91,7 +92,9 @@ public class Cell : MonoBehaviour, PickupInterface
 
 	public void init()
 	{
-
+		pickedUp = false;
+		gameManager = GameManager.Instance;
+		PickupDefs.setLayer(gameObject);
 	}
 
 	public void pickup(Actor actorTarget)
@@ -105,8 +108,9 @@ public class Cell : MonoBehaviour, PickupInterface
 		Actor target;
 		if ((target = collision.transform.GetComponent<Actor>()) != null)
 		{
-			if (target.tag == ActorDefs.playerTag)
+			if (target.tag == ActorDefs.playerTag && pickedUp == false)
 			{
+				pickedUp = true;
 				pickup(target);
 				AudioClip toPlay;
 				if (cellPopSound != null)

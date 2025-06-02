@@ -119,14 +119,6 @@ public class MRaptor : MonoBehaviour, MutationInterface
 		return mutationTrigger.ACTIVE_SLOT;
 	}
 
-	public void init(Actor wielder)
-	{
-		gameManager = GameManager.Instance;
-		gameManager.playerAbilityEvent += abilityInputPressed;
-		setWielder(wielder);
-		bufferTimer = 0;
-	}
-
 	public void trigger(Actor actorTarget)
 	{
 
@@ -134,7 +126,10 @@ public class MRaptor : MonoBehaviour, MutationInterface
 
 	public MutationInterface mEquip(Actor actor)
 	{
-		init(actor);
+		gameManager = GameManager.Instance;
+		gameManager.playerAbilityEvent += abilityInputPressed;
+		setWielder(actor);
+		bufferTimer = 0;
 
 		return this;
 	}

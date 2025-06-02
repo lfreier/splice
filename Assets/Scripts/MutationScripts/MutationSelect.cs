@@ -14,9 +14,13 @@ public class MutationSelect : MonoBehaviour
 
 	private AsyncOperation op;
 
+	private LockBehind[] locks;
+
 	private void Start()
 	{
 		isActivated = false;
+
+		locks = FindObjectsByType<LockBehind>(FindObjectsSortMode.InstanceID);
 	}
 
 	private void Update()
@@ -60,6 +64,16 @@ public class MutationSelect : MonoBehaviour
 		if (camHandler != null)
 		{
 			camHandler.stopCam(false);
+		}
+
+		foreach (LockBehind doorLock in locks)
+		{
+			if (doorLock != null)
+			{
+				doorLock.doorToLock.doorUnlock();
+				Destroy(doorLock);
+				break;
+			}
 		}
 
 		Destroy(this.gameObject);
