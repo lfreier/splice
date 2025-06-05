@@ -304,8 +304,9 @@ public abstract class BasicWeapon : MonoBehaviour, WeaponInterface
 	{
 		float knockbackMult = 1;
 		float maxForce = 10000;
+		Actor actorRef = actorWielder;
 
-		if (this.actorWielder != null && collision.name == actorWielder.name)
+		if (actorRef != null && collision.name == actorRef.name)
 		{
 			Debug.Log("Stop hitting yourself");
 			return null;
@@ -318,15 +319,15 @@ public abstract class BasicWeapon : MonoBehaviour, WeaponInterface
 		}
 
 		Actor actorHit = collision.GetComponent<Actor>();
-		if (actorWielder == null)
+		if (actorRef == null)
 		{
 			return null;
 		}
 
-		if (actorHit != null && actorWielder.isTargetHostile(actorHit) && !actorHit.invincible)
+		if (actorHit != null && actorRef.isTargetHostile(actorHit) && !actorHit.invincible)
 		{
-			actorWielder.triggerDamageEffects(actorHit);
-			if (actorHit.takeDamage(damage, actorWielder) > 0)
+			actorRef.triggerDamageEffects(actorHit);
+			if (actorHit.takeDamage(damage, actorRef) > 0)
 			{
 				reduceDurability(durabilityDamage);
 			}
@@ -343,7 +344,7 @@ public abstract class BasicWeapon : MonoBehaviour, WeaponInterface
 			}
 
 			maxForce = ActorDefs.MAX_HIT_FORCE;
-			if (actorWielder.isStunned())
+			if (actorRef.isStunned())
 			{
 				maxForce = ActorDefs.MAX_PARRY_FORCE;
 			}
@@ -357,7 +358,7 @@ public abstract class BasicWeapon : MonoBehaviour, WeaponInterface
 		{
 			if (collision.tag == SoundDefs.TAG_WALL_METAL)
 			{
-				SoundDefs.createSound(actorWielder.transform.position, wallHitSound);
+				SoundDefs.createSound(actorRef.transform.position, wallHitSound);
 				if (_weaponScriptable.soundWallHit != null)
 				{
 					AudioClip toPlay;
@@ -395,7 +396,7 @@ public abstract class BasicWeapon : MonoBehaviour, WeaponInterface
 		Rigidbody2D hitBody = collision.attachedRigidbody;
 		if (hitBody != null)
 		{
-			Vector3 force = Vector3.ClampMagnitude(hitBody.transform.position - actorWielder.transform.position, 1);
+			Vector3 force = Vector3.ClampMagnitude(hitBody.transform.position - actorRef.transform.position, 1);
 			float forceMult = Mathf.Min(_weaponScriptable.knockbackDamage * knockbackMult, maxForce);
 			Debug.Log("Hit force on " + hitBody.name + ": " + forceMult);
 			hitBody.AddForce(force * forceMult);
@@ -403,7 +404,7 @@ public abstract class BasicWeapon : MonoBehaviour, WeaponInterface
 
 		if (durability <= 0)
 		{
-			actorWielder.drop();
+			actorRef.drop();
 		}
 
 		return actorHit;

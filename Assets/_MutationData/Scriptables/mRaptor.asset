@@ -17,7 +17,7 @@ MonoBehaviour:
   <tutorialSprites>k__BackingField:
   - {fileID: 21300000, guid: c992df785cff8da4782c12d8464a5f63, type: 3}
   <effectScriptable>k__BackingField: {fileID: 0}
-  <mutCost>k__BackingField: 50
+  <mutCost>k__BackingField: 40
   <startingPosition>k__BackingField: {x: 0, y: 0}
   <startingRotation>k__BackingField: 0
   <values>k__BackingField:

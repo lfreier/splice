@@ -679,6 +679,11 @@ public class Actor : MonoBehaviour
 				foreach (MonoBehaviour script in behaviorList)
 				{
 					script.enabled = !toggle;
+					if (this.tag == playerTag)
+					{
+						gameManager.signalMovementUnlocked();
+						gameManager.signalRotationUnlocked();
+					}
 				}
 				EnemyMove enemyMove = GetComponent<EnemyMove>();
 				if (enemyMove != null)
@@ -740,9 +745,21 @@ public class Actor : MonoBehaviour
 		return takeDamage(damage, null);
 	}
 
+	public void addStun(float sec)
+	{
+		EConstant[] activeEffects = effectHolder.GetComponentsInChildren<EConstant>();
+		foreach (EConstant effect in activeEffects)
+		{
+			if (effect != null && effect.effectScriptable.constantEffectType == EffectDefs.constantType.STUN)
+			{
+				effect.timer += sec;
+			}
+		}
+	}
+
 	public float takeDamage(float damage, Actor sourceActor)
 	{
-		if (this.invincible)
+		if (this.invincible && sourceActor != null)
 		{
 			return 0F;
 		}

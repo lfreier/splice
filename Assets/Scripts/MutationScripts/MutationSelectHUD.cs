@@ -269,6 +269,9 @@ public class MutationSelectHUD : MonoBehaviour
 						gameOver.fadeInText[(i * 2) + j] = text;
 						j++;
 					}
+					panel.selectTexts[0].ForceMeshUpdate();
+					panel.selectTexts[1].enableAutoSizing = false;
+					panel.selectTexts[1].fontSize = panel.selectTexts[0].fontSize;
 				}
 			}
 		}

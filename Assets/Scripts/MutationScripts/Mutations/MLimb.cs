@@ -39,6 +39,8 @@ public class MLimb : MonoBehaviour, MutationInterface
 
 	[SerializeField] public MutationScriptable mutationScriptable;
 
+	private static int MUT_SEC_COST_INDEX = 0;
+
 	private void OnDestroy()
 	{
 		GameManager gm = GameManager.Instance;
@@ -162,7 +164,7 @@ public class MLimb : MonoBehaviour, MutationInterface
 
 		grabber.grabOffset = grabOffset;
 		grabber.mutCost1 = mutationScriptable.mutCost;
-		grabber.mutCost2 = Mathf.RoundToInt(mutationScriptable.values[0]);
+		grabber.mutCost2 = Mathf.RoundToInt(mutationScriptable.values[MUT_SEC_COST_INDEX]);
 
 		/* when limb is equipped, player can only attach from the right side */
 		wielder.setAttackOnly(WeaponDefs.ANIM_BOOL_ONLY_RIGHT, true);

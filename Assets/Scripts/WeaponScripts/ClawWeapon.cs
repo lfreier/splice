@@ -150,11 +150,21 @@ public class ClawWeapon : BasicWeapon
 		pounceDamage = pounceDamagePerHit;
 		pounceAttackActive = true;
 		anim.SetTrigger(MutationDefs.TRIGGER_POUNCE_ATTACK);
+
+		sourceActor.actorBody.velocity = Vector2.zero;
 	}
 
 	public void triggerPounceDamage()
 	{
-		pounceActorToHit.takeDamage(pounceDamage, pounceSourceActor);
+		if (pounceActorToHit != null)
+		{
+			pounceActorToHit.takeDamage(pounceDamage, pounceSourceActor);
+			pounceActorToHit.actorBody.velocity = Vector2.zero;
+		}
+		if (pounceSourceActor != null)
+		{
+			pounceSourceActor.actorBody.velocity = Vector2.zero;
+		}
 		//TODO: play sound
 	}
 

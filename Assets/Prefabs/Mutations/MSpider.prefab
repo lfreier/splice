@@ -135,6 +135,9 @@ MonoBehaviour:
   mutationScriptable: {fileID: 11400000, guid: 6ed00f69202f3de40aa13d78a1e4a999, type: 2}
   projectilePrefab: {fileID: 5863126502628609983, guid: c2e88499acea9b94f9e8deb0c0b15ef0, type: 3}
   shootOffset: {x: 0.5, y: 0.375, z: 0}
+  fangCollider: {fileID: 8625996982470584874}
+  pounceActive: 0
+  pounceSpeed: 1500
 --- !u!1 &1760294464999963614
 GameObject:
   m_ObjectHideFlags: 0
@@ -381,7 +384,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 919069219
   m_SortingLayer: 2
-  m_SortingOrder: 4
+  m_SortingOrder: 6
   m_Sprite: {fileID: 21300000, guid: 37a01e77aad1543469fdbd022745527f, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -467,7 +470,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 919069219
   m_SortingLayer: 2
-  m_SortingOrder: 4
+  m_SortingOrder: 6
   m_Sprite: {fileID: 21300000, guid: 37a01e77aad1543469fdbd022745527f, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 1
@@ -489,7 +492,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1601872407920207536}
   - component: {fileID: 8625996982470584874}
-  m_Layer: 0
+  - component: {fileID: 516214715125784486}
+  m_Layer: 15
   m_Name: fangs_collider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -557,6 +561,19 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 0.375, y: 0.25}
   m_EdgeRadius: 0
+--- !u!114 &516214715125784486
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7600918573492933049}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f3406dbc18b0f3418151c7d0ca625f3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  attachedSpider: {fileID: 2529140114203190795}
 --- !u!1 &8315948731866586635
 GameObject:
   m_ObjectHideFlags: 0

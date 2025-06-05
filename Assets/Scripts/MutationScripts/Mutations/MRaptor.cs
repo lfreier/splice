@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using UnityEngine;
+using static ActorDefs;
 
 public class MRaptor : MonoBehaviour, MutationInterface
 {
@@ -25,11 +26,15 @@ public class MRaptor : MonoBehaviour, MutationInterface
 
 	public ClawWeapon equippedClaw = null;
 
+	private static int MUT_XFORM_TIMER_INDEX = 0;
+
 	private GameManager gameManager;
 
 	private void OnDestroy()
 	{
 		gameManager.playerAbilityEvent -= abilityInputPressed;
+		gameManager.signalMovementUnlocked();
+		gameManager.signalRotationUnlocked();
 	}
 
 	private void FixedUpdate()
@@ -157,8 +162,8 @@ public class MRaptor : MonoBehaviour, MutationInterface
 			pounceTarget = Vector2.ClampMagnitude(playerIn.pointerPos() - (Vector2)actorWielder.transform.position, 1);
 		}
 
-		actorWielder.gameManager.signalMovementLocked();
-		actorWielder.gameManager.signalRotationLocked();
+		gameManager.signalMovementLocked();
+		gameManager.signalRotationLocked();
 		actorWielder.setActorCollision(false, new string[] { GameManager.OBJECT_MID_LAYER });
 
 		pounceActive = true;
@@ -166,7 +171,7 @@ public class MRaptor : MonoBehaviour, MutationInterface
 
 		if (transformTimer <= 0)
 		{
-			transformTimer = mutationScriptable.values[0];
+			transformTimer = mutationScriptable.values[MUT_XFORM_TIMER_INDEX];
 		}
 
 		if (equippedClaw == null)
@@ -188,6 +193,7 @@ public class MRaptor : MonoBehaviour, MutationInterface
 	public void stopPounce(bool targetHit)
 	{
 		anim.SetTrigger(MutationDefs.TRIGGER_RAPTOR_PEND);
+		anim.ResetTrigger(MutationDefs.TRIGGER_RAPTOR_PSTART);
 
 		pounceActive = false;
 		pounceDistanceMoved = 0F;
@@ -195,10 +201,11 @@ public class MRaptor : MonoBehaviour, MutationInterface
 		pounceTarget = Vector3.zero;
 		pounceCollider.enabled = false;
 
+
 		if (!targetHit)
 		{
-			actorWielder.gameManager.signalMovementUnlocked();
-			actorWielder.gameManager.signalRotationUnlocked();
+			gameManager.signalMovementUnlocked();
+			gameManager.signalRotationUnlocked();
 		}
 		actorWielder.setActorCollision(true, null);
 	}
@@ -210,7 +217,12 @@ public class MRaptor : MonoBehaviour, MutationInterface
 			Actor actorHit = collision.gameObject.GetComponentInChildren<Actor>();
 			if (actorHit != null)
 			{
-				EffectDefs.effectApply(actorHit, gameManager.effectManager.stun1);
+				EnemyMove enemyMove = actorHit.GetComponentInChildren<EnemyMove>();
+				if (enemyMove != null)
+				{
+					enemyMove.setStunResponse(actorWielder);
+					EffectDefs.effectApply(actorHit, gameManager.effectManager.stun1);
+				}
 				if (equippedClaw != null)
 				{
 					stopPounce(true);

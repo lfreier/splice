@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Threading.Tasks;
 using Unity.VisualScripting;
 using UnityEngine;
 using static PickupDefs;
@@ -99,14 +100,15 @@ public class Cell : MonoBehaviour, PickupInterface
 
 	public void pickup(Actor actorTarget)
 	{
-		gameManager.playerStats.addItem(this);
+		gameManager = GameManager.Instance;
 		animator.SetTrigger(CELL_ANIM_TRIGGER);
+		gameManager.playerStats.addItem(this);
 	}
 	
 	private void OnTriggerEnter2D(Collider2D collision)
 	{
 		Actor target;
-		if ((target = collision.transform.GetComponent<Actor>()) != null)
+		if ((target = collision.transform.GetComponentInParent<Actor>()) != null)
 		{
 			if (target.tag == ActorDefs.playerTag && pickedUp == false)
 			{

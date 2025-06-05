@@ -93,10 +93,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bleed1: {fileID: 11400000, guid: 19c01944902b8b34ebd0f33dad44fc3a, type: 2}
+  bleed1Half: {fileID: 11400000, guid: 92b68de03f01293469c09bc648bec764, type: 2}
+  bleed2Half: {fileID: 11400000, guid: af3eae248447a4947a1f7b76b41614eb, type: 2}
   stunHalf: {fileID: 11400000, guid: d56cb6eaeed347642b2e0dd57748b9e8, type: 2}
   stunThrow: {fileID: 11400000, guid: 7422d2d157bf8b34990fd1d9b5276485, type: 2}
   stunParry: {fileID: 11400000, guid: 865c7d3cf90638f468f04540f7cb4ea0, type: 2}
   stun1: {fileID: 11400000, guid: d92e4d46a82385f4c9f7e376918ad3bc, type: 2}
+  stun1Half: {fileID: 11400000, guid: 75bded2d52fc2f24686cd90f494b3962, type: 2}
+  stun2Half: {fileID: 11400000, guid: bb9b34f7c7a52ea45a1756ac7628779f, type: 2}
   stun3: {fileID: 11400000, guid: 87cc1f8670aa6ef48ad61bc0ba8c6f2d, type: 2}
   stunPermanent: {fileID: 11400000, guid: 5c2f8452a537f96468a2f60eb9ccaba3, type: 2}
   iFrame0: {fileID: 11400000, guid: 9a999b547a817c54bb898f5610914bde, type: 2}
@@ -161,6 +165,14 @@ MonoBehaviour:
   weaponScalpelObstacleHit: {fileID: 0}
   weaponScalpelActorHit: {fileID: 0}
   weaponScalpelBreak: {fileID: 0}
+  weaponBladeArmSwing: {fileID: 0}
+  weaponBladeArmHit: {fileID: 0}
+  weaponBladeArmObstacleHit: {fileID: 0}
+  weaponBladeArmActorHit: {fileID: 0}
+  weaponRaptorSwing: {fileID: 0}
+  weaponRaptorHit: {fileID: 0}
+  weaponRaptorObstacleHit: {fileID: 0}
+  weaponRaptorActorHit: {fileID: 0}
   sciDeath1: {fileID: 0}
   sciDeath2: {fileID: 0}
   sciDeath3: {fileID: 0}

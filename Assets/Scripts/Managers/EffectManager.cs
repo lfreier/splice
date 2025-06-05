@@ -6,11 +6,15 @@ public class EffectManager : MonoBehaviour
 	private static EffectManager instance = null;
 
 	public EffectScriptable bleed1;
+	public EffectScriptable bleed1Half;
+	public EffectScriptable bleed2Half;
 
 	public EffectScriptable stunHalf;
 	public EffectScriptable stunThrow;
 	public EffectScriptable stunParry;
 	public EffectScriptable stun1;
+	public EffectScriptable stun1Half;
+	public EffectScriptable stun2Half;
 	public EffectScriptable stun3;
 	public EffectScriptable stunPermanent;
 

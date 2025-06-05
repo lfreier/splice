@@ -7,7 +7,7 @@ public class MSpore : MonoBehaviour, MutationInterface
 {
 	public MutationScriptable mutationScriptable;
 
-	public Actor wielder;
+	public Actor actorWielder;
 	public PlayerInteract pInteract;
 	public PlayerInputs pInputs;
 
@@ -15,10 +15,16 @@ public class MSpore : MonoBehaviour, MutationInterface
 
 	public Sprite icon;
 
+	public GameObject sporeMinePrefab;
+
+	private static int MINE_INDEX = 0;
+	private GameManager gameManager;
+
 	private void OnDestroy()
 	{
-		GameManager.Instance.playerAbilityEvent -= abilityInputPressed;
-		GameManager.Instance.playerSecondaryEvent -= abilitySecondaryPressed;
+		gameManager.playerAbilityEvent -= abilityInputPressed;
+		gameManager.playerAbilitySecondaryEvent -= abilityInputSecondaryPressed;
+		gameManager.playerSecondaryEvent -= abilitySecondaryPressed;
 	}
 
 	public void Start()
@@ -28,6 +34,11 @@ public class MSpore : MonoBehaviour, MutationInterface
 
 	private void abilityInputPressed()
 	{
+		if (pInteract == null)
+		{
+			return;
+		}
+
 		//TODO: play animation
 		RaycastHit2D[] corpses = Physics2D.CircleCastAll(pInteract.interactCollider.bounds.center, ActorDefs.GLOBAL_PICKUP_RADIUS, Vector2.zero, ActorDefs.GLOBAL_PICKUP_RADIUS, LayerMask.GetMask(ActorDefs.corpseLayer));
 		if (corpses == null)
@@ -38,19 +49,39 @@ public class MSpore : MonoBehaviour, MutationInterface
 		{
 			Corpse checkCorpse = rayHit.collider.gameObject.GetComponent<Corpse>();
 			if (checkCorpse != null
-				&& mutationScriptable.mutCost <= wielder.gameManager.playerStats.getMutationBar())
+				&& mutationScriptable.mutCost <= actorWielder.gameManager.playerStats.getMutationBar())
 			{
-				wielder.gameManager.playerStats.changeMutationBar(-mutationScriptable.mutCost);
+				actorWielder.gameManager.playerStats.changeMutationBar(-mutationScriptable.mutCost);
 				raiseZombie(checkCorpse);
 				break;
 			}
 		}
 	}
 
+	private void abilityInputSecondaryPressed()
+	{
+		if (mutationScriptable.values[MINE_INDEX] <= actorWielder.gameManager.playerStats.getMutationBar())
+		{
+			actorWielder.gameManager.playerStats.changeMutationBar(Mathf.RoundToInt(-mutationScriptable.values[MINE_INDEX]));
+			Vector2 placingLoc = actorWielder.transform.position + actorWielder.transform.up * 0.75F;
+			RaycastHit2D[] hits = Physics2D.RaycastAll(actorWielder.transform.position, placingLoc - (Vector2)actorWielder.transform.position, (placingLoc - (Vector2)actorWielder.transform.position).magnitude + 0.5F, gameManager.unwalkableLayers.value);
+			if (hits != null && hits.Length > 0)
+			{
+				placingLoc = actorWielder.transform.position;
+			}
+			Instantiate(sporeMinePrefab, placingLoc, actorWielder.transform.rotation, null);
+		}
+	}
+
 	private void abilitySecondaryPressed()
 	{
+		if (summons == null || summons.Count <= 0)
+		{
+			return;
+		}
+
 		Vector2 pointerLoc = pInputs.pointerPos();
-		GameObject click = Instantiate(wielder.gameManager.prefabManager.clickPrefab, pointerLoc, Quaternion.identity, null);
+		GameObject click = Instantiate(actorWielder.gameManager.prefabManager.clickPrefab, pointerLoc, Quaternion.identity, null);
 
 		for (int i = 0; i < summons.Count; i++)
 		{
@@ -71,9 +102,9 @@ public class MSpore : MonoBehaviour, MutationInterface
 
 	public bool raiseZombie(Corpse corpse)
 	{
-		if (corpse != null && corpse.corpseSprite != null && wielder.gameManager.prefabManager.zombiePrefabs.Length > (int)corpse.type)
+		if (corpse != null && corpse.corpseSprite != null && actorWielder.gameManager.prefabManager.zombiePrefabs.Length > (int)corpse.type)
 		{
-			GameObject newZombie = Instantiate(wielder.gameManager.prefabManager.zombiePrefabs[(int)corpse.type], corpse.transform.position, corpse.transform.rotation, null);
+			GameObject newZombie = Instantiate(actorWielder.gameManager.prefabManager.zombiePrefabs[(int)corpse.type], corpse.transform.position, corpse.transform.rotation, null);
 			if (newZombie != null)
 			{
 				Destroy(corpse.corpseSprite);
@@ -110,15 +141,13 @@ public class MSpore : MonoBehaviour, MutationInterface
 
 	public void init(Actor wielder)
 	{
+		gameManager = GameManager.Instance;
 		setWielder(wielder);
-		GameManager.Instance.playerAbilityEvent += abilityInputPressed;
-		GameManager.Instance.playerSecondaryEvent += abilitySecondaryPressed;
+		gameManager.playerAbilityEvent += abilityInputPressed;
+		gameManager.playerSecondaryEvent += abilitySecondaryPressed;
+		gameManager.playerAbilitySecondaryEvent += abilityInputSecondaryPressed;
 		pInputs = wielder.gameObject.GetComponent<PlayerInputs>();
 		pInteract = wielder.gameObject.GetComponentInChildren<PlayerInteract>();
-		if (pInteract != null && pInteract.interactCollider != null)
-		{
-			pInteract.interactCollider.includeLayers |= (1 << LayerMask.NameToLayer(ActorDefs.corpseLayer));
-		}
 	}
 
 	public mutationTrigger getMutationType()
@@ -143,7 +172,7 @@ public class MSpore : MonoBehaviour, MutationInterface
 
 	public void setWielder(Actor wielder)
 	{
-		this.wielder = wielder;
+		this.actorWielder = wielder;
 	}
 
 	Sprite[] MutationInterface.getTutorialSprites()

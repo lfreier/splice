@@ -43,6 +43,11 @@ public class GameManager : MonoBehaviour
 	public delegate void PlayerAbilityReleaseEvent();
 	public event PlayerAbilityReleaseEvent playerAbilityReleaseEvent;
 
+	public delegate void PlayerAbilitySecondaryEvent();
+	public event PlayerAbilitySecondaryEvent playerAbilitySecondaryEvent;
+	public delegate void PlayerAbilitySecondaryReleaseEvent();
+	public event PlayerAbilityReleaseEvent playerAbilitySecondaryReleaseEvent;
+
 	public delegate void PlayerSecondaryEvent();
 	public event PlayerSecondaryEvent playerSecondaryEvent;
 
@@ -394,6 +399,16 @@ public class GameManager : MonoBehaviour
 	public void signalPlayerAbilityReleaseEvent()
 	{
 		playerAbilityReleaseEvent?.Invoke();
+	}
+
+	public void signalPlayerAbilitySecondaryReleaseEvent()
+	{
+		playerAbilitySecondaryReleaseEvent?.Invoke();
+	}
+
+	public void signalPlayerAbilitySecondaryEvent()
+	{
+		playerAbilitySecondaryEvent?.Invoke();
 	}
 
 	public void signalPlayerSecondaryEvent()

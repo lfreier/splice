@@ -784,6 +784,12 @@ public class EnemyMove : MonoBehaviour
 		}
 	}
 
+	public void setStunResponse(Vector2 target)
+	{
+		attackTarget = target;
+		_nextDetection = detectMode.seeking;
+	}
+
 	public void setStunResponse(Actor sourceActor)
 	{
 		if (sourceActor == null)

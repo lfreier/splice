@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using UnityEngine;
+using static ActorDefs;
 using static UnityEngine.UI.Image;
 
 public class MSpider : MonoBehaviour, MutationInterface
@@ -16,7 +17,22 @@ public class MSpider : MonoBehaviour, MutationInterface
 
 	public Vector3 shootOffset;
 
+	public Collider2D fangCollider;
+
+	private Actor actorToDamage;
+	private float damagePerAttack;
+
+	private bool animationActive;
+
+	public bool pounceActive;
+	private Vector2 pounceTarget;
+	public float pounceSpeed = 1500F;
+
 	private PlayerInputs playerIn;
+
+	private static int MUT_SEC_COST_INDEX = 0;
+	private static int MUT_FANG_DMG_INDEX = 1;
+	private static int MUT_FANG_HEAL_INDEX = 2;
 
 	private GameManager gameManager;
 
@@ -24,14 +40,35 @@ public class MSpider : MonoBehaviour, MutationInterface
 	{
 		GameManager gm = GameManager.Instance;
 		gm.playerAbilityEvent -= abilityInputPressed;
+		gm.playerAbilitySecondaryEvent -= abilitySecondaryInputPressed;
+	}
+
+	private void FixedUpdate()
+	{
+		if (pounceActive)
+		{
+			//every frame, move player in pounce target direction
+			actorWielder.Move(pounceTarget * pounceSpeed * Time.deltaTime);
+		}
 	}
 
 	private void abilityInputPressed()
 	{
-		if (mutationScriptable.mutCost <= gameManager.playerStats.getMutationBar())
+		if (mutationScriptable.mutCost <= gameManager.playerStats.getMutationBar() && !animationActive)
+		{
+			anim.SetTrigger(MutationDefs.TRIGGER_SPIDER_STING);
+			gameManager.playerStats.changeMutationBar(-mutationScriptable.mutCost);
+			animationActive = true;
+		}
+	}
+
+	private void abilitySecondaryInputPressed()
+	{
+		if (mutationScriptable.values[MUT_SEC_COST_INDEX] <= gameManager.playerStats.getMutationBar() && !animationActive)
 		{
 			anim.SetTrigger(MutationDefs.TRIGGER_SPIDER_SHOOT);
-			gameManager.playerStats.changeMutationBar(-mutationScriptable.mutCost);
+			gameManager.playerStats.changeMutationBar(Mathf.RoundToInt(-mutationScriptable.values[MUT_SEC_COST_INDEX]));
+			animationActive = true;
 		}
 	}
 
@@ -62,6 +99,91 @@ public class MSpider : MonoBehaviour, MutationInterface
 		}
 	}
 
+	public void startPounce()
+	{
+		pounceTarget = Vector2.ClampMagnitude(playerIn.pointerPos() - (Vector2)actorWielder.transform.position, 1);
+		pounceActive = true;
+		gameManager.signalMovementLocked();
+		gameManager.signalRotationLocked();
+	}
+
+	public void stopAbility()
+	{
+		gameManager.signalMovementUnlocked();
+		gameManager.signalRotationUnlocked();
+
+		animationActive = false;
+		actorToDamage = null;
+	}
+
+	public void stopPounce()
+	{
+		pounceTarget = Vector2.zero;
+		pounceActive = false;
+		actorWielder.actorBody.velocity = Vector3.zero;
+	}
+
+	public void enableFangCollider(int enable)
+	{
+		fangCollider.enabled = enable > 0;
+	}
+
+	public void triggerFangAttack(Actor actorHit)
+	{
+		EnemyMove enemyMove = actorHit.GetComponentInChildren<EnemyMove>();
+		if (enemyMove != null)
+		{
+			if ((enemyMove._detection == detectMode.idle || enemyMove._detection == detectMode.suspicious || enemyMove._detection == detectMode.wandering) && !enemyMove.summoned)
+			{
+				enemyMove.setStunResponse(actorWielder);
+				EffectDefs.effectApply(actorHit, gameManager.effectManager.stun1);
+			}
+			else if (actorHit.isStunned())
+			{
+				enemyMove.setStunResponse(actorWielder);
+				actorHit.addStun(1F);
+			}
+			else
+			{
+				/* only stunned or unaware targets can be stung */
+				return;
+			}
+		}
+
+		actorToDamage = actorHit;
+
+		damagePerAttack = mutationScriptable.values[MUT_FANG_DMG_INDEX];
+
+		pounceTarget = Vector2.zero;
+		pounceActive = false;
+
+		/* split damage up if it will kill*/
+		if (actorHit.actorData.health < (damagePerAttack * 4))
+		{
+			damagePerAttack = actorHit.actorData.health / 4;
+		}
+
+		actorToDamage.actorBody.velocity = Vector3.zero;
+		actorWielder.actorBody.velocity = Vector3.zero;
+		actorWielder.actorBody.rotation = actorWielder.aimAngle(actorHit.transform.position);
+
+		anim.SetTrigger(MutationDefs.TRIGGER_SPIDER_STING_HIT);
+	}
+
+	public void triggerFangDamage()
+	{
+		if (actorToDamage != null)
+		{
+			float startingHp = actorToDamage.actorData.health;
+			actorToDamage.takeDamage(damagePerAttack);
+
+			if (startingHp <= damagePerAttack)
+			{
+				actorWielder.takeHeal(mutationScriptable.values[MUT_FANG_HEAL_INDEX]);
+			}
+		}
+	}
+
 	public string getDisplayName()
 	{
 		return MutationDefs.NAME_SPIDER;
@@ -88,6 +210,8 @@ public class MSpider : MonoBehaviour, MutationInterface
 	{
 		gameManager = GameManager.Instance;
 		gameManager.playerAbilityEvent += abilityInputPressed;
+		gameManager.playerAbilitySecondaryEvent += abilitySecondaryInputPressed;
+		animationActive = false;
 		setWielder(actor);
 
 		return this;

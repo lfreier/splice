@@ -159,12 +159,19 @@ public class PlayerInputs: MonoBehaviour
 		/* send out some signals */
 		if (specialActions[0] != 0 && lastSpecialActions[0] == 0)
 		{
-			Debug.Log("Sending ability event");
 			gameManager.signalPlayerAbilityEvent();
 		}
 		if (specialActions[0] == 0 && lastSpecialActions[0] != 0)
 		{
 			gameManager.signalPlayerAbilityReleaseEvent();
+		}
+		if (specialActions[1] != 0 && lastSpecialActions[1] == 0)
+		{
+			gameManager.signalPlayerAbilitySecondaryEvent();
+		}
+		if (specialActions[1] == 0 && lastSpecialActions[1] != 0)
+		{
+			gameManager.signalPlayerAbilitySecondaryReleaseEvent();
 		}
 		if (interactAction != 0 && lastInteractAction == 0)
 		{

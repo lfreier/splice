@@ -16,6 +16,8 @@ public class Projectile : MonoBehaviour
 
 	private static string TRIGGER_PROJECTILE_HIT = "TriggerProjectileHit";
 
+	private Vector2 originVector;
+
 	private float expireTimer = 0F;
 	private static float expireLength = 3F;
 
@@ -45,10 +47,11 @@ public class Projectile : MonoBehaviour
 	{
 		float rotation = (Mathf.Atan2((target - origin).y, (target - origin).x) * Mathf.Rad2Deg) - 90F;
 		transform.SetPositionAndRotation(origin, Quaternion.Euler(0, 0, rotation));
-
-		body.AddForce(Vector2.ClampMagnitude(target - origin, 1) * (projectileLaunchForce + (target - actorOrigin.actorBody.velocity).magnitude));
+		float originVelocity = actorOrigin.actorBody.velocity.magnitude;
+		Debug.Log("extra vel: " + originVelocity);
+		body.AddForce(Vector2.ClampMagnitude(target - origin, 1) * (projectileLaunchForce + originVelocity));
 		expireTimer = expireLength;
-
+		originVector = origin;
 		this.actorOrigin = actorOrigin;
 	}
 
@@ -56,7 +59,12 @@ public class Projectile : MonoBehaviour
 	{
 		if (actorHit != null)
 		{
-			EffectDefs.effectApply(actorHit, actorHit.gameManager.effectManager.stun3);
+			EnemyMove enemyMove = actorHit.GetComponentInChildren<EnemyMove>();
+			if (enemyMove != null)
+			{
+				enemyMove.setStunResponse(originVector);
+			}
+			EffectDefs.effectApply(actorHit, actorHit.gameManager.effectManager.stunParry);
 			//TODO: add visual
 		}
 	}
@@ -74,6 +82,7 @@ public class Projectile : MonoBehaviour
 			{
 				body.velocity = Vector2.zero;
 				anim.SetTrigger(TRIGGER_PROJECTILE_HIT);
+				processHit();
 			}
 		}
 	}

@@ -550,7 +550,7 @@ GameObject:
   - component: {fileID: 2852806305569758701}
   - component: {fileID: 2090842667557003160}
   - component: {fileID: 3117737981495780702}
-  m_Layer: 14
+  m_Layer: 11
   m_Name: cell
   m_TagString: ObjectPickup
   m_Icon: {fileID: 0}

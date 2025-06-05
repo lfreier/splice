@@ -164,10 +164,12 @@ public class MGrabber : MonoBehaviour
 		if (obstacle != null && obstacle._obstacleScriptable.weight <= maxWeight)
 		{
 			int cost = mutCost1;
+			/*
 			if (obstacle._obstacleScriptable.weight == maxWeight)
 			{
 				cost = mutCost2;
 			}
+			*/
 			Rigidbody2D objBody = target.GetComponentInChildren<Rigidbody2D>();
 			if (objBody == null)
 			{
