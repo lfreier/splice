@@ -21,7 +21,6 @@ public static class MutationDefs
 	public static string TRIGGER_SPIDER_STING		= "TriggerSpiderSting";
 	public static string TRIGGER_SPIDER_STING_HIT	= "TriggerSpiderStingHit";
 
-	public static string TRIGGER_SPORE_RES			= "TriggerSporeRes";
 	public static string TRIGGER_SPORE_MINE			= "TriggerSporeMine";
 
 	public static float ABILITY_BUFF_TIMER		= 0.5F;

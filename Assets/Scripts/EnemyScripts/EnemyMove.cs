@@ -61,6 +61,7 @@ public class EnemyMove : MonoBehaviour
 
 	private bool showNotice = true;
 	private bool showSus = true;
+	public float forcedTimer = 0;
 
 	public bool summoned = false;
 
@@ -70,12 +71,12 @@ public class EnemyMove : MonoBehaviour
 	{
 		gameManager = GameManager.Instance;
 		pathfinder = new Pathfinding();
-		//pathfinder.grid = new PathGrid();
 		pathfinder.startPathfinding = false;
 		usingPathfinding = false;
 		LevelData levelData = gameManager.levelManager.currLevelData;
+		//pathfinder.grid = new PathGrid();
 		//pathfinder.grid.init(levelData.gridWorldSize, levelData.nodeRadius);
-		
+
 		PathColliderHelper colliderHelper = GetComponentInChildren<PathColliderHelper>();
 		if (colliderHelper != null)
 		{
@@ -112,6 +113,16 @@ public class EnemyMove : MonoBehaviour
 		attackTargetActor = null;
 		eyeStart = transform.position + transform.up * 0.5F;
 		_oldDetection = _detection;
+
+		if (forcedTimer != 0)
+		{
+			forcedTimer -= Time.deltaTime;
+			if (forcedTimer <= 0)
+			{
+				_detection = detectMode.idle;
+				forcedTimer = 0;
+			}
+		}
 
 		//functions for noticing hostiles
 		/* IMPORTANT NOTE: 
@@ -160,7 +171,7 @@ public class EnemyMove : MonoBehaviour
 		if ((_detection == detectMode.idle || _detection == detectMode.forced) && idlePath.Length > 0)
 		{
 			/* If at a path position, go to next */
-			if (((Vector2)actorBody.transform.position -  idlePath[pathIndex]).magnitude < moveTargetError)
+			if (((Vector2)actorBody.transform.position - idlePath[pathIndex]).magnitude < moveTargetError)
 			{
 				if (pathIndex < idlePathPauseTime.Length)
 				{
@@ -203,7 +214,7 @@ public class EnemyMove : MonoBehaviour
 		else
 		{
 			moveTarget = actor.transform.position;
-		}
+		}		
 
 		if (_detection == detectMode.frightened)
 		{
@@ -387,6 +398,13 @@ public class EnemyMove : MonoBehaviour
 					stateTimer = HOSTILE_TIMER_LENGTH;
 				}
 				return;
+			case detectMode.idle:
+			case detectMode.forced:
+				if (summoned)
+				{
+					clearPathSummon();
+				}
+				break;
 			default:
 				break;
 		}
@@ -601,7 +619,7 @@ public class EnemyMove : MonoBehaviour
 		RaycastHit2D[] heardSound = Physics2D.CircleCastAll(new Vector2(this.transform.position.x, this.transform.position.y), _actorData.hearingRange, Vector2.zero, _actorData.hearingRange, gameManager.soundLayer);
 
 		/* States that should override hearing */
-		if (_detection == detectMode.getWeapon || _detection == detectMode.hostile || _detection == detectMode.frightened || heardSound.Length == 0)
+		if (_detection == detectMode.getWeapon || _detection == detectMode.hostile || _detection == detectMode.frightened || heardSound.Length == 0 || summoned)
 		{
 			return;
 		}
@@ -799,6 +817,12 @@ public class EnemyMove : MonoBehaviour
 		attackTarget = sourceActor.transform.position;
 		_nextDetection = detectMode.seeking;
 		attackTargetActor = sourceActor;
+	}
+	
+	private void clearPathSummon()
+	{
+		idlePath = new Vector2[] { };
+		idlePathPauseTime = new float[] { };
 	}
 
 	private void setStateMoveSpeed()

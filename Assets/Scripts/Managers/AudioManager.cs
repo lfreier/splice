@@ -21,6 +21,12 @@ public class AudioManager : MonoBehaviour
 	public AudioClip parrySuccess;
 
 	public AudioClip playerDeath;
+	
+	//zombie attack
+
+	//spore - summonAttempt, summonSuccess, clickTick, mineArm, mineTrigger, mineExplosion
+	//spider - web, fang, fangShred
+	//raptor - pounce, shred
 
 	public AudioClip weaponFistSwing;
 	public AudioClip weaponFistWallHit;

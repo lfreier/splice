@@ -16,8 +16,13 @@ public class MSpore : MonoBehaviour, MutationInterface
 	public Sprite icon;
 
 	public GameObject sporeMinePrefab;
+	public GameObject sporeCloudPrefab;
 
 	private static int MINE_INDEX = 0;
+	private static float SPORE_CLOUD_RADIUS = 0.4375F;
+	private static float SUMM_CMD_FORCE_TIME = 0.75F;
+
+	private float bufferTimer = 0F;
 	private GameManager gameManager;
 
 	private void OnDestroy()
@@ -27,28 +32,43 @@ public class MSpore : MonoBehaviour, MutationInterface
 		gameManager.playerSecondaryEvent -= abilitySecondaryPressed;
 	}
 
-	public void Start()
+	void Start()
 	{
 		summons = new List<EnemyMove>();
 	}
 
+	void FixedUpdate()
+	{
+		if (bufferTimer != 0)
+		{
+			bufferTimer -= Time.deltaTime;
+			if (bufferTimer <= 0)
+			{
+				bufferTimer = 0;
+			}
+		}
+	}
+
+	/* summoning zombies */
 	private void abilityInputPressed()
 	{
-		if (pInteract == null)
+		Vector2 placingLoc = actorWielder.transform.position + actorWielder.transform.up * 0.5625F;
+		if (bufferTimer <= 0 && sporeCloudPrefab != null)
 		{
-			return;
+			Instantiate(sporeCloudPrefab, placingLoc, actorWielder.transform.rotation, null);
 		}
 
 		//TODO: play animation
-		RaycastHit2D[] corpses = Physics2D.CircleCastAll(pInteract.interactCollider.bounds.center, ActorDefs.GLOBAL_PICKUP_RADIUS, Vector2.zero, ActorDefs.GLOBAL_PICKUP_RADIUS, LayerMask.GetMask(ActorDefs.corpseLayer));
+		RaycastHit2D[] corpses = Physics2D.CircleCastAll(placingLoc, SPORE_CLOUD_RADIUS, Vector2.zero, ActorDefs.GLOBAL_PICKUP_RADIUS, LayerMask.GetMask(ActorDefs.corpseLayer));
 		if (corpses == null)
 		{
+			bufferTimer = MutationDefs.ABILITY_BUFF_TIMER;
 			return;
 		}
 		foreach (RaycastHit2D rayHit in corpses)
 		{
 			Corpse checkCorpse = rayHit.collider.gameObject.GetComponent<Corpse>();
-			if (checkCorpse != null
+			if (checkCorpse != null && bufferTimer <= 0
 				&& mutationScriptable.mutCost <= actorWielder.gameManager.playerStats.getMutationBar())
 			{
 				actorWielder.gameManager.playerStats.changeMutationBar(-mutationScriptable.mutCost);
@@ -56,11 +76,13 @@ public class MSpore : MonoBehaviour, MutationInterface
 				break;
 			}
 		}
+		bufferTimer = MutationDefs.ABILITY_BUFF_TIMER;
 	}
 
+	/* placing mines */
 	private void abilityInputSecondaryPressed()
 	{
-		if (mutationScriptable.values[MINE_INDEX] <= actorWielder.gameManager.playerStats.getMutationBar())
+		if (mutationScriptable.values[MINE_INDEX] <= actorWielder.gameManager.playerStats.getMutationBar() && bufferTimer <= 0)
 		{
 			actorWielder.gameManager.playerStats.changeMutationBar(Mathf.RoundToInt(-mutationScriptable.values[MINE_INDEX]));
 			Vector2 placingLoc = actorWielder.transform.position + actorWielder.transform.up * 0.75F;
@@ -70,9 +92,11 @@ public class MSpore : MonoBehaviour, MutationInterface
 				placingLoc = actorWielder.transform.position;
 			}
 			Instantiate(sporeMinePrefab, placingLoc, actorWielder.transform.rotation, null);
+			bufferTimer = MutationDefs.ABILITY_BUFF_TIMER;
 		}
 	}
 
+	/* commanding summons */
 	private void abilitySecondaryPressed()
 	{
 		if (summons == null || summons.Count <= 0)
@@ -93,9 +117,10 @@ public class MSpore : MonoBehaviour, MutationInterface
 				continue;
 			}
 
-			move.usingPathfinding = true;
-			move._detection = ActorDefs.detectMode.idle;
+			move._detection = ActorDefs.detectMode.forced;
+			move.forcedTimer = SUMM_CMD_FORCE_TIME;
 			move.idlePath = new Vector2[] { pointerLoc };
+			move.idlePathPauseTime = new float[] { 10000F };
 			move.pathIndex = 0;
 		}
 	}

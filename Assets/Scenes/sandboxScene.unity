@@ -1374,6 +1374,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1940291884269535469, guid: a55cd85b43b13ca418aa8776bcf8b2a9, type: 3}
+      propertyPath: triggerLength
+      value: 0.38
+      objectReference: {fileID: 0}
     - target: {fileID: 3426236203271885681, guid: a55cd85b43b13ca418aa8776bcf8b2a9, type: 3}
       propertyPath: m_LocalPosition.x
       value: -16.590595
@@ -1417,6 +1421,10 @@ PrefabInstance:
     - target: {fileID: 5794746522243500281, guid: a55cd85b43b13ca418aa8776bcf8b2a9, type: 3}
       propertyPath: m_Name
       value: sporeMine
+      objectReference: {fileID: 0}
+    - target: {fileID: 5794746522243500281, guid: a55cd85b43b13ca418aa8776bcf8b2a9, type: 3}
+      propertyPath: m_Layer
+      value: 31
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

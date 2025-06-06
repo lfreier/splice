@@ -79,6 +79,17 @@ public class EBleed : MonoBehaviour, EffectInterface
 		timer = effectScriptable.effectLength;
 		tickTimer = effectScriptable.tickLength;
 
+		if (effectScriptable.effectSprite != null)
+		{
+			SpriteRenderer newSprite = gameObject.GetComponentInChildren<SpriteRenderer>();
+			if (newSprite != null)
+			{
+				newSprite.sprite = effectScriptable.effectSprite;
+				newSprite.size = new Vector2(1, 1);
+				newSprite.enabled = true;
+			}
+		}
+
 		bleedDamage = effectScriptable.effectStrength;
 	}
 }

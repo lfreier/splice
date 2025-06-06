@@ -32,6 +32,10 @@ PrefabInstance:
       propertyPath: _detection
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4062413270722288161, guid: 0727d2ff4cafc3e4d864177c91d615b2, type: 3}
+      propertyPath: moveTargetError
+      value: 0.4
+      objectReference: {fileID: 0}
     - target: {fileID: 4877140400163852283, guid: 0727d2ff4cafc3e4d864177c91d615b2, type: 3}
       propertyPath: corpsePrefab
       value: 
@@ -40,6 +44,10 @@ PrefabInstance:
       propertyPath: _actorScriptable
       value: 
       objectReference: {fileID: 11400000, guid: 636384bbb658ea649af224b606452eb7, type: 2}
+    - target: {fileID: 4877140400163852283, guid: 0727d2ff4cafc3e4d864177c91d615b2, type: 3}
+      propertyPath: droppedItems.Array.size
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5942603363613742946, guid: 0727d2ff4cafc3e4d864177c91d615b2, type: 3}
       propertyPath: m_Sprite
       value: 

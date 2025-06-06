@@ -3,14 +3,20 @@ using UnityEngine;
 
 public class MSporeMine : MonoBehaviour
 {
+	public Animator anim;
+
 	public Collider2D triggerCollider;
 	public Collider2D explosionCollider;
+
+	public SpriteRenderer mineSprite;
 
 	private float armTimer = 0;
 	private float triggerTimer = 0;
 
-	private static float armingLength = 1.5F;
-	private static float triggerLength = 0.5F;
+	private bool triggered = false;
+
+	public float armingLength = 1.2F;
+	public float triggerLength = 0.45F;
 
 	void Start()
 	{
@@ -26,6 +32,7 @@ public class MSporeMine : MonoBehaviour
 			if (armTimer <= 0)
 			{
 				arm();
+				armTimer = 0;
 			}
 		}
 
@@ -35,6 +42,7 @@ public class MSporeMine : MonoBehaviour
 			if (triggerTimer <= 0)
 			{
 				trigger();
+				triggerTimer = 0;
 			}
 		}
 	}
@@ -42,19 +50,29 @@ public class MSporeMine : MonoBehaviour
 	public void arm()
 	{
 		triggerCollider.enabled = true;
+		mineSprite.color = Color.white;
+	}
+
+	public void destroyThis()
+	{
+		Destroy(gameObject);
 	}
 
 	public void trigger()
 	{
-		explosionCollider.enabled = true;
+		mineSprite.enabled = false;
+		anim.SetTrigger(MutationDefs.TRIGGER_SPORE_MINE);
 	}
 
 	private void OnTriggerEnter2D(Collider2D collision)
 	{
 		Actor actorHit = collision.GetComponentInChildren<Actor>();
-		if (actorHit != null && actorHit.tag != ActorDefs.playerTag)
+		if (actorHit != null && !actorHit.tag.Contains(ActorDefs.playerTag) && !triggered)
 		{
 			triggerTimer = triggerLength;
+			triggerCollider.enabled = false;
+			mineSprite.color = GameManager.COLOR_RED;
+			triggered = true;
 		}
 	}
 }
