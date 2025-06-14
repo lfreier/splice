@@ -12,17 +12,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cc8d29f75fe95184cac76ec8fb595f6a, type: 3}
   m_Name: mLimb
   m_EditorClassIdentifier: 
-  <damage>k__BackingField: 0
+  <damage>k__BackingField: 1.5
   <trigger>k__BackingField: 5
   <tutorialSprites>k__BackingField:
   - {fileID: 21300000, guid: c992df785cff8da4782c12d8464a5f63, type: 3}
+  - {fileID: 21300000, guid: 613ea0af628f8204eab2308e9209bd82, type: 3}
+  - {fileID: 21300000, guid: 3c1788c483450f949ac38f09faba3a33, type: 3}
   <effectScriptable>k__BackingField: {fileID: 0}
-  <mutCost>k__BackingField: 20
+  <mutCost>k__BackingField: 10
   <startingPosition>k__BackingField: {x: -0.621, y: 0.28}
   <startingRotation>k__BackingField: -7
   <values>k__BackingField:
   - 20
-  - 0
+  - 20
   - 0
   - 0
   - 0

@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 6982541302596608334}
   - component: {fileID: 1205753272063040653}
   - component: {fileID: 9038011251867777875}
-  m_Layer: 0
+  m_Layer: 31
   m_Name: loadTutorialTrigger
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -106,4 +106,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bf336abf081bc2246bab9dfaca64e293, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  guid: 
+  guid: loadTutorialTrigger_7b5b7837-f8e5-4560-b7cc-7d83dc58bfcc
+  basicPrefabIndex: 0

@@ -65,6 +65,13 @@ public class PlayerHUD : MonoBehaviour
 
 	public AudioResource[] bgm;
 
+	public Canvas abilityIconCanvas;
+	public Image abilityIconImage1;
+	public Image abilityIconImage2;
+	public Image abilityBgFill1;
+	public Image abilityBgFill2;
+	public Image abilityIcon3;
+
 	private void Start()
 	{
 		gameManager = GameManager.Instance;
@@ -72,7 +79,7 @@ public class PlayerHUD : MonoBehaviour
 		gameManager.startMusicEvent += startNewMusic;
 		gameManager.updateHealthEvent += updateHealth;
 		gameManager.updateShieldEvent += updateShield;
-		gameManager.muteEvent += mute;
+		gameManager.volumeChangeEvent += changeVolume;
 		gameManager.updateCellCount += updateCells;
 		foreach (Canvas canvas in hudCanvas)
 		{
@@ -87,7 +94,7 @@ public class PlayerHUD : MonoBehaviour
 	private void OnDestroy()
 	{
 		gameManager.initHudEvent -= init;
-		gameManager.muteEvent -= mute;
+		gameManager.volumeChangeEvent -= changeVolume;
 		gameManager.startMusicEvent -= startNewMusic;
 		gameManager.updateHealthEvent -= updateHealth;
 		gameManager.updateShieldEvent -= updateShield;
@@ -218,6 +225,12 @@ public class PlayerHUD : MonoBehaviour
 	{
 		cellText.SetText("" + count);
 		mutationFill.fillAmount = ((float)gameManager.playerStats.getMutationBar()) / ((float)gameManager.playerStats.getMaxMutationBar());
+	}
+
+	public void setMutAbilityFill(float cost1, float cost2)
+	{
+		abilityBgFill1.fillAmount = Mathf.Min(1F, gameManager.playerStats.getMutationBar() / cost1);
+		abilityBgFill2.fillAmount = Mathf.Min(1F, gameManager.playerStats.getMutationBar() / cost2);
 	}
 
 	public void changeActiveItemIcon(Sprite icon)
@@ -544,13 +557,17 @@ public class PlayerHUD : MonoBehaviour
 		}
 	}
 
-	public void mute()
+	public void changeVolume(float change)
 	{
-		musicPlayer.mute = !musicPlayer.mute;
-		if (musicPlayer.mute == false)
+		if (musicPlayer.volume == 0 && change != 0)
 		{
-			musicPlayer.Play();
+			musicPlayer.UnPause();
 		}
-		Debug.Log("Setting mute to " + musicPlayer.mute);
+		else if (musicPlayer.volume != 0 && change == 0)
+		{
+			musicPlayer.Pause();
+		}
+		gameManager.musicVolume = change;
+		musicPlayer.volume = change;
 	}
 }

@@ -14,6 +14,7 @@ public class MRaptor : MonoBehaviour, MutationInterface
 	public bool pounceActive;
 	private float bufferTimer = 0F;
 	private float transformTimer = 0F;
+	private bool noTransform = false;
 
 	private Vector2 pounceTarget;
 	public float pounceDistance = 400F;
@@ -26,13 +27,19 @@ public class MRaptor : MonoBehaviour, MutationInterface
 
 	public ClawWeapon equippedClaw = null;
 
-	private static int MUT_XFORM_TIMER_INDEX = 0;
+	public Sprite abilityIcon1;
+	public Sprite abilityIcon2;
+
+	private static int POUNCE_COST_INDEX = 0;
+	private static int MUT_XFORM_TIMER_INDEX = 1;
 
 	private GameManager gameManager;
 
 	private void OnDestroy()
 	{
 		gameManager.playerAbilityEvent -= abilityInputPressed;
+		gameManager.playerAbilitySecondaryEvent -= abilityInputSecondaryPressed;
+		gameManager.updateCellCount -= updateCells;
 		gameManager.signalMovementUnlocked();
 		gameManager.signalRotationUnlocked();
 	}
@@ -84,6 +91,10 @@ public class MRaptor : MonoBehaviour, MutationInterface
 		}
 	}
 
+	private void updateCells(int amount)
+	{
+		gameManager.playerStats.playerHUD.setMutAbilityFill(mutationScriptable.mutCost, mutationScriptable.values[POUNCE_COST_INDEX]);
+	}
 	private void abilityInputPressed()
 	{
 		if (bufferTimer <= 0 && !pounceActive)
@@ -98,9 +109,35 @@ public class MRaptor : MonoBehaviour, MutationInterface
 			{
 				return;
 			}
-			Debug.Log("Starting pounce");
+
 			anim.SetTrigger(MutationDefs.TRIGGER_RAPTOR_PSTART);
 			bufferTimer = MutationDefs.ABILITY_BUFF_TIMER;
+			noTransform = false;
+		}
+	}
+
+	private void abilityInputSecondaryPressed()
+	{
+		if (bufferTimer <= 0 && !pounceActive)
+		{
+			float currMutEnergy = actorWielder.gameManager.playerStats.getMutationBar();
+			/* pouncing while transformed is free */
+			if (transformTimer <= 0 && currMutEnergy >= mutationScriptable.values[POUNCE_COST_INDEX])
+			{
+				actorWielder.gameManager.playerStats.changeMutationBar(Mathf.RoundToInt(-mutationScriptable.values[POUNCE_COST_INDEX]));
+			}
+			else if (transformTimer <= 0)
+			{
+				return;
+			}
+
+			anim.SetTrigger(MutationDefs.TRIGGER_RAPTOR_PSTART);
+			bufferTimer = MutationDefs.ABILITY_BUFF_TIMER;
+			if (transformTimer <= 0)
+			{
+				transformTimer = 0.5F;
+				noTransform = true;
+			}
 		}
 	}
 
@@ -133,6 +170,20 @@ public class MRaptor : MonoBehaviour, MutationInterface
 	{
 		gameManager = GameManager.Instance;
 		gameManager.playerAbilityEvent += abilityInputPressed;
+		gameManager.playerAbilitySecondaryEvent += abilityInputSecondaryPressed;
+		gameManager.updateCellCount += updateCells;
+
+		if (abilityIcon1 != null && abilityIcon2 != null)
+		{
+			gameManager.playerStats.playerHUD.abilityIconImage1.sprite = abilityIcon1;
+			gameManager.playerStats.playerHUD.abilityIconImage2.sprite = abilityIcon2;
+		}
+		else
+		{
+			gameManager.playerStats.playerHUD.abilityIconImage1.sprite = null;
+			gameManager.playerStats.playerHUD.abilityIconImage2.sprite = null;
+		}
+
 		setWielder(actor);
 		bufferTimer = 0;
 
@@ -151,7 +202,7 @@ public class MRaptor : MonoBehaviour, MutationInterface
 
 	Sprite[] MutationInterface.getTutorialSprites()
 	{
-		return null;
+		return mutationScriptable.tutorialSprites;
 	}
 
 	public void startPounce()
@@ -169,7 +220,7 @@ public class MRaptor : MonoBehaviour, MutationInterface
 		pounceActive = true;
 		pounceDistanceMoved = 0F;
 
-		if (transformTimer <= 0)
+		if (transformTimer <= 0 && noTransform == false)
 		{
 			transformTimer = mutationScriptable.values[MUT_XFORM_TIMER_INDEX];
 		}

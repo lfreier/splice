@@ -899,7 +899,7 @@ public class Actor : MonoBehaviour
 
 	public void throwWeapon(Vector3 throwTargetPos)
 	{
-		if (!equippedWeaponInt.canBeDropped())
+		if (!equippedWeaponInt.canBeDropped() || equippedWeaponInt.isActive())
 		{
 			return;
 		}

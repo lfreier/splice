@@ -41,6 +41,10 @@ public class MenuHandler : MonoBehaviour
 	public AudioListener audioListener;
 
 	public AudioSource menuMusic;
+
+	public GameObject loadMenuObject;
+	public GameObject optionsMenuObject;
+
 	private float volumeDecrement;
 
 	private int nextScene = (int)SCENE.LEVEL_START;
@@ -64,11 +68,35 @@ public class MenuHandler : MonoBehaviour
 
 	private void Start()
 	{
+
 		gameManager = GameManager.Instance;
 		if (gameManager != null)
 		{
 			gameManager.closeMenusEvent += killMenuScenes;
 			gameManager.startMusicEvent += killMenuMusic;
+		}
+
+		if (optionsMenuObject != null)
+		{
+			SaveManager.OptionsSaveData options = SaveManager.loadOptionsDataFromDisk();
+
+			if (options.musicVolume < 0 || options.effectsVolume < 0)
+			{
+				options.musicVolume = 0.5F;
+				options.effectsVolume = 0.5F;
+			}
+
+			gameManager.musicVolume = options.musicVolume;
+			gameManager.effectsVolume = options.effectsVolume;
+
+			if (menuMusic != null)
+			{
+				menuMusic.volume = options.musicVolume;
+			}
+			else
+			{
+				GameManager.Instance.signalVolumeChangeEvent(options.musicVolume);
+			}
 		}
 	}
 
@@ -100,6 +128,15 @@ public class MenuHandler : MonoBehaviour
 			holdTimer -= Time.fixedUnscaledDeltaTime;
 			holdToFillImage.fillAmount = holdTimer / holdTimerLength;
 		}
+	}
+
+	public void onHoldButtonClick()
+	{
+		isHeld = true;
+	}
+	public void onHoldButtonRelease()
+	{
+		isHeld = false;
 	}
 
 	public async void LateUpdate()
@@ -221,7 +258,7 @@ public class MenuHandler : MonoBehaviour
 
 	public void mute()
 	{
-		gameManager.signalMuteEvent();
+		gameManager.signalVolumeChangeEvent(0);
 	}
 
 	public async void returnToMainMenu()
@@ -245,7 +282,7 @@ public class MenuHandler : MonoBehaviour
 		nextScene = gameManager.levelManager.lastSavedLevelIndex;
 
 		gameManager.saveManager.loadAllData();
-		gameManager.saveManager.loadPlayerDataFromDisk(gameManager.currentSaveSlot);
+		SaveManager.loadPlayerDataFromDisk(gameManager.currentSaveSlot);
 
 		buttonsLocked = false;
 		startGame(true);
@@ -261,10 +298,31 @@ public class MenuHandler : MonoBehaviour
 
 	public void startGameFromSaveSlot(int saveSlot)
 	{
+		if (saveSlot < 0)
+		{
+			saveSlot = 0;
+			for (int i = 0; i < SaveManager.TOTAL_SAVES; i++)
+			{
+				if (null == SaveManager.loadPlayerDataFromDisk(i))
+				{
+					saveSlot = i;
+					break;
+				}
+			}
+		}
+
 		GameManager gManager = GameManager.Instance;
 		gManager.currentSaveSlot = saveSlot;
 		gManager.saveManager.loadAllData();
-		gManager.saveManager.loadPlayerDataFromDisk(saveSlot);
+		PlayerSaveData playerData = SaveManager.loadPlayerDataFromDisk(saveSlot);
+		if (playerData != null)
+		{
+			gManager.playerStats.savePlayerDataToMemory(playerData);
+			gManager.levelManager.lastSavedLevelIndex = playerData.lastSavedLevel;
+			nextScene = playerData.lastSavedLevel;
+			gManager.levelManager.lastSavedSpawn = (LevelManager.levelSpawnIndex)playerData.lastSavedSpawn;
+		}
+
 		startGame(false);
 	}
 
@@ -298,6 +356,26 @@ public class MenuHandler : MonoBehaviour
 		SceneManager.SetActiveScene(SceneManager.GetSceneByBuildIndex(SCENE_INDEX_MASK[nextScene]));
 
 		fadeOutScene();
+	}
+
+	public void loadGameButton()
+	{
+		//load save slot scene
+		if (!buttonsLocked && loadMenuObject != null)
+		{
+			loadMenuObject.SetActive(true);
+			gameObject.SetActive(false);
+		}
+	}
+
+	public void optionsButton()
+	{
+		//load save slot scene
+		if (!buttonsLocked && optionsMenuObject != null)
+		{
+			optionsMenuObject.SetActive(true);
+			gameObject.SetActive(false);
+		}
 	}
 
 	public void quitGame()

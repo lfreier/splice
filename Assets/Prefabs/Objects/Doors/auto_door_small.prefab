@@ -96,6 +96,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   guid: auto_door_small_e42544f6-daae-471c-9f42-d0a8285c0212
+  basicPrefabIndex: 0
 --- !u!82 &1903478245221492862
 AudioSource:
   m_ObjectHideFlags: 0
@@ -118,9 +119,9 @@ AudioSource:
   Priority: 128
   DopplerLevel: 1
   MinDistance: 1
-  MaxDistance: 500
+  MaxDistance: 20
   Pan2D: 0
-  rolloffMode: 0
+  rolloffMode: 1
   BypassEffects: 0
   BypassListenerEffects: 0
   BypassReverbZones: 0

@@ -6,7 +6,7 @@ using static UnityEngine.GraphicsBuffer;
 
 public class MLimb : MonoBehaviour, MutationInterface
 {
-	Actor actorWielder;
+	public Actor actorWielder;
 
 	public Sprite icon;
 	public Sprite holdingIcon;
@@ -23,7 +23,8 @@ public class MLimb : MonoBehaviour, MutationInterface
 	public enum retracted {
 		IDLE = 0,
 		ACTIVE = 1,
-		RETRACTED = 2
+		RETRACTED = 2,
+		BUSY = 3
 	};
 
 	public retracted limbState;
@@ -39,15 +40,25 @@ public class MLimb : MonoBehaviour, MutationInterface
 
 	[SerializeField] public MutationScriptable mutationScriptable;
 
-	private static int MUT_SEC_COST_INDEX = 0;
+	public Sprite abilityIcon1;
+	public Sprite abilityIcon2;
+
+	public MLimbBlade blade;
+	public Collider2D bladeCollider;
+
+	private int bladeOver = 0;
+
+	private static int MUT_GRAB2_COST_INDEX = 0;
+	private static int MUT_SEC_COST_INDEX = 1;
 
 	private void OnDestroy()
 	{
-		GameManager gm = GameManager.Instance;
-		gm.playerInteractEvent -= interactInputPressed;
-		gm.playerInteractReleaseEvent -= interactInputReleased;
-		gm.playerAbilityEvent -= abilityInputPressed;
-		gm.playerAbilityReleaseEvent -= abilityInputReleased;
+		gameManager.playerInteractEvent -= interactInputPressed;
+		gameManager.playerInteractReleaseEvent -= interactInputReleased;
+		gameManager.playerAbilityEvent -= abilityInputPressed;
+		gameManager.playerAbilitySecondaryEvent -= abilityInputSecondaryPressed;
+		gameManager.playerAbilityReleaseEvent -= abilityInputReleased;
+		gameManager.updateCellCount -= updateCells;
 	}
 
 	private void FixedUpdate()
@@ -57,6 +68,11 @@ public class MLimb : MonoBehaviour, MutationInterface
 			actorWielder.gameManager.signalRotationUnlocked();
 			collisionHit = false;
 		}
+	}
+
+	private void updateCells(int amount)
+	{
+		gameManager.playerStats.playerHUD.setMutAbilityFill(mutationScriptable.mutCost, mutationScriptable.values[MUT_SEC_COST_INDEX]);
 	}
 
 	private void abilityInputPressed()
@@ -89,7 +105,39 @@ public class MLimb : MonoBehaviour, MutationInterface
 			limbState = retracted.IDLE;
 		}
 	}
-	
+
+	private void abilityInputSecondaryPressed()
+	{
+		if (limbState == retracted.IDLE && (gameManager.playerStats.getMutationBar() >= mutationScriptable.values[MUT_SEC_COST_INDEX]))
+		{
+			gameManager.playerStats.changeMutationBar(-Mathf.RoundToInt(mutationScriptable.values[MUT_SEC_COST_INDEX]));
+			if (grabber.heldRigidbody != null)
+			{
+				grabber.releaseHeldObject(objectReleaseForce);
+			}
+
+			if (blade != null)
+			{
+				blade.collisions.Clear();
+			}
+
+			limbState = retracted.BUSY;
+			anim.SetTrigger(MutationDefs.TRIGGER_LIMB_BLADE);
+		}
+	}
+
+	public void bladeAnimOver()
+	{
+		bladeOver++;
+		if (bladeOver >= 2)
+		{
+			limbState = retracted.IDLE;
+			bladeOver = 0;
+			Debug.Log("Blade anim over");
+		}
+	}
+
+
 	private void abilityInputReleased()
 	{
 		/*
@@ -160,11 +208,24 @@ public class MLimb : MonoBehaviour, MutationInterface
 		gameManager.playerInteractEvent += interactInputPressed;
 		gameManager.playerInteractReleaseEvent += interactInputReleased;
 		gameManager.playerAbilityEvent += abilityInputPressed;
+		gameManager.playerAbilitySecondaryEvent += abilityInputSecondaryPressed;
 		gameManager.playerAbilityReleaseEvent += abilityInputReleased;
+		gameManager.updateCellCount += updateCells;
+
+		if (abilityIcon1 != null && abilityIcon2 != null)
+		{
+			gameManager.playerStats.playerHUD.abilityIconImage1.sprite = abilityIcon1;
+			gameManager.playerStats.playerHUD.abilityIconImage2.sprite = abilityIcon2;
+		}
+		else
+		{
+			gameManager.playerStats.playerHUD.abilityIconImage1.sprite = null;
+			gameManager.playerStats.playerHUD.abilityIconImage2.sprite = null;
+		}
 
 		grabber.grabOffset = grabOffset;
 		grabber.mutCost1 = mutationScriptable.mutCost;
-		grabber.mutCost2 = Mathf.RoundToInt(mutationScriptable.values[MUT_SEC_COST_INDEX]);
+		grabber.mutCost2 = Mathf.RoundToInt(mutationScriptable.values[MUT_GRAB2_COST_INDEX]);
 
 		/* when limb is equipped, player can only attach from the right side */
 		wielder.setAttackOnly(WeaponDefs.ANIM_BOOL_ONLY_RIGHT, true);
@@ -184,7 +245,7 @@ public class MLimb : MonoBehaviour, MutationInterface
 
 	/* Called when the "Retract" animation is finished
 	 */
-	private void limbRetracted()
+	public void limbRetracted()
 	{
 		//if holding the button, get ready to release
 		//otherwise, just pickup
@@ -225,8 +286,12 @@ public class MLimb : MonoBehaviour, MutationInterface
 		anim.SetTrigger("Retract");
 	}
 
-	public bool toggleCollider()
+	public bool toggleCollider(int enable)
 	{
+		if (bladeOver <= 1 && bladeCollider != null)
+		{
+			bladeCollider.enabled = enable > 0;
+		}
 		/*
 		if (!hitbox.enabled)
 		{

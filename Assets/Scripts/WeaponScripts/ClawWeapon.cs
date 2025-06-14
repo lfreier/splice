@@ -18,6 +18,9 @@ public class ClawWeapon : BasicWeapon
 	public SpriteRenderer shredTrailSprite;
 	public SpriteRenderer shredTrailSprite2;
 
+	public AudioClip pounceShredSound;
+	public float pounceShredSoundVolume = 0.5F;
+
 	private void OnDestroy()
 	{
 		if (pounceSourceActor != null)
@@ -83,7 +86,7 @@ public class ClawWeapon : BasicWeapon
 			gameManager.audioManager.soundHash.TryGetValue(_weaponScriptable.soundSwing.name, out toPlay);
 			if (toPlay != null)
 			{
-				weaponAudioPlayer.PlayOneShot(toPlay);
+				weaponAudioPlayer.PlayOneShot(toPlay, gameManager.effectsVolume);
 			}
 		}
 
@@ -151,6 +154,7 @@ public class ClawWeapon : BasicWeapon
 		pounceAttackActive = true;
 		anim.SetTrigger(MutationDefs.TRIGGER_POUNCE_ATTACK);
 
+		playSound(weaponAudioPlayer, pounceShredSound.name, pounceShredSoundVolume);
 		sourceActor.actorBody.velocity = Vector2.zero;
 	}
 
@@ -165,7 +169,6 @@ public class ClawWeapon : BasicWeapon
 		{
 			pounceSourceActor.actorBody.velocity = Vector2.zero;
 		}
-		//TODO: play sound
 	}
 
 	private void OnTriggerEnter2D(Collider2D collision)

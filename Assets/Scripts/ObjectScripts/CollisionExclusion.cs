@@ -4,6 +4,7 @@ using UnityEngine;
 public class CollisionExclusion : MonoBehaviour
 {
 	public float timer;
+
 	private Collider2D[] attachedColliders1;
 	private Collider2D[] attachedColliders2;
 	private bool started = false;
@@ -27,6 +28,7 @@ public class CollisionExclusion : MonoBehaviour
 						}
 					}
 				}
+
 				Destroy(this);
 			}
 		}

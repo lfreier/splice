@@ -21,8 +21,8 @@ public class GameManager : MonoBehaviour
 	public delegate void InventoryOpenEvent();
 	public event InventoryOpenEvent inventoryOpenEvent;
 
-	public delegate void MuteEvent();
-	public event MuteEvent muteEvent;
+	public delegate void VolumeChangeEvent(float change);
+	public event VolumeChangeEvent volumeChangeEvent;
 
 	public delegate void MovementLockedEvent();
 	public event MovementLockedEvent movementLockedEvent;
@@ -121,6 +121,9 @@ public class GameManager : MonoBehaviour
 	public static Color COLOR_IFRAME	= new Color(0.9F, 0.3F, 0.3F, 1F);
 
 	public List<Type> actorBehaviors = new List<Type>();
+
+	public float musicVolume = 0.5F;
+	public float effectsVolume = 0.5F;
 
 	private float hitstopLength;
 
@@ -338,13 +341,13 @@ public class GameManager : MonoBehaviour
 
 	public void save(Actor player, int levelSaveIndex)
 	{
+		levelManager.lastSavedLevelIndex = levelSaveIndex;
 		playerStats.savePlayerData(player);
 		saveManager.savePlayerDataToDisk(currentSaveSlot);
 
 		levelManager.saveLevelState(currentScene);
 		saveManager.saveDataToDisk(levelManager.currSaveData, 0);
 		saveManager.loadAllData();
-		levelManager.lastSavedLevelIndex = levelSaveIndex;
 	}
 
 	public void signalCloseMenusEvent()
@@ -372,9 +375,9 @@ public class GameManager : MonoBehaviour
 		movementUnlockedEvent?.Invoke();
 	}
 
-	public void signalMuteEvent()
+	public void signalVolumeChangeEvent(float change)
 	{
-		muteEvent?.Invoke();
+		volumeChangeEvent?.Invoke(change);
 	}
 	public void signalPowerChangedEvent(bool powerOn)
 	{

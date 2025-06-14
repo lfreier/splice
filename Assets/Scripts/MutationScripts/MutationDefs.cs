@@ -11,6 +11,9 @@ public static class MutationDefs
 	public static string TRIGGER_BEAST_ATK3			= "AttackBeast3";
 	public static string TRIGGER_STOP_TRANSFORM		= "StopTransform";
 
+	public static string TRIGGER_LIMB_BLADE			= "TriggerLimbBlade";
+	public static string TRIGGER_LIMB_BLADE_RETRACT = "TriggerLimbBladeRetract";
+
 	public static string TRIGGER_BLADE_WING			= "TriggerBladeWing";
 
 	public static string TRIGGER_POUNCE_ATTACK		= "TriggerPounceAttack";

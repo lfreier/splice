@@ -26,13 +26,18 @@ public class Obstacle : MonoBehaviour
 
 	public float knockOverDrag = 3F;
 
+	public float destroyOnTimer = 0F;
+
 	public int basicPrefabIndex;
 
 	// Use this for initialization
 	void Start()
 	{
 		startingLayer = gameObject.layer;
-		obstacleType = obstacleBody.bodyType;
+		if (obstacleBody != null)
+		{
+			obstacleType = obstacleBody.bodyType;
+		}
 		durability = _obstacleScriptable.durability;
 		beingHeld = false;
 		physicsEnabled = false;
@@ -79,6 +84,16 @@ public class Obstacle : MonoBehaviour
 			}
 
 			Debug.Log("Velocities: " + obstacleBody.velocity.magnitude + " " + obstacleBody.angularVelocity);
+		}
+
+		if (destroyOnTimer != 0)
+		{
+			destroyOnTimer -= Time.deltaTime;
+			if (destroyOnTimer <= 0)
+			{
+				destroyOnTimer = 0;
+				Destroy(this.gameObject);
+			}
 		}
 	}
 
@@ -150,9 +165,13 @@ public class Obstacle : MonoBehaviour
 					EffectDefs.effectApply(actorHit, actorHit.gameManager.effectManager.stunHalf);
 					/* hitstop if player is hit */
 					actorHit.takeDamage(_obstacleScriptable.collisionDamage, actorHit);
-					return;
 				}
 			}
+		}
+
+		if (destroyOnTimer != 0)
+		{
+			Destroy(this.gameObject);
 		}
 	}
 
@@ -169,8 +188,12 @@ public class Obstacle : MonoBehaviour
 				{
 					playerBeast.triggerCollision(collision);
 				}
-				return;
 			}
+		}
+
+		if (destroyOnTimer != 0)
+		{
+			Destroy(this.gameObject);
 		}
 	}
 }

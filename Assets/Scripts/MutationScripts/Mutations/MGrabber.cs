@@ -20,6 +20,8 @@ public class MGrabber : MonoBehaviour
 	public Obstacle heldObstacle;
 	public Collider2D heldObstacleCollider;
 
+	public GameObject actorObstaclePrefab;
+
 	private GameManager gameManager;
 
 	private void Start()
@@ -83,13 +85,17 @@ public class MGrabber : MonoBehaviour
 					grabbedObject.transform.SetParent(holdingTransform);
 					grabbedObject.transform.SetPositionAndRotation(grabPos, grabbedObject.transform.rotation);
 
-					if (cost > 0)
-					{
-						gameManager.playerStats.changeMutationBar(-mutCost1);
-					}
 					if (grabbedActor != null)
 					{
 						EffectDefs.effectApply(grabbedActor, grabbedActor.gameManager.effectManager.stunPermanent);
+						if (cost > 0)
+						{
+							gameManager.playerStats.changeMutationBar(-mutCost2);
+						}
+					}
+					else if (cost > 0)
+					{
+						gameManager.playerStats.changeMutationBar(-mutCost1);
 					}
 					return true;
 				}
@@ -268,12 +274,6 @@ public class MGrabber : MonoBehaviour
 		Vector3 releaseTarget = wielder.transform.position + (wielder.transform.up * 2);
 		CollisionExclusion exclusion = heldRigidbody.AddComponent<CollisionExclusion>();
 
-		/* Disable collisions for short amount of time to avoid player collision */
-		Collider2D[] colliders1 = new Collider2D[wielder.actorBody.attachedColliderCount];
-		wielder.actorBody.GetAttachedColliders(colliders1);
-		Collider2D[] colliders2 = new Collider2D[heldRigidbody.attachedColliderCount];
-		heldRigidbody.GetAttachedColliders(colliders2);
-		exclusion.init(0.1F, colliders1, colliders2);
 		if (heldObstacle != null)
 		{
 			heldObstacle.beingHeld = false;
@@ -283,12 +283,44 @@ public class MGrabber : MonoBehaviour
 			WeaponDefs.setObjectLayer(WeaponDefs.SORT_LAYER_GROUND, heldObstacle.gameObject);
 		}
 
+		Obstacle obs = null;
 		Actor grabbedActor = heldRigidbody.GetComponentInChildren<Actor>();
 		if (grabbedActor != null)
 		{
 			EffectDefs.effectApply(grabbedActor, grabbedActor.gameManager.effectManager.stun1);
 			releaseForce = objectReleaseForce / 4.5F;
+			GameObject actorObs = Instantiate(actorObstaclePrefab, grabbedActor.transform);
+			if (actorObs != null)
+			{
+				obs = actorObs.GetComponentInChildren<Obstacle>();
+				if (obs != null)
+				{
+					obs.obstacleBody = heldRigidbody;
+				}
+			}
 		}
+
+		/* Disable collisions for short amount of time to avoid player collision */
+		Collider2D[] colliders1 = new Collider2D[wielder.actorBody.attachedColliderCount];
+		Collider2D[] colliders2 = new Collider2D[heldRigidbody.attachedColliderCount]; ;
+		/*if (obs == null)
+		{
+			colliders2 = new Collider2D[heldRigidbody.attachedColliderCount + 1];
+		}
+		else
+		{
+			colliders2 = new Collider2D[heldRigidbody.attachedColliderCount];
+		}*/
+		wielder.actorBody.GetAttachedColliders(colliders1);
+		heldRigidbody.GetAttachedColliders(colliders2);
+
+		/*
+		if (obs != null)
+		{
+			colliders2[heldRigidbody.attachedColliderCount] = obs.;
+		}
+		*/
+		exclusion.init(0.1F, colliders1, colliders2);
 
 		heldRigidbody.AddForce(Vector2.ClampMagnitude(releaseTarget - heldRigidbody.transform.position, 1) * releaseForce);
 		heldRigidbody = null;

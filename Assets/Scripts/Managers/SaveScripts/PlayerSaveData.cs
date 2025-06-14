@@ -6,6 +6,9 @@ using static PickupDefs;
 [System.Serializable]
 public class PlayerSaveData
 {
+	public int lastSavedLevel = 0;
+	public int lastSavedSpawn = 0;
+
 	public MutationDefs.MutationData savedMutationData;
 	public ActorDefs.ActorData playerData;
 

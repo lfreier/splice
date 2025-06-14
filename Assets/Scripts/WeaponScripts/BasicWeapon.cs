@@ -1,6 +1,7 @@
 ﻿using Unity.VisualScripting;
 using UnityEngine;
 
+[RequireComponent(typeof(AudioSource))]
 public abstract class BasicWeapon : MonoBehaviour, WeaponInterface
 {
 	[SerializeField] public Animator anim;
@@ -20,6 +21,7 @@ public abstract class BasicWeapon : MonoBehaviour, WeaponInterface
 	public WeaponPhysics _weaponPhysics;
 
 	public AudioSource weaponAudioPlayer;
+	public AudioSource weaponSwingAudioPlayer;
 
 	public SoundScriptable actorHitSound;
 	public SoundScriptable wallHitSound;
@@ -33,6 +35,7 @@ public abstract class BasicWeapon : MonoBehaviour, WeaponInterface
 	public float durability;
 
 	public bool isInit = false;
+	public bool swingActive = false;
 
 	protected bool soundMade = false;
 
@@ -60,18 +63,14 @@ public abstract class BasicWeapon : MonoBehaviour, WeaponInterface
 
 	virtual public bool attack(LayerMask targetLayer)
 	{
+		swingActive = true;
 		soundMade = false;
 		anim.SetTrigger(WeaponDefs.ANIM_TRIGGER_ATTACK);
 		//lastTargetLayer = targetLayer;
 		actorWielder.invincible = false;
 		if (_weaponScriptable.soundSwing != null)
 		{
-			AudioClip toPlay;
-			gameManager.audioManager.soundHash.TryGetValue(_weaponScriptable.soundSwing.name, out toPlay);
-			if (toPlay != null)
-			{
-				weaponAudioPlayer.PlayOneShot(toPlay);
-			}
+			playSound(weaponSwingAudioPlayer, _weaponScriptable.soundSwing.name, _weaponScriptable.soundSwingVolume);
 		}
 
 		return true;
@@ -155,7 +154,7 @@ public abstract class BasicWeapon : MonoBehaviour, WeaponInterface
 			throwActive = _weaponPhysics.isBeingThrown();
 		}
 
-		return !anim.GetCurrentAnimatorStateInfo(0).IsTag("Idle") || throwActive;
+		return !anim.GetCurrentAnimatorStateInfo(0).IsTag("Idle") || throwActive || swingActive;
 	}
 
 	virtual public void reduceDurability(float reduction)
@@ -171,7 +170,10 @@ public abstract class BasicWeapon : MonoBehaviour, WeaponInterface
 		{
 			//set to damaged sprite
 			sprite.sprite = damagedSprite;
-			secondaryAction.setDamagedSprite();
+			if (secondaryAction != null)
+			{
+				secondaryAction.setDamagedSprite();
+			}
 		}
 
 		if (durability <= 0)
@@ -184,11 +186,11 @@ public abstract class BasicWeapon : MonoBehaviour, WeaponInterface
 				{
 					if (actorWielder == null)
 					{
-						gameManager.playerStats.player.actorAudioSource.PlayOneShot(toPlay);
+						gameManager.playerStats.player.actorAudioSource.PlayOneShot(toPlay, gameManager.effectsVolume);
 					}
 					else
 					{
-						actorWielder.actorAudioSource.PlayOneShot(toPlay);
+						actorWielder.actorAudioSource.PlayOneShot(toPlay, gameManager.effectsVolume);
 					}
 				}
 			}
@@ -271,7 +273,8 @@ public abstract class BasicWeapon : MonoBehaviour, WeaponInterface
 
 	virtual public bool toggleCollider(int enable)
 	{
-		if (hitbox == null)
+		swingActive = enable > 0;
+		if (hitbox == null || (anim.GetBool(WeaponDefs.ANIM_BOOL_ONLY_RIGHT) && !currentSide))
 		{
 			return false;
 		}
@@ -298,6 +301,15 @@ public abstract class BasicWeapon : MonoBehaviour, WeaponInterface
 	public Actor weaponHit(Collider2D collision)
 	{
 		return weaponHit(collision, getWeaponDamage(), 1F);
+	}
+
+	public virtual void playSound(AudioSource player, string soundName, float volume)
+	{
+		AudioClip toPlay;
+		if (gameManager.audioManager.soundHash.TryGetValue(soundName, out toPlay) && toPlay != null)
+		{
+			player.PlayOneShot(toPlay, volume * gameManager.effectsVolume);
+		}
 	}
 
 	public Actor weaponHit(Collider2D collision, float damage, float durabilityDamage)
@@ -327,20 +339,16 @@ public abstract class BasicWeapon : MonoBehaviour, WeaponInterface
 		if (actorHit != null && actorRef.isTargetHostile(actorHit) && !actorHit.invincible)
 		{
 			actorRef.triggerDamageEffects(actorHit);
-			if (actorHit.takeDamage(damage, actorRef) > 0)
-			{
-				reduceDurability(durabilityDamage);
-			}
 			knockbackMult = (1 - actorHit._actorScriptable.knockbackResist) * WeaponDefs.KNOCKBACK_MULT_ACTOR;
 			SoundDefs.createSound(actorHit.transform.position, actorHitSound);
 			if (_weaponScriptable.soundActorHit != null)
 			{
-				AudioClip toPlay;
-				gameManager.audioManager.soundHash.TryGetValue(_weaponScriptable.soundActorHit.name, out toPlay);
-				if (toPlay != null)
-				{
-					weaponAudioPlayer.PlayOneShot(toPlay);
-				}
+				playSound(weaponAudioPlayer, _weaponScriptable.soundActorHit.name, _weaponScriptable.soundActorHitVolume);
+			}
+
+			if (actorHit.takeDamage(damage, actorRef) > 0)
+			{
+				reduceDurability(durabilityDamage);
 			}
 
 			maxForce = ActorDefs.MAX_HIT_FORCE;
@@ -361,12 +369,7 @@ public abstract class BasicWeapon : MonoBehaviour, WeaponInterface
 				SoundDefs.createSound(actorRef.transform.position, wallHitSound);
 				if (_weaponScriptable.soundWallHit != null)
 				{
-					AudioClip toPlay;
-					gameManager.audioManager.soundHash.TryGetValue(_weaponScriptable.soundWallHit.name, out toPlay);
-					if (toPlay != null)
-					{
-						weaponAudioPlayer.PlayOneShot(toPlay);
-					}
+					playSound(weaponAudioPlayer, _weaponScriptable.soundWallHit.name, _weaponScriptable.soundWallHitVolume);
 				}
 			}
 			Debug.Log("Hit: " + collision.name + " for no damage");
@@ -374,21 +377,17 @@ public abstract class BasicWeapon : MonoBehaviour, WeaponInterface
 			Obstacle obstacle = collision.GetComponent<Obstacle>();
 			if (obstacle != null)
 			{
-				reduceDurability(obstacle._obstacleScriptable.weaponDurabilityDamage);
 				knockbackMult = obstacle._obstacleScriptable.weaponHitMult * WeaponDefs.KNOCKBACK_MULT_OBSTACLE;
 				maxForce = obstacle._obstacleScriptable.maxObstacleForce;
 				obstacle.knockOver();
 
 				if (_weaponScriptable.soundObstacleHit != null && !soundMade && knockbackMult != 0)
 				{
-					AudioClip toPlay;
 					soundMade = true;
-					gameManager.audioManager.soundHash.TryGetValue(_weaponScriptable.soundObstacleHit.name, out toPlay);
-					if (toPlay != null)
-					{
-						weaponAudioPlayer.PlayOneShot(toPlay);
-					}
+					playSound(weaponAudioPlayer, _weaponScriptable.soundObstacleHit.name, _weaponScriptable.soundObstacleHitVolume);
 				}
+
+				reduceDurability(obstacle._obstacleScriptable.weaponDurabilityDamage);
 			}
 		}
 

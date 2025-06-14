@@ -133,7 +133,7 @@ public class WeaponPhysics : MonoBehaviour
 				gameObject.layer = LayerMask.NameToLayer(GameManager.OBJECT_LAYER);
 				throwCollider.enabled = false;
 				pickupCollider.enabled = true;
-				Collider2D[] hits = Physics2D.OverlapPointAll(throwCollider.attachedRigidbody.transform.position, LayerMask.GetMask("ObjectMid"));
+				Collider2D[] hits = Physics2D.OverlapPointAll(transform.TransformPoint(throwCollider.attachedRigidbody.transform.localPosition), LayerMask.GetMask("ObjectMid"));
 				if (hits == null || hits.Length <= 0)
 				{
 					WeaponDefs.setObjectLayer(WeaponDefs.SORT_LAYER_GROUND, topObject);
@@ -180,7 +180,7 @@ public class WeaponPhysics : MonoBehaviour
 			Actor actorHit = collision.gameObject.GetComponent<Actor>();
 			if (actorHit != null && currentSpeed > _weaponScriptable.throwHurtSpeed)
 			{
-				if (actorHit.name == throwingActor.name)
+				if (actorHit.name == throwingActor.name || (actorHit.tag.Contains(ActorDefs.playerTag) && throwingActor.tag.Contains(ActorDefs.playerTag)))
 				{
 					Debug.Log("Stop hitting yourself (throw)");
 					return;
@@ -198,7 +198,7 @@ public class WeaponPhysics : MonoBehaviour
 						gameManager.audioManager.soundHash.TryGetValue(_weaponScriptable.soundActorHit.name, out toPlay);
 						if (toPlay != null)
 						{
-							_weapon.weaponAudioPlayer.PlayOneShot(toPlay);
+							_weapon.weaponAudioPlayer.PlayOneShot(toPlay, gameManager.effectsVolume);
 						}
 					}
 				}
@@ -214,7 +214,7 @@ public class WeaponPhysics : MonoBehaviour
 					gameManager.audioManager.soundHash.TryGetValue(_weaponScriptable.soundObstacleHit.name, out toPlay);
 					if (toPlay != null)
 					{
-						_weapon.weaponAudioPlayer.PlayOneShot(toPlay);
+						_weapon.weaponAudioPlayer.PlayOneShot(toPlay, gameManager.effectsVolume);
 					}
 				}
 			}

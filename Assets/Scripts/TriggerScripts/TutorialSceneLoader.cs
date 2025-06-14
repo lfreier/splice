@@ -12,7 +12,7 @@ public class TutorialSceneLoader : MonoBehaviour
 
 	private void OnTriggerEnter2D(Collider2D collision)
 	{
-		Actor actor = collision.transform.GetComponent<Actor>();
+		Actor actor = collision.transform.GetComponentInChildren<Actor>();
 		if (actor != null && actor.tag == ActorDefs.playerTag)
 		{
 			triggered = true;

@@ -92,7 +92,7 @@ public class AutoDoor : MonoBehaviour, UsableInterface
 			AudioClip toPlay;
 			if (gameManager.audioManager.soundHash.TryGetValue(doorOpenSound.name, out toPlay) && toPlay != null)
 			{
-				doorAudioPlayer.PlayOneShot(toPlay);
+				doorAudioPlayer.PlayOneShot(toPlay, gameManager.effectsVolume);
 			}
 		}
 	}
@@ -106,7 +106,7 @@ public class AutoDoor : MonoBehaviour, UsableInterface
 			AudioClip toPlay;
 			if (gameManager.audioManager.soundHash.TryGetValue(doorCloseSound.name, out toPlay) && toPlay != null)
 			{
-				doorAudioPlayer.PlayOneShot(toPlay);
+				doorAudioPlayer.PlayOneShot(toPlay, gameManager.effectsVolume);
 			}
 		}
 	}
@@ -145,7 +145,7 @@ public class AutoDoor : MonoBehaviour, UsableInterface
 			AudioClip toPlay;
 			if (gameManager.audioManager.soundHash.TryGetValue(doorUnlockSound.name, out toPlay) && toPlay != null)
 			{
-				doorAudioPlayer.PlayOneShot(toPlay);
+				doorAudioPlayer.PlayOneShot(toPlay, gameManager.effectsVolume);
 			}
 		}
 	}

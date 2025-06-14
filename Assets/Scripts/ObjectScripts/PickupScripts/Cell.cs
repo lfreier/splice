@@ -120,7 +120,7 @@ public class Cell : MonoBehaviour, PickupInterface
 					gameManager.audioManager.soundHash.TryGetValue(cellPopSound.name, out toPlay);
 					if (toPlay != null)
 					{
-						cellAudioPlayer.PlayOneShot(toPlay);
+						cellAudioPlayer.PlayOneShot(toPlay, gameManager.effectsVolume);
 					}
 				}
 			}

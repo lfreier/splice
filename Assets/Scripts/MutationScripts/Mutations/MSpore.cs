@@ -18,9 +18,12 @@ public class MSpore : MonoBehaviour, MutationInterface
 	public GameObject sporeMinePrefab;
 	public GameObject sporeCloudPrefab;
 
-	private static int MINE_INDEX = 0;
+	public Sprite abilityIcon1;
+	public Sprite abilityIcon2;
+
+	private static int MINE_COST_INDEX = 0;
 	private static float SPORE_CLOUD_RADIUS = 0.4375F;
-	private static float SUMM_CMD_FORCE_TIME = 0.75F;
+	private static float SUMM_CMD_FORCE_TIME = 0.5F;
 
 	private float bufferTimer = 0F;
 	private GameManager gameManager;
@@ -30,6 +33,7 @@ public class MSpore : MonoBehaviour, MutationInterface
 		gameManager.playerAbilityEvent -= abilityInputPressed;
 		gameManager.playerAbilitySecondaryEvent -= abilityInputSecondaryPressed;
 		gameManager.playerSecondaryEvent -= abilitySecondaryPressed;
+		gameManager.updateCellCount -= updateCells;
 	}
 
 	void Start()
@@ -49,6 +53,11 @@ public class MSpore : MonoBehaviour, MutationInterface
 		}
 	}
 
+	private void updateCells(int amount)
+	{
+		gameManager.playerStats.playerHUD.setMutAbilityFill(mutationScriptable.mutCost, mutationScriptable.values[MINE_COST_INDEX]);
+	}
+
 	/* summoning zombies */
 	private void abilityInputPressed()
 	{
@@ -56,13 +65,13 @@ public class MSpore : MonoBehaviour, MutationInterface
 		if (bufferTimer <= 0 && sporeCloudPrefab != null)
 		{
 			Instantiate(sporeCloudPrefab, placingLoc, actorWielder.transform.rotation, null);
+			bufferTimer = MutationDefs.ABILITY_BUFF_TIMER;
 		}
 
 		//TODO: play animation
 		RaycastHit2D[] corpses = Physics2D.CircleCastAll(placingLoc, SPORE_CLOUD_RADIUS, Vector2.zero, ActorDefs.GLOBAL_PICKUP_RADIUS, LayerMask.GetMask(ActorDefs.corpseLayer));
-		if (corpses == null)
+		if (corpses == null || corpses.Length <= 0)
 		{
-			bufferTimer = MutationDefs.ABILITY_BUFF_TIMER;
 			return;
 		}
 		foreach (RaycastHit2D rayHit in corpses)
@@ -82,9 +91,9 @@ public class MSpore : MonoBehaviour, MutationInterface
 	/* placing mines */
 	private void abilityInputSecondaryPressed()
 	{
-		if (mutationScriptable.values[MINE_INDEX] <= actorWielder.gameManager.playerStats.getMutationBar() && bufferTimer <= 0)
+		if (mutationScriptable.values[MINE_COST_INDEX] <= actorWielder.gameManager.playerStats.getMutationBar() && bufferTimer <= 0)
 		{
-			actorWielder.gameManager.playerStats.changeMutationBar(Mathf.RoundToInt(-mutationScriptable.values[MINE_INDEX]));
+			actorWielder.gameManager.playerStats.changeMutationBar(Mathf.RoundToInt(-mutationScriptable.values[MINE_COST_INDEX]));
 			Vector2 placingLoc = actorWielder.transform.position + actorWielder.transform.up * 0.75F;
 			RaycastHit2D[] hits = Physics2D.RaycastAll(actorWielder.transform.position, placingLoc - (Vector2)actorWielder.transform.position, (placingLoc - (Vector2)actorWielder.transform.position).magnitude + 0.5F, gameManager.unwalkableLayers.value);
 			if (hits != null && hits.Length > 0)
@@ -117,10 +126,20 @@ public class MSpore : MonoBehaviour, MutationInterface
 				continue;
 			}
 
+			if (move._detection == ActorDefs.detectMode.forced)
+			{
+				move._nextForcedDetection = ActorDefs.detectMode.idle;
+			}
+			else
+			{
+				move._nextForcedDetection = move._detection;
+			}
 			move._detection = ActorDefs.detectMode.forced;
 			move.forcedTimer = SUMM_CMD_FORCE_TIME;
 			move.idlePath = new Vector2[] { pointerLoc };
 			move.idlePathPauseTime = new float[] { 10000F };
+			move.moveTarget = pointerLoc;
+			move.actor.actorBody.rotation = move.actor.aimAngle(pointerLoc);
 			move.pathIndex = 0;
 		}
 	}
@@ -171,8 +190,20 @@ public class MSpore : MonoBehaviour, MutationInterface
 		gameManager.playerAbilityEvent += abilityInputPressed;
 		gameManager.playerSecondaryEvent += abilitySecondaryPressed;
 		gameManager.playerAbilitySecondaryEvent += abilityInputSecondaryPressed;
+		gameManager.updateCellCount += updateCells;
 		pInputs = wielder.gameObject.GetComponent<PlayerInputs>();
 		pInteract = wielder.gameObject.GetComponentInChildren<PlayerInteract>();
+
+		if (abilityIcon1 != null && abilityIcon2 != null)
+		{
+			gameManager.playerStats.playerHUD.abilityIconImage1.sprite = abilityIcon1;
+			gameManager.playerStats.playerHUD.abilityIconImage2.sprite = abilityIcon2;
+		}
+		else
+		{
+			gameManager.playerStats.playerHUD.abilityIconImage1.sprite = null;
+			gameManager.playerStats.playerHUD.abilityIconImage2.sprite = null;
+		}
 	}
 
 	public mutationTrigger getMutationType()

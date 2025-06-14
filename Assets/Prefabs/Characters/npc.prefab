@@ -183,6 +183,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   actorAudioSource: {fileID: 3150324268760826422}
   _actorScriptable: {fileID: 11400000, guid: cb5b7816b2070b143891c7c7dfbaee5b, type: 2}
+  actorData:
+    armor: 0
+    health: 0
+    maxHealth: 0
+    shield: 0
+    maxSpeed: 0
+    moveSpeed: 0
+    acceleration: 0
+    deceleration: 0
+    hearingRange: 0
+    sightAngle: 0
+    sightRange: 0
+    frightenedDistance: 0
   actorBody: {fileID: 2658991806923027523}
   movementLocked: 0
   currMoveVector: {x: 0, y: 0, z: 0}
@@ -220,8 +233,13 @@ MonoBehaviour:
   idlePathPauseTime: []
   pathIndex: 0
   _detection: 0
+  _nextDetection: 0
+  _nextForcedDetection: 0
   lockWhenSpotted: {fileID: 0}
   moveTarget: {x: 0, y: 0, z: 0}
+  usingPathfinding: 0
+  forcedTimer: 0
+  summoned: 0
   gameManager: {fileID: 0}
 --- !u!114 &8936931521236048847
 MonoBehaviour:
@@ -236,6 +254,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   actor: {fileID: 740460995545239096}
+  enemyMove: {fileID: 8181113457589132258}
   attackTimer: 0
 --- !u!114 &2023260988043286838
 MonoBehaviour:
@@ -252,6 +271,7 @@ MonoBehaviour:
   actor: {fileID: 740460995545239096}
   cellDropMin: 8
   cellDropMax: 12
+  corpsePrefabOffset: 0
   spriteList: []
   corpseSpriteList:
   - {fileID: 0}
@@ -277,9 +297,9 @@ AudioSource:
   Priority: 128
   DopplerLevel: 1
   MinDistance: 1
-  MaxDistance: 500
+  MaxDistance: 20
   Pan2D: 0
-  rolloffMode: 0
+  rolloffMode: 1
   BypassEffects: 0
   BypassListenerEffects: 0
   BypassReverbZones: 0
@@ -365,6 +385,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   guid: npc_f7dedb45-22e9-4729-9e62-f2f7390917b1
+  basicPrefabIndex: 0
 --- !u!1 &8081907558892302357
 GameObject:
   m_ObjectHideFlags: 0

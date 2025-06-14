@@ -28,6 +28,9 @@ public class MSpider : MonoBehaviour, MutationInterface
 	private Vector2 pounceTarget;
 	public float pounceSpeed = 1500F;
 
+	public Sprite abilityIcon1;
+	public Sprite abilityIcon2;
+
 	private PlayerInputs playerIn;
 
 	private static int MUT_SEC_COST_INDEX = 0;
@@ -38,9 +41,9 @@ public class MSpider : MonoBehaviour, MutationInterface
 
 	private void OnDestroy()
 	{
-		GameManager gm = GameManager.Instance;
-		gm.playerAbilityEvent -= abilityInputPressed;
-		gm.playerAbilitySecondaryEvent -= abilitySecondaryInputPressed;
+		gameManager.playerAbilityEvent -= abilityInputPressed;
+		gameManager.playerAbilitySecondaryEvent -= abilitySecondaryInputPressed;
+		gameManager.updateCellCount -= updateCells;
 	}
 
 	private void FixedUpdate()
@@ -50,6 +53,11 @@ public class MSpider : MonoBehaviour, MutationInterface
 			//every frame, move player in pounce target direction
 			actorWielder.Move(pounceTarget * pounceSpeed * Time.deltaTime);
 		}
+	}
+
+	private void updateCells(int amount)
+	{
+		gameManager.playerStats.playerHUD.setMutAbilityFill(mutationScriptable.mutCost, mutationScriptable.values[MUT_SEC_COST_INDEX]);
 	}
 
 	private void abilityInputPressed()
@@ -211,6 +219,19 @@ public class MSpider : MonoBehaviour, MutationInterface
 		gameManager = GameManager.Instance;
 		gameManager.playerAbilityEvent += abilityInputPressed;
 		gameManager.playerAbilitySecondaryEvent += abilitySecondaryInputPressed;
+		gameManager.updateCellCount += updateCells;
+
+		if (abilityIcon1 != null && abilityIcon2 != null)
+		{
+			gameManager.playerStats.playerHUD.abilityIconImage1.sprite = abilityIcon1;
+			gameManager.playerStats.playerHUD.abilityIconImage2.sprite = abilityIcon2;
+		}
+		else
+		{
+			gameManager.playerStats.playerHUD.abilityIconImage1.sprite = null;
+			gameManager.playerStats.playerHUD.abilityIconImage2.sprite = null;
+		}
+
 		animationActive = false;
 		setWielder(actor);
 
@@ -228,6 +249,6 @@ public class MSpider : MonoBehaviour, MutationInterface
 
 	Sprite[] MutationInterface.getTutorialSprites()
 	{
-		return null;
+		return mutationScriptable.tutorialSprites;
 	}
 }

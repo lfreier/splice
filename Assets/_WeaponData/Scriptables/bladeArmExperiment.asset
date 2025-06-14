@@ -16,10 +16,23 @@ MonoBehaviour:
   <atkSpeed>k__BackingField: 0.5
   <canBeDropped>k__BackingField: 0
   <damage>k__BackingField: 2.5
+  <description>k__BackingField: 
   <durability>k__BackingField: -1
+  <icon>k__BackingField: {fileID: 0}
+  <displayName>k__BackingField: 
   <npcAttackRange>k__BackingField: 1.7
   <prefabIndex>k__BackingField: 0
   <secondaryDamage>k__BackingField: 2
+  <soundActorHit>k__BackingField: {fileID: 8300000, guid: d4dbe5064b7bf72448795b211025b6ba, type: 3}
+  <soundActorHitVolume>k__BackingField: 0.5
+  <soundBreak>k__BackingField: {fileID: 0}
+  <soundBreakVolume>k__BackingField: 0.5
+  <soundObstacleHit>k__BackingField: {fileID: 8300000, guid: 2f108b8b41d33c14cbc4f295d0397c9f, type: 3}
+  <soundObstacleHitVolume>k__BackingField: 0.5
+  <soundSwing>k__BackingField: {fileID: 8300000, guid: c1cdfb14985e768448b9eb66b41b74da, type: 3}
+  <soundSwingVolume>k__BackingField: 0.5
+  <soundWallHit>k__BackingField: {fileID: 8300000, guid: 2f108b8b41d33c14cbc4f295d0397c9f, type: 3}
+  <soundWallHitVolume>k__BackingField: 0.5
   <throwDamage>k__BackingField: 0
   <throwDurabilityDamage>k__BackingField: 0
   <throwSpeed>k__BackingField: 0

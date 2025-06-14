@@ -23,43 +23,22 @@ public class AudioManager : MonoBehaviour
 	public AudioClip playerDeath;
 	
 	//zombie attack
+	//zombie noises?
+
+	//obstacle hitting actor
+
+	//battery charge
+
+	//health vial
+
+	//using computer
 
 	//spore - summonAttempt, summonSuccess, clickTick, mineArm, mineTrigger, mineExplosion
 	//spider - web, fang, fangShred
 	//raptor - pounce, shred
+	//limb - extend, retract, objectHit
 
-	public AudioClip weaponFistSwing;
-	public AudioClip weaponFistWallHit;
-	public AudioClip weaponFistObstacleHit;
-	//public AudioClip weaponFistActorHit;
-
-	public AudioClip weaponMetalSwing;
-	public AudioClip weaponMetalWallHit;
-	public AudioClip weaponMetalObstacleHit;
-	public AudioClip weaponMetalActorHit;
-	public AudioClip weaponMetalBreak;
-
-	public AudioClip weaponStunSwing;
-	public AudioClip weaponStunHit;
-	public AudioClip weaponStunObstacleHit;
-	public AudioClip weaponStunActorHit;
-	public AudioClip weaponStunBreak;
-
-	public AudioClip weaponScalpelSwing;
-	public AudioClip weaponScalpelWallHit;
-	public AudioClip weaponScalpelObstacleHit;
-	public AudioClip weaponScalpelActorHit;
-	public AudioClip weaponScalpelBreak;
-
-	public AudioClip weaponBladeArmSwing;
-	public AudioClip weaponBladeArmHit;
-	public AudioClip weaponBladeArmObstacleHit;
-	public AudioClip weaponBladeArmActorHit;
-
-	public AudioClip weaponRaptorSwing;
-	public AudioClip weaponRaptorHit;
-	public AudioClip weaponRaptorObstacleHit;
-	public AudioClip weaponRaptorActorHit;
+	//foldingChair fall
 
 	public AudioClip sciDeath1;
 	public AudioClip sciDeath2;

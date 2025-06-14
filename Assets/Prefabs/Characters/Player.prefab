@@ -379,6 +379,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   actorAudioSource: {fileID: 1511148215835535977}
   _actorScriptable: {fileID: 11400000, guid: 5e0034aae29ce4b43bb29dbf8a7c7f19, type: 2}
+  actorData:
+    armor: 0
+    health: 0
+    maxHealth: 0
+    shield: 0
+    maxSpeed: 0
+    moveSpeed: 0
+    acceleration: 0
+    deceleration: 0
+    hearingRange: 0
+    sightAngle: 0
+    sightRange: 0
+    frightenedDistance: 0
   actorBody: {fileID: 5434234145930621193}
   movementLocked: 0
   currMoveVector: {x: 0, y: 0, z: 0}
@@ -505,9 +518,9 @@ AudioSource:
   Priority: 128
   DopplerLevel: 1
   MinDistance: 1
-  MaxDistance: 500
+  MaxDistance: 20
   Pan2D: 0
-  rolloffMode: 0
+  rolloffMode: 1
   BypassEffects: 0
   BypassListenerEffects: 0
   BypassReverbZones: 0

@@ -57,6 +57,8 @@ MonoBehaviour:
   icon: {fileID: 21300000, guid: 56829e4110158014eb0000611e4e2e19, type: 3}
   sporeMinePrefab: {fileID: 5794746522243500281, guid: a55cd85b43b13ca418aa8776bcf8b2a9, type: 3}
   sporeCloudPrefab: {fileID: 3985016821970606421, guid: 84e9d28634802da41a142035b391bf56, type: 3}
+  abilityIcon1: {fileID: 21300000, guid: 8b813944b65a864428f07b9143c1d23c, type: 3}
+  abilityIcon2: {fileID: 21300000, guid: 4bb4126e0c521ee4b9db953b201b07f3, type: 3}
 --- !u!212 &6736287950763824454
 SpriteRenderer:
   m_ObjectHideFlags: 0

@@ -15,8 +15,8 @@ MonoBehaviour:
   <damage>k__BackingField: 0
   <trigger>k__BackingField: 5
   <tutorialSprites>k__BackingField:
-  - {fileID: 21300000, guid: 76e203594bfbf2841b1d531d9dbf7f05, type: 3}
-  - {fileID: 21300000, guid: 63049266035d9ca48a8416930f0596fe, type: 3}
+  - {fileID: 21300000, guid: 223dbe8be83e7f248b6ba5259602bf69, type: 3}
+  - {fileID: 21300000, guid: e9cd579f3781d20489f7071c0ae24b4b, type: 3}
   <effectScriptable>k__BackingField: {fileID: 0}
   <mutCost>k__BackingField: 20
   <startingPosition>k__BackingField: {x: 0, y: 0}

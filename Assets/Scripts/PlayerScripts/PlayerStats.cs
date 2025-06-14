@@ -389,6 +389,105 @@ public class PlayerStats
 		}
 	}
 
+	public void savePlayerDataToMemory(PlayerSaveData data)
+	{
+		if (gameManager == null)
+		{
+			gameManager = GameManager.Instance;
+		}
+
+		if (data == null)
+		{
+			return;
+		}
+
+		playerData = ActorDefs.copyData(data.playerData);
+
+		savedMutationData.maxMutationBar = data.savedMutationData.maxMutationBar;
+		savedMutationData.mutationBar = data.savedMutationData.mutationBar;
+
+		savedCells = data.savedCells;
+
+		data.savedKeycardCount.CopyTo(savedKeycardCount, 0);
+		data.savedUsableItemCount.CopyTo(savedUsableItemCount, 0);
+		data.savedUsableItemSprite.CopyTo(savedUsableItemSprite, 0);
+		data.savedActiveItemIndex = activeItemIndex;
+
+		int mutCount = data.mutationPrefabList.Length;
+		mutationList = new GameObject[mutCount];
+		for (int i = 0; i < mutCount; i++)
+		{
+			GameObject mutPrefab = null;
+			switch(data.mutationPrefabList[i])
+			{
+				case (int)mutationType.mBeast:
+					mutPrefab = gameManager.prefabManager.mutPBeast;
+					break;
+				case (int)mutationType.mLimb:
+					mutPrefab = gameManager.prefabManager.mutPLimb;
+					break;
+				case (int)mutationType.mWing:
+					mutPrefab = gameManager.prefabManager.mutPBladeWing;
+					break;
+				case (int)mutationType.mRaptor:
+					mutPrefab = gameManager.prefabManager.mutPRaptor;
+					break;
+				case (int)mutationType.mSpider:
+					mutPrefab = gameManager.prefabManager.mutPSpider;
+					break;
+				case (int)mutationType.mSpore:
+					mutPrefab = gameManager.prefabManager.mutPSpore;
+					break;
+				default:
+					break;
+			}
+			mutationList[i] = GameObject.Instantiate(mutPrefab);
+			mutationList[i].SetActive(false);
+			mutationList[i].transform.SetParent(gameManager.gameObject.transform);
+			MLimb limb = mutationList[i].GetComponentInChildren<MLimb>();
+			if (limb != null)
+			{
+				if (limb.grabber != null && limb.grabber.heldRigidbody != null)
+				{
+					MGrabber grabber = limb.grabber;
+					grabber.heldRigidbody.gameObject.transform.SetParent(null);
+					if (data.limbGrabbedObjectPrefab >= 0)
+					{
+						limbGrabbedObject = GameObject.Instantiate(gameManager.prefabManager.basicPrefabs[data.limbGrabbedObjectPrefab]);
+						if (limbGrabbedObject != null)
+						{
+							limbGrabbedObject.SetActive(false);
+							limbGrabbedObject.transform.SetParent(gameManager.gameObject.transform);
+							GameObject.Destroy(grabber.heldRigidbody.gameObject);
+						}
+					}
+				}
+			}
+		}
+
+		if (data.equippedWeaponPrefab >= 0)
+		{
+			equippedWeaponObject = GameObject.Instantiate(gameManager.prefabManager.weaponPrefabs[data.equippedWeaponPrefab]);
+			if (equippedWeaponObject != null)
+			{
+				equippedWeaponObject.SetActive(false);
+				equippedWeaponObject.transform.SetParent(gameManager.gameObject.transform);
+				BasicWeapon weap = equippedWeaponObject.GetComponentInChildren<BasicWeapon>();
+				if (weap != null)
+				{
+					equippedWeapon = weap;
+				}
+
+				weaponCharge = data.weaponCharge;
+				weap.reduceDurability(weap.durability - data.weaponDurability);
+			}
+		}
+		else
+		{
+			equippedWeaponObject = null;
+		}
+	}
+
 	public void copySavedPlayerData(PlayerSaveData data)
 	{
 		if (gameManager == null)
@@ -458,13 +557,25 @@ public class PlayerStats
 		}
 	}
 
-	/* TODO: player stats/HUD are poorly connected with one another*/
 	public void showMutationBar()
 	{
 		gameManager.levelManager.stationShowMut = true;
 		playerHUD.mutationFillCanvas.enabled = true;
 		playerHUD.mutationBGFillCanvas.enabled = true;
 		playerHUD.mutationOutline.enabled = true;
+		playerHUD.abilityIconCanvas.enabled = true;
+
+		playerHUD.abilityIconImage1.enabled = true;
+		playerHUD.abilityIconImage2.enabled = true;
+
+		if (player.mutationHolder.GetComponentInChildren<MSpore>())
+		{
+			playerHUD.abilityIcon3.enabled = true;
+		}
+		else
+		{
+			playerHUD.abilityIcon3.enabled = false;
+		}
 	}
 
 	public void useActiveItem()

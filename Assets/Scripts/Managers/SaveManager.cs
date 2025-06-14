@@ -9,9 +9,17 @@ using UnityEngine.Profiling;
 
 public class SaveManager
 {
+	public struct OptionsSaveData
+	{
+		public float musicVolume;
+		public float effectsVolume;
+	}
+
 	public static string dataPath = Application.dataPath;
 	public static string dataFileName = "splice_level_save_";
 	public static string playerDataFileName = "splice_player_save";
+	public static string optionsDataFileName = "splice_options";
+	public static int TOTAL_SAVES = 3;
 	public SaveData[] levelSaveData = new SaveData[SceneDefs.NUM_SCENES];
 
 	private GameManager gameManager;
@@ -149,7 +157,43 @@ public class SaveManager
 		return loadSave;
 	}
 
-	public PlayerSaveData loadPlayerDataFromDisk(int saveSlot)
+	public static OptionsSaveData loadOptionsDataFromDisk()
+	{
+		OptionsSaveData loadSave;
+		loadSave.musicVolume = -1;
+		loadSave.effectsVolume = -1;
+
+		if (dataPath == null || optionsDataFileName == null)
+		{
+			return loadSave;
+		}
+
+		string fullPath = Path.Combine(dataPath, optionsDataFileName + "");
+		if (File.Exists(fullPath))
+		{
+			try
+			{
+				// load the serialized data from the file
+				string dataToLoad = "";
+				using (FileStream stream = new FileStream(fullPath, FileMode.Open))
+				{
+					using (StreamReader reader = new StreamReader(stream))
+					{
+						dataToLoad = reader.ReadToEnd();
+					}
+				}
+
+				loadSave = JsonUtility.FromJson<OptionsSaveData>(dataToLoad);
+			}
+			catch (Exception e)
+			{
+				Debug.LogError("Error occured when trying to load file at path: " + fullPath + "\nException: \n" + e);
+			}
+		}
+		return loadSave;
+	}
+
+	public static PlayerSaveData loadPlayerDataFromDisk(int saveSlot)
 	{
 		if (dataPath == null || playerDataFileName == null)
 		{
@@ -227,6 +271,49 @@ public class SaveManager
 		}
 	}
 
+	public static void saveOptionsDataToDisk(OptionsSaveData dataToSave)
+	{
+		if (dataPath == null || optionsDataFileName == null)
+		{
+			return;
+		}
+
+		string fullPath = Path.Combine(dataPath, optionsDataFileName + "");
+		string backupFilePath = fullPath + ".bak";
+
+		try
+		{
+			Directory.CreateDirectory(Path.GetDirectoryName(fullPath));
+
+			string dataString = JsonUtility.ToJson(dataToSave, true);
+
+			using (FileStream stream = new FileStream(fullPath, FileMode.Create))
+			{
+				using (StreamWriter writer = new StreamWriter(stream))
+				{
+					writer.Write(dataString);
+				}
+			}
+
+			// verify the newly saved file can be loaded successfully
+			//GameData checkValid = Load(profileId);
+			// if the data can be verified, back it up
+			OptionsSaveData checkData = loadOptionsDataFromDisk();
+			if (checkData.musicVolume >= 0 && checkData.effectsVolume >= 0)
+			{
+				File.Copy(fullPath, backupFilePath, true);
+			}
+			else
+			{
+				throw new Exception("Save file could not be verified and backup could not be created.");
+			}
+		}
+		catch (Exception e)
+		{
+			Debug.LogError("Error occured when trying to save data to file: " + fullPath + "\n" + e);
+		}
+	}
+
 	public void savePlayerDataToDisk(int saveSlot)
 	{
 		if (dataPath == null || playerDataFileName == null)
@@ -235,6 +322,8 @@ public class SaveManager
 		}
 
 		gameManager.playerStats.copySavedPlayerData(gameManager.levelManager.currPlayerSaveData);
+		gameManager.levelManager.currPlayerSaveData.lastSavedLevel = gameManager.levelManager.lastSavedLevelIndex;
+		gameManager.levelManager.currPlayerSaveData.lastSavedSpawn = (int)gameManager.levelManager.lastSavedSpawn;
 
 		string fullPath = Path.Combine(dataPath, saveSlot.ToString(), playerDataFileName);
 		string backupFilePath = fullPath + ".bak";

@@ -27,7 +27,8 @@ public class EnemyMove : MonoBehaviour
 	public detectMode _detection;
 	private detectMode _oldDetection;
 	private detectMode _startingDetection;
-	private detectMode _nextDetection;
+	public detectMode _nextDetection;
+	public detectMode _nextForcedDetection;
 
 	float currentSpeed;
 	private float stateSpeedIncrease;
@@ -97,6 +98,7 @@ public class EnemyMove : MonoBehaviour
 		}
 		_startingDetection = _detection;
 		_nextDetection = detectMode.nul;
+		_nextForcedDetection = detectMode.idle;
 		attackTargetActor = null;
 
 		pathIndex = 0;
@@ -119,8 +121,9 @@ public class EnemyMove : MonoBehaviour
 			forcedTimer -= Time.deltaTime;
 			if (forcedTimer <= 0)
 			{
-				_detection = detectMode.idle;
+				_detection = _nextForcedDetection;
 				forcedTimer = 0;
+				idlePathPauseTime[0] = 1;
 			}
 		}
 
@@ -185,6 +188,11 @@ public class EnemyMove : MonoBehaviour
 					pathIndex = 0;
 					//this is done to make the forced state work
 					_detection = detectMode.idle;
+				}
+
+				if (idlePathPauseTime.Length == 1)
+				{
+					moveTarget = actor.transform.position;
 				}
 			}
 			
@@ -399,11 +407,6 @@ public class EnemyMove : MonoBehaviour
 				}
 				return;
 			case detectMode.idle:
-			case detectMode.forced:
-				if (summoned)
-				{
-					clearPathSummon();
-				}
 				break;
 			default:
 				break;
@@ -411,6 +414,7 @@ public class EnemyMove : MonoBehaviour
 		switch (_detection)
 		{
 			case detectMode.idle:
+				idleLookTarget = transform.position + transform.up * 0.5F;
 				actorBody.rotation = actor.aimAngle(idleLookTarget);
 				break;
 			case detectMode.hostile:
