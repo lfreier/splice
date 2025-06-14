@@ -5,6 +5,7 @@ using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Audio;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using static GameManager;
 
@@ -62,6 +63,8 @@ public class PlayerHUD : MonoBehaviour
 
 	private bool fadeInMusic = false;
 	private float targetVolume;
+
+	public EventSystem mainEventSystem;
 
 	public AudioResource[] bgm;
 
@@ -145,7 +148,7 @@ public class PlayerHUD : MonoBehaviour
 					else if (gameManager.levelManager.currLevelData != null)
 					{
 						musicPlayer.resource = gameManager.levelManager.currLevelData.sceneMusic.audioClip;
-						musicPlayer.volume = gameManager.levelManager.currLevelData.sceneMusic.volume;
+						musicPlayer.volume = gameManager.levelManager.currLevelData.sceneMusic.volume * gameManager.musicVolume;
 					}
 				}
 
@@ -186,6 +189,8 @@ public class PlayerHUD : MonoBehaviour
 		{
 			canvas.gameObject.SetActive(true);
 		}
+
+		mainEventSystem = EventSystem.current;
 		/*
 		if (musicPlayer != null && musicPlayer.enabled && !musicPlayer.isPlaying)
 		{
@@ -216,7 +221,7 @@ public class PlayerHUD : MonoBehaviour
 			musicPlayer.enabled = true;
 			musicPlayer.resource = music.audioClip;
 			musicPlayer.volume = 0;
-			targetVolume = music.volume;
+			targetVolume = music.volume * gameManager.musicVolume;
 			fadeInMusic = true;
 		}
 	}

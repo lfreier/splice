@@ -18,8 +18,7 @@ MonoBehaviour:
   <damage>k__BackingField: 1.5
   <description>k__BackingField: LONG REACHING AND DURABLE BLUNT INSTRUMENT.\r\nBEST
     RECOMMENDATION FOR COMMON IMPROVISED WEAPONS.\r\nONLY FLAW IS HEAVY AND SLOW
-    SWING SPEED.\r\n\r\nTEST PARTICIPANTS SEEM TO USE A SECONDARY OVERHEAD SWING
-    AS A SURPRISE ATTACK.
+    SWING SPEED.
   <durability>k__BackingField: 8
   <icon>k__BackingField: {fileID: 21300000, guid: b59df8067e216b646b4added9c132755, type: 3}
   <displayName>k__BackingField: WRENCH

@@ -92,6 +92,14 @@ public class MenuHandler : MonoBehaviour
 			if (menuMusic != null)
 			{
 				menuMusic.volume = options.musicVolume;
+				if (menuMusic.volume == 0)
+				{
+					menuMusic.Pause();
+				}
+				else
+				{
+					menuMusic.UnPause();
+				}
 			}
 			else
 			{
@@ -296,9 +304,10 @@ public class MenuHandler : MonoBehaviour
 		fadeOutScene();
 	}
 
-	public void startGameFromSaveSlot(int saveSlot)
+	public async void startGameFromSaveSlot(int saveSlot)
 	{
-		if (saveSlot < 0)
+		bool fromMenu = saveSlot < 0;
+		if (fromMenu)
 		{
 			saveSlot = 0;
 			for (int i = 0; i < SaveManager.TOTAL_SAVES; i++)
@@ -308,6 +317,11 @@ public class MenuHandler : MonoBehaviour
 					saveSlot = i;
 					break;
 				}
+			}
+			/* TODO: this will overwrite saves but w/e */
+			if (saveSlot >= SaveManager.TOTAL_SAVES)
+			{
+				saveSlot = SaveManager.TOTAL_SAVES - 1;
 			}
 		}
 
@@ -322,8 +336,16 @@ public class MenuHandler : MonoBehaviour
 			nextScene = playerData.lastSavedLevel;
 			gManager.levelManager.lastSavedSpawn = (LevelManager.levelSpawnIndex)playerData.lastSavedSpawn;
 		}
-
-		startGame(false);
+		if (!fromMenu)
+		{
+			await gameManager.loadingHandler.unloadAllScenes(false);
+			startGame(true);
+		}
+		else
+		{
+			startGame(false);
+			gameManager.levelManager.lastSavedLevelIndex = nextScene;
+		}
 	}
 
 	public async void startGame(bool reset)
@@ -354,6 +376,8 @@ public class MenuHandler : MonoBehaviour
 			Debug.Log("ALERT 3");
 		}
 		SceneManager.SetActiveScene(SceneManager.GetSceneByBuildIndex(SCENE_INDEX_MASK[nextScene]));
+
+		gameManager.signalVolumeChangeEvent(gameManager.musicVolume);
 
 		fadeOutScene();
 	}

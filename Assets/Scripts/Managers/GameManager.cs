@@ -346,7 +346,7 @@ public class GameManager : MonoBehaviour
 		saveManager.savePlayerDataToDisk(currentSaveSlot);
 
 		levelManager.saveLevelState(currentScene);
-		saveManager.saveDataToDisk(levelManager.currSaveData, 0);
+		saveManager.saveDataToDisk(levelManager.currSaveData, currentSaveSlot);
 		saveManager.loadAllData();
 	}
 

@@ -962,8 +962,8 @@ Canvas:
   m_VertexColorAlwaysGammaSpace: 0
   m_AdditionalShaderChannelsFlag: 0
   m_UpdateRectTransformForStandalone: 0
-  m_SortingLayerID: 0
-  m_SortingOrder: 0
+  m_SortingLayerID: 1740397719
+  m_SortingOrder: -1
   m_TargetDisplay: 0
 --- !u!1 &1136655661
 GameObject:
@@ -1038,6 +1038,7 @@ MonoBehaviour:
   musicPlayer: {fileID: 1136655664}
   hudHealth: 0
   shieldHealth: 0
+  mainEventSystem: {fileID: 0}
   bgm: []
   abilityIconCanvas: {fileID: 1874168769}
   abilityIconImage1: {fileID: 429770933}

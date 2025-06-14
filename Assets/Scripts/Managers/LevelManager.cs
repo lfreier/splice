@@ -142,6 +142,7 @@ public class LevelManager : MonoBehaviour
 			/* spawn player if one isn't there */
 			if (spawnIndex >= 0)
 			{
+				Camera.main.transform.SetPositionAndRotation(new Vector3(levelSpawns[spawnIndex].spawnPosition.x, levelSpawns[spawnIndex].spawnPosition.y, -10), Quaternion.identity);
 				foreach (Actor actor in FindObjectsByType<Actor>(FindObjectsSortMode.None))
 				{
 					if (actor.tag == ActorDefs.playerTag)

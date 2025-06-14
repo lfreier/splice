@@ -28,7 +28,7 @@ public class SaveSlotsMenu : MonoBehaviour
 			}
 			else
 			{
-				slotsText[i].text = "SLOT " + i + 1;
+				slotsText[i].text = "SLOT " + 0 + (i + 1);
 				slotValid[i] = true;
 			}
 		}
@@ -45,6 +45,7 @@ public class SaveSlotsMenu : MonoBehaviour
 		{
 			slotsText[i].enabled = false;
 		}
+		this.gameObject.SetActive(false);
 		menu.gameObject.SetActive(true);
 		menu.startGameFromSaveSlot(slotNum);
 	}

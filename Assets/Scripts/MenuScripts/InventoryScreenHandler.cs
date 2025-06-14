@@ -2,6 +2,7 @@
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using static PickupDefs;
 
@@ -14,6 +15,7 @@ public class InventoryScreenHandler : MonoBehaviour
 	public TextMeshProUGUI[]	itemDisplayCount = new TextMeshProUGUI[2];
 
 	public Canvas invCanvas;
+	public EventSystem invEventSystem;
 
 	private GameManager gameManager;
 
@@ -27,6 +29,10 @@ public class InventoryScreenHandler : MonoBehaviour
 		gameManager.inventoryOpenEvent += loadInventoryScreen;
 		//gameManager.closeMenusEvent += quitInventoryScreen;
 		invCanvas.enabled = false;
+		if (invEventSystem != null)
+		{
+			invEventSystem.gameObject.SetActive(false);
+		}
 		lastCancel = 1;
 	}
 
@@ -51,6 +57,15 @@ public class InventoryScreenHandler : MonoBehaviour
 
 	public void quitInventoryScreen()
 	{
+		if (invEventSystem != null)
+		{
+			invEventSystem.gameObject.SetActive(false);
+		}
+		EventSystem mainEvent = gameManager.playerStats.playerHUD.mainEventSystem;
+		if (mainEvent != null)
+		{
+			mainEvent.gameObject.SetActive(true);
+		}
 		lastCancel = 1;
 		invCanvas.enabled = false;
 		Time.timeScale = 1;
@@ -77,7 +92,17 @@ public class InventoryScreenHandler : MonoBehaviour
 			updateKeycardCount(gameManager.playerStats.keycardCount[i], (keycardType)i);
 		}
 
+		EventSystem mainEvent = gameManager.playerStats.playerHUD.mainEventSystem;
+		if (mainEvent != null)
+		{
+			mainEvent.gameObject.SetActive(false);
+		}
+
 		invCanvas.enabled = true;
+		if (invEventSystem != null)
+		{
+			invEventSystem.gameObject.SetActive(true);
+		}
 	}
 
 	private void updateMutCount(int count)

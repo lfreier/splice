@@ -45,6 +45,14 @@ public class OptionsMenu : MonoBehaviour
 			currentOptions.musicVolume = musicSlider.value;
 			if (musicPlayer != null)
 			{
+				if (musicSlider.value == 0)
+				{
+					musicPlayer.Pause();
+				}
+				else if (musicPlayer.volume == 0)
+				{
+					musicPlayer.UnPause();
+				}
 				musicPlayer.volume = musicSlider.value;
 			}
 			GameManager.Instance.signalVolumeChangeEvent(musicSlider.value);

@@ -36,88 +36,20 @@ public class SaveManager
 		}
 	}
 
+	public static void deleteSaveSlot(int saveSlot)
+	{
+		string folderPath = Path.Combine(dataPath, saveSlot.ToString());
+		if (Directory.Exists(folderPath))
+		{
+			Directory.Delete(folderPath, true);
+		}
+	}
+
 	public void loadAllData()
 	{
 		for (int i = (int)SceneDefs.SCENE.LEVEL_START; i < SceneDefs.NUM_SCENES; i++)
 		{
 			levelSaveData[i] = loadDataFromDisk((SceneDefs.SCENE)i, gameManager.currentSaveSlot);
-		}
-	}
-
-	public void loadPlayerSaveData(PlayerSaveData data)
-	{
-		if (data.mutationPrefabList != null)
-		{
-			foreach (int prefabIndex in data.mutationPrefabList)
-			{
-				if (prefabIndex >= 0)
-				{
-					GameObject prefab = null;
-					switch ((mutationType)prefabIndex)
-					{
-						case mutationType.mBeast:
-							prefab = prefabManager.mutPBeast;
-							break;
-						case mutationType.mLimb:
-							prefab = prefabManager.mutPLimb;
-							break;
-						case mutationType.mWing:
-							prefab = prefabManager.mutPBladeWing;
-							break;
-						case mutationType.mRaptor:
-							prefab = prefabManager.mutPRaptor;
-							break;
-						case mutationType.mSpider:
-							prefab = prefabManager.mutPSpore;
-							break;
-						case mutationType.mSpore:
-							prefab = prefabManager.mutPSpore;
-							break;
-						default:
-							break;
-					}
-
-					if (prefab == null)
-					{
-						continue;
-					}
-					MutationInterface mutInt = prefab.GetComponentInChildren<MutationInterface>();
-					if (mutInt != null)
-					{
-						gameManager.playerStats.equipMutation(mutInt);
-						gameManager.playerStats.showMutationBar();
-
-						MLimb mLimb = gameManager.playerStats.player.mutationHolder.GetComponentInChildren<MLimb>();
-						if (mLimb != null && data.limbGrabbedObjectPrefab >= 0 && data.limbGrabbedObjectPrefab < prefabManager.basicPrefabs.Length)
-						{
-							GameObject spawnedObject = GameObject.Instantiate(prefabManager.basicPrefabs[data.limbGrabbedObjectPrefab]);
-							spawnedObject.SetActive(true);
-							mLimb.grabber.addObjectToGrabber(spawnedObject.transform);
-						}
-					}
-				}
-			}
-		}
-
-		if (data.equippedWeaponPrefab >= 0 && data.equippedWeaponPrefab < prefabManager.weaponPrefabs.Length)
-		{
-			GameObject spawnedWeapon = GameObject.Instantiate(prefabManager.weaponPrefabs[data.equippedWeaponPrefab]);
-			if (spawnedWeapon != null)
-			{
-				spawnedWeapon.SetActive(true);
-				gameManager.playerStats.player.equip(spawnedWeapon);
-
-				BasicWeapon weap = spawnedWeapon.GetComponentInChildren<BasicWeapon>();
-				if (weap != null)
-				{
-					weap.reduceDurability(weap._weaponScriptable.durability - data.weaponDurability);
-					SwingBatteryWeapon swing = spawnedWeapon.GetComponentInChildren<SwingBatteryWeapon>();
-					if (swing != null)
-					{
-						swing.setBatteries(data.weaponCharge);
-					}
-				}
-			}
 		}
 	}
 

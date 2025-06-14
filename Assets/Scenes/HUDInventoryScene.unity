@@ -714,7 +714,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 59.3
+  m_fontSize: 72
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -1117,7 +1117,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &752965034
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1315,6 +1315,7 @@ MonoBehaviour:
   - {fileID: 792135435}
   - {fileID: 545846031}
   invCanvas: {fileID: 770103557}
+  invEventSystem: {fileID: 752965035}
   cancel: {fileID: 7727032971491509709, guid: 0161ee63f4a9a644a8c2afbf81b45975, type: 3}
 --- !u!114 &770103560
 MonoBehaviour:
@@ -1332,11 +1333,16 @@ MonoBehaviour:
   filterImage: {fileID: 0}
   menuOptions: []
   fadeInText: []
+  holdToFillImage: {fileID: 0}
+  holdTimerLength: 0
   fadeChange: 0.85
   menuCanvas: {fileID: 770103557}
   menuCam: {fileID: 0}
   eventSystem: {fileID: 752965035}
   audioListener: {fileID: 0}
+  menuMusic: {fileID: 0}
+  loadMenuObject: {fileID: 0}
+  optionsMenuObject: {fileID: 0}
 --- !u!1001 &792135433
 PrefabInstance:
   m_ObjectHideFlags: 0
