@@ -403,4 +403,9 @@ public class MBeast : BasicWeapon, MutationInterface
 	{
 		return mutScriptable.tutorialSprites;
 	}
+
+	public void updateCells(int amount)
+	{
+		throw new System.NotImplementedException();
+	}
 }

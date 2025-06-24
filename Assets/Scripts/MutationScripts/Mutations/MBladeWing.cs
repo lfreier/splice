@@ -171,4 +171,9 @@ public class MBladeWing : MonoBehaviour, MutationInterface
 	{
 		return mutationScriptable.tutorialSprites;
 	}
+
+	public void updateCells(int amount)
+	{
+
+	}
 }

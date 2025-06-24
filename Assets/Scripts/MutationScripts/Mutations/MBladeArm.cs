@@ -44,4 +44,9 @@ public class MBladeArm : MonoBehaviour, MutationInterface
 	{
 		return null;
 	}
+
+	public void updateCells(int amount)
+	{
+
+	}
 }

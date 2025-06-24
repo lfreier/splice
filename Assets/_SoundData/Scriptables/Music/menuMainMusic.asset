@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: menuMainMusic
   m_EditorClassIdentifier: 
   <audioClip>k__BackingField: {fileID: 8300000, guid: 6b2a777e04267c94a801a672502da13d, type: 3}
-  <volume>k__BackingField: 0.03
+  <volume>k__BackingField: 1

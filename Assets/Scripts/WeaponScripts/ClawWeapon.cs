@@ -23,10 +23,11 @@ public class ClawWeapon : BasicWeapon
 
 	private void OnDestroy()
 	{
-		if (pounceSourceActor != null)
+		GameManager gm = GameManager.Instance;
+		if (gm != null)
 		{
-			pounceSourceActor.gameManager.signalMovementUnlocked();
-			pounceSourceActor.gameManager.signalRotationUnlocked();
+			gm.signalMovementUnlocked();
+			gm.signalRotationUnlocked();
 		}
 	}
 

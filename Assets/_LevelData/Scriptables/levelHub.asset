@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ef8256f3a9799a945bdcdb0bc9439850, type: 3}
   m_Name: levelHub
   m_EditorClassIdentifier: 
-  spawnPosition: {x: 0, y: 13}
+  spawnPosition: {x: 0, y: -0.375}
   spawnRotation: 0
   elevatorIndex: 1
-  floorName: HUB
+  floorName: RESTRICTED ACCESS
   sceneIndex: 22
   spawnIndex: 6

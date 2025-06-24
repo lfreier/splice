@@ -21,4 +21,5 @@ public interface MutationInterface
 
 	public void setWielder(Actor wielder);
 
+	public void updateCells(int amount);
 }

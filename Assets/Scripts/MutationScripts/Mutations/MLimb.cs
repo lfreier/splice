@@ -53,12 +53,16 @@ public class MLimb : MonoBehaviour, MutationInterface
 
 	private void OnDestroy()
 	{
-		gameManager.playerInteractEvent -= interactInputPressed;
-		gameManager.playerInteractReleaseEvent -= interactInputReleased;
-		gameManager.playerAbilityEvent -= abilityInputPressed;
-		gameManager.playerAbilitySecondaryEvent -= abilityInputSecondaryPressed;
-		gameManager.playerAbilityReleaseEvent -= abilityInputReleased;
-		gameManager.updateCellCount -= updateCells;
+		gameManager = GameManager.Instance;
+		if (gameManager != null)
+		{
+			gameManager.playerInteractEvent -= interactInputPressed;
+			gameManager.playerInteractReleaseEvent -= interactInputReleased;
+			gameManager.playerAbilityEvent -= abilityInputPressed;
+			gameManager.playerAbilitySecondaryEvent -= abilityInputSecondaryPressed;
+			gameManager.playerAbilityReleaseEvent -= abilityInputReleased;
+			gameManager.updateCellCount -= updateCells;
+		}
 	}
 
 	private void FixedUpdate()
@@ -70,7 +74,7 @@ public class MLimb : MonoBehaviour, MutationInterface
 		}
 	}
 
-	private void updateCells(int amount)
+	public void updateCells(int amount)
 	{
 		gameManager.playerStats.playerHUD.setMutAbilityFill(mutationScriptable.mutCost, mutationScriptable.values[MUT_SEC_COST_INDEX]);
 	}

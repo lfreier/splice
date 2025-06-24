@@ -51,7 +51,11 @@ public class InventoryScreenHandler : MonoBehaviour
 
 	private void OnDestroy()
 	{
-		gameManager.inventoryOpenEvent -= loadInventoryScreen;
+		gameManager = GameManager.Instance;
+		if (gameManager != null)
+		{
+			gameManager.inventoryOpenEvent -= loadInventoryScreen;
+		}
 		//gameManager.closeMenusEvent -= quitInventoryScreen;
 	}
 

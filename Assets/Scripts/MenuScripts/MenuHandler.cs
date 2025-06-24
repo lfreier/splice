@@ -45,6 +45,8 @@ public class MenuHandler : MonoBehaviour
 	public GameObject loadMenuObject;
 	public GameObject optionsMenuObject;
 
+	public Button[] menuButtons;
+
 	private float volumeDecrement;
 
 	private int nextScene = (int)SCENE.LEVEL_START;
@@ -64,6 +66,14 @@ public class MenuHandler : MonoBehaviour
 
 		await SceneManager.LoadSceneAsync(SCENE_INDEX_MASK[(int)SCENE.MANAGER], LoadSceneMode.Additive);
 		buttonsLocked = false;
+
+		if (menuButtons != null && menuButtons.Length > 0)
+		{
+			foreach (Button button in menuButtons)
+			{
+				button.interactable = true;
+			}
+		}
 	}
 
 	private void Start()
@@ -110,8 +120,12 @@ public class MenuHandler : MonoBehaviour
 
 	private void OnDestroy()
 	{
-		gameManager.closeMenusEvent -= killMenuScenes;
-		gameManager.startMusicEvent -= killMenuMusic;
+		gameManager = GameManager.Instance;
+		if (gameManager != null)
+		{
+			gameManager.closeMenusEvent -= killMenuScenes;
+			gameManager.startMusicEvent -= killMenuMusic;
+		}
 	}
 
 	public void Update()
@@ -356,6 +370,13 @@ public class MenuHandler : MonoBehaviour
 		}
 
 		buttonsLocked = true;
+		if (menuButtons != null && menuButtons.Length > 0)
+		{
+			foreach (Button button in menuButtons)
+			{
+				button.interactable = false;
+			}
+		}
 		gameManager = GameManager.Instance;
 		Time.timeScale = 1;
 		int[] nextLevel = { nextScene };

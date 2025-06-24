@@ -25,6 +25,8 @@ public class PlayerHUD : MonoBehaviour
 	public Image mutationOutline;
 
 	public Image activeItemIcon;
+	public Image useKeyIcon;
+	public Image cycleKeyIcon;
 
 	public GameObject heartPrefab;
 	public GameObject shieldPrefab;
@@ -75,6 +77,8 @@ public class PlayerHUD : MonoBehaviour
 	public Image abilityBgFill2;
 	public Image abilityIcon3;
 
+	public Sprite[] itemIcon;
+
 	private void Start()
 	{
 		gameManager = GameManager.Instance;
@@ -96,12 +100,16 @@ public class PlayerHUD : MonoBehaviour
 
 	private void OnDestroy()
 	{
-		gameManager.initHudEvent -= init;
-		gameManager.volumeChangeEvent -= changeVolume;
-		gameManager.startMusicEvent -= startNewMusic;
-		gameManager.updateHealthEvent -= updateHealth;
-		gameManager.updateShieldEvent -= updateShield;
-		gameManager.updateCellCount -= updateCells;
+		gameManager = GameManager.Instance;
+		if (gameManager != null)
+		{
+			gameManager.initHudEvent -= init;
+			gameManager.volumeChangeEvent -= changeVolume;
+			gameManager.startMusicEvent -= startNewMusic;
+			gameManager.updateHealthEvent -= updateHealth;
+			gameManager.updateShieldEvent -= updateShield;
+			gameManager.updateCellCount -= updateCells;
+		}
 	}
 
 	public void init()
@@ -120,6 +128,7 @@ public class PlayerHUD : MonoBehaviour
 				if (gameManager.playerStats.player == null)
 				{
 					gameManager.playerStats.player = actor;
+					gameManager.playerStats.init();
 				}
 				Camera main = Camera.main;
 				foreach (Canvas canvas in hudCanvas)
@@ -207,7 +216,7 @@ public class PlayerHUD : MonoBehaviour
 			musicPlayer.volume += (targetVolume / 128);
 			if (musicPlayer.volume >= targetVolume)
 			{
-				musicPlayer.Play();
+				musicPlayer.volume = targetVolume;
 				fadeInMusic = false;
 			}
 		}
@@ -222,6 +231,7 @@ public class PlayerHUD : MonoBehaviour
 			musicPlayer.resource = music.audioClip;
 			musicPlayer.volume = 0;
 			targetVolume = music.volume * gameManager.musicVolume;
+			musicPlayer.Play();
 			fadeInMusic = true;
 		}
 	}
@@ -238,10 +248,12 @@ public class PlayerHUD : MonoBehaviour
 		abilityBgFill2.fillAmount = Mathf.Min(1F, gameManager.playerStats.getMutationBar() / cost2);
 	}
 
-	public void changeActiveItemIcon(Sprite icon)
+	public void changeActiveItemIcon(int index)
 	{
 		activeItemIcon.enabled = true;
-		activeItemIcon.sprite = icon;
+		useKeyIcon.enabled = true;
+		cycleKeyIcon.enabled = true;
+		activeItemIcon.sprite = itemIcon[index];
 	}
 
 	private void addHeart()

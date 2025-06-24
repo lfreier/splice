@@ -75,14 +75,18 @@ public class SwingBatteryWeapon : BasicWeapon
 			if (_weaponScriptable.soundBreak != null)
 			{
 				AudioClip toPlay;
+				if (gameManager == null)
+				{
+					gameManager = GameManager.Instance;
+				}
 				gameManager.audioManager.soundHash.TryGetValue(_weaponScriptable.soundBreak.name, out toPlay);
 				if (toPlay != null)
 				{
-					if (actorWielder == null)
+					if (actorWielder == null && gameManager.playerStats.player != null)
 					{
 						gameManager.playerStats.player.actorAudioSource.PlayOneShot(toPlay, gameManager.effectsVolume);
 					}
-					else
+					else if (actorWielder != null)
 					{
 						actorWielder.actorAudioSource.PlayOneShot(toPlay, gameManager.effectsVolume);
 					}

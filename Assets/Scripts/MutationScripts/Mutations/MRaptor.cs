@@ -37,11 +37,15 @@ public class MRaptor : MonoBehaviour, MutationInterface
 
 	private void OnDestroy()
 	{
-		gameManager.playerAbilityEvent -= abilityInputPressed;
-		gameManager.playerAbilitySecondaryEvent -= abilityInputSecondaryPressed;
-		gameManager.updateCellCount -= updateCells;
-		gameManager.signalMovementUnlocked();
-		gameManager.signalRotationUnlocked();
+		gameManager = GameManager.Instance;
+		if (gameManager != null)
+		{
+			gameManager.playerAbilityEvent -= abilityInputPressed;
+			gameManager.playerAbilitySecondaryEvent -= abilityInputSecondaryPressed;
+			gameManager.updateCellCount -= updateCells;
+			gameManager.signalMovementUnlocked();
+			gameManager.signalRotationUnlocked();
+		}
 	}
 
 	private void FixedUpdate()
@@ -91,7 +95,7 @@ public class MRaptor : MonoBehaviour, MutationInterface
 		}
 	}
 
-	private void updateCells(int amount)
+	public void updateCells(int amount)
 	{
 		gameManager.playerStats.playerHUD.setMutAbilityFill(mutationScriptable.mutCost, mutationScriptable.values[POUNCE_COST_INDEX]);
 	}

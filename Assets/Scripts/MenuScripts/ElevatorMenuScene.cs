@@ -84,7 +84,7 @@ public class ElevatorMenuScene : StationScreen
 			}
 			if (buttonList[i].Equals(button))
 			{
-				if (gameManager.currentScene == (int)elevatorSpawnList[i].sceneIndex)
+				if (menuManager.elevator.elevatorIndex == elevatorSpawnList[i].elevatorIndex)
 				{
 					menuManager.exitMenu();
 					break;

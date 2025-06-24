@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: levelOfficeMusic
   m_EditorClassIdentifier: 
   <audioClip>k__BackingField: {fileID: 8300000, guid: 1c03b63cf40baad488d31810e80eca34, type: 3}
-  <volume>k__BackingField: 0.02
+  <volume>k__BackingField: 1

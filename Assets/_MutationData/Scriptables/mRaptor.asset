@@ -17,12 +17,12 @@ MonoBehaviour:
   <tutorialSprites>k__BackingField:
   - {fileID: 21300000, guid: 047487f8b7224cb4ca4aade4ebaee0fe, type: 3}
   <effectScriptable>k__BackingField: {fileID: 0}
-  <mutCost>k__BackingField: 40
+  <mutCost>k__BackingField: 60
   <startingPosition>k__BackingField: {x: 0, y: 0}
   <startingRotation>k__BackingField: 0
   <values>k__BackingField:
   - 15
-  - 7
+  - 6
   - 0
   - 0
   - 0

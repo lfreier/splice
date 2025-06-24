@@ -30,10 +30,14 @@ public class MSpore : MonoBehaviour, MutationInterface
 
 	private void OnDestroy()
 	{
-		gameManager.playerAbilityEvent -= abilityInputPressed;
-		gameManager.playerAbilitySecondaryEvent -= abilityInputSecondaryPressed;
-		gameManager.playerSecondaryEvent -= abilitySecondaryPressed;
-		gameManager.updateCellCount -= updateCells;
+		gameManager = GameManager.Instance;
+		if (gameManager != null)
+		{
+			gameManager.playerAbilityEvent -= abilityInputPressed;
+			gameManager.playerAbilitySecondaryEvent -= abilityInputSecondaryPressed;
+			gameManager.playerSecondaryEvent -= abilitySecondaryPressed;
+			gameManager.updateCellCount -= updateCells;
+		}
 	}
 
 	void Start()
@@ -53,7 +57,7 @@ public class MSpore : MonoBehaviour, MutationInterface
 		}
 	}
 
-	private void updateCells(int amount)
+	public void updateCells(int amount)
 	{
 		gameManager.playerStats.playerHUD.setMutAbilityFill(mutationScriptable.mutCost, mutationScriptable.values[MINE_COST_INDEX]);
 	}

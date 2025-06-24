@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Threading.Tasks;
+using Unity.VisualScripting;
 using UnityEngine;
 using static PickupDefs;
 
@@ -22,7 +23,7 @@ public class PlayerStats
 
 	public int cells = 0;
 	public int savedCells = 0;
-	public int petriCellAmount = 0;
+	public int petriCellAmount =50;
 	private MutationDefs.MutationData mutationData;
 	private MutationDefs.MutationData savedMutationData;
 
@@ -45,6 +46,17 @@ public class PlayerStats
 		mutationData = new MutationDefs.MutationData();
 		mutationData.maxMutationBar = 100;
 		mutationData.mutationBar = 0;
+	}
+
+	public void init()
+	{
+		for (int i = 0; i < savedUsableItemSprite.Length; i++)
+		{
+			if (usableItemSprite[i] == null && playerHUD.itemIcon != null && playerHUD.itemIcon.Length > i)
+			{
+				usableItemSprite[i] = playerHUD.itemIcon[i];
+			}
+		}
 	}
 
 	public bool addItem(PickupInterface pickup)
@@ -75,34 +87,18 @@ public class PlayerStats
 		switch (type)
 		{
 			case pickupType.PETRI_DISH:
-				if (usableItemSprite[(int)usableType.REFILL] == null)
-				{
-					usableItemSprite[(int)usableType.REFILL] = pickup.getIcon();
-				}
 				if (resetIcon == true)
 				{
 					activeItemIndex = (int)usableType.REFILL;
 				}
-				if (petriCellAmount <= 0)
-				{
-					petriCellAmount = pickup.getCount();
-				}
 				break;
 			case pickupType.BATTERY:
-				if (usableItemSprite[(int)usableType.BATTERY] == null)
-				{
-					usableItemSprite[(int)usableType.BATTERY] = pickup.getIcon();
-				}
 				if (resetIcon == true)
 				{
 					activeItemIndex = (int)usableType.BATTERY;
 				}
 				break;
 			case pickupType.HEALTH_VIAL:
-				if (usableItemSprite[(int)usableType.HEALTH_VIAL] == null)
-				{
-					usableItemSprite[(int)usableType.HEALTH_VIAL] = pickup.getIcon();
-				}
 				if (resetIcon == true)
 				{
 					activeItemIndex = (int)usableType.HEALTH_VIAL;
@@ -160,9 +156,9 @@ public class PlayerStats
 			}
 		}
 
-		if (usableItemSprite[nextItemIndex] != null && usableItemCount[nextItemIndex] > 0)
+		if (usableItemCount[nextItemIndex] > 0)
 		{
-			playerHUD.changeActiveItemIcon(usableItemSprite[nextItemIndex]);
+			playerHUD.changeActiveItemIcon(nextItemIndex);
 			activeItemIndex = nextItemIndex;
 		}
 	}
@@ -275,7 +271,9 @@ public class PlayerStats
 		if (usableItemCount[activeItemIndex] > 0)
 		{
 			playerHUD.activeItemIcon.enabled = true;
-			playerHUD.changeActiveItemIcon(usableItemSprite[activeItemIndex]);
+			playerHUD.useKeyIcon.enabled = true;
+			playerHUD.cycleKeyIcon.enabled = true;
+			playerHUD.changeActiveItemIcon(activeItemIndex);
 		}
 
 		cells = savedCells;
@@ -576,6 +574,12 @@ public class PlayerStats
 		{
 			playerHUD.abilityIcon3.enabled = false;
 		}
+
+		MutationInterface mut = player.mutationHolder.GetComponentInChildren<MutationInterface>();
+		if (mut != null)
+		{
+			mut.updateCells(getMutationBar());
+		}
 	}
 
 	public void useActiveItem()
@@ -606,6 +610,8 @@ public class PlayerStats
 			if (usableItemCount[activeItemIndex] == 0)
 			{
 				playerHUD.activeItemIcon.enabled = false;
+				playerHUD.useKeyIcon.enabled = false;
+				playerHUD.cycleKeyIcon.enabled = false;
 			}
 		}
 	}

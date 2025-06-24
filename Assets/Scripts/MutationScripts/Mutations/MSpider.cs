@@ -41,9 +41,13 @@ public class MSpider : MonoBehaviour, MutationInterface
 
 	private void OnDestroy()
 	{
-		gameManager.playerAbilityEvent -= abilityInputPressed;
-		gameManager.playerAbilitySecondaryEvent -= abilitySecondaryInputPressed;
-		gameManager.updateCellCount -= updateCells;
+		gameManager = GameManager.Instance;
+		if (gameManager != null)
+		{
+			gameManager.playerAbilityEvent -= abilityInputPressed;
+			gameManager.playerAbilitySecondaryEvent -= abilitySecondaryInputPressed;
+			gameManager.updateCellCount -= updateCells;
+		}
 	}
 
 	private void FixedUpdate()
@@ -55,14 +59,14 @@ public class MSpider : MonoBehaviour, MutationInterface
 		}
 	}
 
-	private void updateCells(int amount)
+	public void updateCells(int amount)
 	{
 		gameManager.playerStats.playerHUD.setMutAbilityFill(mutationScriptable.mutCost, mutationScriptable.values[MUT_SEC_COST_INDEX]);
 	}
 
 	private void abilityInputPressed()
 	{
-		if (mutationScriptable.mutCost <= gameManager.playerStats.getMutationBar() && !animationActive)
+		if (mutationScriptable.mutCost <= gameManager.playerStats.getMutationBar())
 		{
 			anim.SetTrigger(MutationDefs.TRIGGER_SPIDER_STING);
 			gameManager.playerStats.changeMutationBar(-mutationScriptable.mutCost);

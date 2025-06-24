@@ -857,4 +857,17 @@ public class EnemyMove : MonoBehaviour
 				break;
 		}
 	}
+
+	private void OnCollisionEnter2D(Collision2D collision)
+	{
+		if (collision != null)
+		{
+			Actor actorHit = collision.gameObject.GetComponentInChildren<Actor>();
+			if (actorHit != null && actor.isTargetHostile(actorHit))
+			{
+				_nextDetection = detectMode.suspicious;
+				attackTarget = actorHit.transform.position;
+			}
+		}
+	}
 }
