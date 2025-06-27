@@ -45,6 +45,12 @@ public class MutationSelect : MonoBehaviour
 		{
 			camHandler.stopCam(true);
 		}
+		PlayerInputs inputs = interact.player.GetComponentInChildren<PlayerInputs>();
+		if (inputs != null)
+		{
+			inputs.locked = true;
+			inputs.lockWait = true;
+		}
 		op = SceneManager.LoadSceneAsync((int)SceneDefs.SCENE.MUTATION_SELECT, LoadSceneMode.Additive);
 		op.allowSceneActivation = true;
 	}
@@ -74,6 +80,12 @@ public class MutationSelect : MonoBehaviour
 				Destroy(doorLock);
 				break;
 			}
+		}
+
+		PlayerInputs inputs = interact.player.GetComponentInChildren<PlayerInputs>();
+		if (inputs != null)
+		{
+			inputs.locked = false;
 		}
 
 		Destroy(this.gameObject);

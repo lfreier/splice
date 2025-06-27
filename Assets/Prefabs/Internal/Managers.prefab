@@ -80,6 +80,8 @@ MonoBehaviour:
   isLoaded: 0
   currentScene: 0
   currentSaveSlot: 0
+  musicVolume: 0.5
+  effectsVolume: 0.5
 --- !u!114 &4654381731306417788
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -154,10 +156,36 @@ MonoBehaviour:
   - {fileID: 8300000, guid: a1848634a879e7741bb155573fe3b74b, type: 3}
   - {fileID: 8300000, guid: 48bf95b0553960948b5997f9338e7c1e, type: 3}
   - {fileID: 8300000, guid: 14b19a7bd5988434d9a8ea561ac40638, type: 3}
+  - {fileID: 8300000, guid: b665489b065df3f499d40bad6949a764, type: 3}
+  - {fileID: 8300000, guid: d0b896c4df2b296438280b6d24c46d23, type: 3}
+  - {fileID: 8300000, guid: eac6343fba5827743bee029d2975dd18, type: 3}
+  - {fileID: 8300000, guid: aae714ecccec41243b4b1a4cca290089, type: 3}
+  - {fileID: 8300000, guid: b20833c1885084547b58e7d0ebf71cae, type: 3}
+  - {fileID: 8300000, guid: 5651570415544434cb54fae3e9ebbd4e, type: 3}
+  - {fileID: 8300000, guid: 8ad7a3c6e393ad74d8b727e63f9c978e, type: 3}
+  - {fileID: 8300000, guid: 30ca6e7e557a0b44f83c12c345439327, type: 3}
+  - {fileID: 8300000, guid: f7631ad7ccc24d54b8e19257a066c441, type: 3}
+  - {fileID: 8300000, guid: e378c03824c24e343bcd083d61b2e082, type: 3}
+  - {fileID: 8300000, guid: c7a94fe1851ada14280fe050ace4c807, type: 3}
+  - {fileID: 8300000, guid: 9ef3ad8c2d0368849a1dc7bc1c48d2f2, type: 3}
+  - {fileID: 8300000, guid: 39df70fc9ab69d440bc42406ecf103ce, type: 3}
+  - {fileID: 8300000, guid: a1680725f2efd224cb1d369bf76b57dc, type: 3}
+  - {fileID: 8300000, guid: 15be7a20eccb8d140abc3163bc6bb1be, type: 3}
+  - {fileID: 8300000, guid: 1451635b4da578c488aa872777bed1e9, type: 3}
+  - {fileID: 8300000, guid: 13f56cfe5de758e4ea2aed3534254f7b, type: 3}
+  - {fileID: 8300000, guid: 775947623067597409e790d7c921fe9d, type: 3}
+  - {fileID: 8300000, guid: fd6f18c588ae53a4e90a6aa08b33f295, type: 3}
+  - {fileID: 8300000, guid: cadd4112eeda53d429782e0223e9f988, type: 3}
+  - {fileID: 8300000, guid: 18edb78409c27374fb1edb8769df1fdd, type: 3}
+  - {fileID: 8300000, guid: 15b63f29f2a1aa4498e24af250771b67, type: 3}
   footstepCarpet: {fileID: 0}
   heartPump: {fileID: 0}
-  parrySuccess: {fileID: 0}
   playerDeath: {fileID: 0}
+  batterySound: {fileID: 8300000, guid: d0b896c4df2b296438280b6d24c46d23, type: 3}
+  healthVialSound: {fileID: 8300000, guid: eac6343fba5827743bee029d2975dd18, type: 3}
+  refillSound: {fileID: 8300000, guid: aae714ecccec41243b4b1a4cca290089, type: 3}
+  obstacleHit: {fileID: 8300000, guid: 9ef3ad8c2d0368849a1dc7bc1c48d2f2, type: 3}
+  obstacleActorHit: {fileID: 8300000, guid: 152261d29304ef5488d53ce1c9eb9bf0, type: 3}
   sciDeath1: {fileID: 0}
   sciDeath2: {fileID: 0}
   sciDeath3: {fileID: 0}
@@ -228,6 +256,8 @@ MonoBehaviour:
       values: []
     elevatorAvailable: 00000000
   currPlayerSaveData:
+    lastSavedLevel: 0
+    lastSavedSpawn: 0
     savedMutationData:
       mutationBar: 0
       maxMutationBar: 100

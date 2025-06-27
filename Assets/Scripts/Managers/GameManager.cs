@@ -339,6 +339,22 @@ public class GameManager : MonoBehaviour
 		}
 	}
 
+	public void playSound(AudioSource player, string soundName, float volume)
+	{
+		if (player == null)
+		{
+			Debug.Log("Audio player for sound \'" + soundName + " \' is null");
+			return;
+		}
+
+		AudioClip toPlay;
+		if (audioManager.soundHash.TryGetValue(soundName, out toPlay) && toPlay != null)
+		{
+			player.Stop();
+			player.PlayOneShot(toPlay, volume * effectsVolume);
+		}
+	}
+
 	public void save(Actor player, int levelSaveIndex)
 	{
 		levelManager.lastSavedLevelIndex = levelSaveIndex;

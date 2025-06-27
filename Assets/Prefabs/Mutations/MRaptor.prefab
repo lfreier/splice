@@ -161,6 +161,7 @@ MonoBehaviour:
   anim: {fileID: 981585713269545550}
   icon: {fileID: 21300000, guid: 3eab4b2ffb75a4a4c9ff858df798eadf, type: 3}
   actorWielder: {fileID: 0}
+  pounceSound: {fileID: 8300000, guid: b20833c1885084547b58e7d0ebf71cae, type: 3}
   pounceCollider: {fileID: 451878876168867697}
   pounceActive: 0
   pounceDistance: 400

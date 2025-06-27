@@ -8,6 +8,7 @@ public class MRaptor : MonoBehaviour, MutationInterface
 	public Sprite icon;
 
 	public Actor actorWielder;
+	public AudioClip pounceSound;
 
 	public Collider2D pounceCollider;
 
@@ -117,6 +118,8 @@ public class MRaptor : MonoBehaviour, MutationInterface
 			anim.SetTrigger(MutationDefs.TRIGGER_RAPTOR_PSTART);
 			bufferTimer = MutationDefs.ABILITY_BUFF_TIMER;
 			noTransform = false;
+
+			gameManager.playSound(actorWielder.actorAudioSource, pounceSound.name, 1F);
 		}
 	}
 
@@ -142,6 +145,8 @@ public class MRaptor : MonoBehaviour, MutationInterface
 				transformTimer = 0.5F;
 				noTransform = true;
 			}
+
+			gameManager.playSound(actorWielder.actorAudioSource, pounceSound.name, 1F);
 		}
 	}
 

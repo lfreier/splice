@@ -280,3 +280,4 @@ MonoBehaviour:
   projectileCollider: {fileID: 4107383898284657523}
   projectileLaunchForce: 1000
   actorHit: {fileID: 0}
+  projectileHitSound: {fileID: 8300000, guid: 1451635b4da578c488aa872777bed1e9, type: 3}

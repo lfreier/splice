@@ -9,6 +9,9 @@ public class MLimbBlade : MonoBehaviour
 {
 	public MLimb attachedLimb;
 
+	public AudioSource bladeAudioPlayer;
+	public AudioClip bladeActorHitSound;
+
 	public List<Collider2D> collisions = new List<Collider2D>();
 
 	private void OnTriggerEnter2D(Collider2D collision)
@@ -22,8 +25,11 @@ public class MLimbBlade : MonoBehaviour
 				{
 					return;
 				}
+				GameManager.Instance.playSound(bladeAudioPlayer, bladeActorHitSound.name, 1F);
+
 				EffectDefs.effectApply(actorHit, attachedLimb.actorWielder.gameManager.effectManager.stunHalf);
 				actorHit.takeDamage(attachedLimb.mutationScriptable.damage);
+				
 				EnemyMove enemyMove = actorHit.GetComponentInChildren<EnemyMove>();
 				if (enemyMove != null)
 				{

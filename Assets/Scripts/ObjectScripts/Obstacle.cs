@@ -9,6 +9,8 @@ public class Obstacle : MonoBehaviour
 	public SpriteRenderer spriteRenderer;
 	public Sprite secondSprite;
 
+	public AudioSource obstacleAudioPlayer;
+
 	private RigidbodyType2D obstacleType;
 	private bool physicsEnabled = false;
 	private bool thresholdPassed = false;
@@ -30,6 +32,8 @@ public class Obstacle : MonoBehaviour
 
 	public int basicPrefabIndex;
 
+	private GameManager gm;
+
 	// Use this for initialization
 	void Start()
 	{
@@ -41,6 +45,7 @@ public class Obstacle : MonoBehaviour
 		durability = _obstacleScriptable.durability;
 		beingHeld = false;
 		physicsEnabled = false;
+		gm = GameManager.Instance;
 	}
 
 	private void FixedUpdate()
@@ -133,7 +138,6 @@ public class Obstacle : MonoBehaviour
 		{
 			if (secondSprite != null && spriteRenderer != null)
 			{
-				GameManager gm = GameManager.Instance;
 				spriteRenderer.sprite = secondSprite;
 				spriteRenderer.size = new Vector2(secondSprite.rect.width / 16, secondSprite.rect.height / 16);
 				spriteRenderer.color = new Color(spriteRenderer.color.r, spriteRenderer.color.g, spriteRenderer.color.b, 0.7F);
@@ -150,21 +154,66 @@ public class Obstacle : MonoBehaviour
 
 	private void OnCollisionEnter2D(Collision2D collision)
 	{
+		Actor actorSource = null;
+		if (gameObject.name.Contains("actor"))
+		{
+			actorSource = transform.parent.GetComponentInChildren<Actor>();
+		}
+		
 		Actor actorHit = collision.gameObject.GetComponent<Actor>();
+		float collisionThreshold = _obstacleScriptable.collisionDamageThreshold;
+
+		if (actorSource != null)
+		{
+			/* hard code this (cringe) */
+			collisionThreshold = 1.5F;
+		}
+
 		if (actorHit != null)
 		{	
 			Vector2 velocityDiff = obstacleBody.velocity - (Vector2)actorHit.currMoveVector;
 
 			//Debug.Log("Obstacle/Actor diff: " + velocityDiff.magnitude);
-			if (velocityDiff.magnitude >= _obstacleScriptable.collisionDamageThreshold)
+			if (velocityDiff.magnitude >= collisionThreshold)
 			{
 				knockOver();
-				if (obstacleBody.velocity.magnitude > _obstacleScriptable.collisionDamageThreshold / 2)
+				if (obstacleBody.velocity.magnitude > collisionThreshold / 2)
 				{
 					actorHit.actorBody.AddForce(velocityDiff * _obstacleScriptable.actorPushForce);
-					EffectDefs.effectApply(actorHit, actorHit.gameManager.effectManager.stunHalf);
+					EffectDefs.effectApply(actorHit, gm.effectManager.stunHalf);
 					/* hitstop if player is hit */
 					actorHit.takeDamage(_obstacleScriptable.collisionDamage, actorHit);
+
+					/* if two actors colliding, damage/stun first actor */
+					if (actorSource != null)
+					{
+						gm.playSound(actorHit.actorAudioSource, gm.audioManager.obstacleActorHit.name, 1F);
+						EffectDefs.effectApply(actorSource, gm.effectManager.stunHalf);
+						actorSource.takeDamage(_obstacleScriptable.collisionDamage, actorHit);
+					}
+					else
+					{
+						gm.playSound(obstacleAudioPlayer, gm.audioManager.obstacleActorHit.name, 1F);
+					}
+				}
+			}
+		}
+		else if (gm != null)
+		{
+			if (obstacleBody.velocity.magnitude > collisionThreshold / 4)
+			{
+				/* if two actors colliding, use correct audio player */
+				if (actorSource != null)
+				{
+					Obstacle hitObs = collision.gameObject.GetComponentInChildren<Obstacle>();
+					if (hitObs != null)
+					{
+						gm.playSound(hitObs.obstacleAudioPlayer, gm.audioManager.obstacleHit.name, 1F);
+					}
+				}
+				else
+				{
+					gm.playSound(obstacleAudioPlayer, gm.audioManager.obstacleHit.name, 1F);
 				}
 			}
 		}

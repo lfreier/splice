@@ -53,6 +53,8 @@ MonoBehaviour:
   actorWielder: {fileID: 0}
   pInteract: {fileID: 0}
   pInputs: {fileID: 0}
+  zombieSummonSound: {fileID: 8300000, guid: c7a94fe1851ada14280fe050ace4c807, type: 3}
+  summonPoofSound: {fileID: 8300000, guid: 39df70fc9ab69d440bc42406ecf103ce, type: 3}
   summons: []
   icon: {fileID: 21300000, guid: 56829e4110158014eb0000611e4e2e19, type: 3}
   sporeMinePrefab: {fileID: 5794746522243500281, guid: a55cd85b43b13ca418aa8776bcf8b2a9, type: 3}

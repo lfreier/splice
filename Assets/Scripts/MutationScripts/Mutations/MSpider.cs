@@ -31,6 +31,15 @@ public class MSpider : MonoBehaviour, MutationInterface
 	public Sprite abilityIcon1;
 	public Sprite abilityIcon2;
 
+	public AudioSource spiderAudioPlayer;
+	public AudioClip webShootSound;
+	public AudioClip healthSound;
+	public AudioClip fangLungeSound;
+	public AudioClip fangShredSound1;
+	public AudioClip fangShredSound2;
+
+	private int shredCount = 0;
+
 	private PlayerInputs playerIn;
 
 	private static int MUT_SEC_COST_INDEX = 0;
@@ -98,6 +107,7 @@ public class MSpider : MonoBehaviour, MutationInterface
 
 	public void shoot(Vector2 origin)
 	{
+		gameManager.playSound(spiderAudioPlayer, webShootSound.name, 1F);
 		Vector2 point = origin;
 		if (playerIn != null)
 		{
@@ -115,6 +125,7 @@ public class MSpider : MonoBehaviour, MutationInterface
 	{
 		pounceTarget = Vector2.ClampMagnitude(playerIn.pointerPos() - (Vector2)actorWielder.transform.position, 1);
 		pounceActive = true;
+		gameManager.playSound(actorWielder.actorAudioSource, fangLungeSound.name, 1F);
 		gameManager.signalMovementLocked();
 		gameManager.signalRotationLocked();
 	}
@@ -179,6 +190,8 @@ public class MSpider : MonoBehaviour, MutationInterface
 		actorWielder.actorBody.velocity = Vector3.zero;
 		actorWielder.actorBody.rotation = actorWielder.aimAngle(actorHit.transform.position);
 
+		shredCount = 0;
+
 		anim.SetTrigger(MutationDefs.TRIGGER_SPIDER_STING_HIT);
 	}
 
@@ -192,6 +205,17 @@ public class MSpider : MonoBehaviour, MutationInterface
 			if (startingHp <= damagePerAttack)
 			{
 				actorWielder.takeHeal(mutationScriptable.values[MUT_FANG_HEAL_INDEX]);
+				gameManager.playSound(spiderAudioPlayer, healthSound.name, 1F);
+				return;
+			}
+
+			if (shredCount % 2 == 0)
+			{
+				gameManager.playSound(spiderAudioPlayer, fangShredSound1.name, 1F);
+			}
+			else
+			{
+				gameManager.playSound(spiderAudioPlayer, fangShredSound2.name, 1F);
 			}
 		}
 	}

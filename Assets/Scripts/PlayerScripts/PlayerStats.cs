@@ -624,6 +624,7 @@ public class PlayerStats
 			/* TODO: so janky, not great */
 			weapon.reduceDurability(-2);
 			usableItemCount[activeItemIndex]--;
+			gameManager.playSound(player.actorAudioSource, gameManager.audioManager.batterySound.name, 1);
 		}
 	}
 
@@ -633,6 +634,7 @@ public class PlayerStats
 		{
 			usableItemCount[activeItemIndex]--;
 			player.takeHeal(1F);
+			gameManager.playSound(player.actorAudioSource, gameManager.audioManager.healthVialSound.name, 1);
 		}
 	}
 
@@ -650,5 +652,6 @@ public class PlayerStats
 		usableItemCount[activeItemIndex]--;
 		cells += petriCellAmount;
 		changeMutationBar(petriCellAmount);
+		gameManager.playSound(player.actorAudioSource, gameManager.audioManager.refillSound.name, 1);
 	}
 }

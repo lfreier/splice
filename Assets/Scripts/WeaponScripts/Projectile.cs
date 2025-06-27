@@ -12,6 +12,9 @@ public class Projectile : MonoBehaviour
 	public float projectileLaunchForce = 1000F;
 
 	public Actor actorHit = null;
+
+	public AudioClip projectileHitSound;
+
 	private Actor actorOrigin = null;
 
 	private static string TRIGGER_PROJECTILE_HIT = "TriggerProjectileHit";
@@ -59,6 +62,7 @@ public class Projectile : MonoBehaviour
 	{
 		if (actorHit != null)
 		{
+			actorHit.gameManager.playSound(actorHit.actorAudioSource, projectileHitSound.name, 1F);
 			EnemyMove enemyMove = actorHit.GetComponentInChildren<EnemyMove>();
 			if (enemyMove != null)
 			{

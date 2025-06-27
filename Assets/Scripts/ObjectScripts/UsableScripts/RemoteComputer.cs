@@ -4,6 +4,8 @@ using UnityEngine;
 public class RemoteComputer : MonoBehaviour, UsableInterface
 {
 	public GameObject[] worldObjects;
+	public AudioSource computerAudioPlayer;
+	public AudioClip computerUseSound;
 	GameManager gm;
 
 	void Start()
@@ -56,6 +58,8 @@ public class RemoteComputer : MonoBehaviour, UsableInterface
 
 	public bool use(Actor user)
 	{
+		gm.playSound(computerAudioPlayer, computerUseSound.name, 1F);
+
 		if (!gm.levelManager.hasPower())
 		{
 			return false;

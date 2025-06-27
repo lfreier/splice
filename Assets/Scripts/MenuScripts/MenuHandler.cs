@@ -141,6 +141,11 @@ public class MenuHandler : MonoBehaviour
 			{
 				holdTimer = 0;
 				isHeld = false;
+				PlayerInputs inputs = GameManager.Instance.playerStats.player.GetComponentInChildren<PlayerInputs>();
+				if (inputs != null)
+				{
+					inputs.locked = false;
+				}
 				resumeGame();
 			}
 		}

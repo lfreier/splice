@@ -46,6 +46,13 @@ public class MLimb : MonoBehaviour, MutationInterface
 	public MLimbBlade blade;
 	public Collider2D bladeCollider;
 
+	public AudioClip limbRetract;
+	public AudioClip limbStretch;
+
+	public AudioClip bladeExtendSound;
+
+	public AudioSource limbAudioPlayer;
+
 	private int bladeOver = 0;
 
 	private static int MUT_GRAB2_COST_INDEX = 0;
@@ -91,6 +98,8 @@ public class MLimb : MonoBehaviour, MutationInterface
 			anim.SetTrigger(WeaponDefs.ANIM_TRIGGER_ATTACK);
 			Debug.Log("Limb state is now active from pressing");
 			limbState = retracted.ACTIVE;
+
+			gameManager.playSound(limbAudioPlayer, limbStretch.name, 1F);
 		}
 		/*
 		else if (limbState == retracted.ACTIVE)
@@ -101,12 +110,16 @@ public class MLimb : MonoBehaviour, MutationInterface
 		*/
 		else if (limbState == retracted.RETRACTED)
 		{
+			Debug.Log("Limb state is now idle from releasing");
+			limbState = retracted.IDLE;
 			if (grabber.heldRigidbody != null)
 			{
 				grabber.releaseHeldObject(objectReleaseForce);
 			}
-			Debug.Log("Limb state is now idle from releasing");
-			limbState = retracted.IDLE;
+			else
+			{
+				abilityInputPressed();
+			}
 		}
 	}
 
@@ -127,6 +140,8 @@ public class MLimb : MonoBehaviour, MutationInterface
 
 			limbState = retracted.BUSY;
 			anim.SetTrigger(MutationDefs.TRIGGER_LIMB_BLADE);
+
+			gameManager.playSound(limbAudioPlayer, bladeExtendSound.name, 1F);
 		}
 	}
 
@@ -163,6 +178,7 @@ public class MLimb : MonoBehaviour, MutationInterface
 			if (grabber.grabObjects(grabLayers, grabPickupRange, weightClass.MID, true))
 			{
 				anim.SetTrigger("Retract");
+				gameManager.playSound(limbAudioPlayer, limbRetract.name, 1F);
 			}
 		}
 		else if (limbState == retracted.RETRACTED)
@@ -284,7 +300,13 @@ public class MLimb : MonoBehaviour, MutationInterface
 		grabber.wielder = wielder;
 	}
 
-	public void temp()
+	public void playRetractSound()
+	{
+		gameManager.playSound(limbAudioPlayer, limbRetract.name, 1F);
+	}
+
+	/* called when the limb stretch animatino is finished - automatically retract */
+	public void retractLimb()
 	{
 		Debug.Log("Limb state is now active");
 		anim.SetTrigger("Retract");

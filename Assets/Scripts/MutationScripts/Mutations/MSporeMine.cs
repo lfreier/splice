@@ -8,10 +8,17 @@ public class MSporeMine : MonoBehaviour
 	public Collider2D triggerCollider;
 	public Collider2D explosionCollider;
 
+	public AudioClip armSound;
+	public AudioClip explosionSound;
+	public AudioClip triggerSound;
+
+	public AudioSource mineAudioPlayer;
+
 	public SpriteRenderer mineSprite;
 
 	private float armTimer = 0;
 	private float triggerTimer = 0;
+	private bool destroy = false;
 
 	private bool triggered = false;
 
@@ -45,23 +52,35 @@ public class MSporeMine : MonoBehaviour
 				triggerTimer = 0;
 			}
 		}
+
+		if (destroy)
+		{
+			if (!mineAudioPlayer.isPlaying)
+			{
+				Destroy(gameObject);
+			}
+		}
 	}
 
 	public void arm()
 	{
 		triggerCollider.enabled = true;
 		mineSprite.color = Color.white;
+		GameManager.Instance.playSound(mineAudioPlayer, armSound.name, 0.7F);
 	}
 
 	public void destroyThis()
 	{
-		Destroy(gameObject);
+		destroy = true;
+		explosionCollider.enabled = false;
+		triggerCollider.enabled = false;
 	}
 
 	public void trigger()
 	{
 		mineSprite.enabled = false;
 		anim.SetTrigger(MutationDefs.TRIGGER_SPORE_MINE);
+		GameManager.Instance.playSound(mineAudioPlayer, explosionSound.name, 1F);
 	}
 
 	private void OnTriggerEnter2D(Collider2D collision)
@@ -72,6 +91,7 @@ public class MSporeMine : MonoBehaviour
 			triggerTimer = triggerLength;
 			triggerCollider.enabled = false;
 			mineSprite.color = GameManager.COLOR_RED;
+			GameManager.Instance.playSound(mineAudioPlayer, triggerSound.name, 0.7F);
 			triggered = true;
 		}
 	}

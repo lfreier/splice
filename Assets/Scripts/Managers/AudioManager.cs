@@ -18,27 +18,28 @@ public class AudioManager : MonoBehaviour
 
 	public AudioClip heartPump;
 
-	public AudioClip parrySuccess;
-
 	public AudioClip playerDeath;
-	
-	//zombie attack
+
+	//public AudioClip parrySuccess;
+
 	//zombie noises?
 
-	//obstacle hitting actor
+	//(x)obstacle hitting actor
 
-	//battery charge
-
-	//health vial
-
-	//using computer
-
-	//spore - summonAttempt, summonSuccess, clickTick, mineArm, mineTrigger, mineExplosion
-	//spider - web, fang, fangShred
-	//raptor - pounce, shred
-	//limb - extend, retract, objectHit
+	//spore - summonAttempt, (x)summonSuccess, (x)mineArm, (x)mineTrigger, (x)mineExplosion
+	//spider - (x) web, (x) webHit, (x) fang, (x) fangShred
+	//raptor - (x)pounce, shred
+	//limb - (x)extend, (x)retract, (x)blade
 
 	//foldingChair fall
+	//menu clicks
+
+	public AudioClip batterySound;
+	public AudioClip healthVialSound;
+	public AudioClip refillSound;
+
+	public AudioClip obstacleHit;
+	public AudioClip obstacleActorHit;
 
 	public AudioClip sciDeath1;
 	public AudioClip sciDeath2;

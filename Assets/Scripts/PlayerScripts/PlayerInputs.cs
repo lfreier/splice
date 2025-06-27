@@ -2,6 +2,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
+using UnityEngine.UIElements;
 
 public class PlayerInputs: MonoBehaviour
 {
@@ -58,6 +59,9 @@ public class PlayerInputs: MonoBehaviour
 
 	public float[] actionInputs() { return specialActions; }
 
+	public bool locked = false;
+	public bool lockWait = false;
+
 	public static short Fshort(float value)
 	{
 		return (short)Mathf.FloorToInt(Mathf.Min(value, 1));
@@ -71,8 +75,17 @@ public class PlayerInputs: MonoBehaviour
 			gameManager = GameManager.Instance;
 		}
 
+		if (lockWait && !locked && attack.action.ReadValue<float>() == 0)
+		{
+			lockWait = false;
+		}
+
 		//attack inputs
-		attackAction = attack.action.ReadValue<float>();
+		if (!lockWait)
+		{
+			attackAction = attack.action.ReadValue<float>();
+		}
+
 		lastSecondaryAttackAction = secondaryAttackAction;
 		secondaryAttackAction = secondaryAttack.action.ReadValue<float>();
 

@@ -271,7 +271,12 @@ public class MGrabber : MonoBehaviour
 		heldRigidbody.bodyType = RigidbodyType2D.Dynamic;
 		heldRigidbody.transform.SetParent(null, true);
 
-		Vector3 releaseTarget = wielder.transform.position + (wielder.transform.up * 2);
+		Vector3 releaseTarget = wielder.actorBody.transform.TransformDirection(transform.up);
+		PlayerInputs pInputs = gameManager.playerStats.player.GetComponentInChildren<PlayerInputs>();
+		if (pInputs != null)
+		{
+			releaseTarget = pInputs.pointerPos();
+		}
 		CollisionExclusion exclusion = heldRigidbody.AddComponent<CollisionExclusion>();
 
 		if (heldObstacle != null)

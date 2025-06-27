@@ -11,6 +11,9 @@ public class MSpore : MonoBehaviour, MutationInterface
 	public PlayerInteract pInteract;
 	public PlayerInputs pInputs;
 
+	public AudioClip zombieSummonSound;
+	public AudioClip summonPoofSound;
+
 	public List<EnemyMove> summons;
 
 	public Sprite icon;
@@ -69,7 +72,12 @@ public class MSpore : MonoBehaviour, MutationInterface
 		if (bufferTimer <= 0 && sporeCloudPrefab != null)
 		{
 			Instantiate(sporeCloudPrefab, placingLoc, actorWielder.transform.rotation, null);
+			gameManager.playSound(actorWielder.actorAudioSource, summonPoofSound.name, 1F);
 			bufferTimer = MutationDefs.ABILITY_BUFF_TIMER;
+		}
+		else
+		{
+			return;
 		}
 
 		//TODO: play animation
@@ -81,8 +89,7 @@ public class MSpore : MonoBehaviour, MutationInterface
 		foreach (RaycastHit2D rayHit in corpses)
 		{
 			Corpse checkCorpse = rayHit.collider.gameObject.GetComponent<Corpse>();
-			if (checkCorpse != null && bufferTimer <= 0
-				&& mutationScriptable.mutCost <= actorWielder.gameManager.playerStats.getMutationBar())
+			if (checkCorpse != null && mutationScriptable.mutCost <= actorWielder.gameManager.playerStats.getMutationBar())
 			{
 				actorWielder.gameManager.playerStats.changeMutationBar(-mutationScriptable.mutCost);
 				raiseZombie(checkCorpse);
@@ -164,6 +171,7 @@ public class MSpore : MonoBehaviour, MutationInterface
 				if (summonMove != null)
 				{
 					summons.Add(summonMove);
+					gameManager.playSound(summonMove.actor.actorAudioSource, zombieSummonSound.name, 1F);
 				}
 				return true;
 			}

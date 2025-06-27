@@ -18,6 +18,12 @@ public class TutorialSceneLoader : MonoBehaviour
 			triggered = true;
 			if (tutorialImage != null)
 			{
+				PlayerInputs inputs = actor.GetComponentInChildren<PlayerInputs>();
+				if (inputs != null)
+				{
+					inputs.locked = true;
+					inputs.lockWait = true;
+				}
 				actor.gameManager.loadPausedScene(actor, SceneDefs.SCENE.TUTORIAL);
 			}
 		}

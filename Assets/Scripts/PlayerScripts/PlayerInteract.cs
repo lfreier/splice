@@ -23,6 +23,7 @@ public class PlayerInteract : MonoBehaviour
 	{
 		lastInteractInput = 0;
 	}
+
 	void Update()
 	{
 		interactInputs();
