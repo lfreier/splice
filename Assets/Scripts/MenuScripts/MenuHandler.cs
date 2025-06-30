@@ -1,10 +1,13 @@
+using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using static GameManager;
 using static SceneDefs;
 
 public class MenuHandler : MonoBehaviour
@@ -41,6 +44,7 @@ public class MenuHandler : MonoBehaviour
 	public AudioListener audioListener;
 
 	public AudioSource menuMusic;
+	public AudioSource menuClickPlayer;
 
 	public GameObject loadMenuObject;
 	public GameObject optionsMenuObject;
@@ -425,6 +429,27 @@ public class MenuHandler : MonoBehaviour
 		{
 			optionsMenuObject.SetActive(true);
 			gameObject.SetActive(false);
+		}
+	}
+
+	public void playClickSound()
+	{
+		if (menuClickPlayer != null)
+		{
+			gameManager.playSound(menuClickPlayer, gameManager.audioManager.menuClick.name, 1F);
+		}
+	}
+
+	public IEnumerator waitForClick(BasicFunc funcToRun)
+	{
+		while (menuClickPlayer.isPlaying)
+		{
+			yield return null;
+		}
+
+		if (funcToRun != null)
+		{
+			funcToRun.Invoke();
 		}
 	}
 

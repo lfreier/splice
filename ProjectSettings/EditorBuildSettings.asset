@@ -50,5 +50,11 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/HubScene.unity
     guid: c716571d9e89d7d499e71f16ee7427c6
+  - enabled: 1
+    path: Assets/Scenes/LevelWarehouse.unity
+    guid: 0b6b9f91eec253d4b9997b92b495b93e
+  - enabled: 1
+    path: Assets/Scenes/LevelR&D.unity
+    guid: 81a9ac70315daa0479492a1631ab0707
   m_configObjects: {}
   m_UseUCBPForAssetBundles: 0

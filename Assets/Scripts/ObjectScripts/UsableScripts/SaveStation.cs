@@ -10,6 +10,9 @@ public class SaveStation : MonoBehaviour, UsableInterface
 	public levelSpawnIndex playerSpawnIndex = 0;
 	public saveStationIndex saveStationNumIndex = 0;
 
+	public AudioSource saveStationPlayer;
+	public AudioClip useSaveStationSound;
+
 	public Actor playerActor;
 
 	public bool inUse = false;
@@ -18,6 +21,8 @@ public class SaveStation : MonoBehaviour, UsableInterface
 	{
 		inUse = true;
 		playerActor = user;
+		GameManager gm = GameManager.Instance;
+		gm.playSound(saveStationPlayer, useSaveStationSound.name, 1F);
 		user.gameManager.loadPausedScene(user, SCENE.STATION_MENU);
 		return true;
 	}

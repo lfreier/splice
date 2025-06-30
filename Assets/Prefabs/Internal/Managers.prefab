@@ -178,6 +178,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: cadd4112eeda53d429782e0223e9f988, type: 3}
   - {fileID: 8300000, guid: 18edb78409c27374fb1edb8769df1fdd, type: 3}
   - {fileID: 8300000, guid: 15b63f29f2a1aa4498e24af250771b67, type: 3}
+  - {fileID: 8300000, guid: 7ce1545ef4f4f744691d680c3b6aa7c9, type: 3}
   footstepCarpet: {fileID: 0}
   heartPump: {fileID: 0}
   playerDeath: {fileID: 0}
@@ -186,6 +187,7 @@ MonoBehaviour:
   refillSound: {fileID: 8300000, guid: aae714ecccec41243b4b1a4cca290089, type: 3}
   obstacleHit: {fileID: 8300000, guid: 9ef3ad8c2d0368849a1dc7bc1c48d2f2, type: 3}
   obstacleActorHit: {fileID: 8300000, guid: 152261d29304ef5488d53ce1c9eb9bf0, type: 3}
+  menuClick: {fileID: 8300000, guid: 7ce1545ef4f4f744691d680c3b6aa7c9, type: 3}
   sciDeath1: {fileID: 0}
   sciDeath2: {fileID: 0}
   sciDeath3: {fileID: 0}

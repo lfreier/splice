@@ -74,5 +74,6 @@ public class OptionsMenu : MonoBehaviour
 
 		menu.gameObject.SetActive(true);
 		this.gameObject.SetActive(false);
+		menu.playClickSound();
 	}
 }

@@ -1,7 +1,10 @@
 ﻿using System.Collections;
+using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.Audio;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
+using static GameManager;
 using static SceneDefs;
 
 public class StationMenuManager : MonoBehaviour
@@ -24,6 +27,8 @@ public class StationMenuManager : MonoBehaviour
 
 	[field: HideInInspector]
 	public Elevator elevator;
+
+	public AudioSource stationClickPlayer;
 
 	private GameManager gameManager;
 
@@ -118,5 +123,26 @@ public class StationMenuManager : MonoBehaviour
 		}
 		gameManager.loadingHandler.reset();
 		SceneManager.SetActiveScene(SceneManager.GetSceneByBuildIndex(SCENE_INDEX_MASK[gameManager.currentScene]));
+	}
+
+	public void playClickSound()
+	{
+		if (stationClickPlayer != null)
+		{
+			gameManager.playSound(stationClickPlayer, gameManager.audioManager.menuClick.name, 1F);
+		}
+	}
+
+	public IEnumerator waitForClick(BasicFunc funcToRun)
+	{
+		while (stationClickPlayer.isPlaying)
+		{
+			yield return null;
+		}
+
+		if (funcToRun != null)
+		{
+			funcToRun.Invoke();
+		}
 	}
 }

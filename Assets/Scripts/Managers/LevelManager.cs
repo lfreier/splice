@@ -73,7 +73,8 @@ public class LevelManager : MonoBehaviour
 		start = 1,
 		office = 2,
 		warehouse = 3,
-		arch = 4
+		arch = 4,
+		testing = 5
 	}
 
 	public int[] saveStationUses = new int[NUM_SAVE_STATIONS];
@@ -88,7 +89,9 @@ public class LevelManager : MonoBehaviour
 		officeExit = 4,
 		warehouse = 5,
 		warehouseExit = 6,
-		TOTAL = 7
+		testing = 7,
+		testingExit = 8,
+		TOTAL = 9
 	}
 	public static int NUM_ELEVATORS = (int)elevatorIndex.TOTAL;
 	public int[] elevatorAvailable = new int[NUM_ELEVATORS];
@@ -114,7 +117,10 @@ public class LevelManager : MonoBehaviour
 		levelWarehouseSaveSpawn = 9,
 		levelWarehouseExitSpawn = 10,
 		levelArchSpawn = 11,
-		levelArchSaveSpawn = 12
+		levelArchSaveSpawn = 12,
+		levelTestingSpawn = 13,
+		levelTestingSaveSpawn = 14,
+		levelTestingExitSpawn = 15
 	}
 
 	public CameraHandler camHandler;

@@ -41,6 +41,8 @@ public class AudioManager : MonoBehaviour
 	public AudioClip obstacleHit;
 	public AudioClip obstacleActorHit;
 
+	public AudioClip menuClick;
+
 	public AudioClip sciDeath1;
 	public AudioClip sciDeath2;
 	public AudioClip sciDeath3;

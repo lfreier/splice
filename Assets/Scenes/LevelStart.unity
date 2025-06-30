@@ -131114,7 +131114,7 @@ PrefabInstance:
     - target: {fileID: 3130299491851766136, guid: f41225591972f014e8e5d9cfc3c45928, type: 3}
       propertyPath: nextSpawn
       value: 
-      objectReference: {fileID: 11400000, guid: cffedb1562eb6c548ac70982e90766f9, type: 2}
+      objectReference: {fileID: 11400000, guid: bb4910fd8fca7a84e81d430a29d2a98c, type: 2}
     - target: {fileID: 3130299491851766136, guid: f41225591972f014e8e5d9cfc3c45928, type: 3}
       propertyPath: elevatorIndex
       value: 2

@@ -15,6 +15,6 @@ MonoBehaviour:
   spawnPosition: {x: -37.625, y: -20}
   spawnRotation: 90
   elevatorIndex: 6
-  floorName: FLOOR 3 EAST
+  floorName: FLOOR B3 EAST
   sceneIndex: 23
   spawnIndex: 10

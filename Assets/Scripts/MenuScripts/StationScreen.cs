@@ -16,6 +16,7 @@ public abstract class StationScreen : MonoBehaviour
 
 	public virtual void onBackButton()
 	{
+		menuManager.playClickSound();
 		menuManager.backToMenu();
 	}
 }

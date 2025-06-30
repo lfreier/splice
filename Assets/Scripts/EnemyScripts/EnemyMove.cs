@@ -113,7 +113,7 @@ public class EnemyMove : MonoBehaviour
 	{
 		_actorData = actor.actorData;
 		attackTargetActor = null;
-		eyeStart = transform.position + transform.up * 0.5F;
+		eyeStart = transform.position + transform.up * 0.25F;
 		_oldDetection = _detection;
 
 		if (forcedTimer != 0)
@@ -697,54 +697,67 @@ public class EnemyMove : MonoBehaviour
 	private Actor handleSightRays(Vector2 center, float maxLength, float increment, float sightRange, float index)
 	{
 		Vector2 viewRay = center - (Vector2)((maxLength - (index * increment)) * transform.right);
-		RaycastHit2D rayHit = Physics2D.Raycast(eyeStart, viewRay, sightRange, gameManager.lineOfSightLayers);
+		RaycastHit2D[] rayHit = Physics2D.RaycastAll(eyeStart, viewRay, sightRange, gameManager.lineOfSightLayers);
 		Debug.DrawRay(eyeStart, Vector2.ClampMagnitude(viewRay, 1) * sightRange);
 
-		if (rayHit.rigidbody != null)
+		if (rayHit == null || rayHit.Length == 0)
 		{
-			Actor targetActor = rayHit.rigidbody.gameObject.GetComponent<Actor>();
-			if (targetActor != null && actor.isTargetHostile(targetActor))
+			return null;
+		}
+
+		foreach (RaycastHit2D hit in rayHit)
+		{
+			if (hit.rigidbody != null)
 			{
-				if ((_detection == detectMode.idle || _detection == detectMode.wandering || _detection == detectMode.suspicious) && delayTimer <= 0)
+				Actor targetActor = hit.rigidbody.gameObject.GetComponent<Actor>();
+				if (targetActor == null)
 				{
-					delayTimer = DELAY_TIMER_LENGTH;
-					// create a new Sus effect
-					if ((actor.displayedEffect == null || actor.displayedEffect.effectScriptable.constantEffectType > EffectDefs.constantType.SUS) && showSus && !summoned)
-					{
-						EffectDefs.effectApply(actor, gameManager.effectManager.sus1);
-					}
-					_detection = detectMode.suspicious;
-					handleEdges();
-					_oldDetection = _detection;
+					/* hit a wall, stop looking */
+					break;
 				}
-				else if (_detection == detectMode.seeking)
+				if (actor.isTargetHostile(targetActor))
 				{
-					// create a new notice effect
-					if ((actor.displayedEffect == null || actor.displayedEffect.effectScriptable.constantEffectType > EffectDefs.constantType.NOTICE) && showNotice && !summoned)
+					if ((_detection == detectMode.idle || _detection == detectMode.wandering || _detection == detectMode.suspicious) && delayTimer <= 0)
 					{
-						EffectDefs.effectApply(actor, gameManager.effectManager.notice1);
-						showNotice = false;
+						delayTimer = DELAY_TIMER_LENGTH;
+						// create a new Sus effect
+						if ((actor.displayedEffect == null || actor.displayedEffect.effectScriptable.constantEffectType > EffectDefs.constantType.SUS) && showSus && !summoned)
+						{
+							EffectDefs.effectApply(actor, gameManager.effectManager.sus1);
+						}
+						_detection = detectMode.suspicious;
+						handleEdges();
+						_oldDetection = _detection;
 					}
-					_detection = detectMode.hostile;
-					handleEdges();
-					_oldDetection = _detection;
-				}
-
-				stateTimer = stateTimerReset;
-				actor.setAttackTarget(targetActor);
-				attackTarget = targetActor.transform.position;
-
-				if (lockWhenSpotted != null)
-				{
-					Collider2D[] actorColliders = new Collider2D[rayHit.rigidbody.attachedColliderCount];
-					rayHit.rigidbody.GetAttachedColliders(actorColliders);
-					if (actorColliders.Length > 0)
+					else if (_detection == detectMode.seeking)
 					{
-						lockWhenSpotted.OnTriggerEnter2D(actorColliders[0]);
+						// create a new notice effect
+						if ((actor.displayedEffect == null || actor.displayedEffect.effectScriptable.constantEffectType > EffectDefs.constantType.NOTICE) && showNotice && !summoned)
+						{
+							EffectDefs.effectApply(actor, gameManager.effectManager.notice1);
+							showNotice = false;
+						}
+						_detection = detectMode.hostile;
+						handleEdges();
+						_oldDetection = _detection;
 					}
-				}
 
-				return targetActor;
+					stateTimer = stateTimerReset;
+					actor.setAttackTarget(targetActor);
+					attackTarget = targetActor.transform.position;
+
+					if (lockWhenSpotted != null)
+					{
+						Collider2D[] actorColliders = new Collider2D[hit.rigidbody.attachedColliderCount];
+						hit.rigidbody.GetAttachedColliders(actorColliders);
+						if (actorColliders.Length > 0)
+						{
+							lockWhenSpotted.OnTriggerEnter2D(actorColliders[0]);
+						}
+					}
+
+					return targetActor;
+				}
 			}
 		}
 

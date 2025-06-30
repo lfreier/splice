@@ -48,6 +48,7 @@ public class MutationScreen : StationScreen
 			nextButton.gameObject.SetActive(true);
 			nextButton.interactable = true;
 		}
+		menuManager.playClickSound();
 	}
 
 	public void backScreenButton()
@@ -71,6 +72,7 @@ public class MutationScreen : StationScreen
 			nextButton.gameObject.SetActive(true);
 			nextButton.interactable = true;
 			backButton.interactable = true;
+			menuManager.playClickSound();
 		}
 	}
 }

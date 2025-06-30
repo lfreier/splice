@@ -12,6 +12,8 @@ public class GameManager : MonoBehaviour
 
 	public GameObject startingSelect;
 
+	public delegate void BasicFunc();
+
 	public delegate void CloseMenusEvent();
 	public event CloseMenusEvent closeMenusEvent;
 
@@ -203,6 +205,9 @@ public class GameManager : MonoBehaviour
 						break;
 					case (int)SCENE.LEVEL_ARCH:
 						levelManager.lastSavedSpawn = LevelManager.levelSpawnIndex.levelArchSpawn;
+						break;
+					case (int)SCENE.LEVEL_TESTING:
+						levelManager.lastSavedSpawn = LevelManager.levelSpawnIndex.levelTestingSpawn;
 						break;
 					default:
 						break;

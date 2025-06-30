@@ -50,6 +50,8 @@ public class StationMenuScreen : StationScreen
 				}
 			}
 
+			menuManager.playClickSound();
+
 			SceneManager.LoadSceneAsync(SCENE_INDEX_MASK[(int)SCENE.SAVING], LoadSceneMode.Additive);
 
 			setSaveText();
@@ -60,6 +62,7 @@ public class StationMenuScreen : StationScreen
 	{
 		if (menuManager != null && menuManager.scanScreen != null)
 		{
+			menuManager.playClickSound();
 			menuManager.changeScreen(menuManager.scanScreen);
 		}
 	}
@@ -68,6 +71,7 @@ public class StationMenuScreen : StationScreen
 	{
 		if (menuManager != null && menuManager.databaseScreen != null)
 		{
+			menuManager.playClickSound();
 			menuManager.changeScreen(menuManager.databaseScreen);
 		}
 	}
@@ -76,13 +80,15 @@ public class StationMenuScreen : StationScreen
 	{
 		if (menuManager != null && menuManager.mutationScreen != null)
 		{
+			menuManager.playClickSound();
 			menuManager.changeScreen(menuManager.mutationScreen);
 		}
 	}
 
 	public override void onBackButton()
 	{
-		menuManager.exitMenu();
+		menuManager.playClickSound();
+		StartCoroutine(menuManager.waitForClick(menuManager.exitMenu));
 	}
 
 	private void setSaveText()

@@ -54,5 +54,6 @@ public class SaveSlotsMenu : MonoBehaviour
 	{
 		menu.gameObject.SetActive(true);
 		this.gameObject.SetActive(false);
+		menu.playClickSound();
 	}
 }
