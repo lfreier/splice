@@ -206,8 +206,8 @@ public class GameManager : MonoBehaviour
 					case (int)SCENE.LEVEL_ARCH:
 						levelManager.lastSavedSpawn = LevelManager.levelSpawnIndex.levelArchSpawn;
 						break;
-					case (int)SCENE.LEVEL_TESTING:
-						levelManager.lastSavedSpawn = LevelManager.levelSpawnIndex.levelTestingSpawn;
+					case (int)SCENE.LEVEL_RND:
+						levelManager.lastSavedSpawn = LevelManager.levelSpawnIndex.levelRndSpawn;
 						break;
 					default:
 						break;

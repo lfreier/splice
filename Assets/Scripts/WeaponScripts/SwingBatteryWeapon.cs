@@ -82,12 +82,14 @@ public class SwingBatteryWeapon : BasicWeapon
 				gameManager.audioManager.soundHash.TryGetValue(_weaponScriptable.soundBreak.name, out toPlay);
 				if (toPlay != null)
 				{
-					if (actorWielder == null && gameManager.playerStats.player != null)
+					if (actorWielder == null)
 					{
-						gameManager.playerStats.player.actorAudioSource.PlayOneShot(toPlay, gameManager.effectsVolume);
+						Debug.Log("weapon break sound: weapon origin");
+						weaponAudioPlayer.PlayOneShot(toPlay, gameManager.effectsVolume);
 					}
-					else if (actorWielder != null)
+					else
 					{
+						Debug.Log("weapon break sound: actor origin");
 						actorWielder.actorAudioSource.PlayOneShot(toPlay, gameManager.effectsVolume);
 					}
 				}

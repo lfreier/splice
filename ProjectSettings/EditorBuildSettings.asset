@@ -54,7 +54,10 @@ EditorBuildSettings:
     path: Assets/Scenes/LevelWarehouse.unity
     guid: 0b6b9f91eec253d4b9997b92b495b93e
   - enabled: 1
-    path: Assets/Scenes/LevelR&D.unity
+    path: Assets/Scenes/LevelRnD.unity
     guid: 81a9ac70315daa0479492a1631ab0707
+  - enabled: 1
+    path: Assets/Scenes/LevelIsolated.unity
+    guid: fbf1efb5544c5af4296600f5128bded5
   m_configObjects: {}
   m_UseUCBPForAssetBundles: 0

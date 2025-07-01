@@ -28,20 +28,21 @@ public class SceneDefs
 		LEVEL_HUB = 22,
 		LEVEL_WAREHOUSE = 23,
 		LEVEL_ARCH = 24,
-		LEVEL_TESTING = 25
+		LEVEL_RND = 25,
+		LEVEL_ISOLATED = 26
 	}
 
 	//index is SCENE index
 	//value is build index
-	public static int[] SCENE_INDEX_MASK = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 12, 13, 14, 15, 24, 16 };
+	public static int[] SCENE_INDEX_MASK = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 12, 13, 14, 15, 24, 16, 17};
 
 	//index is build index
 	//value is SCENE index
-	public static int[] SCENE_BUILD_MASK = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 20, 21, 22, 23, 25, 17, 18, 19, 20, 21, 22, 23, 24, 25 };
+	public static int[] SCENE_BUILD_MASK = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 20, 21, 22, 23, 25, 26, 18, 19, 20, 21, 22, 23, 24, 25, 26 };
 
 	public static int[] BACKGROUND_SCENES = { SCENE_INDEX_MASK[(int)SCENE.MANAGER], SCENE_INDEX_MASK[(int)SCENE.PLAYER_HUD], SCENE_INDEX_MASK[(int)SCENE.LOADING], SCENE_INDEX_MASK[(int)SCENE.INVENTORY_HUD] };
 
-	public static int NUM_SCENES = (int)SCENE.LEVEL_TESTING + 1;
+	public static int NUM_SCENES = (int)SCENE.LEVEL_ISOLATED + 1;
 
 	public static bool isLevelScene(SCENE toCheck)
 	{

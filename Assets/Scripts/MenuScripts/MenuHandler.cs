@@ -329,11 +329,13 @@ public class MenuHandler : MonoBehaviour
 
 	public async void startGameFromSaveSlot(int saveSlot)
 	{
+		GameManager gManager = GameManager.Instance;
 		bool fromMenu = saveSlot < 0;
 		if (fromMenu)
 		{
 			saveSlot = 0;
-			for (int i = 0; i < SaveManager.TOTAL_SAVES; i++)
+			int i = 0;
+			for (i = 0; i < SaveManager.TOTAL_SAVES; i++)
 			{
 				if (null == SaveManager.loadPlayerDataFromDisk(i))
 				{
@@ -341,14 +343,14 @@ public class MenuHandler : MonoBehaviour
 					break;
 				}
 			}
-			/* TODO: this will overwrite saves but w/e */
-			if (saveSlot >= SaveManager.TOTAL_SAVES)
+			/* just quit if we're going to overwrite */
+			if (i >= SaveManager.TOTAL_SAVES)
 			{
-				saveSlot = SaveManager.TOTAL_SAVES - 1;
+				gManager.playSound(menuClickPlayer, gManager.audioManager.errorSound.name, 1F);
+				return;
 			}
 		}
 
-		GameManager gManager = GameManager.Instance;
 		gManager.currentSaveSlot = saveSlot;
 		gManager.saveManager.loadAllData();
 		PlayerSaveData playerData = SaveManager.loadPlayerDataFromDisk(saveSlot);

@@ -21,6 +21,8 @@ public class EnemyMove : MonoBehaviour
 	private float idlePauseTimer;
 	public int pathIndex;
 
+	public float wanderScale = 4F;
+
 	private Vector2 idleLookTarget;
 	private Vector2 eyeStart;
 
@@ -512,7 +514,7 @@ public class EnemyMove : MonoBehaviour
 				if (stateTimer <= 0)
 				{
 					float radAngle = Random.Range(0F, 2F * Mathf.PI);
-					float temp = Random.Range(2F, 4F);
+					float temp = Random.Range(wanderScale / 2, wanderScale);
 					moveTarget = transform.position + new Vector3(temp * Mathf.Sin(radAngle), temp * Mathf.Cos(radAngle), 0);
 					actorBody.rotation = actor.aimAngle(moveTarget);
 					if (_detection == detectMode.wandering)
@@ -758,6 +760,10 @@ public class EnemyMove : MonoBehaviour
 
 					return targetActor;
 				}
+			}
+			else
+			{
+				break;
 			}
 		}
 

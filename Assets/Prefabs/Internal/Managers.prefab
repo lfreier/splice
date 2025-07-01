@@ -179,6 +179,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 18edb78409c27374fb1edb8769df1fdd, type: 3}
   - {fileID: 8300000, guid: 15b63f29f2a1aa4498e24af250771b67, type: 3}
   - {fileID: 8300000, guid: 7ce1545ef4f4f744691d680c3b6aa7c9, type: 3}
+  - {fileID: 8300000, guid: f33b22418c10360408f7c36fbfd3d41e, type: 3}
   footstepCarpet: {fileID: 0}
   heartPump: {fileID: 0}
   playerDeath: {fileID: 0}
@@ -188,6 +189,7 @@ MonoBehaviour:
   obstacleHit: {fileID: 8300000, guid: 9ef3ad8c2d0368849a1dc7bc1c48d2f2, type: 3}
   obstacleActorHit: {fileID: 8300000, guid: 152261d29304ef5488d53ce1c9eb9bf0, type: 3}
   menuClick: {fileID: 8300000, guid: 7ce1545ef4f4f744691d680c3b6aa7c9, type: 3}
+  errorSound: {fileID: 8300000, guid: f33b22418c10360408f7c36fbfd3d41e, type: 3}
   sciDeath1: {fileID: 0}
   sciDeath2: {fileID: 0}
   sciDeath3: {fileID: 0}
@@ -224,9 +226,15 @@ MonoBehaviour:
   - {fileID: 11400000, guid: c7d0145f0136a28469f05a541c12f099, type: 2}
   - {fileID: 11400000, guid: 177d4197158b59c44a9ac1021d3356fa, type: 2}
   - {fileID: 11400000, guid: 177d4197158b59c44a9ac1021d3356fa, type: 2}
+  - {fileID: 11400000, guid: bb4910fd8fca7a84e81d430a29d2a98c, type: 2}
+  - {fileID: 11400000, guid: 28a0e904ac3c0284c8759bec7dca429f, type: 2}
+  - {fileID: 11400000, guid: 1c2015826475bc547b6271cbfd139e5c, type: 2}
+  - {fileID: 11400000, guid: 230fb6dea7208a54098d63ef6dbb65ee, type: 2}
+  - {fileID: 11400000, guid: 0e62a91c33d32fb4e9f9be3e35b38a0e, type: 2}
+  - {fileID: 11400000, guid: f1c7a0d03e8e6694496f2ceb2f987a96, type: 2}
   lastSavedAtStation: 0
   savedActors: []
-  saveStationUses: 0000000000000000000000000000000000000000
+  saveStationUses: 00000000000000000000000000000000000000000000000000000000
   elevatorSpawns:
   - {fileID: 0}
   - {fileID: 11400000, guid: 2f5d9256aa6369f46ae54c4e9feb0194, type: 2}
@@ -235,7 +243,11 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 33517daee327eb141a36085c4322391c, type: 2}
   - {fileID: 11400000, guid: f5f5a14ed8c598c4286ea77f7b686839, type: 2}
   - {fileID: 11400000, guid: c7d0145f0136a28469f05a541c12f099, type: 2}
-  elevatorAvailable: 00000000000000000000000000000000000000000000000000000000
+  - {fileID: 11400000, guid: bb4910fd8fca7a84e81d430a29d2a98c, type: 2}
+  - {fileID: 11400000, guid: 1c2015826475bc547b6271cbfd139e5c, type: 2}
+  - {fileID: 11400000, guid: 230fb6dea7208a54098d63ef6dbb65ee, type: 2}
+  - {fileID: 11400000, guid: f1c7a0d03e8e6694496f2ceb2f987a96, type: 2}
+  elevatorAvailable: 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
   currSaveData:
     sceneIndex: 0
     actorTable:

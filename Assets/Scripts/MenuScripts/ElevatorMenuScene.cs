@@ -23,7 +23,7 @@ public class ElevatorMenuScene : StationScreen
 
 	//private float yChange = -.13F;
 
-	public int maxElevatorsShown = 10;
+	public int maxElevatorsShown = 15;
 
 	public override void init(StationMenuManager manager)
 	{
