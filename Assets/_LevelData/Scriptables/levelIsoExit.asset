@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ef8256f3a9799a945bdcdb0bc9439850, type: 3}
   m_Name: levelIsoExit
   m_EditorClassIdentifier: 
-  spawnPosition: {x: -92, y: 62.375}
+  spawnPosition: {x: -92, y: 59.625}
   spawnRotation: 0
   elevatorIndex: 10
   floorName: '!!(SAFETY OVERRIDE - 2)!!'

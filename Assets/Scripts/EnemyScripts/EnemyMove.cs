@@ -28,7 +28,7 @@ public class EnemyMove : MonoBehaviour
 
 	public detectMode _detection;
 	private detectMode _oldDetection;
-	private detectMode _startingDetection;
+	public detectMode _startingDetection;
 	public detectMode _nextDetection;
 	public detectMode _nextForcedDetection;
 
@@ -100,7 +100,7 @@ public class EnemyMove : MonoBehaviour
 		}
 		_startingDetection = _detection;
 		_nextDetection = detectMode.nul;
-		_nextForcedDetection = detectMode.idle;
+		_nextForcedDetection = summoned || _startingDetection != detectMode.wandering ? detectMode.idle : detectMode.wandering;
 		attackTargetActor = null;
 
 		pathIndex = 0;
@@ -126,6 +126,11 @@ public class EnemyMove : MonoBehaviour
 				_detection = _nextForcedDetection;
 				forcedTimer = 0;
 				idlePathPauseTime[0] = 1;
+				if (!summoned)
+				{
+					idlePath = new Vector2[] { };
+					idlePathPauseTime = new float[] { };
+				}
 			}
 		}
 
@@ -625,7 +630,7 @@ public class EnemyMove : MonoBehaviour
 		RaycastHit2D[] heardSound = Physics2D.CircleCastAll(new Vector2(this.transform.position.x, this.transform.position.y), _actorData.hearingRange, Vector2.zero, _actorData.hearingRange, gameManager.soundLayer);
 
 		/* States that should override hearing */
-		if (_detection == detectMode.getWeapon || _detection == detectMode.hostile || _detection == detectMode.frightened || heardSound.Length == 0 || summoned)
+		if (_detection == detectMode.hostile || _detection == detectMode.getWeapon || _detection == detectMode.frightened || heardSound.Length == 0 || summoned)
 		{
 			return;
 		}
@@ -879,6 +884,11 @@ public class EnemyMove : MonoBehaviour
 
 	private void OnCollisionEnter2D(Collision2D collision)
 	{
+		if (_detection == detectMode.hostile || _detection == detectMode.getWeapon || _detection == detectMode.frightened)
+		{
+			return;
+		}
+
 		if (collision != null)
 		{
 			Actor actorHit = collision.gameObject.GetComponentInChildren<Actor>();

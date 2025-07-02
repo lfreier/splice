@@ -67,6 +67,8 @@ public class Actor : MonoBehaviour
 
 	public bool initialized = false;
 
+	public GameObject enableOnDeath;
+
 	public void Start()
 	{
 		initialized = false;
@@ -502,6 +504,12 @@ public class Actor : MonoBehaviour
 			}
 			gameManager.gameOver(this);
 		}
+		
+		if (enableOnDeath != null)
+		{
+			enableOnDeath.SetActive(true);
+		}
+
 		Destroy(transform.gameObject);
 	}
 

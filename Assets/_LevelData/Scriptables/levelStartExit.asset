@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ef8256f3a9799a945bdcdb0bc9439850, type: 3}
   m_Name: levelStartExit
   m_EditorClassIdentifier: 
-  spawnPosition: {x: 42, y: 1.6875}
+  spawnPosition: {x: 42, y: 1.625}
   spawnRotation: 0
   elevatorIndex: 2
   floorName: FLOOR B1

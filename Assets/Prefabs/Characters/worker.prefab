@@ -22,11 +22,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2023260988043286838, guid: f3bb2ddd86bcc0544af59b764dd961fa, type: 3}
       propertyPath: cellDropMax
-      value: 8
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 2023260988043286838, guid: f3bb2ddd86bcc0544af59b764dd961fa, type: 3}
       propertyPath: cellDropMin
-      value: 6
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 2023260988043286838, guid: f3bb2ddd86bcc0544af59b764dd961fa, type: 3}
       propertyPath: spriteList.Array.size

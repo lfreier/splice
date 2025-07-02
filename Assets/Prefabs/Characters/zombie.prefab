@@ -38,7 +38,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2023260988043286838, guid: f3bb2ddd86bcc0544af59b764dd961fa, type: 3}
       propertyPath: cellDropMin
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 2023260988043286838, guid: f3bb2ddd86bcc0544af59b764dd961fa, type: 3}
       propertyPath: spriteList.Array.size

@@ -145,8 +145,8 @@ MonoBehaviour:
   lockType: 0
   doorAnimator: {fileID: 7042054641042475375}
   detectSize: 3
-  doorOpenSound: {fileID: 8300000, guid: 476020a61a2d6c74f9603fe2db63bfd1, type: 3}
-  doorCloseSound: {fileID: 8300000, guid: e6f6ffe36f325ca4abce64eed89f5918, type: 3}
+  doorOpenSound: {fileID: 8300000, guid: 1733fd9a841cf764aab02a4ec3b9510d, type: 3}
+  doorCloseSound: {fileID: 8300000, guid: b0c5a4b8caf81454cbdeaa375915b0f4, type: 3}
   doorUnlockSound: {fileID: 8300000, guid: 326b5e0372a1b524981c314e98186593, type: 3}
   doorAudioPlayer: {fileID: -7842510517680370185}
 --- !u!95 &7042054641042475375
