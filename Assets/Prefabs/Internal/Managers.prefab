@@ -238,15 +238,15 @@ MonoBehaviour:
   elevatorSpawns:
   - {fileID: 0}
   - {fileID: 11400000, guid: 2f5d9256aa6369f46ae54c4e9feb0194, type: 2}
-  - {fileID: 11400000, guid: 05d12f222020d054295902ce121e924f, type: 2}
-  - {fileID: 11400000, guid: cffedb1562eb6c548ac70982e90766f9, type: 2}
-  - {fileID: 11400000, guid: 33517daee327eb141a36085c4322391c, type: 2}
   - {fileID: 11400000, guid: f5f5a14ed8c598c4286ea77f7b686839, type: 2}
   - {fileID: 11400000, guid: c7d0145f0136a28469f05a541c12f099, type: 2}
   - {fileID: 11400000, guid: bb4910fd8fca7a84e81d430a29d2a98c, type: 2}
   - {fileID: 11400000, guid: 1c2015826475bc547b6271cbfd139e5c, type: 2}
+  - {fileID: 11400000, guid: 05d12f222020d054295902ce121e924f, type: 2}
   - {fileID: 11400000, guid: 230fb6dea7208a54098d63ef6dbb65ee, type: 2}
   - {fileID: 11400000, guid: f1c7a0d03e8e6694496f2ceb2f987a96, type: 2}
+  - {fileID: 11400000, guid: cffedb1562eb6c548ac70982e90766f9, type: 2}
+  - {fileID: 11400000, guid: 33517daee327eb141a36085c4322391c, type: 2}
   elevatorAvailable: 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
   currSaveData:
     sceneIndex: 0

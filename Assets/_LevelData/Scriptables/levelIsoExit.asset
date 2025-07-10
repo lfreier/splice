@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spawnPosition: {x: -92, y: 59.625}
   spawnRotation: 0
-  elevatorIndex: 10
-  floorName: '!!(SAFETY OVERRIDE - 2)!!'
+  elevatorIndex: 8
+  floorName: FLOOR B2 - WEST
   sceneIndex: 26
   spawnIndex: 18

@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spawnPosition: {x: -140, y: -36.375}
   spawnRotation: 0
-  elevatorIndex: 3
-  floorName: FLOOR B3 WEST
+  elevatorIndex: 2
+  floorName: SHIPPING - WEST
   sceneIndex: 23
   spawnIndex: 8

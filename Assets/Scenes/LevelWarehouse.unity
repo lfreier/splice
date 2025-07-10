@@ -73317,7 +73317,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3130299491851766136, guid: f41225591972f014e8e5d9cfc3c45928, type: 3}
       propertyPath: elevatorIndex
-      value: 6
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 3130299491851766136, guid: f41225591972f014e8e5d9cfc3c45928, type: 3}
       propertyPath: isExitElevator
@@ -75963,7 +75963,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3130299491851766136, guid: f41225591972f014e8e5d9cfc3c45928, type: 3}
       propertyPath: elevatorIndex
-      value: 5
+      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

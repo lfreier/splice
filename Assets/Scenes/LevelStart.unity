@@ -131117,7 +131117,7 @@ PrefabInstance:
       objectReference: {fileID: 11400000, guid: 230fb6dea7208a54098d63ef6dbb65ee, type: 2}
     - target: {fileID: 3130299491851766136, guid: f41225591972f014e8e5d9cfc3c45928, type: 3}
       propertyPath: elevatorIndex
-      value: 2
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 3130299491851766136, guid: f41225591972f014e8e5d9cfc3c45928, type: 3}
       propertyPath: isExitElevator

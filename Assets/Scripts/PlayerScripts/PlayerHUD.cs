@@ -60,7 +60,7 @@ public class PlayerHUD : MonoBehaviour
 	private Vector3 shadowStartScale;
 	private Vector3 textStartScale;
 
-	private static float pixelSize = 0.0625F;
+	//private static float pixelSize = 0.0625F;
 	private GameManager gameManager;
 
 	private bool fadeInMusic = false;
@@ -114,6 +114,7 @@ public class PlayerHUD : MonoBehaviour
 
 	public void init()
 	{
+		updateCellFontSize();
 		if (heartList != null)
 		{
 			resetHeartHUD();
@@ -236,6 +237,33 @@ public class PlayerHUD : MonoBehaviour
 		}
 	}
 
+	private void updateCellFontSize()
+	{
+		//this is dumb because my canvas is set to auto-sizing, but w/e. it works
+
+		// 1366 x 768
+		if (Screen.width < 1920)
+		{
+			cellText.fontSize = 40.6F;
+		}
+		// 1920 x 1080
+		else if (Screen.width < 2560)
+		{
+			cellText.fontSize = 48.3047F;
+		}
+		// 2560 x  x 1440
+		else if (Screen.width < 3840)
+		{
+			cellText.fontSize = 48.3785F;
+		}
+		// 3840 x 2160
+		else
+		{
+			cellText.fontSize = 48.45235F;
+		}
+
+	}
+
 	public void updateCells(int count)
 	{
 		cellText.SetText("" + count);
@@ -260,7 +288,18 @@ public class PlayerHUD : MonoBehaviour
 	{
 		//TODO: move shield when adding hearts
 		GameObject newHeart = Instantiate(heartPrefab, healthHudObject.transform);
-		newHeart.transform.SetLocalPositionAndRotation(new Vector2(heartList.Count * pixelSpacing * pixelSize, 0), Quaternion.identity);
+		RectTransform heartRect = newHeart.GetComponent<RectTransform>();
+		if (heartRect == null)
+		{
+			return;
+		}
+
+		heartRect.anchorMin = new Vector2(heartList.Count * 0.2F, 0);
+		heartRect.anchorMax = new Vector2((heartList.Count + 1) * 0.2F, 1);
+		heartRect.offsetMax = Vector2.zero;
+		heartRect.offsetMin = Vector2.zero;
+		//newHeart.transform.SetLocalPositionAndRotation(new Vector2(heartList.Count * pixelSpacing * pixelSize, 0), Quaternion.identity);
+		
 		heartList.Add(newHeart);
 
 		if (hudHealth == 0)
@@ -269,10 +308,23 @@ public class PlayerHUD : MonoBehaviour
 		}
 	}
 
+	/* this doesn't work anymore but w/e, shields aren't used */
 	private void addShieldHeart()
 	{
 		GameObject newHeart = Instantiate(shieldPrefab, healthHudObject.transform);
-		newHeart.transform.SetLocalPositionAndRotation(new Vector2((heartList.Count + shieldList.Count) * pixelSpacing * pixelSize, 0), Quaternion.identity);
+		RectTransform heartRect = newHeart.GetComponent<RectTransform>();
+		if (heartRect == null)
+		{
+			return;
+		}
+
+		heartRect.anchorMin = new Vector2((heartList.Count + shieldList.Count) * 0.2F, 0);
+		heartRect.anchorMax = new Vector2((heartList.Count + shieldList.Count + 1) * 0.2F, 1);
+		heartRect.offsetMax = Vector2.zero;
+		heartRect.offsetMin = Vector2.zero;
+
+		//newHeart.transform.SetLocalPositionAndRotation(new Vector2((heartList.Count + shieldList.Count) * pixelSpacing * pixelSize, 0), Quaternion.identity);
+		
 		shieldList.Add(newHeart);
 
 		if (shieldHealth == 0)
@@ -410,7 +462,7 @@ public class PlayerHUD : MonoBehaviour
 			return;
 		}
 		GameObject heartSpriteObj = listHead.transform.GetChild(0).gameObject;
-		SpriteRenderer toChange = heartSpriteObj.GetComponent<SpriteRenderer>();
+		Image toChange = heartSpriteObj.GetComponent<Image>();
 
 		if (toChange != null)
 		{
@@ -441,7 +493,7 @@ public class PlayerHUD : MonoBehaviour
 			}
 
 			toChange.sprite = newHeart;
-			toChange.size = new Vector2(1, 1);
+			toChange.enabled = newHeart == null ? false : true;
 		}
 		
 		updateListHead();

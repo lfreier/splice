@@ -85,15 +85,15 @@ public class LevelManager : MonoBehaviour
 	{
 		nul = 0,
 		hub = 1,
-		start = 2,
-		office = 3,
-		officeExit = 4,
-		warehouse = 5,
-		warehouseExit = 6,
-		rnd = 7,
-		rndExit = 8,
-		iso = 9,
-		isoExit = 10,
+		warehouse = 2,
+		warehouseExit = 3,
+		rnd = 4,
+		rndExit = 5,
+		start = 6,
+		iso = 7,
+		isoExit = 8,
+		office = 9,
+		officeExit = 10,
 		TOTAL = 11
 	}
 	public static int NUM_ELEVATORS = (int)elevatorIndex.TOTAL;
