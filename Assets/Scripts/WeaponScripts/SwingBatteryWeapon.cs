@@ -68,10 +68,6 @@ public class SwingBatteryWeapon : BasicWeapon
 
 		if (durability <= 0)
 		{
-			if (actorWielder != null)
-			{
-				this.actorWielder.drop();
-			}
 			if (_weaponScriptable.soundBreak != null)
 			{
 				AudioClip toPlay;
@@ -84,14 +80,16 @@ public class SwingBatteryWeapon : BasicWeapon
 				{
 					if (actorWielder == null)
 					{
-						Debug.Log("weapon break sound: weapon origin");
 						weaponAudioPlayer.PlayOneShot(toPlay, gameManager.effectsVolume);
 					}
 					else
 					{
-						Debug.Log("weapon break sound: actor origin");
 						actorWielder.actorAudioSource.PlayOneShot(toPlay, gameManager.effectsVolume);
 					}
+				}
+				if (actorWielder != null)
+				{
+					this.actorWielder.drop();
 				}
 			}
 

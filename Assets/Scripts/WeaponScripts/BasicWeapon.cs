@@ -186,12 +186,10 @@ public abstract class BasicWeapon : MonoBehaviour, WeaponInterface
 				{
 					if (actorWielder == null)
 					{
-						Debug.Log("weapon break sound: weapon origin");
 						weaponAudioPlayer.PlayOneShot(toPlay, gameManager.effectsVolume);
 					}
 					else
 					{
-						Debug.Log("weapon break sound: actor origin");
 						actorWielder.actorAudioSource.PlayOneShot(toPlay, gameManager.effectsVolume);
 					}
 				}

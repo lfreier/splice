@@ -75,8 +75,7 @@ public class AutoDoor : MonoBehaviour, UsableInterface
 			{
 				doorOpen();
 			}
-
-			if (open && hit.Length <= 0)
+			else if (open && hit.Length <= 0)
 			{
 				doorClose();
 			}
