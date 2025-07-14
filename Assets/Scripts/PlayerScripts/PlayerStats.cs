@@ -15,6 +15,9 @@ public class PlayerStats
 	public int[] savedUsableItemCount = new int[MAX_USABLE_ITEM_TYPE + 1];
 	public Sprite[] savedUsableItemSprite = new Sprite[MAX_USABLE_ITEM_TYPE + 1];
 
+	public bool[] weaponsScanned = new bool[WeaponDefs.MAX_PREFABS + 1];
+	public bool[] savedWeaponsScanned = new bool[WeaponDefs.MAX_PREFABS + 1];
+
 	/* TODO: this is a weird way of doing this */
 	//public UsableItem[] usableItems = new UsableItem[MAX_USABLE_TYPE + 1];
 	//public UsableItem activeItem;
@@ -267,6 +270,7 @@ public class PlayerStats
 		savedKeycardCount.CopyTo(keycardCount, 0);
 		savedUsableItemCount.CopyTo(usableItemCount, 0);
 		savedUsableItemSprite.CopyTo(usableItemSprite, 0);
+		savedWeaponsScanned.CopyTo(weaponsScanned, 0);
 		activeItemIndex = savedActiveItemIndex;
 		if (usableItemCount[activeItemIndex] > 0)
 		{
@@ -331,6 +335,7 @@ public class PlayerStats
 		keycardCount.CopyTo(savedKeycardCount, 0);
 		usableItemCount.CopyTo(savedUsableItemCount, 0);
 		usableItemSprite.CopyTo(savedUsableItemSprite, 0);
+		weaponsScanned.CopyTo(savedWeaponsScanned, 0);
 		savedActiveItemIndex = activeItemIndex;
 
 		int mutCount = playerActor.mutationHolder.transform.childCount;
@@ -409,6 +414,7 @@ public class PlayerStats
 		data.savedKeycardCount.CopyTo(savedKeycardCount, 0);
 		data.savedUsableItemCount.CopyTo(savedUsableItemCount, 0);
 		data.savedUsableItemSprite.CopyTo(savedUsableItemSprite, 0);
+		data.weaponsScanned.CopyTo(savedWeaponsScanned, 0);
 		data.savedActiveItemIndex = activeItemIndex;
 
 		int mutCount = data.mutationPrefabList.Length;
@@ -503,6 +509,7 @@ public class PlayerStats
 		savedKeycardCount.CopyTo(data.savedKeycardCount, 0);
 		savedUsableItemCount.CopyTo(data.savedUsableItemCount, 0);
 		savedUsableItemSprite.CopyTo(data.savedUsableItemSprite, 0);
+		savedWeaponsScanned.CopyTo(data.weaponsScanned, 0);
 		data.savedActiveItemIndex = savedActiveItemIndex;
 
 		data.mutationPrefabList = new int[mutationList.Length];

@@ -24,6 +24,8 @@ public class PlayerSaveData
 
 	public int equippedWeaponPrefab;
 
+	public bool[] weaponsScanned = new bool[WeaponDefs.MAX_PREFABS + 1];
+
 	public int limbGrabbedObjectPrefab;
 	public int weaponCharge;
 	public float weaponDurability;
@@ -43,5 +45,6 @@ public class PlayerSaveData
 		savedKeycardCount = new int[MAX_KEYCARD_TYPE + 1];
 		savedUsableItemCount = new int[MAX_USABLE_ITEM_TYPE + 1];
 		savedUsableItemSprite = new Sprite[MAX_USABLE_ITEM_TYPE + 1];
+		weaponsScanned = new bool[WeaponDefs.MAX_PREFABS + 1];
 	}
 }

@@ -17,6 +17,7 @@ public class StationMenuManager : MonoBehaviour
 
 	public GameObject menuScreen;
 	public GameObject scanScreen;
+	public GameObject scanScreenDB;
 	public GameObject databaseScreen;
 	public GameObject mutationScreen;
 
@@ -73,6 +74,23 @@ public class StationMenuManager : MonoBehaviour
 	public void backToMenu()
 	{
 		changeScreen(menuScreen);
+	}
+
+	public void changeScreen(GameObject screenPrefab, int weapIndex)
+	{
+		GameObject newScreen = Instantiate(screenPrefab, this.transform);
+		newScreen.SetActive(true);
+		currentScreen.gameObject.SetActive(false);
+		Destroy(currentScreen.gameObject);
+
+		ScanScreen screenScript = newScreen.GetComponentInChildren<ScanScreen>();
+		if (screenScript == null)
+		{
+			return;
+		}
+		screenScript.preInit(weapIndex);
+		currentScreen = screenScript;
+		currentScreen.init(this);
 	}
 
 	public void changeScreen(GameObject screenPrefab)

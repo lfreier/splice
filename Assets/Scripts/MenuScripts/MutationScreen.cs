@@ -19,7 +19,7 @@ public class MutationScreen : StationScreen
 		if (station.playerActor != null)
 		{
 			MutationHandler mutHandle = station.playerActor.mutationHolder.GetComponent<MutationHandler>();
-			if (mutHandle != null)
+			if (mutHandle != null && mutHandle.majorMutation != null)
 			{
 				mutSprites = mutHandle.majorMutation.getTutorialSprites();
 				mutImage.sprite = mutSprites[0];

@@ -16,9 +16,9 @@ MonoBehaviour:
   <atkSpeed>k__BackingField: 0.2
   <canBeDropped>k__BackingField: 1
   <damage>k__BackingField: 1
-  <description>k__BackingField: EXTREMELY SHORT RANGE BUT QUICK.\r\nSURPRISINGLY
-    EFFECTIVE AT CAUSING TEARS\r\nIN ARMORED SECURITY UNIFORMS.\r\n\r\nADVISABLE 
-    TO FIND OTHER BLADED INSTRUMENTS.
+  <description>k__BackingField: IMPROVISED WEAPON USED BY SURGERY TEAMS.\r\nEXTREMELY
+    SHORT RANGE BUT QUICK.\r\nSURPRISINGLY EFFECTIVE AT CAUSING TEARS\r\nIN ARMORED
+    SECURITY UNIFORMS.\r\n\r\nADVISABLE  TO FIND OTHER BLADED INSTRUMENTS.
   <durability>k__BackingField: 5
   <icon>k__BackingField: {fileID: 21300000, guid: 75a5f130401eceb4bb129dc5f5975e6a, type: 3}
   <displayName>k__BackingField: SCALPEL

@@ -7,6 +7,7 @@ public class TutorialSceneLoader : MonoBehaviour
 {
 	public Sprite tutorialImage;
 	public bool triggered = false;
+	public bool winGame = false;
 
 	//TODO: destroy this when done
 
@@ -24,7 +25,14 @@ public class TutorialSceneLoader : MonoBehaviour
 					inputs.locked = true;
 					inputs.lockWait = true;
 				}
-				actor.gameManager.loadPausedScene(actor, SceneDefs.SCENE.TUTORIAL);
+				if (!winGame)
+				{
+					actor.gameManager.loadPausedScene(actor, SceneDefs.SCENE.TUTORIAL);
+				}
+				else
+				{
+					actor.gameManager.loadPausedScene(actor, SceneDefs.SCENE.WIN);
+				}
 			}
 		}
 	}

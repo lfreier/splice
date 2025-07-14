@@ -42,7 +42,6 @@ public class PlayerHUD : MonoBehaviour
 	public int pixelSpacing;
 
 	public AudioSource musicPlayer;
-	private float musicVolume;
 
 	private List<GameObject> heartList;
 	private List<GameObject> shieldList;
@@ -114,7 +113,7 @@ public class PlayerHUD : MonoBehaviour
 
 	public void init()
 	{
-		updateCellFontSize();
+		updateCellFontSize(cellText, 0);
 		if (heartList != null)
 		{
 			resetHeartHUD();
@@ -236,34 +235,6 @@ public class PlayerHUD : MonoBehaviour
 			fadeInMusic = true;
 		}
 	}
-
-	private void updateCellFontSize()
-	{
-		//this is dumb because my canvas is set to auto-sizing, but w/e. it works
-
-		// 1366 x 768
-		if (Screen.width < 1920)
-		{
-			cellText.fontSize = 40.6F;
-		}
-		// 1920 x 1080
-		else if (Screen.width < 2560)
-		{
-			cellText.fontSize = 48.3047F;
-		}
-		// 2560 x  x 1440
-		else if (Screen.width < 3840)
-		{
-			cellText.fontSize = 48.3785F;
-		}
-		// 3840 x 2160
-		else
-		{
-			cellText.fontSize = 48.45235F;
-		}
-
-	}
-
 	public void updateCells(int count)
 	{
 		cellText.SetText("" + count);

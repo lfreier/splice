@@ -22,6 +22,15 @@ public class StationMenuScreen : StationScreen
 			mutationButton.gameObject.SetActive(false);
 		}
 		setSaveText();
+
+		foreach (TextMeshProUGUI text in this.GetComponentsInChildren<TextMeshProUGUI>())
+		{
+			if (text == null)
+			{
+				continue;
+			}
+			GameManager.updateCellFontSize(text, 1);
+		}
 	}
 
 	public void onSaveButton()

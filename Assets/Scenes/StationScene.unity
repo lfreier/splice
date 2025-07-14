@@ -405,7 +405,8 @@ MonoBehaviour:
   currentScreen: {fileID: 0}
   menuScreen: {fileID: 3285961014088188893, guid: a0bab465306962842bf0cff726a4f381, type: 3}
   scanScreen: {fileID: 8143481522152502890, guid: 56e997b72fcf79d4da6d4fdb8449cf4c, type: 3}
-  databaseScreen: {fileID: 0}
+  scanScreenDB: {fileID: 8143481522152502890, guid: f2f382930be437b4abd2b3ce39086066, type: 3}
+  databaseScreen: {fileID: 8143481522152502890, guid: 2ecc9a9e4557d1749a2330d11e31654c, type: 3}
   mutationScreen: {fileID: 8143481522152502890, guid: 5a6c185f6b305bb4595a3d73bb0f809c, type: 3}
   elevatorScreen: {fileID: 3285961014088188893, guid: 0017f26712fba0f4db268836e3a5063c, type: 3}
   station: {fileID: 0}

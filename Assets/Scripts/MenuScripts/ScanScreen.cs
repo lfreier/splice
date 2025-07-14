@@ -5,6 +5,8 @@ using UnityEngine.UI;
 
 public class ScanScreen : StationScreen
 {
+	public bool fromDatabase = false;
+
 	public BasicWeapon weaponToScan;
 
 	public Image weaponIcon;
@@ -15,10 +17,30 @@ public class ScanScreen : StationScreen
 	private static string weaponStatsFormat = "DAMAGE:\\t {0}\r\nDURABILITY: {1}";
 	private static string weaponChargedFormat = "DAMAGE:\\t {0}\r\nCHARGED DAMAGE: {1}\r\nDURABILITY: {2}";
 
+	public void preInit(int index)
+	{
+		gameManager = GameManager.Instance;
+		GameObject weaponObject = gameManager.prefabManager.weaponPrefabs[index];
+		if (weaponObject != null)
+		{
+			weaponToScan = weaponObject.GetComponentInChildren<BasicWeapon>();
+		}
+	}
+
 	public override void init(StationMenuManager manager)
 	{
 		base.init(manager);
-		if (station.playerActor != null)
+
+		foreach (TextMeshProUGUI text in this.GetComponentsInChildren<TextMeshProUGUI>())
+		{
+			if (text == null || text.text != "BACK")
+			{
+				continue;
+			}
+			GameManager.updateCellFontSize(text, 1);
+		}
+
+		if (station.playerActor != null && weaponToScan == null)
 		{
 			GameObject weaponObject = station.playerActor.getEquippedWeapon();
 			if (weaponObject != null)
@@ -29,6 +51,7 @@ public class ScanScreen : StationScreen
 
 		if (weaponToScan != null && weaponToScan._weaponScriptable.description != null && weaponToScan._weaponScriptable.description.Length > 0)
 		{
+			weaponIcon.enabled = true;
 			string statsText = "";
 			if (weaponToScan.GetType() == typeof(SwingBatteryWeapon))
 			{
@@ -48,10 +71,24 @@ public class ScanScreen : StationScreen
 			{
 				weaponIcon.sprite = weaponToScan._weaponScriptable.icon;
 			}
+			gameManager.playerStats.weaponsScanned[(int)weaponToScan._weaponScriptable.prefabIndex] = true;
 		}
 		else
 		{
 			weaponNameText.text = "!ERROR!";
+			weaponIcon.enabled = false;
+		}
+	}
+
+	public override void onBackButton()
+	{
+		if (fromDatabase)
+		{
+			menuManager.changeScreen(menuManager.databaseScreen);
+		}
+		else
+		{
+			base.onBackButton();
 		}
 	}
 }

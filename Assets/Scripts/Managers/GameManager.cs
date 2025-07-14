@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Unity.PlasticSCM.Editor.WebApi;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using TMPro;
 using static GameManager;
 using static SceneDefs;
 
@@ -369,6 +370,61 @@ public class GameManager : MonoBehaviour
 		levelManager.saveLevelState(currentScene);
 		saveManager.saveDataToDisk(levelManager.currSaveData, currentSaveSlot);
 		saveManager.loadAllData();
+	}
+
+
+	public static void updateCellFontSize(TextMeshProUGUI text, int type)
+	{
+		//this is dumb because my canvas is set to auto-sizing, but w/e. it works
+
+		/* hud cell text size*/
+		if (type == 0)
+		{
+			// 1366 x 768
+			if (Screen.width < 1920)
+			{
+				text.fontSize = 40.6F;
+			}
+			// 1920 x 1080
+			else if (Screen.width < 2560)
+			{
+				text.fontSize = 48.3047F;
+			}
+			// 2560 x  x 1440
+			else if (Screen.width < 3840)
+			{
+				text.fontSize = 48.3785F;
+			}
+			// 3840 x 2160
+			else
+			{
+				text.fontSize = 48.45235F;
+			}
+		}
+		/* station menu font */
+		else if (type == 1)
+		{
+			// 1366 x 768
+			if (Screen.width < 1920)
+			{
+				text.fontSize = 39.6F;
+			}
+			// 1920 x 1080
+			else if (Screen.width < 2560)
+			{
+				text.fontSize = 55.65F;
+			}
+			// 2560 x  x 1440
+			else if (Screen.width < 3840)
+			{
+				text.fontSize = 74F;
+			}
+			// 3840 x 2160
+			else
+			{
+				text.fontSize = 111.35F;
+			}
+		}
 	}
 
 	public void signalCloseMenusEvent()
