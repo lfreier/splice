@@ -55,6 +55,11 @@ public class DeleteSaveButton : MonoBehaviour
 		else
 		{
 			SaveManager.deleteSaveSlot(saveSlot);
+			GameManager gm = GameManager.Instance;
+			if (gm != null && saveMenu.menu != null)
+			{
+				gm.playSound(saveMenu.menu.menuClickPlayer, gm.audioManager.errorSound.name, 1F);
+			}
 		}
 
 		saveMenu.initMenu();

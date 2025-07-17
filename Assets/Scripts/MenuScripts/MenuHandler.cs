@@ -232,7 +232,12 @@ public class MenuHandler : MonoBehaviour
 					await gameManager.loadingHandler.forceUnloadScenes(temp);
 				}
 				gameManager.loadingHandler.reset();
-				SceneManager.SetActiveScene(SceneManager.GetSceneByBuildIndex(SCENE_INDEX_MASK[gameManager.currentScene]));
+				Scene curr = SceneManager.GetSceneByBuildIndex(SCENE_INDEX_MASK[gameManager.currentScene]);
+				while (!curr.isLoaded)
+				{
+					await Task.Delay(100);
+				}
+				SceneManager.SetActiveScene(curr);
 			}
 		}
 	}

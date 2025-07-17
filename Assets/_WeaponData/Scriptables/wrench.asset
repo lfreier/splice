@@ -30,11 +30,11 @@ MonoBehaviour:
   <soundBreak>k__BackingField: {fileID: 8300000, guid: 6c9dd0732611a3b4c823bb5ec13774bc, type: 3}
   <soundBreakVolume>k__BackingField: 0.6
   <soundObstacleHit>k__BackingField: {fileID: 8300000, guid: c21af221fd44e4b4c9e199fafaf7865b, type: 3}
-  <soundObstacleHitVolume>k__BackingField: 0.8
+  <soundObstacleHitVolume>k__BackingField: 1
   <soundSwing>k__BackingField: {fileID: 8300000, guid: 619d131918b5d2d479edd3587d18d37c, type: 3}
-  <soundSwingVolume>k__BackingField: 0.3
+  <soundSwingVolume>k__BackingField: 0.6
   <soundWallHit>k__BackingField: {fileID: 8300000, guid: f1e1c1d9322f5ea4e8c0109fa1ff9ece, type: 3}
-  <soundWallHitVolume>k__BackingField: 0.8
+  <soundWallHitVolume>k__BackingField: 1
   <throwDamage>k__BackingField: 1
   <throwDurabilityDamage>k__BackingField: 0.5
   <throwSpeed>k__BackingField: 50

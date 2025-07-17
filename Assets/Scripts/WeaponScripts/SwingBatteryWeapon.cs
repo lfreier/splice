@@ -148,6 +148,10 @@ public class SwingBatteryWeapon : BasicWeapon
 
 	public override void init()
 	{
+		if (durability == 0)
+		{
+			durability = _weaponScriptable.durability;
+		}
 		if (maxBatteries == 0)
 		{
 			maxBatteries = batterySprites.Length;

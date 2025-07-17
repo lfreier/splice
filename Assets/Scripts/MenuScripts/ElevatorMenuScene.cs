@@ -4,12 +4,15 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using static System.Net.Mime.MediaTypeNames;
 
 public class ElevatorMenuScene : StationScreen
 {
 	public GameObject buttonPrefab;
 	public List<GameObject> buttonList;
 	public List<PlayerSpawnScriptable> elevatorSpawnList;
+
+	public TextMeshProUGUI exitText;
 
 	public RectTransform scrollRect;
 	public Scrollbar scrollbar;
@@ -29,14 +32,16 @@ public class ElevatorMenuScene : StationScreen
 	{
 		base.init(manager);
 
+		GameManager.updateCellFontSize(exitText, 1);
+
 		scrollRect.offsetMin = new Vector2(Screen.width * 0.75F, scrollRect.offsetMin.y);
 		scrollbar.value = 1;
 
 		buttonList = new List<GameObject>();
 		elevatorSpawnList = new List<PlayerSpawnScriptable>();
-		for (int i = 1; i < gameManager.levelManager.elevatorAvailable.Length && i < maxElevatorsShown; i ++)
+		for (int i = 1; i < gameManager.playerStats.elevatorAvailable.Length && i < maxElevatorsShown; i ++)
 		{
-			if (gameManager.levelManager.elevatorAvailable[i] <= 0)
+			if (gameManager.playerStats.elevatorAvailable[i] <= 0)
 			{
 				continue;
 			}
@@ -48,6 +53,7 @@ public class ElevatorMenuScene : StationScreen
 				//buttonRect.anchorMax = new Vector2(anchorMaxX, anchorMaxY + (buttonList.Count * yChange));
 				//buttonRect.offsetMax = Vector2.zero;
 				//buttonRect.offsetMin = Vector2.zero;
+				GameManager.updateRectSize(buttonRect, GetComponentInChildren<VerticalLayoutGroup>(), 0);
 
 				Button button = newButton.GetComponent<Button>();
 				if (button != null)
@@ -56,7 +62,7 @@ public class ElevatorMenuScene : StationScreen
 					TextMeshProUGUI text = newButton.GetComponentInChildren<TextMeshProUGUI>();
 					if (text != null)
 					{
-						if (manager.elevator != null && manager.elevator.nextSpawn != null && i == (int)manager.elevator.nextSpawn.elevatorIndex && gameManager.levelManager.elevatorAvailable[i] == 1)
+						if (manager.elevator != null && manager.elevator.nextSpawn != null && i == (int)manager.elevator.nextSpawn.elevatorIndex && gameManager.playerStats.elevatorAvailable[i] == 1)
 						{
 							text.text = "*" + gameManager.levelManager.elevatorSpawns[i].floorName + "*";
 						}
@@ -64,9 +70,11 @@ public class ElevatorMenuScene : StationScreen
 						{
 							text.text = gameManager.levelManager.elevatorSpawns[i].floorName;
 						}
+						GameManager.updateCellFontSize(text, 1);
 					}
 				}
 
+				buttonRect.ForceUpdateRectTransforms();
 				buttonList.Add(newButton);
 				elevatorSpawnList.Add(gameManager.levelManager.elevatorSpawns[i]);
 			}
@@ -76,7 +84,8 @@ public class ElevatorMenuScene : StationScreen
 	public void moveToFloor(GameObject button)
 	{
 		LevelManager levelManager = gameManager.levelManager;
-		for (int i = 0; i < levelManager.elevatorAvailable.Length && i < maxElevatorsShown; i++)
+		PlayerStats stats = gameManager.playerStats;
+		for (int i = 0; i < stats.elevatorAvailable.Length && i < maxElevatorsShown; i++)
 		{
 			if (i >= buttonList.Count)
 			{
@@ -91,18 +100,18 @@ public class ElevatorMenuScene : StationScreen
 				}
 				
 				/* save when moving to the next floor for the first time */
-				if (levelManager.elevatorAvailable[(int)elevatorSpawnList[i].elevatorIndex] == 1)
+				if (stats.elevatorAvailable[(int)elevatorSpawnList[i].elevatorIndex] == 1)
 				{
 					levelManager.lastSavedSpawn = elevatorSpawnList[i].spawnIndex;
 					levelManager.lastSavedAtStation = false;
 
-					/* save current level and but set last saved level to next */
-					gameManager.save(menuManager.elevator.playerActor, (int)elevatorSpawnList[i].sceneIndex);
-
 					if (menuManager.elevator.isExitElevator)
 					{
-						levelManager.elevatorAvailable[(int)elevatorSpawnList[i].elevatorIndex] = 2;
+						stats.elevatorAvailable[(int)elevatorSpawnList[i].elevatorIndex] = 2;
 					}
+
+					/* save current level and but set last saved level to next */
+					gameManager.save(menuManager.elevator.playerActor, (int)elevatorSpawnList[i].sceneIndex);
 				}
 
 				gameManager.nextLevel(menuManager.elevator.playerActor, elevatorSpawnList[i].sceneIndex, (int)elevatorSpawnList[i].spawnIndex);

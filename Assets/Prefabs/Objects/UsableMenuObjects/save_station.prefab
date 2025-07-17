@@ -98,7 +98,6 @@ GameObject:
   - component: {fileID: 8729281797576198599}
   - component: {fileID: 4323827320372099676}
   - component: {fileID: 6048920140097546874}
-  - component: {fileID: -244931112010140506}
   - component: {fileID: 160435562017107228}
   m_Layer: 14
   m_Name: save_station
@@ -282,20 +281,6 @@ PolygonCollider2D:
       - {x: 1.5, y: -0.625}
       - {x: 0.59375, y: -1.875}
   m_UseDelaunayMesh: 0
---- !u!114 &-244931112010140506
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 374953620748231735}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bf336abf081bc2246bab9dfaca64e293, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  guid: save_station_3714f410-af03-4e67-90bc-40b94cea3b93
-  basicPrefabIndex: 0
 --- !u!82 &160435562017107228
 AudioSource:
   m_ObjectHideFlags: 0

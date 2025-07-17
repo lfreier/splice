@@ -91,5 +91,6 @@ public enum WeaponType
 	UNARMED,
 	SWING,
 	STAB,
-	SHOOT
+	SHOOT,
+	CLAW
 };

@@ -30,6 +30,9 @@ public class PlayerSaveData
 	public int weaponCharge;
 	public float weaponDurability;
 
+	public int[] elevatorAvailable;
+	public int[] saveStationUses;
+
 	public PlayerSaveData()
 	{
 		savedActiveItemIndex = -1;
@@ -46,5 +49,8 @@ public class PlayerSaveData
 		savedUsableItemCount = new int[MAX_USABLE_ITEM_TYPE + 1];
 		savedUsableItemSprite = new Sprite[MAX_USABLE_ITEM_TYPE + 1];
 		weaponsScanned = new bool[WeaponDefs.MAX_PREFABS + 1];
+
+		elevatorAvailable = new int[NUM_ELEVATORS];
+		saveStationUses = new int[NUM_SAVE_STATIONS];
 	}
 }

@@ -86,10 +86,6 @@ public class GUID : MonoBehaviour
 				{
 					newWatcher.idType = LevelManager.idType.WEAPON;
 				}
-				else if (gameObject.GetComponentInChildren<SaveStation>() != null)
-				{
-					newWatcher.idType = LevelManager.idType.SAVE;
-				}
 				else if (gameObject.GetComponentInChildren<TutorialSceneLoader>() != null)
 				{
 					newWatcher.idType = LevelManager.idType.BASIC;

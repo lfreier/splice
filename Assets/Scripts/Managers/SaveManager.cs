@@ -256,6 +256,7 @@ public class SaveManager
 		gameManager.playerStats.copySavedPlayerData(gameManager.levelManager.currPlayerSaveData);
 		gameManager.levelManager.currPlayerSaveData.lastSavedLevel = gameManager.levelManager.lastSavedLevelIndex;
 		gameManager.levelManager.currPlayerSaveData.lastSavedSpawn = (int)gameManager.levelManager.lastSavedSpawn;
+		gameManager.playerStats.elevatorAvailable.CopyTo(gameManager.levelManager.currPlayerSaveData.elevatorAvailable, 0);
 
 		string fullPath = Path.Combine(dataPath, saveSlot.ToString(), playerDataFileName);
 		string backupFilePath = fullPath + ".bak";

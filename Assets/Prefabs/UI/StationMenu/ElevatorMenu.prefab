@@ -228,7 +228,7 @@ MonoBehaviour:
   m_fontSize: 74
   m_fontSizeBase: 74
   m_fontWeight: 400
-  m_enableAutoSizing: 1
+  m_enableAutoSizing: 0
   m_fontSizeMin: 60
   m_fontSizeMax: 74
   m_fontStyle: 0
@@ -496,6 +496,7 @@ MonoBehaviour:
   buttonPrefab: {fileID: 2815098739672983620, guid: 3ba7202f2317265429b9813814a50bce, type: 3}
   buttonList: []
   elevatorSpawnList: []
+  exitText: {fileID: 1093438555430386120}
   scrollRect: {fileID: 6202962166927723834}
   scrollbar: {fileID: 8411761134987960956}
   maxElevatorsShown: 15

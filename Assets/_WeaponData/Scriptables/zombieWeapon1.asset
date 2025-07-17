@@ -38,7 +38,7 @@ MonoBehaviour:
   <throwSpeed>k__BackingField: 0
   <throwWeight>k__BackingField: 0
   <throwHurtSpeed>k__BackingField: 0
-  <weaponType>k__BackingField: 1
+  <weaponType>k__BackingField: 4
   equipPosX: 0
   equipPosY: 0
   equipRotZ: 0

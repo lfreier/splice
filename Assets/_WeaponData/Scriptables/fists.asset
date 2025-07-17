@@ -30,7 +30,7 @@ MonoBehaviour:
   <soundObstacleHit>k__BackingField: {fileID: 8300000, guid: d5e3e1e53722dd9438a90b7f97f937d3, type: 3}
   <soundObstacleHitVolume>k__BackingField: 0.5
   <soundSwing>k__BackingField: {fileID: 8300000, guid: 14b19a7bd5988434d9a8ea561ac40638, type: 3}
-  <soundSwingVolume>k__BackingField: 0.3
+  <soundSwingVolume>k__BackingField: 0.5
   <soundWallHit>k__BackingField: {fileID: 8300000, guid: d5e3e1e53722dd9438a90b7f97f937d3, type: 3}
   <soundWallHitVolume>k__BackingField: 0.5
   <throwDamage>k__BackingField: 0

@@ -93,6 +93,11 @@ public class MSpider : MonoBehaviour, MutationInterface
 		}
 	}
 
+	public void playLungeSound()
+	{
+		gameManager.playSound(actorWielder.actorAudioSource, fangLungeSound.name, 1F);
+	}
+
 	public void shootLeft()
 	{
 		Vector2 origin = new Vector2(-shootOffset.x, shootOffset.y);
@@ -125,7 +130,6 @@ public class MSpider : MonoBehaviour, MutationInterface
 	{
 		pounceTarget = Vector2.ClampMagnitude(playerIn.pointerPos() - (Vector2)actorWielder.transform.position, 1);
 		pounceActive = true;
-		gameManager.playSound(actorWielder.actorAudioSource, fangLungeSound.name, 1F);
 		gameManager.signalMovementLocked();
 		gameManager.signalRotationLocked();
 	}

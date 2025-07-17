@@ -38,6 +38,12 @@ public class PlayerStats
 	public GameObject limbGrabbedObject;
 	public int weaponCharge;
 
+	public int[] elevatorAvailable = new int[LevelManager.NUM_ELEVATORS];
+	public int[] savedElevatorAvailable = new int[LevelManager.NUM_ELEVATORS];
+
+	public int[] saveStationUses = new int[LevelManager.NUM_SAVE_STATIONS];
+	public int[] savedSaveStationUses = new int[LevelManager.NUM_SAVE_STATIONS];
+
 	public PlayerHUD playerHUD;
 
 	public Actor player;
@@ -181,12 +187,6 @@ public class PlayerStats
 			MutationHandler mutHandle = player.mutationHolder.GetComponent<MutationHandler>();
 			switch (mut.getId())
 			{
-				case "MBeast":
-					mutPrefab = player.instantiateActive(gameManager.prefabManager.mutPBeast);
-					break;
-				case "MBladeWing":
-					mutPrefab = player.instantiateActive(gameManager.prefabManager.mutPBladeWing);
-					break;
 				case "MLimb":
 					mutPrefab = player.instantiateActive(gameManager.prefabManager.mutPLimb);
 					break;
@@ -271,6 +271,9 @@ public class PlayerStats
 		savedUsableItemCount.CopyTo(usableItemCount, 0);
 		savedUsableItemSprite.CopyTo(usableItemSprite, 0);
 		savedWeaponsScanned.CopyTo(weaponsScanned, 0);
+		savedElevatorAvailable.CopyTo(elevatorAvailable, 0);
+		savedSaveStationUses.CopyTo(saveStationUses, 0);
+
 		activeItemIndex = savedActiveItemIndex;
 		if (usableItemCount[activeItemIndex] > 0)
 		{
@@ -336,6 +339,8 @@ public class PlayerStats
 		usableItemCount.CopyTo(savedUsableItemCount, 0);
 		usableItemSprite.CopyTo(savedUsableItemSprite, 0);
 		weaponsScanned.CopyTo(savedWeaponsScanned, 0);
+		elevatorAvailable.CopyTo(savedElevatorAvailable, 0);
+		saveStationUses.CopyTo(savedSaveStationUses, 0);
 		savedActiveItemIndex = activeItemIndex;
 
 		int mutCount = playerActor.mutationHolder.transform.childCount;
@@ -415,7 +420,9 @@ public class PlayerStats
 		data.savedUsableItemCount.CopyTo(savedUsableItemCount, 0);
 		data.savedUsableItemSprite.CopyTo(savedUsableItemSprite, 0);
 		data.weaponsScanned.CopyTo(savedWeaponsScanned, 0);
-		data.savedActiveItemIndex = activeItemIndex;
+		data.elevatorAvailable.CopyTo(savedElevatorAvailable, 0);
+		data.saveStationUses.CopyTo(savedSaveStationUses, 0);
+		data.savedActiveItemIndex = savedActiveItemIndex;
 
 		int mutCount = data.mutationPrefabList.Length;
 		mutationList = new GameObject[mutCount];
@@ -424,14 +431,8 @@ public class PlayerStats
 			GameObject mutPrefab = null;
 			switch(data.mutationPrefabList[i])
 			{
-				case (int)mutationType.mBeast:
-					mutPrefab = gameManager.prefabManager.mutPBeast;
-					break;
 				case (int)mutationType.mLimb:
 					mutPrefab = gameManager.prefabManager.mutPLimb;
-					break;
-				case (int)mutationType.mWing:
-					mutPrefab = gameManager.prefabManager.mutPBladeWing;
 					break;
 				case (int)mutationType.mRaptor:
 					mutPrefab = gameManager.prefabManager.mutPRaptor;
@@ -510,6 +511,8 @@ public class PlayerStats
 		savedUsableItemCount.CopyTo(data.savedUsableItemCount, 0);
 		savedUsableItemSprite.CopyTo(data.savedUsableItemSprite, 0);
 		savedWeaponsScanned.CopyTo(data.weaponsScanned, 0);
+		savedElevatorAvailable.CopyTo(data.elevatorAvailable, 0);
+		savedSaveStationUses.CopyTo(data.saveStationUses, 0);
 		data.savedActiveItemIndex = savedActiveItemIndex;
 
 		data.mutationPrefabList = new int[mutationList.Length];
@@ -521,14 +524,8 @@ public class PlayerStats
 			{
 				switch (mut.getId())
 				{
-					case "MBeast":
-						data.mutationPrefabList[i] = (int)mutationType.mBeast;
-						break;
 					case "MLimb":
 						data.mutationPrefabList[i] = (int)mutationType.mLimb;
-						break;
-					case "MBladeWing":
-						data.mutationPrefabList[i] = (int)mutationType.mWing;
 						break;
 					case "MRaptor":
 						data.mutationPrefabList[i] = (int)mutationType.mRaptor;

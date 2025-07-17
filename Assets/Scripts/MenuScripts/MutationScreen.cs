@@ -10,6 +10,9 @@ public class MutationScreen : StationScreen
 	public Button nextButton;
 	public Button backButton;
 
+	public TextMeshProUGUI nextText;
+	public TextMeshProUGUI backText;
+
 	private Sprite[] mutSprites;
 	private int mutImageIndex = 0;
 
@@ -30,6 +33,15 @@ public class MutationScreen : StationScreen
 					nextButton.gameObject.SetActive(false);
 					nextButton.interactable = false;
 				}
+			}
+
+			if (nextText != null)
+			{
+				GameManager.updateCellFontSize(nextText, 1);
+			}
+			if (backText != null)
+			{
+				GameManager.updateCellFontSize(backText, 1);
 			}
 		}
 	}

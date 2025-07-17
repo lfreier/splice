@@ -190,9 +190,9 @@ MonoBehaviour:
   maxBatteries: 0
   filledBatteries: 0
   soundChargedActorHit: {fileID: 8300000, guid: 4028c7e259e234d4eb8f32b8970150ce, type: 3}
-  chargedActorHitVolume: 0.2
+  chargedActorHitVolume: 1
   soundChargedSwing: {fileID: 8300000, guid: 572ccdd62b3da2243b9c31e5c3f14cd1, type: 3}
-  chargedSwingVolume: 0.4
+  chargedSwingVolume: 1
 --- !u!95 &6529950160097543187
 Animator:
   serializedVersion: 7

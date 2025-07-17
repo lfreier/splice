@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 using TMPro;
 using static GameManager;
 using static SceneDefs;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
@@ -178,9 +179,9 @@ public class GameManager : MonoBehaviour
 
 		saveManager = new SaveManager();
 
-		for (int i = 0; i < levelManager.saveStationUses.Length; i ++)
+		for (int i = 0; i < playerStats.saveStationUses.Length; i ++)
 		{
-			levelManager.saveStationUses[i] = 1;
+			playerStats.saveStationUses[i] = 1;
 		}
 
 		/* This is mainly for debugging - making sure we set the level if we don't load it */
@@ -372,10 +373,49 @@ public class GameManager : MonoBehaviour
 		saveManager.loadAllData();
 	}
 
+	public static void updateRectSize(RectTransform rect, VerticalLayoutGroup vert, int type)
+	{
+		/* elevator display size*/
+		if (type == 0 && rect != null && vert != null)
+		{
+			// 1366 x 768
+			if (Screen.width < 1920)
+			{
+				rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, rect.rect.width);
+				rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 60F);
+				vert.spacing = 15;
+			}
+			// 1920 x 1080
+			else if (Screen.width < 2560)
+			{
+				rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, rect.rect.width);
+				rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 72F);
+				vert.spacing = 30;
+			}
+			// 2560 x  x 1440
+			else if (Screen.width < 3840)
+			{
+				rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, rect.rect.width);
+				rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 144F);
+				vert.spacing = 0;
+			}
+			// 3840 x 2160
+			else
+			{
+				rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, rect.rect.width);
+				rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 216F);
+				vert.spacing = 0;
+			}
+		}
+	}
 
 	public static void updateCellFontSize(TextMeshProUGUI text, int type)
 	{
 		//this is dumb because my canvas is set to auto-sizing, but w/e. it works
+		if (text == null)
+		{
+			return;
+		}
 
 		/* hud cell text size*/
 		if (type == 0)

@@ -18,8 +18,6 @@ public class SaveData
 	public SerializeDictionary<string, BasicSaveData> saveTable;
 	public SerializeDictionary<string, BasicSaveData> basicsTable;
 
-	public int[] elevatorAvailable;
-
 	public SaveData()
 	{
 		actorTable = new SerializeDictionary<string, ActorSaveData>();
@@ -28,7 +26,5 @@ public class SaveData
 		pickupBoxTable = new SerializeDictionary<string, BasicSaveData>();
 		saveTable = new SerializeDictionary<string, BasicSaveData>();
 		basicsTable = new SerializeDictionary<string, BasicSaveData>();
-
-		elevatorAvailable = new int[NUM_ELEVATORS];
 	}
 }

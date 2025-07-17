@@ -27112,6 +27112,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: -15
       objectReference: {fileID: 0}
+    - target: {fileID: 7774120778166543206, guid: 88a8aa61a589dd94db5f42483034d3b2, type: 3}
+      propertyPath: m_SortingOrder
+      value: -2
+      objectReference: {fileID: 0}
     - target: {fileID: 7995592897366417785, guid: 88a8aa61a589dd94db5f42483034d3b2, type: 3}
       propertyPath: m_Name
       value: papers (1)
@@ -135627,6 +135631,10 @@ PrefabInstance:
     - target: {fileID: 5714687280107940693, guid: 88a8aa61a589dd94db5f42483034d3b2, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: -30
+      objectReference: {fileID: 0}
+    - target: {fileID: 7774120778166543206, guid: 88a8aa61a589dd94db5f42483034d3b2, type: 3}
+      propertyPath: m_SortingOrder
+      value: -2
       objectReference: {fileID: 0}
     - target: {fileID: 7995592897366417785, guid: 88a8aa61a589dd94db5f42483034d3b2, type: 3}
       propertyPath: m_Name

@@ -16,33 +16,33 @@ public class Elevator : MonoBehaviour, UsableInterface
 	private int index;
 
 	private GameManager gameManager;
-	private LevelManager levelManager;
+	private PlayerStats stats;
 
 	void Start()
 	{
 		gameManager = GameManager.Instance;
-		levelManager = gameManager.levelManager;
+		stats = gameManager.playerStats;
 		index = (int)elevatorIndex;
 	}
 
 	public bool use(Actor user)
 	{
 		/* unlock elevator for use */
-		levelManager.elevatorAvailable[index] = 2;
+		stats.elevatorAvailable[index] = 2;
 
 		if (isExitElevator)
 		{
-			if (levelManager.elevatorAvailable[(int)nextSpawn.elevatorIndex] == 0)
+			if (stats.elevatorAvailable[(int)nextSpawn.elevatorIndex] == 0)
 			{
-				levelManager.elevatorAvailable[(int)nextSpawn.elevatorIndex] = 1;
-				levelManager.saveStationUses[(int)saveStationIndex.hub] = 1;
+				stats.elevatorAvailable[(int)nextSpawn.elevatorIndex] = 1;
+				gameManager.playerStats.saveStationUses[(int)saveStationIndex.hub] = 1;
 			}
 		}
 
 		inUse = true;
 		playerActor = user;
 
-		if (isExitElevator || levelManager.elevatorAvailable[index] > 0)
+		if (isExitElevator || stats.elevatorAvailable[index] > 0)
 		{
 			/* show the elevator menu now */
 			gameManager.loadPausedScene(user, SCENE.STATION_MENU);

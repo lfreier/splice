@@ -16,25 +16,11 @@ public class MutationHandler : MonoBehaviour
 	{
 		switch(type)
 		{
-			case mutationType.mBeast:
-				MBeast beast = GetComponentInChildren<MBeast>();
-				if (beast != null)
-				{
-					return beast;
-				}
-				break;
 			case mutationType.mLimb:
 				MLimb limb = GetComponentInChildren<MLimb>();
 				if (limb != null)
 				{
 					return limb;
-				}
-				break;
-			case mutationType.mWing:
-				MBladeWing wing = GetComponentInChildren<MBladeWing>();
-				if (wing != null)
-				{
-					return wing;
 				}
 				break;
 			case mutationType.mRaptor:

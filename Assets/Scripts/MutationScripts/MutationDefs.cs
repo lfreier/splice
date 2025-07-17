@@ -53,12 +53,10 @@ public static class MutationDefs
 
 public enum mutationType
 {
-	mBeast = 0,
-	mLimb = 1,
-	mWing = 2,
-	mRaptor = 3,
-	mSpider = 4,
-	mSpore = 5
+	mLimb = 0,
+	mRaptor = 1,
+	mSpider = 2,
+	mSpore = 3
 };
 
 public enum mutationTrigger

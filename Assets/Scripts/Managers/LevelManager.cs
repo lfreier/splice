@@ -16,8 +16,7 @@ public class LevelManager : MonoBehaviour
 		DOOR = 2,
 		WEAPON = 3,
 		BASIC = 4,
-		BOX = 5,
-		SAVE = 6
+		BOX = 5
 	}
 
 	[System.Serializable]
@@ -66,7 +65,6 @@ public class LevelManager : MonoBehaviour
 
 	public GameObject[] savedActors;
 
-	public static int NUM_SAVE_STATIONS = 5;
 	public enum saveStationIndex
 	{
 		hub = 0,
@@ -77,8 +75,7 @@ public class LevelManager : MonoBehaviour
 		rnd = 5,
 		iso = 6
 	}
-
-	public int[] saveStationUses = new int[NUM_SAVE_STATIONS];
+	public static int NUM_SAVE_STATIONS = (int)saveStationIndex.iso + 1;
 
 	public PlayerSpawnScriptable[] elevatorSpawns;
 	public enum elevatorIndex
@@ -97,7 +94,6 @@ public class LevelManager : MonoBehaviour
 		TOTAL = 11
 	}
 	public static int NUM_ELEVATORS = (int)elevatorIndex.TOTAL;
-	public int[] elevatorAvailable = new int[NUM_ELEVATORS];
 
 	public Dictionary<string, GUIDWatcher>	guidTable = new Dictionary<string, GUIDWatcher>();
 	public Dictionary<string, BasicSaveData> basicSpawnTable = new Dictionary<string, BasicSaveData>();
@@ -224,7 +220,7 @@ public class LevelManager : MonoBehaviour
 							if (!actorSave.basicData.isPresent)
 							{
 								BasicWeapon actorWeap = actor.GetComponentInChildren<BasicWeapon>();
-								if (actorWeap != null)
+								if (actorWeap != null && actorWeap.getType() != WeaponType.UNARMED && actorWeap.getType() != WeaponType.CLAW)
 								{
 									actorWeap.transform.parent.SetParent(null, true);
 									WeaponDefs.setWeaponTag(actorWeap.transform.parent.gameObject, WeaponDefs.OBJECT_WEAPON_TAG);
@@ -249,7 +245,7 @@ public class LevelManager : MonoBehaviour
 					else
 					{
 						BasicWeapon actorWeap = actor.GetComponentInChildren<BasicWeapon>();
-						if (actorWeap != null)
+						if (actorWeap != null && actorWeap.getType() != WeaponType.UNARMED && actorWeap.getType() != WeaponType.CLAW)
 						{
 							actorWeap.transform.parent.SetParent(null, true);
 							WeaponDefs.setWeaponTag(actorWeap.transform.parent.gameObject, WeaponDefs.OBJECT_WEAPON_TAG);
@@ -309,16 +305,6 @@ public class LevelManager : MonoBehaviour
 						else
 						{
 							Destroy(box.gameObject);
-						}
-					}
-					continue;
-				case idType.SAVE:
-					SaveStation save = item.Value.guid.GetComponentInChildren<SaveStation>();
-					if (save != null)
-					{
-						if (saveData.saveTable.TryGetValue(item.Key, out dataSave))
-						{
-							saveStationUses[dataSave.option] = dataSave.isPresent ? 1 : 0;
 						}
 					}
 					continue;
@@ -395,7 +381,6 @@ public class LevelManager : MonoBehaviour
 	{
 		currSaveData = new SaveData();
 		currSaveData.sceneIndex = sceneIndex;
-		elevatorAvailable.CopyTo(currSaveData.elevatorAvailable, 0);
 
 		//clear all component tables
 		//for each GUID
@@ -451,7 +436,7 @@ public class LevelManager : MonoBehaviour
 				continue;
 			}
 			BasicWeapon weapon = guid.GetComponentInChildren<BasicWeapon>();
-			if (weapon != null && weapon.getType() != WeaponType.UNARMED)
+			if (weapon != null && weapon.getType() != WeaponType.UNARMED && weapon.getType() != WeaponType.CLAW)
 			{
 				WeaponSaveData weapSave = new();
 				/* equip weapon to actors */
@@ -491,14 +476,6 @@ public class LevelManager : MonoBehaviour
 				}
 
 				currSaveData.weaponTable.Add(item.Key, weapSave);
-				continue;
-			}
-			SaveStation save = guid.GetComponentInChildren<SaveStation>();
-			if (save != null)
-			{
-				dataSave.isPresent = saveStationUses[(int)save.saveStationNumIndex] == 0 ? false : true;
-				dataSave.option = (int)save.saveStationNumIndex;
-				currSaveData.saveTable.Add(item.Key, dataSave);
 				continue;
 			}
 			TutorialSceneLoader tut = guid.GetComponent<TutorialSceneLoader>();

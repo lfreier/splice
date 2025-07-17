@@ -39,7 +39,7 @@ public abstract class BasicWeapon : MonoBehaviour, WeaponInterface
 
 	protected bool soundMade = false;
 
-	void Start()
+	void Awake()
 	{
 		gameManager = GameManager.Instance;
 		if (durability == 0)

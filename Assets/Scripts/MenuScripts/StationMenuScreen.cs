@@ -41,11 +41,12 @@ public class StationMenuScreen : StationScreen
 		}
 
 		LevelManager levelManager = gameManager.levelManager;
+		PlayerStats stats = gameManager.playerStats;
 
-		if (levelManager.saveStationUses[(int)station.saveStationNumIndex] > 0)
+		if (stats.saveStationUses[(int)station.saveStationNumIndex] > 0)
 		{
 			levelManager.lastSavedSpawn = station.playerSpawnIndex;
-			levelManager.saveStationUses[(int)station.saveStationNumIndex]--;
+			stats.saveStationUses[(int)station.saveStationNumIndex]--;
 			gameManager.save(station.playerActor, gameManager.currentScene);
 			levelManager.lastSavedAtStation = true;
 
@@ -72,6 +73,7 @@ public class StationMenuScreen : StationScreen
 		if (menuManager != null && menuManager.scanScreen != null)
 		{
 			menuManager.playClickSound();
+			StartCoroutine(menuManager.waitForClick(playKeyboardSound));
 			menuManager.changeScreen(menuManager.scanScreen);
 		}
 	}
@@ -100,8 +102,16 @@ public class StationMenuScreen : StationScreen
 		StartCoroutine(menuManager.waitForClick(menuManager.exitMenu));
 	}
 
+	public void playKeyboardSound()
+	{
+		if (menuManager != null && menuManager.station != null && menuManager.station.useSaveStationSound != null)
+		{
+			gameManager.playSound(menuManager.stationClickPlayer, menuManager.station.useSaveStationSound.name, 1);
+		}
+	}
+
 	private void setSaveText()
 	{
-		saveText.text = "SAVE (" + gameManager.levelManager.saveStationUses[(int)station.saveStationNumIndex] + ")";
+		saveText.text = "SAVE (" + gameManager.playerStats.saveStationUses[(int)station.saveStationNumIndex] + ")";
 	}
 }

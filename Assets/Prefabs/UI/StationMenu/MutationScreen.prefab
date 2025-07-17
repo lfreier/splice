@@ -433,10 +433,10 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 72
+  m_fontSize: 74
   m_fontSizeBase: 74
   m_fontWeight: 400
-  m_enableAutoSizing: 1
+  m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
@@ -569,10 +569,10 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 72
+  m_fontSize: 74
   m_fontSizeBase: 74
   m_fontWeight: 400
-  m_enableAutoSizing: 1
+  m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
@@ -670,3 +670,5 @@ MonoBehaviour:
   mutImage: {fileID: 1553025065125467075}
   nextButton: {fileID: 1045435596297417331}
   backButton: {fileID: 2906762257840679003}
+  nextText: {fileID: 7001536948592520598}
+  backText: {fileID: 2333880536760598010}
