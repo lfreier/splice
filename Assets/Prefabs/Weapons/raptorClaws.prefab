@@ -218,6 +218,7 @@ MonoBehaviour:
   pounceAttackActive: 0
   shredTrailSprite: {fileID: 4611533141067032057}
   shredTrailSprite2: {fileID: 5631293139427242416}
+  raptorParent: {fileID: 0}
   pounceShredSound: {fileID: 8300000, guid: 48bf95b0553960948b5997f9338e7c1e, type: 3}
   pounceShredSoundVolume: 1
 --- !u!82 &7233510963068596266

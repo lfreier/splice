@@ -6,8 +6,6 @@ public abstract class BasicWeapon : MonoBehaviour, WeaponInterface
 {
 	[SerializeField] public Animator anim;
 
-	public ActionInterface secondaryAction;
-
 	public Collider2D hitbox;
 	public BoxCollider2D throwBox;
 
@@ -46,11 +44,6 @@ public abstract class BasicWeapon : MonoBehaviour, WeaponInterface
 		{
 			durability = _weaponScriptable.durability;
 		}
-		secondaryAction = GetComponent<ActionInterface>();
-		if (secondaryAction == null)
-		{
-			secondaryAction = GetComponentInChildren<ActionInterface>();
-		}
 		if (_weaponPhysics != null)
 		{
 			_weaponPhysics.linkInterface(this);
@@ -74,14 +67,6 @@ public abstract class BasicWeapon : MonoBehaviour, WeaponInterface
 		}
 
 		return true;
-	}
-
-	public void attackSecondary()
-	{
-		if (secondaryAction != null)
-		{
-			secondaryAction.action();
-		}
 	}
 
 	public bool canBeDropped()
@@ -170,10 +155,6 @@ public abstract class BasicWeapon : MonoBehaviour, WeaponInterface
 		{
 			//set to damaged sprite
 			sprite.sprite = damagedSprite;
-			if (secondaryAction != null)
-			{
-				secondaryAction.setDamagedSprite();
-			}
 		}
 
 		if (durability <= 0)
@@ -203,10 +184,6 @@ public abstract class BasicWeapon : MonoBehaviour, WeaponInterface
 	public void setActorToHold(Actor actor)
 	{
 		actorWielder = actor;
-		if (secondaryAction != null || null != (secondaryAction = GetComponentInChildren<ActionInterface>()))
-		{
-			secondaryAction.setActorToHold(actor);
-		}
 		if (attackOnlyRight)
 		{
 			actorWielder.setAttackOnly(WeaponDefs.ANIM_BOOL_ONLY_RIGHT, false);
@@ -291,11 +268,6 @@ public abstract class BasicWeapon : MonoBehaviour, WeaponInterface
 		{
 			actorWielder.invincible = !actorWielder.invincible;
 		}
-	}
-
-	public bool toggleSecondaryCollider()
-	{
-		return secondaryAction.toggleHitbox();
 	}
 
 	public Actor weaponHit(Collider2D collision)

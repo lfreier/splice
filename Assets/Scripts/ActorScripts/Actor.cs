@@ -67,6 +67,8 @@ public class Actor : MonoBehaviour
 
 	public bool initialized = false;
 
+	public GameObject unarmedPrefab;
+
 	public GameObject enableOnDeath;
 
 	public void Start()
@@ -157,18 +159,6 @@ public class Actor : MonoBehaviour
 			if (speedCheck <= 0)
 			{
 				equippedWeaponInt.attack(gameManager.actorLayers);
-				speedCheck = equippedWeaponInt.getSpeed();
-			}
-		}
-	}
-
-	public void attackSecondary()
-	{
-		if (equippedWeaponInt == null || !equippedWeaponInt.isActive())
-		{
-			if (speedCheck <= 0)
-			{
-				equippedWeaponInt.attackSecondary();
 				speedCheck = equippedWeaponInt.getSpeed();
 			}
 		}
@@ -944,8 +934,12 @@ public class Actor : MonoBehaviour
 
 	public void equipEmpty()
 	{
-		GameObject fistPrefab = instantiateWeapon(gameManager.prefabManager.weapPFist);
+		if (unarmedPrefab == null)
+		{
+			unarmedPrefab = gameManager.prefabManager.weapPFist;
+		}
+		GameObject unarmedWeapon = instantiateWeapon(unarmedPrefab);
 
-		equip(fistPrefab.transform.gameObject);
+		equip(unarmedWeapon.transform.gameObject);
 	}
 }

@@ -5,8 +5,6 @@ public interface WeaponInterface
 {
 	public bool attack(LayerMask targetLayer);
 
-	public void attackSecondary();
-
 	public bool canBeDropped();
 
 	public void cancelAttack();

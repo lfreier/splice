@@ -281,7 +281,6 @@ public class MGrabber : MonoBehaviour
 
 		if (heldObstacle != null)
 		{
-			heldObstacle.beingHeld = false;
 			heldObstacleCollider.isTrigger = false;
 			heldObstacle.enablePhysics();
 			releaseForce = Mathf.Min(objectReleaseForce, heldObstacle._obstacleScriptable.maxObstacleForce);

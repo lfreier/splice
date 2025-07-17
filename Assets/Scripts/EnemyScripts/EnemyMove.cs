@@ -53,13 +53,11 @@ public class EnemyMove : MonoBehaviour
 	private float stateTimerReset;
 	private static float HOSTILE_TIMER_LENGTH = 4;
 	private static float LOST_TIMER_LENGTH = 2;
-	private static float PATH_TIMER_LENGTH = 0.3F;
 	private static float SUS_TIMER_LENGTH = 5;
 
 	private float delayTimer;
 	private static float DELAY_TIMER_LENGTH = 0.35F;
 
-	public Pathfinding pathfinder;
 	public bool usingPathfinding;
 
 	private bool showNotice = true;
@@ -73,18 +71,7 @@ public class EnemyMove : MonoBehaviour
 	void Start()
 	{
 		gameManager = GameManager.Instance;
-		pathfinder = new Pathfinding();
-		pathfinder.startPathfinding = false;
-		usingPathfinding = false;
 		LevelData levelData = gameManager.levelManager.currLevelData;
-		//pathfinder.grid = new PathGrid();
-		//pathfinder.grid.init(levelData.gridWorldSize, levelData.nodeRadius);
-
-		PathColliderHelper colliderHelper = GetComponentInChildren<PathColliderHelper>();
-		if (colliderHelper != null)
-		{
-			colliderHelper.pathfinder = this.pathfinder;
-		}
 
 		/*
 		for (int i = 0; i < idlePath.Length; i ++)
@@ -105,7 +92,6 @@ public class EnemyMove : MonoBehaviour
 
 		pathIndex = 0;
 		idlePauseTimer = 0;
-		pathfinder.pathingTimer = 0;
 		idleLookTarget = transform.position + transform.up * 0.5F;
 
 		moveTarget = lastMoveTarget = actorBody.transform.position;
@@ -308,52 +294,7 @@ public class EnemyMove : MonoBehaviour
 		 *
 		 */
 		Vector2 diff;
-		if (pathfinder != null && pathfinder.startPathfinding && pathfinder.pathingTimer <= 0)
-		{
-			Debug.Log("Finding path for: " + gameObject.name);
-			var tempTimer = System.Diagnostics.Stopwatch.StartNew();
-			pathfinder.findPath(actorBody.transform.position, moveTarget);
-			tempTimer.Stop();
-			Debug.Log("Pathfinding took " + tempTimer.ElapsedMilliseconds + " milliseconds");
-			usingPathfinding = true;
-			pathfinder.pathingTimer = PATH_TIMER_LENGTH;
-		}
-
-		if (usingPathfinding)
-		{
-			Vector3 newTarget;
-			/* if move target changes, then stop using pathfinding */
-			if (pathfinder.startPathfinding == false && (lastMoveTarget - moveTarget).magnitude > moveTargetError)
-			{
-				usingPathfinding = false;
-				diff = moveTarget - this.transform.position;
-				moveInput = Vector2.ClampMagnitude(diff, 1F);
-				return;
-			}
-			if (pathfinder.pathingTimer > 0)
-			{
-				pathfinder.pathingTimer -= Time.deltaTime;
-			}
-
-			newTarget = pathfinder.getNextMove(actorBody.transform.position, moveTargetError);
-			if (newTarget == null || (newTarget - actorBody.transform.position).magnitude <= moveTargetError)
-			{
-				diff = moveTarget - this.transform.position;
-				moveInput = Vector2.ClampMagnitude(diff, 1F);
-				return;
-			}
-
-			pathfinder.startPathfinding = false;
-			diff = newTarget - this.transform.position;
-			if (diff.magnitude > moveTargetError)
-			{
-				diff *= 1 / diff.magnitude;
-			}
-		}
-		else
-		{
-			diff = moveTarget - this.transform.position;
-		}
+		diff = moveTarget - this.transform.position;
 
 		moveInput = Vector2.ClampMagnitude(diff, 1F);
 		

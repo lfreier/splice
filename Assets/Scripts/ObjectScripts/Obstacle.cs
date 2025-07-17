@@ -20,15 +20,11 @@ public class Obstacle : MonoBehaviour
 
 	public float durability;
 
-	public bool beingHeld;
-
 	private float thresholdTimer;
 
 	public int startingLayer;
 
 	public float knockOverDrag = 3F;
-
-	public float destroyOnTimer = 0F;
 
 	public int basicPrefabIndex;
 
@@ -43,7 +39,6 @@ public class Obstacle : MonoBehaviour
 			obstacleType = obstacleBody.bodyType;
 		}
 		durability = _obstacleScriptable.durability;
-		beingHeld = false;
 		physicsEnabled = false;
 		gm = GameManager.Instance;
 	}
@@ -89,30 +84,6 @@ public class Obstacle : MonoBehaviour
 			}
 
 			Debug.Log("Velocities: " + obstacleBody.velocity.magnitude + " " + obstacleBody.angularVelocity);
-		}
-
-		if (destroyOnTimer != 0)
-		{
-			destroyOnTimer -= Time.deltaTime;
-			if (destroyOnTimer <= 0)
-			{
-				destroyOnTimer = 0;
-				Destroy(this.gameObject);
-			}
-		}
-	}
-
-	private void pushByDamage(WeaponInterface weapon)
-	{
-	}
-
-	public void reduceDurability(float amount)
-	{
-		durability -= amount;
-		if (durability <= 0)
-		{
-			beingHeld = false;
-			Destroy(this.gameObject);
 		}
 	}
 
@@ -216,33 +187,6 @@ public class Obstacle : MonoBehaviour
 					gm.playSound(obstacleAudioPlayer, gm.audioManager.obstacleHit.name, 1F);
 				}
 			}
-		}
-
-		if (destroyOnTimer != 0)
-		{
-			Destroy(this.gameObject);
-		}
-	}
-
-	private void OnTriggerEnter2D(Collider2D collision)
-	{
-		Actor actorHit = collision.gameObject.GetComponent<Actor>();
-		if (actorHit != null)
-		{
-			/* obstacle is being held by player */
-			if (beingHeld)
-			{
-				MBeast playerBeast = GetComponentInParent<MBeast>();
-				if (playerBeast != null)
-				{
-					playerBeast.triggerCollision(collision);
-				}
-			}
-		}
-
-		if (destroyOnTimer != 0)
-		{
-			Destroy(this.gameObject);
 		}
 	}
 }

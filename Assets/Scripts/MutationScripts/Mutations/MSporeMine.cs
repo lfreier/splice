@@ -71,9 +71,10 @@ public class MSporeMine : MonoBehaviour
 
 	public void destroyThis()
 	{
-		destroy = true;
+		mineSprite.enabled = false;
 		explosionCollider.enabled = false;
 		triggerCollider.enabled = false;
+		destroy = true;
 	}
 
 	public void trigger()

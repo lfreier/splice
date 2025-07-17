@@ -28,6 +28,8 @@ public class MRaptor : MonoBehaviour, MutationInterface
 
 	public ClawWeapon equippedClaw = null;
 
+	public AudioSource raptorAudioPlayer;
+
 	public Sprite abilityIcon1;
 	public Sprite abilityIcon2;
 
@@ -78,16 +80,21 @@ public class MRaptor : MonoBehaviour, MutationInterface
 			transformTimer -= Time.deltaTime;
 			if (transformTimer <= 0)
 			{
+				GameObject weap = actorWielder.getEquippedWeapon();
+				if (weap != null)
+				{
+					equippedClaw = weap.GetComponentInChildren<ClawWeapon>();
+				}
 				if (equippedClaw == null)
 				{
 					transformTimer = 0;
-					actorWielder.equipEmpty();
 					bufferTimer = MutationDefs.RAPTOR_XFORM_BUFF_TIMER;
 				}
 				else if (equippedClaw != null && !equippedClaw.pounceAttackActive)
 				{
 					transformTimer = 0;
 					Destroy(equippedClaw.gameObject);
+					actorWielder.unarmedPrefab = gameManager.prefabManager.weapPFist;
 					actorWielder.equipEmpty();
 					equippedClaw = null;
 					bufferTimer = MutationDefs.RAPTOR_XFORM_BUFF_TIMER;
@@ -240,10 +247,12 @@ public class MRaptor : MonoBehaviour, MutationInterface
 			GameObject clawObject = Instantiate(raptorClawPrefab);
 			if (clawObject != null)
 			{
+				actorWielder.unarmedPrefab = raptorClawPrefab;
 				clawObject.SetActive(true);
 				raptorClawPrefab.SetActive(true);
 				actorWielder.equip(clawObject);
 				equippedClaw = clawObject.GetComponentInChildren<ClawWeapon>();
+				equippedClaw.raptorParent = this;
 			}
 		}
 

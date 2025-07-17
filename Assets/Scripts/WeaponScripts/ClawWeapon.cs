@@ -18,6 +18,8 @@ public class ClawWeapon : BasicWeapon
 	public SpriteRenderer shredTrailSprite;
 	public SpriteRenderer shredTrailSprite2;
 
+	public MRaptor raptorParent;
+
 	public AudioClip pounceShredSound;
 	public float pounceShredSoundVolume = 0.5F;
 
@@ -155,7 +157,10 @@ public class ClawWeapon : BasicWeapon
 		pounceAttackActive = true;
 		anim.SetTrigger(MutationDefs.TRIGGER_POUNCE_ATTACK);
 
-		playSound(weaponAudioPlayer, pounceShredSound.name, pounceShredSoundVolume);
+		if (raptorParent != null)
+		{
+			playSound(raptorParent.raptorAudioPlayer, pounceShredSound.name, pounceShredSoundVolume);
+		}
 		sourceActor.actorBody.velocity = Vector2.zero;
 	}
 
