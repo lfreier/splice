@@ -4,12 +4,20 @@ using UnityEngine;
 
 public class Projectile : MonoBehaviour
 {
+	public enum projectileType
+	{
+		bullet = 0,
+		spider = 1
+	}
+
 	public Animator anim;
 
 	public Rigidbody2D body;
 	public BoxCollider2D projectileCollider;
 
+	public projectileType type = projectileType.bullet;
 	public float projectileLaunchForce = 1000F;
+	public float projectileDamage = 0;
 
 	public Actor actorHit = null;
 
@@ -63,14 +71,32 @@ public class Projectile : MonoBehaviour
 		if (actorHit != null)
 		{
 			actorHit.gameManager.playSound(actorHit.actorAudioSource, projectileHitSound.name, 1F);
-			EnemyMove enemyMove = actorHit.GetComponentInChildren<EnemyMove>();
-			if (enemyMove != null)
+			switch (type)
 			{
-				enemyMove.setStunResponse(originVector);
+				case projectileType.spider:
+					processStringHit();
+					break;
+				case projectileType.bullet:
+				default:
+					processBulletHit();
+					break;
 			}
-			EffectDefs.effectApply(actorHit, actorHit.gameManager.effectManager.stunParry);
-			//TODO: add visual
 		}
+	}
+
+	void processBulletHit()
+	{
+		actorHit.takeDamage(projectileDamage);
+	}
+
+	void processStringHit()
+	{
+		EnemyMove enemyMove = actorHit.GetComponentInChildren<EnemyMove>();
+		if (enemyMove != null)
+		{
+			enemyMove.setStunResponse(originVector);
+		}
+		EffectDefs.effectApply(actorHit, actorHit.gameManager.effectManager.stunParry);
 	}
 
 	public void triggerCollision(Collider2D collision)

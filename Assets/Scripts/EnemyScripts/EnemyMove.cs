@@ -44,6 +44,11 @@ public class EnemyMove : MonoBehaviour
 	private Vector3 attackTarget;
 	private Actor attackTargetActor;
 
+	public float turretRotationArc;
+	private float turretRotation1;
+	private float turretRotation2;
+	public float turretRotateTarget;
+
 	private Vector2 moveInput;
 	private Vector2 oldMoveInput;
 
@@ -53,18 +58,18 @@ public class EnemyMove : MonoBehaviour
 	private float stateTimerReset;
 	private static float HOSTILE_TIMER_LENGTH = 4;
 	private static float LOST_TIMER_LENGTH = 2;
+	private static float TURRET_PAUSE_LENGTH = 3;
 	private static float SUS_TIMER_LENGTH = 5;
 
 	private float delayTimer;
 	private static float DELAY_TIMER_LENGTH = 0.35F;
-
-	public bool usingPathfinding;
 
 	private bool showNotice = true;
 	private bool showSus = true;
 	public float forcedTimer = 0;
 
 	public bool summoned = false;
+	public bool isTurret = false;
 
 	public GameManager gameManager;
 
@@ -95,6 +100,13 @@ public class EnemyMove : MonoBehaviour
 		idleLookTarget = transform.position + transform.up * 0.5F;
 
 		moveTarget = lastMoveTarget = actorBody.transform.position;
+
+		if (isTurret)
+		{
+			turretRotation1 = actorBody.rotation + turretRotationArc / 2;
+			turretRotation2 = actorBody.rotation - turretRotationArc / 2;
+			turretRotateTarget = (int)Random.Range(0, 1) == 0 ?  turretRotation1 : turretRotation2;
+		}
 	}
 
 	void FixedUpdate()
@@ -192,7 +204,7 @@ public class EnemyMove : MonoBehaviour
 			if (idlePauseTimer <= 0)
 			{
 				moveTarget = idlePath[pathIndex];
-				actorBody.rotation = actor.aimAngle(moveTarget);
+				calcRotation(moveTarget);
 			}
 			else
 			{
@@ -223,7 +235,7 @@ public class EnemyMove : MonoBehaviour
 			if (attackTargetActor != null)
 			{
 				/* face target of fright */
-				actorBody.rotation = actor.aimAngle(attackTargetActor.transform.position);
+				calcRotation(attackTargetActor.transform.position);
 
 				/* move away from target */
 				if (_actorData.frightenedDistance > (attackTargetActor.transform.position - actor.transform.position).magnitude)
@@ -254,7 +266,16 @@ public class EnemyMove : MonoBehaviour
 		setStateMoveSpeed();
 
 		/*  determine move speed based on current state */
-		moveUpdate();
+
+		if (!isTurret)
+		{
+			moveUpdate();
+		}
+		/* turret logic */
+		else if (!actor.movementLocked)
+		{
+			updateTurretRotation();
+		}
 	}
 
 	void moveUpdate()
@@ -282,6 +303,83 @@ public class EnemyMove : MonoBehaviour
 		}
 	}
 
+	private void updateTurretRotation()
+	{
+		float rotateAmount = maxStateSpeed;
+		float actorRotation = actorBody.rotation < 0 ? actorBody.rotation + 360 : actorBody.rotation;
+
+		/* set next target if we need to */
+		if (_detection == detectMode.idle)
+		{
+			if (idlePauseTimer <= 0 && (Mathf.Abs(actorRotation - turretRotation1) < moveTargetError || Mathf.Abs(actorRotation - turretRotation2) < moveTargetError || _detection != _oldDetection))
+			{
+				idlePauseTimer = TURRET_PAUSE_LENGTH;
+			}
+
+			if (idlePauseTimer > 0)
+			{
+				idlePauseTimer -= Time.deltaTime;
+				if (idlePauseTimer <= 0)
+				{
+					idlePauseTimer = 0;
+					if (Mathf.Abs(actorRotation - turretRotation1) < moveTargetError)
+					{
+						turretRotateTarget = turretRotation2;
+					}
+					else if (Mathf.Abs(actorRotation - turretRotation2) < moveTargetError || _detection != _oldDetection)
+					{
+						turretRotateTarget = turretRotation1;
+					}
+				}
+			}
+		}
+		else if (_detection == detectMode.lost)
+		{
+			if (Mathf.Abs(actorRotation - turretRotation1) > Mathf.Abs(actorRotation - turretRotation2))
+			{
+				turretRotateTarget = turretRotation1;
+			}
+			else
+			{
+				turretRotateTarget = turretRotation2;
+			}
+			_detection = detectMode.idle;
+		}
+		else if (_detection == detectMode.suspicious || _detection == detectMode.seeking || _detection == detectMode.hostile)
+		{
+			turretRotateTarget = actor.aimAngle(attackTarget);
+			if (turretRotateTarget < 0)
+			{
+				turretRotateTarget += 360;
+			}
+		}
+
+		/* find direction of rotation */
+		int direction = 1;
+		float absDiff = Mathf.Abs(actorRotation - turretRotateTarget);
+
+		if (actorRotation < turretRotateTarget)
+		{
+			direction = absDiff < 180 ? 1 : -1;
+		}
+		else
+		{
+			direction = absDiff < 180 ? -1 : 1;
+		}
+
+		if (Mathf.Abs(actorRotation - turretRotateTarget) < moveTargetError)
+		{
+			rotateAmount = 0;
+		}
+
+		actorBody.rotation += (rotateAmount * direction);
+
+		if (actorBody.rotation > 360)
+		{
+			actorBody.rotation -= 360;
+		}
+	}
+
 	private void calcMoveInput()
 	{
 		if (moveTarget == null)
@@ -302,6 +400,14 @@ public class EnemyMove : MonoBehaviour
 		if (_detection == detectMode.idle && idlePauseTimer == 0)
 		{
 			moveInput = diff.normalized;
+		}
+	}
+
+	private void calcRotation(Vector2 aimTarget)
+	{
+		if (!isTurret)
+		{
+			actorBody.rotation = actor.aimAngle(aimTarget);
 		}
 	}
 
@@ -363,7 +469,7 @@ public class EnemyMove : MonoBehaviour
 		{
 			case detectMode.idle:
 				idleLookTarget = transform.position + transform.up * 0.5F;
-				actorBody.rotation = actor.aimAngle(idleLookTarget);
+				calcRotation(idleLookTarget);
 				break;
 			case detectMode.hostile:
 				showSus = false;
@@ -375,7 +481,7 @@ public class EnemyMove : MonoBehaviour
 				showNotice = true;
 				_actorData.sightAngle = actor._actorScriptable.sightAngle * 1.5F;
 				stateTimer = HOSTILE_TIMER_LENGTH;
-				actorBody.rotation = actor.aimAngle(attackTarget);
+				calcRotation(attackTarget);
 				break;
 			case detectMode.lost:
 				showSus = true;
@@ -434,7 +540,7 @@ public class EnemyMove : MonoBehaviour
 				{
 					stateTimer -= Time.deltaTime;
 				}
-				actorBody.rotation = actor.aimAngle(moveTarget);
+				calcRotation(moveTarget);
 				break;
 			case detectMode.seeking:
 				/* Keep moving in the direction of the last known location if it's reached */
@@ -452,7 +558,7 @@ public class EnemyMove : MonoBehaviour
 				{
 					stateTimer -= Time.deltaTime;
 				}
-				actorBody.rotation = actor.aimAngle(attackTarget);
+				calcRotation(attackTarget);
 				break;
 			case detectMode.lost:
 			case detectMode.wandering:
@@ -462,7 +568,7 @@ public class EnemyMove : MonoBehaviour
 					float radAngle = Random.Range(0F, 2F * Mathf.PI);
 					float temp = Random.Range(wanderScale / 2, wanderScale);
 					moveTarget = transform.position + new Vector3(temp * Mathf.Sin(radAngle), temp * Mathf.Cos(radAngle), 0);
-					actorBody.rotation = actor.aimAngle(moveTarget);
+					calcRotation(moveTarget);
 					if (_detection == detectMode.wandering)
 					{
 						stateTimer = SUS_TIMER_LENGTH + Random.Range(0, SUS_TIMER_LENGTH);
@@ -510,7 +616,7 @@ public class EnemyMove : MonoBehaviour
 				{
 					_detection = detectMode.getWeapon;
 					moveTarget = weaponColl.transform.position;
-					actorBody.rotation = actor.aimAngle(moveTarget);
+					calcRotation(moveTarget);
 				}
 				else
 				{
@@ -524,7 +630,7 @@ public class EnemyMove : MonoBehaviour
 					{
 						_detection = detectMode.hostile;
 						/* face attack target */
-						actorBody.rotation = actor.aimAngle(attackTarget);
+						calcRotation(attackTarget);
 					}
 				}
 
@@ -550,7 +656,7 @@ public class EnemyMove : MonoBehaviour
 	private void handleSuspiciousState()
 	{
 		moveTarget = actor.transform.position;
-		actorBody.rotation = actor.aimAngle(attackTarget);
+		calcRotation(attackTarget);
 		if (stateTimer <= 0)
 		{
 			_detection = _startingDetection;
