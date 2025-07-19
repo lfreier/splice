@@ -73,7 +73,8 @@ public class LevelManager : MonoBehaviour
 		warehouse = 3,
 		arch = 4,
 		rnd = 5,
-		iso = 6
+		iso = 6,
+		final = 7
 	}
 	public static int NUM_SAVE_STATIONS = (int)saveStationIndex.iso + 1;
 
@@ -91,7 +92,8 @@ public class LevelManager : MonoBehaviour
 		isoExit = 8,
 		office = 9,
 		officeExit = 10,
-		TOTAL = 11
+		final = 11,
+		TOTAL = 12
 	}
 	public static int NUM_ELEVATORS = (int)elevatorIndex.TOTAL;
 
@@ -122,7 +124,8 @@ public class LevelManager : MonoBehaviour
 		levelRndExitSpawn = 15,
 		levelIsoSpawn = 16,
 		levelIsoSaveSpawn = 17,
-		levelIsoExitSpawn = 18
+		levelIsoExitSpawn = 18,
+		levelFinale = 19
 	}
 
 	public CameraHandler camHandler;

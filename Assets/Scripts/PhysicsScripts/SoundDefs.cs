@@ -31,14 +31,6 @@ public static class SoundDefs
 		}
 
 		GameManager gm = GameManager.Instance;
-		if (!isLevelScene((SCENE)SCENE_BUILD_MASK[SceneManager.GetActiveScene().buildIndex]))
-		{
-			if (gm != null)
-			{
-				SceneManager.SetActiveScene(SceneManager.GetSceneByBuildIndex(SCENE_INDEX_MASK[gm.currentScene]));
-			}
-		}
-
 		if (gm != null && gm.audioManager.soundPrefab != null)
 		{
 			GameObject soundObj = GameObject.Instantiate(gm.audioManager.soundPrefab, worldPosition, Quaternion.identity);

@@ -39,7 +39,7 @@ public abstract class BasicWeapon : MonoBehaviour, WeaponInterface
 
 	void Awake()
 	{
-		gameManager = GameManager.Instance;
+		/* this needs to be done during Awake because of weird behavior with SwingBatteryWeapons and setting durability after loading */
 		if (durability == 0)
 		{
 			durability = _weaponScriptable.durability;
@@ -52,6 +52,11 @@ public abstract class BasicWeapon : MonoBehaviour, WeaponInterface
 		init();
 
 		isInit = true;
+	}
+
+	void Start()
+	{
+		gameManager = GameManager.Instance;
 	}
 
 	virtual public bool attack(LayerMask targetLayer)

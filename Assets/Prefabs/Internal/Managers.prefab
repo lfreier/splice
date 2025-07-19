@@ -233,6 +233,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 230fb6dea7208a54098d63ef6dbb65ee, type: 2}
   - {fileID: 11400000, guid: 0e62a91c33d32fb4e9f9be3e35b38a0e, type: 2}
   - {fileID: 11400000, guid: f1c7a0d03e8e6694496f2ceb2f987a96, type: 2}
+  - {fileID: 11400000, guid: 4abfe91cd85789443b6033637a0ffcf4, type: 2}
   lastSavedAtStation: 0
   savedActors: []
   elevatorSpawns:
@@ -247,6 +248,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: f1c7a0d03e8e6694496f2ceb2f987a96, type: 2}
   - {fileID: 11400000, guid: cffedb1562eb6c548ac70982e90766f9, type: 2}
   - {fileID: 11400000, guid: 33517daee327eb141a36085c4322391c, type: 2}
+  - {fileID: 11400000, guid: 4abfe91cd85789443b6033637a0ffcf4, type: 2}
   currSaveData:
     sceneIndex: 0
     actorTable:
@@ -300,7 +302,7 @@ MonoBehaviour:
     limbGrabbedObjectPrefab: -1
     weaponCharge: 0
     weaponDurability: 0
-    elevatorAvailable: 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+    elevatorAvailable: 000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
     saveStationUses: 00000000000000000000000000000000000000000000000000000000
   camHandler: {fileID: 0}
 --- !u!114 &3122103705114267649
