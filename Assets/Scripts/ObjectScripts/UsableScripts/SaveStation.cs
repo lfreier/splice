@@ -17,6 +17,8 @@ public class SaveStation : MonoBehaviour, UsableInterface
 
 	public bool inUse = false;
 
+	public bool isHubStation = false;
+
 	public bool use(Actor user)
 	{
 		inUse = true;

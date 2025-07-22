@@ -278,6 +278,10 @@ MonoBehaviour:
   anim: {fileID: 8719924694797642599}
   body: {fileID: 5930709041451789845}
   projectileCollider: {fileID: 4107383898284657523}
+  type: 1
   projectileLaunchForce: 1000
+  projectileDamage: 0
   actorHit: {fileID: 0}
+  attachedWeaponScriptable: {fileID: 0}
   projectileHitSound: {fileID: 8300000, guid: 1451635b4da578c488aa872777bed1e9, type: 3}
+  wallHitSound: {fileID: 0}

@@ -6,6 +6,7 @@ using static PickupDefs;
 [System.Serializable]
 public class PlayerSaveData
 {
+	public string version = "v0.3";
 	public int lastSavedLevel = 0;
 	public int lastSavedSpawn = 0;
 

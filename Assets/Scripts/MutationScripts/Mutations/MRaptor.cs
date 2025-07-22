@@ -61,10 +61,6 @@ public class MRaptor : MonoBehaviour, MutationInterface
 				gameManager.playerAbilityEvent -= abilityInputPressed;
 				gameManager.playerAbilitySecondaryEvent -= abilityInputSecondaryPressed;
 				gameManager.updateCellCount -= updateCells;
-			}
-
-			if (actorWielder.tag == playerTag)
-			{
 				gameManager.signalMovementUnlocked();
 				gameManager.signalRotationUnlocked();
 			}
@@ -283,18 +279,15 @@ public class MRaptor : MonoBehaviour, MutationInterface
 		{
 			pounceTarget = Vector2.ClampMagnitude(playerIn.pointerPos() - (Vector2)actorWielder.transform.position, 1);
 		}
-		else if (isEnemyAi)
-		{
-			pounceTarget = Vector2.ClampMagnitude(actorWielder.getAttackTarget().transform.position - actorWielder.transform.position, 1);
-		}
 
-		if (actorWielder.tag == playerTag)
+		if (!isEnemyAi)
 		{
 			gameManager.signalMovementLocked();
 			gameManager.signalRotationLocked();
 		}
 		else
 		{
+			pounceTarget = Vector2.ClampMagnitude(actorWielder.getAttackTarget().transform.position - actorWielder.transform.position, 1);
 			actorWielder.setMovementLocked(true);
 			actorWielder.setRotationLocked(true);
 		}
@@ -345,7 +338,7 @@ public class MRaptor : MonoBehaviour, MutationInterface
 
 		if (!targetHit)
 		{
-			if (actorWielder.tag == playerTag)
+			if (!isEnemyAi)
 			{
 				gameManager.signalMovementUnlocked();
 				gameManager.signalRotationUnlocked();

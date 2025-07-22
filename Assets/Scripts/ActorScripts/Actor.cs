@@ -827,7 +827,8 @@ public class Actor : MonoBehaviour
 				if (enemyMove != null)
 				{
 					enemyMove.setStunResponse(sourceActor);
-					if (damageTaken >= 1F && (enemyMove._detection == detectMode.idle || enemyMove._detection == detectMode.suspicious || enemyMove._detection == detectMode.wandering) && !isStunned() && !enemyMove.summoned)
+					if (damageTaken >= 1F && (enemyMove._detection == detectMode.idle || enemyMove._detection == detectMode.suspicious || enemyMove._detection == detectMode.wandering)
+						&& !isStunned() && !enemyMove.summoned && !enemyMove.isTurret)
 					{
 						EffectDefs.effectApply(this, gameManager.effectManager.stun1);
 					}

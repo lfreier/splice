@@ -476,6 +476,7 @@ MonoBehaviour:
   useSaveStationSound: {fileID: 8300000, guid: cadd4112eeda53d429782e0223e9f988, type: 3}
   playerActor: {fileID: 0}
   inUse: 0
+  isHubStation: 0
 --- !u!114 &9011468002946859427
 MonoBehaviour:
   m_ObjectHideFlags: 0

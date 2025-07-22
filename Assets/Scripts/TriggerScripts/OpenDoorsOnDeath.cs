@@ -23,7 +23,7 @@ public class OpenDoorsOnDeath : MonoBehaviour
 				{
 					door.doorUnlock();
 				}
-				else if (door.locked)
+				else if (!door.isOpen())
 				{
 					door.doorToggle(true);
 				}

@@ -32,26 +32,34 @@ public class SaveSlotsMenu : MonoBehaviour
 			{
 				PrefabManager preMan = GameManager.Instance.prefabManager;
 				MutationInterface mutInf;
-				switch (playerSave.mutationPrefabList[0])
+
+				if (playerSave.mutationPrefabList != null && playerSave.mutationPrefabList.Length > 0)
 				{
-					case (int)mutationType.mSpore:
-						mutInf = preMan.mutPSpore.GetComponentInChildren<MutationInterface>();
-						break;
-					case (int)mutationType.mSpider:
-						mutInf = preMan.mutPSpider.GetComponentInChildren<MutationInterface>();
-						break;
-					case (int)mutationType.mRaptor:
-						mutInf = preMan.mutPRaptor.GetComponentInChildren<MutationInterface>();
-						break;
-					case (int)mutationType.mLimb:
-					default:
-						mutInf = preMan.mutPLimb.GetComponentInChildren<MutationInterface>();
-						break;
+					switch (playerSave.mutationPrefabList[0])
+					{
+						case (int)mutationType.mSpore:
+							mutInf = preMan.mutPSpore.GetComponentInChildren<MutationInterface>();
+							break;
+						case (int)mutationType.mSpider:
+							mutInf = preMan.mutPSpider.GetComponentInChildren<MutationInterface>();
+							break;
+						case (int)mutationType.mRaptor:
+							mutInf = preMan.mutPRaptor.GetComponentInChildren<MutationInterface>();
+							break;
+						case (int)mutationType.mLimb:
+						default:
+							mutInf = preMan.mutPLimb.GetComponentInChildren<MutationInterface>();
+							break;
+					}
+
+					string mutName = mutInf.getDisplayName();
+
+					slotsText[i].text = "SLOT " + 0 + (i + 1) + " - " + mutName;
 				}
-
-				string mutName = mutInf.getDisplayName();
-
-				slotsText[i].text = "SLOT " + 0 + (i + 1) + " - " + mutName;
+				else
+				{
+					slotsText[i].text = "SLOT " + 0 + (i + 1);
+				}
 				slotValid[i] = true;
 			}
 		}

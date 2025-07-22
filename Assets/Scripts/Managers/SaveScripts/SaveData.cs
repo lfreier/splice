@@ -9,6 +9,7 @@ using static PickupDefs;
 [System.Serializable]
 public class SaveData
 {
+	public string version = "v0.3";
 	public int sceneIndex;
 
 	public SerializeDictionary<string, ActorSaveData> actorTable;

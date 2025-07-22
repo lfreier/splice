@@ -242,6 +242,11 @@ public class LevelManager : MonoBehaviour
 							{
 								ai.pathIndex = actorSave.idlePathIndex;
 								ai._detection = (detectMode)actorSave.detectionState;
+								/* weird loading case to reset */
+								if (ai.isTurret)
+								{
+									ai.turretRotateTarget = ai.turretRotation1;
+								}
 							}
 						}
 					}

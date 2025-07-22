@@ -75,7 +75,7 @@ public class MSpider : MonoBehaviour, MutationInterface
 
 	private void abilityInputPressed()
 	{
-		if (mutationScriptable.mutCost <= gameManager.playerStats.getMutationBar())
+		if (mutationScriptable.mutCost <= gameManager.playerStats.getMutationBar() && !animationActive)
 		{
 			anim.SetTrigger(MutationDefs.TRIGGER_SPIDER_STING);
 			gameManager.playerStats.changeMutationBar(-mutationScriptable.mutCost);

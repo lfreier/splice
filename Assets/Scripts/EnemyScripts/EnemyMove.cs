@@ -45,8 +45,8 @@ public class EnemyMove : MonoBehaviour
 	public Actor attackTargetActor;
 
 	public float turretRotationArc;
-	private float turretRotation1;
-	private float turretRotation2;
+	public float turretRotation1;
+	public float turretRotation2;
 	public float turretRotateTarget;
 
 	private Vector2 moveInput;
@@ -351,26 +351,31 @@ public class EnemyMove : MonoBehaviour
 				if (idlePauseTimer <= 0)
 				{
 					idlePauseTimer = 0;
-					if (Mathf.Abs(actorRotation - turretRotation1) < moveTargetError)
-					{
-						turretRotateTarget = turretRotation2;
-					}
-					else if (Mathf.Abs(actorRotation - turretRotation2) < moveTargetError || _detection != _oldDetection)
+					if (Mathf.Abs(actorRotation - turretRotation1) > Mathf.Abs(actorRotation - turretRotation2))
 					{
 						turretRotateTarget = turretRotation1;
 					}
+					else
+					{
+						turretRotateTarget = turretRotation2;
+					}
 				}
+			}
+
+			if (actor.displayedEffect != null)
+			{
+				Destroy(actor.displayedEffect.gameObject);
 			}
 		}
 		else if (_detection == detectMode.lost)
 		{
 			if (Mathf.Abs(actorRotation - turretRotation1) > Mathf.Abs(actorRotation - turretRotation2))
 			{
-				turretRotateTarget = turretRotation1;
+				turretRotateTarget = turretRotation2;
 			}
 			else
 			{
-				turretRotateTarget = turretRotation2;
+				turretRotateTarget = turretRotation1;
 			}
 			
 			_detection = detectMode.idle;

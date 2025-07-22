@@ -45,6 +45,10 @@ public class StationMenuScreen : StationScreen
 
 		if (stats.saveStationUses[(int)station.saveStationNumIndex] > 0)
 		{
+			if (station.isHubStation)
+			{
+				station.playerActor.takeHeal(station.playerActor.actorData.maxHealth);
+			}
 			levelManager.lastSavedSpawn = station.playerSpawnIndex;
 			stats.saveStationUses[(int)station.saveStationNumIndex]--;
 			gameManager.save(station.playerActor, gameManager.currentScene);
@@ -112,6 +116,13 @@ public class StationMenuScreen : StationScreen
 
 	private void setSaveText()
 	{
-		saveText.text = "SAVE (" + gameManager.playerStats.saveStationUses[(int)station.saveStationNumIndex] + ")";
+		if (station.isHubStation)
+		{
+			saveText.text = "SAVE & HEAL (" + gameManager.playerStats.saveStationUses[(int)station.saveStationNumIndex] + ")";
+		}
+		else
+		{
+			saveText.text = "SAVE (" + gameManager.playerStats.saveStationUses[(int)station.saveStationNumIndex] + ")";
+		}
 	}
 }
