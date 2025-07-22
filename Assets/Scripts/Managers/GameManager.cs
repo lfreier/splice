@@ -464,6 +464,30 @@ public class GameManager : MonoBehaviour
 				text.fontSize = 111.35F;
 			}
 		}
+		/* save slots menu font */
+		else if (type == 2)
+		{
+			// 1366 x 768
+			if (Screen.width < 1920)
+			{
+				text.fontSize = 38F;
+			}
+			// 1920 x 1080
+			else if (Screen.width < 2560)
+			{
+				text.fontSize = 48F;
+			}
+			// 2560 x  x 1440
+			else if (Screen.width < 3840)
+			{
+				text.fontSize = 58F;
+			}
+			// 3840 x 2160
+			else
+			{
+				text.fontSize = 96F;
+			}
+		}
 	}
 
 	public void signalCloseMenusEvent()

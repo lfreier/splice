@@ -10,7 +10,7 @@ public class SaveSlotsMenu : MonoBehaviour
 
 	private bool[] slotValid;
 
-	private void Start()
+	private void OnEnable()
 	{
 		initMenu();
 	}
@@ -21,14 +21,37 @@ public class SaveSlotsMenu : MonoBehaviour
 		slotValid = new bool[SaveManager.TOTAL_SAVES];
 		for (i = 0; i < SaveManager.TOTAL_SAVES; i ++)
 		{
-			if (null == SaveManager.loadPlayerDataFromDisk(i))
+			PlayerSaveData playerSave = SaveManager.loadPlayerDataFromDisk(i);
+			GameManager.updateCellFontSize(slotsText[i], 2);
+			if (null == playerSave)
 			{
 				slotsText[i].text = "N/A";
 				slotValid[i] = false;
 			}
 			else
 			{
-				slotsText[i].text = "SLOT " + 0 + (i + 1);
+				PrefabManager preMan = GameManager.Instance.prefabManager;
+				MutationInterface mutInf;
+				switch (playerSave.mutationPrefabList[0])
+				{
+					case (int)mutationType.mSpore:
+						mutInf = preMan.mutPSpore.GetComponentInChildren<MutationInterface>();
+						break;
+					case (int)mutationType.mSpider:
+						mutInf = preMan.mutPSpider.GetComponentInChildren<MutationInterface>();
+						break;
+					case (int)mutationType.mRaptor:
+						mutInf = preMan.mutPRaptor.GetComponentInChildren<MutationInterface>();
+						break;
+					case (int)mutationType.mLimb:
+					default:
+						mutInf = preMan.mutPLimb.GetComponentInChildren<MutationInterface>();
+						break;
+				}
+
+				string mutName = mutInf.getDisplayName();
+
+				slotsText[i].text = "SLOT " + 0 + (i + 1) + " - " + mutName;
 				slotValid[i] = true;
 			}
 		}
