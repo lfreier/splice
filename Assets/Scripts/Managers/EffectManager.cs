@@ -25,6 +25,10 @@ public class EffectManager : MonoBehaviour
 	public EffectScriptable seeking1;
 	public EffectScriptable notice1;
 
+	public EffectScriptable turretSus;
+	public EffectScriptable turretSeeking;
+	public EffectScriptable turretNotice;
+
 	public static EffectManager Instance
 	{
 		get

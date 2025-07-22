@@ -279,7 +279,9 @@ MonoBehaviour:
   body: {fileID: 5930709041451789845}
   projectileCollider: {fileID: 4107383898284657523}
   type: 0
-  projectileLaunchForce: 1500
-  projectileDamage: 0
+  projectileLaunchForce: 1800
+  projectileDamage: 1
   actorHit: {fileID: 0}
+  attachedWeaponScriptable: {fileID: 11400000, guid: 8b71442529e1aec478f45cba20b10cfb, type: 2}
   projectileHitSound: {fileID: 8300000, guid: 1451635b4da578c488aa872777bed1e9, type: 3}
+  wallHitSound: {fileID: 11400000, guid: 14171c28ed3adca408d74c2da5276215, type: 2}

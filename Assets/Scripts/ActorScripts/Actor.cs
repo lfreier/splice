@@ -31,6 +31,7 @@ public class Actor : MonoBehaviour
 	private Actor attackTarget;
 	private Vector3 moveTarget;
 	public bool movementLocked = false;
+	public bool rotationLocked = false;
 	public Vector3 currMoveVector;
 
 	public LayerMask pickupLayer;
@@ -58,7 +59,7 @@ public class Actor : MonoBehaviour
 
 	private SpriteRenderer sprite;
 
-	private float speedCheck;
+	public float speedCheck;
 
 	private string setSide = null;
 	private string oneSidePermanent = null;
@@ -348,7 +349,7 @@ public class Actor : MonoBehaviour
 				drop();
 			}
 			
-			if (equippedWeaponInt.getType() == WeaponType.UNARMED)
+			if (equippedWeaponInt.getType() == WeaponType.UNARMED || equippedWeaponInt.getType() == WeaponType.CLAW)
 			{
 				/* only destroy copies of the basic fist weapon, not muations */
 				if (equippedWeapon.GetComponentInChildren<MutationInterface>() == null)
@@ -715,6 +716,11 @@ public class Actor : MonoBehaviour
 	public void setMovementLocked(bool locked)
 	{
 		movementLocked = locked;
+	}
+
+	public void setRotationLocked(bool locked)
+	{
+		rotationLocked = locked;
 	}
 
 	/* Changes the actor's max speed to the given value.

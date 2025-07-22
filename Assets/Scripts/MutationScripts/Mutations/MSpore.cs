@@ -89,7 +89,7 @@ public class MSpore : MonoBehaviour, MutationInterface
 		foreach (RaycastHit2D rayHit in corpses)
 		{
 			Corpse checkCorpse = rayHit.collider.gameObject.GetComponent<Corpse>();
-			if (checkCorpse != null && mutationScriptable.mutCost <= actorWielder.gameManager.playerStats.getMutationBar())
+			if (checkCorpse != null && checkCorpse.type == ActorDefs.corpseType.TURRET && mutationScriptable.mutCost <= actorWielder.gameManager.playerStats.getMutationBar())
 			{
 				actorWielder.gameManager.playerStats.changeMutationBar(-mutationScriptable.mutCost);
 				raiseZombie(checkCorpse);

@@ -144,6 +144,11 @@ public abstract class BasicWeapon : MonoBehaviour, WeaponInterface
 			throwActive = _weaponPhysics.isBeingThrown();
 		}
 
+		if (anim == null)
+		{
+			return false;
+		}
+
 		return !anim.GetCurrentAnimatorStateInfo(0).IsTag("Idle") || throwActive || swingActive;
 	}
 

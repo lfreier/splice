@@ -26,10 +26,15 @@ public class ClawWeapon : BasicWeapon
 	private void OnDestroy()
 	{
 		GameManager gm = GameManager.Instance;
-		if (gm != null)
+		if (gm != null && actorWielder != null && actorWielder.tag == ActorDefs.playerTag)
 		{
 			gm.signalMovementUnlocked();
 			gm.signalRotationUnlocked();
+		}
+		else if (gm != null && actorWielder != null)
+		{
+			actorWielder.setMovementLocked(false);
+			actorWielder.setRotationLocked(false);
 		}
 	}
 
@@ -58,7 +63,7 @@ public class ClawWeapon : BasicWeapon
 
 	override public bool attack(LayerMask targetLayer)
 	{
-		if (pounceAttackActive == true)
+		if (pounceAttackActive == true || anim == null)
 		{
 			return false;
 		}
@@ -123,10 +128,22 @@ public class ClawWeapon : BasicWeapon
 
 	public void stopPounceAttack()
 	{
-		actorWielder.gameManager.signalMovementUnlocked();
-		actorWielder.gameManager.signalRotationUnlocked();
+		if (actorWielder.tag == ActorDefs.playerTag)
+		{
+			actorWielder.gameManager.signalMovementUnlocked();
+			actorWielder.gameManager.signalRotationUnlocked();
+		}
+		else
+		{
+			actorWielder.setMovementLocked(false);
+			actorWielder.setRotationLocked(false);
+		}
 		pounceAttackActive = false;
 
+		if (trailSprite != null)
+		{
+			trailSprite.enabled = false;
+		}
 
 		if (shredTrailSprite != null)
 		{

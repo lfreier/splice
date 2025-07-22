@@ -33,21 +33,46 @@ public class MRaptor : MonoBehaviour, MutationInterface
 	public Sprite abilityIcon1;
 	public Sprite abilityIcon2;
 
+	public float aiPounceCooldown = 3F;
+	private float aiPounceTimer;
+	public float enemyAiPounceRange = 3F;
+	public bool isEnemyAi = false;
+
 	private static int POUNCE_COST_INDEX = 0;
 	private static int MUT_XFORM_TIMER_INDEX = 1;
 
 	private GameManager gameManager;
+
+	void Start()
+	{
+		if (isEnemyAi)
+		{
+			gameManager = GameManager.Instance;
+		}
+	}
 
 	private void OnDestroy()
 	{
 		gameManager = GameManager.Instance;
 		if (gameManager != null)
 		{
-			gameManager.playerAbilityEvent -= abilityInputPressed;
-			gameManager.playerAbilitySecondaryEvent -= abilityInputSecondaryPressed;
-			gameManager.updateCellCount -= updateCells;
-			gameManager.signalMovementUnlocked();
-			gameManager.signalRotationUnlocked();
+			if (!isEnemyAi)
+			{
+				gameManager.playerAbilityEvent -= abilityInputPressed;
+				gameManager.playerAbilitySecondaryEvent -= abilityInputSecondaryPressed;
+				gameManager.updateCellCount -= updateCells;
+			}
+
+			if (actorWielder.tag == playerTag)
+			{
+				gameManager.signalMovementUnlocked();
+				gameManager.signalRotationUnlocked();
+			}
+			else
+			{
+				actorWielder.setMovementLocked(false);
+				actorWielder.setRotationLocked(false);
+			}
 		}
 	}
 
@@ -75,7 +100,16 @@ public class MRaptor : MonoBehaviour, MutationInterface
 			}
 		}
 
-		if (transformTimer != 0)
+		if (aiPounceTimer != 0)
+		{
+			aiPounceTimer -= Time.deltaTime;
+			if (aiPounceTimer <= 0)
+			{
+				aiPounceTimer = 0;
+			}
+		}
+
+		if (transformTimer != 0 && !isEnemyAi)
 		{
 			transformTimer -= Time.deltaTime;
 			if (transformTimer <= 0)
@@ -93,11 +127,28 @@ public class MRaptor : MonoBehaviour, MutationInterface
 				else if (equippedClaw != null && !equippedClaw.pounceAttackActive)
 				{
 					transformTimer = 0;
-					Destroy(equippedClaw.gameObject);
+					Destroy(equippedClaw.transform.parent.gameObject);
 					actorWielder.unarmedPrefab = gameManager.prefabManager.weapPFist;
 					actorWielder.equipEmpty();
 					equippedClaw = null;
 					bufferTimer = MutationDefs.RAPTOR_XFORM_BUFF_TIMER;
+				}
+			}
+		}
+
+		if (isEnemyAi)
+		{
+			Actor target = actorWielder.getAttackTarget();
+			if (target != null && (target.transform.position - actorWielder.transform.position).magnitude < enemyAiPounceRange)
+			{
+				abilityInputSecondaryPressed();
+				if (equippedClaw == null && actorWielder != null)
+				{
+					equippedClaw = actorWielder.GetComponentInChildren<ClawWeapon>();
+					if (equippedClaw != null)
+					{
+						equippedClaw.raptorParent = this;
+					}
 				}
 			}
 		}
@@ -107,17 +158,18 @@ public class MRaptor : MonoBehaviour, MutationInterface
 	{
 		gameManager.playerStats.playerHUD.setMutAbilityFill(mutationScriptable.mutCost, mutationScriptable.values[POUNCE_COST_INDEX]);
 	}
+
 	private void abilityInputPressed()
 	{
 		if (bufferTimer <= 0 && !pounceActive)
 		{
 			float currMutEnergy = actorWielder.gameManager.playerStats.getMutationBar();
 			/* pouncing while transformed is free */
-			if (transformTimer <= 0 && currMutEnergy >= mutationScriptable.mutCost)
+			if (transformTimer <= 0 && currMutEnergy >= mutationScriptable.mutCost && !isEnemyAi)
 			{
 				actorWielder.gameManager.playerStats.changeMutationBar(-mutationScriptable.mutCost);
 			}
-			else if (transformTimer <= 0)
+			else if ((transformTimer <= 0 && !isEnemyAi) || (isEnemyAi && aiPounceTimer != 0))
 			{
 				return;
 			}
@@ -136,11 +188,11 @@ public class MRaptor : MonoBehaviour, MutationInterface
 		{
 			float currMutEnergy = actorWielder.gameManager.playerStats.getMutationBar();
 			/* pouncing while transformed is free */
-			if (transformTimer <= 0 && currMutEnergy >= mutationScriptable.values[POUNCE_COST_INDEX])
+			if (transformTimer <= 0 && currMutEnergy >= mutationScriptable.values[POUNCE_COST_INDEX] && !isEnemyAi)
 			{
 				actorWielder.gameManager.playerStats.changeMutationBar(Mathf.RoundToInt(-mutationScriptable.values[POUNCE_COST_INDEX]));
 			}
-			else if (transformTimer <= 0)
+			else if ((transformTimer <= 0 && !isEnemyAi) || (isEnemyAi && aiPounceTimer != 0))
 			{
 				return;
 			}
@@ -185,16 +237,19 @@ public class MRaptor : MonoBehaviour, MutationInterface
 	public MutationInterface mEquip(Actor actor)
 	{
 		gameManager = GameManager.Instance;
-		gameManager.playerAbilityEvent += abilityInputPressed;
-		gameManager.playerAbilitySecondaryEvent += abilityInputSecondaryPressed;
-		gameManager.updateCellCount += updateCells;
+		if (!isEnemyAi)
+		{
+			gameManager.playerAbilityEvent += abilityInputPressed;
+			gameManager.playerAbilitySecondaryEvent += abilityInputSecondaryPressed;
+			gameManager.updateCellCount += updateCells;
+		}
 
-		if (abilityIcon1 != null && abilityIcon2 != null)
+		if (abilityIcon1 != null && abilityIcon2 != null && !isEnemyAi)
 		{
 			gameManager.playerStats.playerHUD.abilityIconImage1.sprite = abilityIcon1;
 			gameManager.playerStats.playerHUD.abilityIconImage2.sprite = abilityIcon2;
 		}
-		else
+		else if (!isEnemyAi)
 		{
 			gameManager.playerStats.playerHUD.abilityIconImage1.sprite = null;
 			gameManager.playerStats.playerHUD.abilityIconImage2.sprite = null;
@@ -228,20 +283,32 @@ public class MRaptor : MonoBehaviour, MutationInterface
 		{
 			pounceTarget = Vector2.ClampMagnitude(playerIn.pointerPos() - (Vector2)actorWielder.transform.position, 1);
 		}
+		else if (isEnemyAi)
+		{
+			pounceTarget = Vector2.ClampMagnitude(actorWielder.getAttackTarget().transform.position - actorWielder.transform.position, 1);
+		}
 
-		gameManager.signalMovementLocked();
-		gameManager.signalRotationLocked();
+		if (actorWielder.tag == playerTag)
+		{
+			gameManager.signalMovementLocked();
+			gameManager.signalRotationLocked();
+		}
+		else
+		{
+			actorWielder.setMovementLocked(true);
+			actorWielder.setRotationLocked(true);
+		}
 		actorWielder.setActorCollision(false, new string[] { GameManager.OBJECT_MID_LAYER });
 
 		pounceActive = true;
 		pounceDistanceMoved = 0F;
 
-		if (transformTimer <= 0 && noTransform == false)
+		if (transformTimer <= 0 && noTransform == false && !isEnemyAi)
 		{
 			transformTimer = mutationScriptable.values[MUT_XFORM_TIMER_INDEX];
 		}
 
-		if (equippedClaw == null)
+		if (equippedClaw == null && !isEnemyAi)
 		{
 			raptorClawPrefab.SetActive(false);
 			GameObject clawObject = Instantiate(raptorClawPrefab);
@@ -254,6 +321,11 @@ public class MRaptor : MonoBehaviour, MutationInterface
 				equippedClaw = clawObject.GetComponentInChildren<ClawWeapon>();
 				equippedClaw.raptorParent = this;
 			}
+		}
+
+		if (equippedClaw != null)
+		{
+			actorWielder.speedCheck = equippedClaw.getSpeed();
 		}
 
 		pounceCollider.enabled = true;
@@ -273,8 +345,21 @@ public class MRaptor : MonoBehaviour, MutationInterface
 
 		if (!targetHit)
 		{
-			gameManager.signalMovementUnlocked();
-			gameManager.signalRotationUnlocked();
+			if (actorWielder.tag == playerTag)
+			{
+				gameManager.signalMovementUnlocked();
+				gameManager.signalRotationUnlocked();
+			}
+			else
+			{
+				actorWielder.setMovementLocked(false);
+				actorWielder.setRotationLocked(false);
+			}
+		}
+
+		if (isEnemyAi)
+		{
+			aiPounceTimer = aiPounceCooldown;
 		}
 		actorWielder.setActorCollision(true, null);
 	}
@@ -292,6 +377,12 @@ public class MRaptor : MonoBehaviour, MutationInterface
 					enemyMove.setStunResponse(actorWielder);
 					EffectDefs.effectApply(actorHit, gameManager.effectManager.stun1);
 				}
+				else if (actorHit.tag == playerTag)
+				{
+					EffectDefs.effectApply(actorHit, gameManager.effectManager.stun1);
+					actorHit.actorBody.velocity = Vector2.zero;
+				}
+
 				if (equippedClaw != null)
 				{
 					stopPounce(true);

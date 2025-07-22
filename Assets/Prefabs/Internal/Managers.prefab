@@ -350,6 +350,7 @@ MonoBehaviour:
   - {fileID: 1192526033329145194, guid: 95f4e5b3291ade544a04604f4830459e, type: 3}
   - {fileID: 1192526033329145194, guid: a1116bc9fda44684eb2ea2c225fe5c2b, type: 3}
   - {fileID: 1192526033329145194, guid: 4b343bd6d0e62c94da28557b01dd8918, type: 3}
+  - {fileID: 1192526033329145194, guid: 540d35b505322c54faafa3eeb34b96dd, type: 3}
   zombiePrefabs:
   - {fileID: 6203879125526305423, guid: 9c960d4f03b2281428f20639255b8420, type: 3}
   clickPrefab: {fileID: 6059981090291065645, guid: 95ed8de2f7dd80a47ab648332df12f07, type: 3}

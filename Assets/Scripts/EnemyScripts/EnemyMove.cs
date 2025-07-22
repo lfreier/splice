@@ -42,7 +42,7 @@ public class EnemyMove : MonoBehaviour
 	public Vector3 moveTarget;
 	private Vector3 lastMoveTarget;
 	private Vector3 attackTarget;
-	private Actor attackTargetActor;
+	public Actor attackTargetActor;
 
 	public float turretRotationArc;
 	private float turretRotation1;
@@ -103,9 +103,30 @@ public class EnemyMove : MonoBehaviour
 
 		if (isTurret)
 		{
-			turretRotation1 = actorBody.rotation + turretRotationArc / 2;
-			turretRotation2 = actorBody.rotation - turretRotationArc / 2;
-			turretRotateTarget = (int)Random.Range(0, 1) == 0 ?  turretRotation1 : turretRotation2;
+			TurretWeapon weap = this.GetComponentInChildren<TurretWeapon>();
+			if (weap != null)
+			{
+				turretRotation1 = weap.transform.parent.localRotation.eulerAngles.z + turretRotationArc / 2;
+				turretRotation2 = weap.transform.parent.localRotation.eulerAngles.z - (turretRotationArc / 2);
+				if (turretRotation1 < 0)
+				{
+					turretRotation1 += 360;
+				}
+				else if (turretRotation1 >= 360)
+				{
+					turretRotation1 -= 360;
+				}
+
+				if (turretRotation2 < 0)
+				{
+					turretRotation2 += 360;
+				}
+				else if (turretRotation2 >= 360)
+				{
+					turretRotation2 -= 360;
+				}
+				turretRotateTarget = (int)Random.Range(0, 1) == 0 ? turretRotation1 : turretRotation2;
+			}
 		}
 	}
 
@@ -306,11 +327,19 @@ public class EnemyMove : MonoBehaviour
 	private void updateTurretRotation()
 	{
 		float rotateAmount = maxStateSpeed;
-		float actorRotation = actorBody.rotation < 0 ? actorBody.rotation + 360 : actorBody.rotation;
+		TurretWeapon weap = this.GetComponentInChildren<TurretWeapon>();
+		if (weap == null)
+		{
+			return;
+		}
+		float actorRotation = weap.transform.parent.localRotation.eulerAngles.z;
+		actorRotation = actorRotation < 0 ? actorRotation + 360 : actorRotation;
 
 		/* set next target if we need to */
 		if (_detection == detectMode.idle)
 		{
+			rotateAmount /= 2;
+
 			if (idlePauseTimer <= 0 && (Mathf.Abs(actorRotation - turretRotation1) < moveTargetError || Mathf.Abs(actorRotation - turretRotation2) < moveTargetError || _detection != _oldDetection))
 			{
 				idlePauseTimer = TURRET_PAUSE_LENGTH;
@@ -343,7 +372,13 @@ public class EnemyMove : MonoBehaviour
 			{
 				turretRotateTarget = turretRotation2;
 			}
+			
 			_detection = detectMode.idle;
+
+			if (actor.displayedEffect != null && actor.displayedEffect.effectScriptable.constantEffectType == EffectDefs.constantType.SEEKING)
+			{
+				Destroy(actor.displayedEffect.gameObject);
+			}
 		}
 		else if (_detection == detectMode.suspicious || _detection == detectMode.seeking || _detection == detectMode.hostile)
 		{
@@ -372,12 +407,14 @@ public class EnemyMove : MonoBehaviour
 			rotateAmount = 0;
 		}
 
-		actorBody.rotation += (rotateAmount * direction);
+		float newRotation = weap.transform.parent.localRotation.eulerAngles.z + (rotateAmount * direction);
 
-		if (actorBody.rotation > 360)
+		if (newRotation > 360)
 		{
-			actorBody.rotation -= 360;
+			newRotation -= 360;
 		}
+
+		weap.transform.parent.SetLocalPositionAndRotation(weap.transform.parent.localPosition, Quaternion.Euler(new Vector3(0,0, newRotation)));
 	}
 
 	private void calcMoveInput()
@@ -748,9 +785,21 @@ public class EnemyMove : MonoBehaviour
 		}
 	}
 
-	private Actor handleSightRays(Vector2 center, float maxLength, float increment, float sightRange, float index)
+	private Actor handleSightRays(float maxLength, float increment, float sightRange, float index)
 	{
-		Vector2 viewRay = center - (Vector2)((maxLength - (index * increment)) * transform.right);
+		Transform startingXform = transform;
+		if (isTurret)
+		{
+			TurretWeapon weap = GetComponentInChildren<TurretWeapon>();
+			if (weap != null)
+			{
+				startingXform = weap.transform.parent;
+				eyeStart = startingXform.position + startingXform.up * 0.25F; ;
+			}
+		}
+
+		Vector2 center = startingXform.up * _actorData.sightRange;
+		Vector2 viewRay = center - (Vector2)((maxLength - (index * increment)) * startingXform.right);
 		RaycastHit2D[] rayHit = Physics2D.RaycastAll(eyeStart, viewRay, sightRange, gameManager.lineOfSightLayers);
 		Debug.DrawRay(eyeStart, Vector2.ClampMagnitude(viewRay, 1) * sightRange);
 
@@ -827,7 +876,6 @@ public class EnemyMove : MonoBehaviour
 	 */
 	private Actor seeHostiles()
 	{
-		Vector2 center = transform.up * _actorData.sightRange;
 		float degrees = _actorData.sightRange > 12F ? 2.5F : 5F;
 		float increment = Mathf.Abs((float)Mathf.Tan(degrees * Mathf.PI / 180) * _actorData.sightRange);
 		float numIncrements = _actorData.sightAngle / degrees;
@@ -835,11 +883,16 @@ public class EnemyMove : MonoBehaviour
 
 		for (float i= 0; i < numIncrements + 1; i ++)
 		{
-			Actor returnActor = handleSightRays(center, maxLength, increment, _actorData.sightRange, i);
+			Actor returnActor = handleSightRays(maxLength, increment, _actorData.sightRange, i);
 			if (returnActor != null)
 			{
 				return returnActor;
 			}
+		}
+
+		if (isTurret)
+		{
+			return null;
 		}
 
 		/* Extra peripheral vision */
@@ -850,7 +903,7 @@ public class EnemyMove : MonoBehaviour
 		int peripheralRayCount = ((Mathf.RoundToInt(_actorData.sightAngle) - 100) / 40) + 2;
 		for (float i = -(peripheralRayCount * peripheralMult); i < 0; i += peripheralMult)
 		{
-			Actor returnActor = handleSightRays(center, maxLength, increment, peripheralRange, i);
+			Actor returnActor = handleSightRays(maxLength, increment, peripheralRange, i);
 			if (returnActor != null)
 			{
 				return returnActor;
@@ -858,7 +911,7 @@ public class EnemyMove : MonoBehaviour
 		}
 		for (float i = numIncrements + 1 + peripheralMult; i < numIncrements + 1 + peripheralRayCount + (peripheralRayCount * peripheralMult); i += peripheralMult)
 		{
-			Actor returnActor = handleSightRays(center, maxLength, increment, peripheralRange, i);
+			Actor returnActor = handleSightRays(maxLength, increment, peripheralRange, i);
 			if (returnActor != null)
 			{
 				return returnActor;

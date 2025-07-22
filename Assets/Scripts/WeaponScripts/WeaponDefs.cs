@@ -9,7 +9,8 @@ public static class WeaponDefs
 		RULER_METAL = 1,
 		SCALPEL = 2,
 		STUN_STICK = 3,
-		WRENCH = 4
+		WRENCH = 4,
+		TURRET = 5
 	}
 
 	public enum atkState

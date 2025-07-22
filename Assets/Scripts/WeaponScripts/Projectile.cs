@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Drawing;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Projectile : MonoBehaviour
@@ -21,7 +22,10 @@ public class Projectile : MonoBehaviour
 
 	public Actor actorHit = null;
 
+	public WeaponScriptable attachedWeaponScriptable;
+
 	public AudioClip projectileHitSound;
+	public SoundScriptable wallHitSound;
 
 	private Actor actorOrigin = null;
 
@@ -31,6 +35,8 @@ public class Projectile : MonoBehaviour
 
 	private float expireTimer = 0F;
 	private static float expireLength = 3F;
+
+	private bool soundMade = false;
 
 	private void FixedUpdate()
 	{
@@ -59,14 +65,14 @@ public class Projectile : MonoBehaviour
 		float rotation = (Mathf.Atan2((target - origin).y, (target - origin).x) * Mathf.Rad2Deg) - 90F;
 		transform.SetPositionAndRotation(origin, Quaternion.Euler(0, 0, rotation));
 		float originVelocity = actorOrigin.actorBody.velocity.magnitude;
-		Debug.Log("extra vel: " + originVelocity);
+		
 		body.AddForce(Vector2.ClampMagnitude(target - origin, 1) * (projectileLaunchForce + originVelocity));
 		expireTimer = expireLength;
 		originVector = origin;
 		this.actorOrigin = actorOrigin;
 	}
 
-	public void processHit()
+	public void processHit(Collider2D collision)
 	{
 		if (actorHit != null)
 		{
@@ -78,19 +84,78 @@ public class Projectile : MonoBehaviour
 					break;
 				case projectileType.bullet:
 				default:
-					processBulletHit();
+					processBulletHit(collision);
 					break;
 			}
 		}
 	}
 
-	void processBulletHit()
+	void processBulletHit(Collider2D collision)
 	{
-		actorHit.takeDamage(projectileDamage);
+		float knockbackMult = 1;
+		float maxForce = 10000;
+
+		if (actorHit != null &&!actorHit.invincible)
+		{
+			actorHit.takeDamage(projectileDamage);
+			knockbackMult = (1 - actorHit._actorScriptable.knockbackResist) * WeaponDefs.KNOCKBACK_MULT_ACTOR;
+
+			if (attachedWeaponScriptable.soundActorHit != null)
+			{
+				GameManager.Instance.playSound(actorHit.actorAudioSource, attachedWeaponScriptable.soundActorHit.name, attachedWeaponScriptable.soundActorHitVolume);
+			}
+
+			maxForce = ActorDefs.MAX_HIT_FORCE;
+			if (actorHit.isStunned())
+			{
+				maxForce = ActorDefs.MAX_PARRY_FORCE;
+			}
+
+			KnockbackTimer knockbackTimer = actorHit.AddComponent<KnockbackTimer>();
+			knockbackTimer.init(actorHit._actorScriptable.knockbackResist);
+		}
+		else
+		{
+			if (collision.tag == SoundDefs.TAG_WALL_METAL)
+			{
+				SoundDefs.createSound(collision.transform.position, wallHitSound);
+				if (attachedWeaponScriptable.soundWallHit != null)
+				{
+					GameManager.Instance.playSound(actorHit.actorAudioSource, attachedWeaponScriptable.soundWallHit.name, attachedWeaponScriptable.soundWallHitVolume);
+				}
+			}
+
+			Obstacle obstacle = collision.GetComponent<Obstacle>();
+			if (obstacle != null)
+			{
+				knockbackMult = obstacle._obstacleScriptable.weaponHitMult * WeaponDefs.KNOCKBACK_MULT_OBSTACLE;
+				maxForce = obstacle._obstacleScriptable.maxObstacleForce;
+				obstacle.knockOver();
+
+				if (attachedWeaponScriptable.soundObstacleHit != null && !soundMade && knockbackMult != 0)
+				{
+					soundMade = true;
+					GameManager.Instance.playSound(actorHit.actorAudioSource, attachedWeaponScriptable.soundObstacleHit.name, attachedWeaponScriptable.soundObstacleHitVolume);
+				}
+			}
+		}
+
+		/* knockback */
+		Rigidbody2D hitBody = collision.attachedRigidbody;
+		if (hitBody != null)
+		{
+			Vector3 force = Vector3.ClampMagnitude(hitBody.transform.position - this.transform.position, 1);
+			float forceMult = Mathf.Min(attachedWeaponScriptable.knockbackDamage * knockbackMult, maxForce);
+			hitBody.AddForce(force * forceMult);
+		}
 	}
 
 	void processStringHit()
 	{
+		if (actorHit == null)
+		{
+			return;
+		}
 		EnemyMove enemyMove = actorHit.GetComponentInChildren<EnemyMove>();
 		if (enemyMove != null)
 		{
@@ -112,7 +177,7 @@ public class Projectile : MonoBehaviour
 			{
 				body.velocity = Vector2.zero;
 				anim.SetTrigger(TRIGGER_PROJECTILE_HIT);
-				processHit();
+				processHit(collision);
 			}
 		}
 	}

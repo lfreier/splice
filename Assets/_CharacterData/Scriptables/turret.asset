@@ -15,12 +15,12 @@ MonoBehaviour:
   <armor>k__BackingField: 0
   <health>k__BackingField: 3
   <attackTimer>k__BackingField: 0.2
-  <maxSpeed>k__BackingField: 2
+  <maxSpeed>k__BackingField: 4
   <moveSpeed>k__BackingField: 0.4
   <acceleration>k__BackingField: 0.5
   <deceleration>k__BackingField: 0.2
   <hearingRange>k__BackingField: 5.5
-  <sightRange>k__BackingField: 8.5
-  <sightAngle>k__BackingField: 100
+  <sightRange>k__BackingField: 10
+  <sightAngle>k__BackingField: 90
   <frightenedDistance>k__BackingField: 6
   <knockbackResist>k__BackingField: 0.4

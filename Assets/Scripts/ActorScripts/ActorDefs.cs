@@ -58,7 +58,8 @@ public class ActorDefs
 
 	public enum corpseType
 	{
-		HUMAN = 0
+		HUMAN = 0,
+		TURRET = 1
 	}
 
 	public static ActorData copyData(ActorData toCopy)
