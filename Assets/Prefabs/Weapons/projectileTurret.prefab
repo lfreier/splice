@@ -283,5 +283,5 @@ MonoBehaviour:
   projectileDamage: 1
   actorHit: {fileID: 0}
   attachedWeaponScriptable: {fileID: 11400000, guid: 8b71442529e1aec478f45cba20b10cfb, type: 2}
-  projectileHitSound: {fileID: 8300000, guid: 1451635b4da578c488aa872777bed1e9, type: 3}
+  projectileHitSound: {fileID: 8300000, guid: 16827b4e15ed7b5458b335d282addc46, type: 3}
   wallHitSound: {fileID: 11400000, guid: 14171c28ed3adca408d74c2da5276215, type: 2}

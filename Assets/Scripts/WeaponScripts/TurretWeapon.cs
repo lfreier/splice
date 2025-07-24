@@ -18,6 +18,8 @@ public class TurretWeapon : BasicWeapon
 	private float shootingTimer = 0;
 	private bool startShooting = false;
 
+	private bool firingFlip = false;
+
 	private float stopShootingTimer = 0;
 
 	private EnemyMove enemyAi = null;
@@ -89,7 +91,15 @@ public class TurretWeapon : BasicWeapon
 			gameManager.audioManager.soundHash.TryGetValue(_weaponScriptable.soundSwing.name, out toPlay);
 			if (toPlay != null)
 			{
-				weaponAudioPlayer.PlayOneShot(toPlay, gameManager.effectsVolume);
+				if (firingFlip)
+				{
+					weaponSwingAudioPlayer.PlayOneShot(toPlay, gameManager.effectsVolume * _weaponScriptable.soundSwingVolume);
+				}
+				else
+				{
+					weaponAudioPlayer.PlayOneShot(toPlay, gameManager.effectsVolume * _weaponScriptable.soundSwingVolume);
+				}
+				firingFlip = !firingFlip;
 			}
 		}
 

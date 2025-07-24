@@ -70,6 +70,7 @@ public class EnemyMove : MonoBehaviour
 
 	public bool summoned = false;
 	public bool isTurret = false;
+	public AudioSource turretRotateSource;
 
 	public GameManager gameManager;
 
@@ -419,7 +420,20 @@ public class EnemyMove : MonoBehaviour
 			newRotation -= 360;
 		}
 
-		weap.transform.parent.SetLocalPositionAndRotation(weap.transform.parent.localPosition, Quaternion.Euler(new Vector3(0,0, newRotation)));
+		if (turretRotateSource != null)
+		{
+			if (rotateAmount == 0 && turretRotateSource.isPlaying)
+			{
+				turretRotateSource.Pause();
+			}
+			else if (rotateAmount != 0 && !turretRotateSource.isPlaying)
+			{
+				turretRotateSource.Play();
+				turretRotateSource.UnPause();
+			}
+		}
+
+		weap.transform.parent.SetLocalPositionAndRotation(weap.transform.parent.localPosition, Quaternion.Euler(new Vector3(0, 0, newRotation)));
 	}
 
 	private void calcMoveInput()

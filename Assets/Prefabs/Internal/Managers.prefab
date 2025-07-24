@@ -110,6 +110,9 @@ MonoBehaviour:
   sus1: {fileID: 11400000, guid: da5225351daae8641b0e7826d95b5c77, type: 2}
   seeking1: {fileID: 11400000, guid: 6a2118023e54b0a44812440d4b09ff14, type: 2}
   notice1: {fileID: 11400000, guid: f33396815ac2c3c4ba074c1515df6693, type: 2}
+  turretSus: {fileID: 0}
+  turretSeeking: {fileID: 0}
+  turretNotice: {fileID: 0}
 --- !u!114 &4511755820635981177
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -181,6 +184,9 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 7ce1545ef4f4f744691d680c3b6aa7c9, type: 3}
   - {fileID: 8300000, guid: f33b22418c10360408f7c36fbfd3d41e, type: 3}
   - {fileID: 8300000, guid: a41f5b2d7106c0a4d8570134dc263c99, type: 3}
+  - {fileID: 8300000, guid: 16827b4e15ed7b5458b335d282addc46, type: 3}
+  - {fileID: 8300000, guid: e5071ca98f3a8324ea6aa2428f55a690, type: 3}
+  - {fileID: 8300000, guid: 77a0a0e42c7dc2e4f9b233ab4251231d, type: 3}
   footstepCarpet: {fileID: 0}
   heartPump: {fileID: 0}
   playerDeath: {fileID: 0}
@@ -250,6 +256,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 33517daee327eb141a36085c4322391c, type: 2}
   - {fileID: 11400000, guid: 4abfe91cd85789443b6033637a0ffcf4, type: 2}
   currSaveData:
+    version: v0.3
     sceneIndex: 0
     actorTable:
       keys: []
@@ -270,6 +277,7 @@ MonoBehaviour:
       keys: []
       values: []
   currPlayerSaveData:
+    version: v0.3
     lastSavedLevel: 0
     lastSavedSpawn: 0
     savedMutationData:
