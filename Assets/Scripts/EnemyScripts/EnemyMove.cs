@@ -422,7 +422,7 @@ public class EnemyMove : MonoBehaviour
 
 		if (turretRotateSource != null)
 		{
-			if (rotateAmount == 0 && turretRotateSource.isPlaying)
+			if (rotateAmount == 0 && turretRotateSource.isPlaying && attackTargetActor == null)
 			{
 				turretRotateSource.Pause();
 			}
