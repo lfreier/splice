@@ -335,6 +335,8 @@ public class MenuHandler : MonoBehaviour
 	public async void startGameFromSaveSlot(int saveSlot)
 	{
 		GameManager gManager = GameManager.Instance;
+		showLoading = true;
+
 		bool fromMenu = saveSlot < 0;
 		if (fromMenu)
 		{

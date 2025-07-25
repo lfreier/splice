@@ -70,6 +70,10 @@ public class StationMenuScreen : StationScreen
 
 			setSaveText();
 		}
+		else
+		{
+			gameManager.playSound(menuManager.stationClickPlayer, gameManager.audioManager.errorSound.name, 1F);
+		}
 	}
 
 	public void onScanButton()
