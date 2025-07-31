@@ -17,6 +17,7 @@ public class TurretWeapon : BasicWeapon
 	public float stopShootingTimerLength = 2F;
 	private float shootingTimer = 0;
 	private bool startShooting = false;
+	private bool keepShooting = false;
 
 	private bool firingFlip = false;
 
@@ -37,7 +38,7 @@ public class TurretWeapon : BasicWeapon
 			{
 				shootingTimer = shootingTimerLength;
 			}
-			else if (stopShootingTimer == 0)
+			else if (stopShootingTimer == 0 && startShooting)
 			{
 				shootingTimer = 0;
 				stopShootingTimer = stopShootingTimerLength + Time.deltaTime;
@@ -60,6 +61,7 @@ public class TurretWeapon : BasicWeapon
 			if (stopShootingTimer <= 0)
 			{
 				startShooting = false;
+				keepShooting = false;
 				stopShootingTimer = 0;
 			}
 		}
@@ -122,6 +124,8 @@ public class TurretWeapon : BasicWeapon
 			flashTimer = flashTimerLength;
 		}
 
+		SoundDefs.createSound(this.transform.position, wallHitSound);
+
 		return true;
 	}
 	override public bool inRange(Vector3 target)
@@ -146,11 +150,12 @@ public class TurretWeapon : BasicWeapon
 
 			if (startShooting && Mathf.Abs(enemyAi.turretRotateTarget - aiRotation) < enemyAi.moveTargetError)
 			{
+				keepShooting = true;
 				return true;
 			}
 			else
 			{
-				return false;
+				return keepShooting;
 			}
 		}
 		else

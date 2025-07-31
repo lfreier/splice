@@ -85,6 +85,7 @@ public class AutoDoor : MonoBehaviour, UsableInterface
 	private void doorOpen()
 	{
 		doorAnimator.SetTrigger("Open");
+		doorAnimator.ResetTrigger("Close");
 		open = true;
 		if (doorAudioPlayer != null && gameManager != null && gameManager.audioManager != null && doorOpenSound != null)
 		{
@@ -99,6 +100,7 @@ public class AutoDoor : MonoBehaviour, UsableInterface
 	private void doorClose()
 	{
 		doorAnimator.SetTrigger("Close");
+		doorAnimator.ResetTrigger("Open");
 		open = false;
 		if (doorAudioPlayer != null && gameManager != null && gameManager.audioManager != null && doorCloseSound != null)
 		{

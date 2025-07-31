@@ -360,7 +360,7 @@ BoxCollider2D:
     drawMode: 1
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 0.25, y: 0.25}
+  m_Size: {x: 0.75, y: 0.75}
   m_EdgeRadius: 0
 --- !u!114 &9155939707044531217
 MonoBehaviour:
@@ -424,7 +424,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   actor: {fileID: 9155939707044531217}
   actorBody: {fileID: 5696732476864589105}
-  moveTargetError: 2
+  moveTargetError: 2.5
   idlePath: []
   idlePathPauseTime: []
   pathIndex: 0
@@ -444,7 +444,6 @@ MonoBehaviour:
   summoned: 0
   isTurret: 1
   turretRotateSource: {fileID: 9147209322415330251}
-  turretRotateSound: {fileID: 8300000, guid: 77a0a0e42c7dc2e4f9b233ab4251231d, type: 3}
   gameManager: {fileID: 0}
 --- !u!114 &4448535787741340696
 MonoBehaviour:

@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: weaponClang
   m_EditorClassIdentifier: 
   <audioClip>k__BackingField: {fileID: 0}
-  <length>k__BackingField: 1
+  <length>k__BackingField: 0.25
   <radius>k__BackingField: 4.5
   <type>k__BackingField: 3
   <triggerSpeed>k__BackingField: 0

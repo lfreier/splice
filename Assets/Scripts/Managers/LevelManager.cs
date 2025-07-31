@@ -76,7 +76,7 @@ public class LevelManager : MonoBehaviour
 		iso = 6,
 		final = 7
 	}
-	public static int NUM_SAVE_STATIONS = (int)saveStationIndex.iso + 1;
+	public static int NUM_SAVE_STATIONS = (int)saveStationIndex.final + 1;
 
 	public PlayerSpawnScriptable[] elevatorSpawns;
 	public enum elevatorIndex
@@ -93,7 +93,9 @@ public class LevelManager : MonoBehaviour
 		office = 9,
 		officeExit = 10,
 		final = 11,
-		TOTAL = 12
+		finalExit = 12,
+		ending = 13,
+		TOTAL = 14
 	}
 	public static int NUM_ELEVATORS = (int)elevatorIndex.TOTAL;
 
@@ -125,12 +127,20 @@ public class LevelManager : MonoBehaviour
 		levelIsoSpawn = 16,
 		levelIsoSaveSpawn = 17,
 		levelIsoExitSpawn = 18,
-		levelFinale = 19
+		levelFinale = 19,
+		levelFinaleExit = 20,
+		levelEnding = 21
 	}
 
 	public CameraHandler camHandler;
 
 	private GameManager gameManager;
+
+	private void Start()
+	{
+		currSaveData = new SaveData();
+		currPlayerSaveData = new PlayerSaveData();
+	}
 
 	public async Task startNewLevel(int spawnIndex, int levelIndex)
 	{
@@ -184,6 +194,12 @@ public class LevelManager : MonoBehaviour
 			if (SceneDefs.isLevelScene((SceneDefs.SCENE)levelIndex) && (lastSavedAtStation || gameManager.saveManager.levelSaveData[levelIndex] != null))
 			{
 				await loadLevelState(gameManager.saveManager.levelSaveData[levelIndex]);
+			}
+
+			if ((SceneDefs.SCENE)levelIndex == SceneDefs.SCENE.LEVEL_ENDING 
+				&& gameManager.playerStats != null && gameManager.playerStats.playerHUD != null)
+			{
+				gameManager.playerStats.playerHUD.disableHudShadow();
 			}
 
 			Time.timeScale = 1;

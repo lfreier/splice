@@ -222,9 +222,21 @@ public class PlayerHUD : MonoBehaviour
 		}
 	}
 
+	public void disableHudShadow()
+	{
+		if (shadowCanvas != null)
+		{
+			shadowCanvas.gameObject.SetActive(false);
+		}
+	}
+
 	public void startNewMusic(MusicScriptable music)
 	{
-		if (!musicPlayer.resource.name.Equals(music.audioClip.name))
+		if (music == null)
+		{
+			musicPlayer.Stop();
+		}
+		else if (!musicPlayer.resource.name.Equals(music.audioClip.name))
 		{
 			musicPlayer.Stop();
 			musicPlayer.enabled = true;

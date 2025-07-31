@@ -149,7 +149,7 @@ MonoBehaviour:
   _weaponPhysics: {fileID: 7547728244875493968}
   weaponAudioPlayer: {fileID: 8053984051687904681}
   weaponSwingAudioPlayer: {fileID: 3513195193968362844}
-  actorHitSound: {fileID: 11400000, guid: fc7b5a00970e656469c43cf634631693, type: 2}
+  actorHitSound: {fileID: 11400000, guid: 14171c28ed3adca408d74c2da5276215, type: 2}
   wallHitSound: {fileID: 11400000, guid: 14171c28ed3adca408d74c2da5276215, type: 2}
   currentSide: 0
   attackOnlyRight: 0

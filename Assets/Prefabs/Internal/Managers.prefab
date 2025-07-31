@@ -240,6 +240,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 0e62a91c33d32fb4e9f9be3e35b38a0e, type: 2}
   - {fileID: 11400000, guid: f1c7a0d03e8e6694496f2ceb2f987a96, type: 2}
   - {fileID: 11400000, guid: 4abfe91cd85789443b6033637a0ffcf4, type: 2}
+  - {fileID: 11400000, guid: 3e1680d4c71da574f811151b5b9a1e74, type: 2}
+  - {fileID: 11400000, guid: 6f9d6fd94a6ba2047b342ae4fa2617e5, type: 2}
   lastSavedAtStation: 0
   savedActors: []
   elevatorSpawns:
@@ -255,6 +257,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: cffedb1562eb6c548ac70982e90766f9, type: 2}
   - {fileID: 11400000, guid: 33517daee327eb141a36085c4322391c, type: 2}
   - {fileID: 11400000, guid: 4abfe91cd85789443b6033637a0ffcf4, type: 2}
+  - {fileID: 11400000, guid: 3e1680d4c71da574f811151b5b9a1e74, type: 2}
+  - {fileID: 11400000, guid: 6f9d6fd94a6ba2047b342ae4fa2617e5, type: 2}
   currSaveData:
     version: v0.3
     sceneIndex: 0

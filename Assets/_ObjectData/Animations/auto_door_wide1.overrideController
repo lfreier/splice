@@ -1,0 +1,15 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!221 &22100000
+AnimatorOverrideController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: auto_door_wide1
+  m_Controller: {fileID: 9100000, guid: 79e4233ccfc723b468b5942e388bc874, type: 2}
+  m_Clips:
+  - m_OriginalClip: {fileID: 7400000, guid: 3e1f33edc9cc5f445a6196387fd8f61c, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: 29a9e09f7815cec499e432645bc1b980, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: ee84899af6b50134f887e6a0ae09c04e, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: 67fae9b3c6221e14e91a6a59a5499fe7, type: 2}

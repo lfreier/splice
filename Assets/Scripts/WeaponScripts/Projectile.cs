@@ -118,7 +118,6 @@ public class Projectile : MonoBehaviour
 		{
 			if (collision.tag == SoundDefs.TAG_WALL_METAL)
 			{
-				SoundDefs.createSound(collision.transform.position, wallHitSound);
 				if (attachedWeaponScriptable.soundWallHit != null)
 				{
 					GameManager.Instance.playSound(actorHit.actorAudioSource, attachedWeaponScriptable.soundWallHit.name, attachedWeaponScriptable.soundWallHitVolume);

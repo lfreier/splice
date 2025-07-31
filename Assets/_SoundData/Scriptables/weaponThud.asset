@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: weaponThud
   m_EditorClassIdentifier: 
   <audioClip>k__BackingField: {fileID: 0}
-  <length>k__BackingField: 0.5
+  <length>k__BackingField: 0.4
   <radius>k__BackingField: 3
   <type>k__BackingField: 2
   <triggerSpeed>k__BackingField: 0

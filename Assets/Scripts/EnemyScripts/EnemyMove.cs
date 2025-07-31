@@ -60,6 +60,7 @@ public class EnemyMove : MonoBehaviour
 	private static float LOST_TIMER_LENGTH = 2;
 	private static float TURRET_PAUSE_LENGTH = 3;
 	private static float SUS_TIMER_LENGTH = 5;
+	private int lostCount = 0;
 
 	private float delayTimer;
 	private static float DELAY_TIMER_LENGTH = 0.35F;
@@ -91,6 +92,7 @@ public class EnemyMove : MonoBehaviour
 		{
 			_detection = detectMode.idle;
 		}
+		lostCount = 0;
 		_startingDetection = _detection;
 		_nextDetection = detectMode.nul;
 		_nextForcedDetection = summoned || _startingDetection != detectMode.wandering ? detectMode.idle : detectMode.wandering;
@@ -164,6 +166,11 @@ public class EnemyMove : MonoBehaviour
 		{
 			hearHostiles();
 			attackTargetActor = seeHostiles();
+			if (attackTargetActor == null && _detection == detectMode.hostile)
+			{
+				Debug.Log("second ears");
+				hearHostiles();
+			}
 		}
 
 		/* if on delay timer, wait to transition */
@@ -524,7 +531,6 @@ public class EnemyMove : MonoBehaviour
 		switch (_detection)
 		{
 			case detectMode.idle:
-				idleLookTarget = transform.position + transform.up * 0.5F;
 				calcRotation(idleLookTarget);
 				break;
 			case detectMode.hostile:
@@ -545,6 +551,7 @@ public class EnemyMove : MonoBehaviour
 				_actorData.sightAngle = actor._actorScriptable.sightAngle * 1.5F;
 				moveTarget = transform.position + transform.up;
 				stateTimer = LOST_TIMER_LENGTH;
+				lostCount = 0;
 				break;
 			case detectMode.suspicious:
 				_actorData.sightAngle = actor._actorScriptable.sightAngle * 1.5F;
@@ -621,6 +628,16 @@ public class EnemyMove : MonoBehaviour
 				/* Move in a random direction */
 				if (stateTimer <= 0)
 				{
+					/* specifically for zombies, return them to the wandering state after a while */
+					if (_startingDetection == detectMode.wandering && lostCount > 4)
+					{
+						_detection = _startingDetection;
+						lostCount = 0;
+						if (actor.displayedEffect != null)
+						{
+							Destroy(actor.displayedEffect.gameObject);
+						}
+					}
 					float radAngle = Random.Range(0F, 2F * Mathf.PI);
 					float temp = Random.Range(wanderScale / 2, wanderScale);
 					moveTarget = transform.position + new Vector3(temp * Mathf.Sin(radAngle), temp * Mathf.Cos(radAngle), 0);
@@ -634,6 +651,7 @@ public class EnemyMove : MonoBehaviour
 					{
 						stateTimer = LOST_TIMER_LENGTH;
 						stateTimerReset = stateTimer;
+						lostCount++;
 					}
 				}
 				else
@@ -711,8 +729,16 @@ public class EnemyMove : MonoBehaviour
 
 	private void handleSuspiciousState()
 	{
-		moveTarget = actor.transform.position;
+		if (attackTargetActor == null)
+		{
+			moveTarget = actor.transform.position;
+		}
+		else
+		{
+			moveTarget = attackTargetActor.transform.position;
+		}
 		calcRotation(attackTarget);
+
 		if (stateTimer <= 0)
 		{
 			_detection = _startingDetection;
@@ -733,7 +759,7 @@ public class EnemyMove : MonoBehaviour
 		RaycastHit2D[] heardSound = Physics2D.CircleCastAll(new Vector2(this.transform.position.x, this.transform.position.y), _actorData.hearingRange, Vector2.zero, _actorData.hearingRange, gameManager.soundLayer);
 
 		/* States that should override hearing */
-		if (_detection == detectMode.hostile || _detection == detectMode.getWeapon || _detection == detectMode.frightened || heardSound.Length == 0 || summoned)
+		if (_detection == detectMode.getWeapon || _detection == detectMode.frightened || heardSound.Length == 0 || summoned)
 		{
 			return;
 		}
@@ -779,7 +805,6 @@ public class EnemyMove : MonoBehaviour
 			*/
 			if (soundScript != null && soundScript.scriptable.volume >= loudest)
 			{
-				attackTarget = target.transform.position;
 				loudest = soundScript.scriptable.volume;
 
 				switch (soundScript.scriptable.type)
@@ -788,7 +813,12 @@ public class EnemyMove : MonoBehaviour
 					case SoundDefs.SoundType.THUD:
 					case SoundDefs.SoundType.TAP:
 					default:
-						if (_detection == detectMode.lost || _detection == detectMode.seeking)
+						if (_detection == detectMode.hostile)
+						{
+							attackTarget = target.transform.position;
+							break;
+						}
+						else if (_detection == detectMode.lost || _detection == detectMode.seeking)
 						{
 							_detection = detectMode.seeking;
 						}
@@ -798,6 +828,7 @@ public class EnemyMove : MonoBehaviour
 							handleEdges();
 							_oldDetection = _detection;
 						}
+						attackTarget = target.transform.position;
 						break;
 				}
 			}
@@ -899,19 +930,20 @@ public class EnemyMove : MonoBehaviour
 		float increment = Mathf.Abs((float)Mathf.Tan(degrees * Mathf.PI / 180) * _actorData.sightRange);
 		float numIncrements = _actorData.sightAngle / degrees;
 		float maxLength = numIncrements * increment / 2;
+		Actor currClosest = null;
 
 		for (float i= 0; i < numIncrements + 1; i ++)
 		{
 			Actor returnActor = handleSightRays(maxLength, increment, _actorData.sightRange, i);
-			if (returnActor != null)
+			if (checkReturnActor(returnActor, currClosest))
 			{
-				return returnActor;
+				currClosest = returnActor;
 			}
 		}
 
 		if (isTurret)
 		{
-			return null;
+			return currClosest;
 		}
 
 		/* Extra peripheral vision */
@@ -923,21 +955,26 @@ public class EnemyMove : MonoBehaviour
 		for (float i = -(peripheralRayCount * peripheralMult); i < 0; i += peripheralMult)
 		{
 			Actor returnActor = handleSightRays(maxLength, increment, peripheralRange, i);
-			if (returnActor != null)
+			if (checkReturnActor(returnActor, currClosest))
 			{
-				return returnActor;
+				currClosest = returnActor;
 			}
 		}
 		for (float i = numIncrements + 1 + peripheralMult; i < numIncrements + 1 + peripheralRayCount + (peripheralRayCount * peripheralMult); i += peripheralMult)
 		{
 			Actor returnActor = handleSightRays(maxLength, increment, peripheralRange, i);
-			if (returnActor != null)
+			if (checkReturnActor(returnActor, currClosest))
 			{
-				return returnActor;
+				currClosest = returnActor;
 			}
 		}
 
-		return null;
+		return currClosest;
+	}
+
+	private bool checkReturnActor(Actor newActor, Actor closest)
+	{
+		return newActor != null && (closest == null || ((actor.transform.position - newActor.transform.position).magnitude < (actor.transform.position - closest.transform.position).magnitude));
 	}
 
 	public void disableStun()

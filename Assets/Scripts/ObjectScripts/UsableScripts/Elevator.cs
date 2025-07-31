@@ -5,6 +5,13 @@ using static SceneDefs;
 
 public class Elevator : MonoBehaviour, UsableInterface
 {
+	public enum elevatorSpecialType
+	{ 
+		basic = 0,
+		atFinale = 1,
+		ending = 2
+	}
+
 	public Actor playerActor;
 
 	public PlayerSpawnScriptable nextSpawn;
@@ -14,6 +21,8 @@ public class Elevator : MonoBehaviour, UsableInterface
 
 	public elevatorIndex elevatorIndex;
 	private int index;
+
+	public elevatorSpecialType specialType = elevatorSpecialType.basic;
 
 	private GameManager gameManager;
 	private PlayerStats stats;

@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ef8256f3a9799a945bdcdb0bc9439850, type: 3}
   m_Name: levelFinale
   m_EditorClassIdentifier: 
-  spawnPosition: {x: 0, y: 0}
-  spawnRotation: 0
+  spawnPosition: {x: 0.375, y: 0}
+  spawnRotation: 90
   elevatorIndex: 11
-  floorName: FLOOR 1 - EXIT
-  sceneIndex: 23
-  spawnIndex: 9
+  floorName: LOADING DOCK
+  sceneIndex: 27
+  spawnIndex: 19
