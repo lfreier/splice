@@ -236,14 +236,15 @@ public class GameManager : MonoBehaviour
 		}
 	}
 
-	public void gameOver(Actor player)
+	public void gameOver()
 	{
+		Time.timeScale = 1;
 		CameraHandler camHan = Camera.main.GetComponent<CameraHandler>();
 		if (camHan != null)
 		{
 			camHan.enabled = false;
 		}
-		Camera.main.transform.position = player.transform.position;
+		Camera.main.transform.position = playerStats.player.transform.position;
 		AudioListener audio = Camera.main.GetComponent<AudioListener>();
 		if (audio != null)
 		{

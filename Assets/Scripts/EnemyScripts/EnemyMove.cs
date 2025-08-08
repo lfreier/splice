@@ -98,6 +98,12 @@ public class EnemyMove : MonoBehaviour
 		_nextForcedDetection = summoned || _startingDetection != detectMode.wandering ? detectMode.idle : detectMode.wandering;
 		attackTargetActor = null;
 
+		/* set idling to wander after reaching goal */
+		if (_detection == detectMode.wandering && idlePath != null)
+		{
+			_detection = detectMode.idle;
+		}
+
 		pathIndex = 0;
 		idlePauseTimer = 0;
 		idleLookTarget = transform.position + transform.up * 0.5F;
@@ -207,6 +213,7 @@ public class EnemyMove : MonoBehaviour
 		/*  determine move target based on current state */
 		if ((_detection == detectMode.idle || _detection == detectMode.forced) && idlePath.Length > 0)
 		{
+			bool clearPaths = false;
 			/* If at a path position, go to next */
 			if (((Vector2)actorBody.transform.position - idlePath[pathIndex]).magnitude < moveTargetError)
 			{
@@ -220,12 +227,22 @@ public class EnemyMove : MonoBehaviour
 				if (pathIndex >= idlePath.Length)
 				{
 					pathIndex = 0;
-					//this is done to make the forced state work
-					_detection = detectMode.idle;
+					/* zombie specific logic */
+					if (!summoned && _startingDetection == detectMode.wandering)
+					{
+						_detection = detectMode.wandering;
+						clearPaths = true;
+					}
+					else
+					{
+						//this is done to make the forced state work
+						_detection = detectMode.idle;
+					}
 				}
 
 				if (idlePathPauseTime.Length == 1)
 				{
+					/* this is for summoned zombies (i think) */
 					moveTarget = actor.transform.position;
 				}
 			}
@@ -238,6 +255,12 @@ public class EnemyMove : MonoBehaviour
 			else
 			{
 				idlePauseTimer -= Time.deltaTime;
+			}
+
+			if (clearPaths)
+			{
+				idlePath = null;
+				idlePathPauseTime = null;
 			}
 		}
 		else if (_detection != detectMode.idle && _detection != detectMode.forced)
@@ -729,7 +752,12 @@ public class EnemyMove : MonoBehaviour
 
 	private void handleSuspiciousState()
 	{
-		if (attackTargetActor == null)
+		if (!summoned && _startingDetection == detectMode.wandering && idlePath != null && idlePath.Length > 0)
+		{
+			/* pathed zombies should keep moving */
+			moveTarget = idlePath[pathIndex];
+		}
+		else  if (attackTargetActor == null)
 		{
 			moveTarget = actor.transform.position;
 		}

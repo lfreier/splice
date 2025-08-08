@@ -12,6 +12,7 @@ public class ElevatorMenuScene : StationScreen
 	public List<GameObject> buttonList;
 	public List<PlayerSpawnScriptable> elevatorSpawnList;
 
+	public Transform menuHolderTransform;
 	public TextMeshProUGUI exitText;
 
 	public RectTransform scrollRect;
@@ -39,13 +40,29 @@ public class ElevatorMenuScene : StationScreen
 
 		buttonList = new List<GameObject>();
 		elevatorSpawnList = new List<PlayerSpawnScriptable>();
-		for (int i = 1; i < gameManager.playerStats.elevatorAvailable.Length && i < maxElevatorsShown; i ++)
+		int[] currElevatorAvailable = gameManager.playerStats.elevatorAvailable;
+
+		switch (menuManager.elevator.specialType)
 		{
-			if (gameManager.playerStats.elevatorAvailable[i] <= 0)
+			case Elevator.elevatorSpecialType.ending:
+				currElevatorAvailable = new int[LevelManager.NUM_ELEVATORS];
+				currElevatorAvailable[(int)LevelManager.elevatorIndex.ending] = 1;
+				break;
+			case Elevator.elevatorSpecialType.atFinale:
+				currElevatorAvailable = new int[LevelManager.NUM_ELEVATORS]; 
+				break;
+			case Elevator.elevatorSpecialType.basic:
+			default:
+				break;
+		}	
+
+		for (int i = 1; i < currElevatorAvailable.Length && i < maxElevatorsShown; i++)
+		{
+			if (currElevatorAvailable[i] <= 0)
 			{
 				continue;
 			}
-			GameObject newButton = Instantiate(buttonPrefab, this.transform);
+			GameObject newButton = Instantiate(buttonPrefab, menuHolderTransform);
 			RectTransform buttonRect = newButton.GetComponent<RectTransform>();
 			if (buttonRect != null)
 			{
@@ -62,7 +79,7 @@ public class ElevatorMenuScene : StationScreen
 					TextMeshProUGUI text = newButton.GetComponentInChildren<TextMeshProUGUI>();
 					if (text != null)
 					{
-						if (manager.elevator != null && manager.elevator.nextSpawn != null && i == (int)manager.elevator.nextSpawn.elevatorIndex && gameManager.playerStats.elevatorAvailable[i] == 1)
+						if (manager.elevator != null && manager.elevator.nextSpawn != null && i == (int)manager.elevator.nextSpawn.elevatorIndex && currElevatorAvailable[i] == 1)
 						{
 							text.text = "*" + gameManager.levelManager.elevatorSpawns[i].floorName + "*";
 						}
@@ -99,6 +116,12 @@ public class ElevatorMenuScene : StationScreen
 					break;
 				}
 				
+				if (elevatorSpawnList[i].elevatorIndex == LevelManager.elevatorIndex.final)
+				{
+					menuManager.changeScreen(menuManager.elevatorScreenAtFinale);
+					return;
+				}
+
 				/* save when moving to the next floor for the first time */
 				if (stats.elevatorAvailable[(int)elevatorSpawnList[i].elevatorIndex] == 1)
 				{
@@ -112,6 +135,10 @@ public class ElevatorMenuScene : StationScreen
 
 					/* save current level and but set last saved level to next */
 					gameManager.save(menuManager.elevator.playerActor, (int)elevatorSpawnList[i].sceneIndex);
+				}
+				else
+				{
+					gameManager.playerStats.savePlayerData(menuManager.elevator.playerActor);
 				}
 
 				gameManager.nextLevel(menuManager.elevator.playerActor, elevatorSpawnList[i].sceneIndex, (int)elevatorSpawnList[i].spawnIndex);

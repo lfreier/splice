@@ -202,6 +202,16 @@ public class LevelManager : MonoBehaviour
 				gameManager.playerStats.playerHUD.disableHudShadow();
 			}
 
+			if ((SceneDefs.SCENE)levelIndex == SceneDefs.SCENE.LEVEL_FINAL
+				&& gameManager.playerStats != null && gameManager.playerStats.playerHUD != null)
+			{
+				gameManager.playerStats.playerHUD.setFinaleTimer(true);
+			}
+			else if (gameManager.playerStats != null && gameManager.playerStats.playerHUD != null)
+			{
+				gameManager.playerStats.playerHUD.setFinaleTimer(false);
+			}
+
 			Time.timeScale = 1;
 			return;
 			/*

@@ -78,6 +78,8 @@ public class PlayerHUD : MonoBehaviour
 
 	public Sprite[] itemIcon;
 
+	public GameObject finaleTimerObject;
+
 	private void Start()
 	{
 		gameManager = GameManager.Instance;
@@ -621,5 +623,13 @@ public class PlayerHUD : MonoBehaviour
 		}
 		gameManager.musicVolume = change;
 		musicPlayer.volume = change;
+	}
+
+	public void setFinaleTimer(bool toSet)
+	{
+		if (finaleTimerObject != null)
+		{
+			finaleTimerObject.SetActive(toSet);
+		}
 	}
 }

@@ -478,13 +478,17 @@ public class PlayerStats
 				equippedWeaponObject.SetActive(false);
 				equippedWeaponObject.transform.SetParent(gameManager.gameObject.transform);
 				BasicWeapon weap = equippedWeaponObject.GetComponentInChildren<BasicWeapon>();
-				if (weap != null)
+				if (weap != null && data.weaponDurability > 0)
 				{
 					equippedWeapon = weap;
+					weaponCharge = data.weaponCharge;
+					weap.reduceDurability(weap.durability - data.weaponDurability);
 				}
-
-				weaponCharge = data.weaponCharge;
-				weap.reduceDurability(weap.durability - data.weaponDurability);
+				else
+				{
+					data.equippedWeaponPrefab = -1;
+					GameObject.Destroy(equippedWeaponObject);
+				}
 			}
 		}
 		else

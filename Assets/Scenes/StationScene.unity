@@ -409,6 +409,8 @@ MonoBehaviour:
   databaseScreen: {fileID: 8143481522152502890, guid: 2ecc9a9e4557d1749a2330d11e31654c, type: 3}
   mutationScreen: {fileID: 8143481522152502890, guid: 5a6c185f6b305bb4595a3d73bb0f809c, type: 3}
   elevatorScreen: {fileID: 3285961014088188893, guid: 0017f26712fba0f4db268836e3a5063c, type: 3}
+  elevatorScreenAtFinale: {fileID: 3285961014088188893, guid: bd91d863ac5d1c5479a3bf813c8f54ae, type: 3}
+  elevatorScreenToEnding: {fileID: 0}
   station: {fileID: 0}
   elevator: {fileID: 0}
   stationClickPlayer: {fileID: 2106728643}

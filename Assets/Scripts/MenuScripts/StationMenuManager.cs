@@ -23,7 +23,6 @@ public class StationMenuManager : MonoBehaviour
 
 	public GameObject elevatorScreen;
 	public GameObject elevatorScreenAtFinale;
-	public GameObject elevatorScreenToEnding;
 
 	[field: HideInInspector]
 	public SaveStation station;
@@ -63,19 +62,7 @@ public class StationMenuManager : MonoBehaviour
 				if (trigger.inUse)
 				{
 					elevator = trigger;
-					switch(elevator.specialType)
-					{
-						case Elevator.elevatorSpecialType.ending:
-							changeScreen(elevatorScreenToEnding);
-							break;
-						case Elevator.elevatorSpecialType.atFinale:
-							changeScreen(elevatorScreenAtFinale);
-							break;
-						case Elevator.elevatorSpecialType.basic:
-						default:
-							changeScreen(elevatorScreen);
-							break;
-					}
+					changeScreen(elevatorScreen);
 					/* make sure not to init twice */
 					return;
 				}

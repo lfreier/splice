@@ -493,7 +493,7 @@ public class Actor : MonoBehaviour
 			{
 				script.enabled = false;
 			}
-			gameManager.gameOver(this);
+			gameManager.gameOver();
 		}
 		
 		if (enableOnDeath != null)
