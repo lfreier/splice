@@ -462,6 +462,14 @@ public class MenuHandler : MonoBehaviour
 		}
 	}
 
+	public void onQuitToMenu()
+	{
+		if (GameManager.Instance != null)
+		{
+			GameManager.Instance.quitToMenu();
+		}
+	}
+
 	public void quitGame()
 	{
 		if (buttonsLocked)

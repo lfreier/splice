@@ -3,6 +3,10 @@ using UnityEngine;
 
 public class StartEnding : MonoBehaviour
 {
+	public GameObject endingScreenPrefab;
+	private GameObject endingScreen;
+	private bool hasSetActive = false;
+
 	public float initialTimerLength = 20F;
 	private float initialTimer;
 
@@ -12,15 +16,17 @@ public class StartEnding : MonoBehaviour
 	public float zoomTimerLength = 10F;
 	private float zoomTimer;
 
-	public float creditsTimerLength = 10F;
-	private float creditsTimer;
+	public SoundScriptable footstepDirtScriptable;
 
 	public Collider2D attachedCollider;
 	private Camera mainCam;
 
+	private PlayerHUD playerHUD;
+
 	private void Start()
 	{
 		mainCam = Camera.main;
+		hasSetActive = false;
 	}
 
 	void Update()
@@ -41,17 +47,9 @@ public class StartEnding : MonoBehaviour
 			if (zoomTimer <= 0)
 			{
 				zoomTimer = 0;
-				startCredits();
-			}
-		}
-
-		if (creditsTimer != 0)
-		{
-			creditsTimer -= Time.deltaTime;
-			if (creditsTimer <= 0)
-			{
-				creditsTimer = 0;
-				startQuit();
+				//fade in credits
+				endingScreen = Instantiate(endingScreenPrefab, GameManager.Instance.playerStats.playerHUD.transform.parent);
+				endingScreen.SetActive(true);
 			}
 		}
 
@@ -80,16 +78,6 @@ public class StartEnding : MonoBehaviour
 		zoomTimer = zoomTimerLength;
 	}
 
-	private void startCredits()
-	{
-		//fade in credits
-	}
-
-	private void startQuit()
-	{
-		//now quit on player input
-	}
-
 	private void OnTriggerEnter2D(Collider2D collision)
 	{
 		Actor actorHit = collision.GetComponentInChildren<Actor>();
@@ -97,6 +85,11 @@ public class StartEnding : MonoBehaviour
 		{
 			initialTimer = initialTimerLength;
 			attachedCollider.enabled = false;
+			PlayerMove move = actorHit.GetComponentInChildren<PlayerMove>();
+			if (move != null)
+			{
+				move.footstepScriptable = footstepDirtScriptable;
+			}
 		}
 	}
 }

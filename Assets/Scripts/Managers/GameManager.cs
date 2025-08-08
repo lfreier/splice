@@ -491,6 +491,16 @@ public class GameManager : MonoBehaviour
 		}
 	}
 
+	public async void quitToMenu()
+	{
+		loadingHandler.reloadHUD = false;
+		await SceneManager.UnloadSceneAsync(SCENE_INDEX_MASK[(int)SCENE.PLAYER_HUD]);
+		loadBackgroundScenes();
+		await loadingHandler.LoadSceneGroup(new int[] { (int)SCENE.MAIN_MENU }, false, true);
+
+		Time.timeScale = 1F;
+	}
+
 	public void signalCloseMenusEvent()
 	{
 		closeMenusEvent?.Invoke();

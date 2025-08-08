@@ -187,6 +187,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 16827b4e15ed7b5458b335d282addc46, type: 3}
   - {fileID: 8300000, guid: e5071ca98f3a8324ea6aa2428f55a690, type: 3}
   - {fileID: 8300000, guid: 77a0a0e42c7dc2e4f9b233ab4251231d, type: 3}
+  - {fileID: 8300000, guid: ec2e27bc3ba86f64cb57ba9bc0bf795e, type: 3}
   footstepCarpet: {fileID: 0}
   heartPump: {fileID: 0}
   playerDeath: {fileID: 0}

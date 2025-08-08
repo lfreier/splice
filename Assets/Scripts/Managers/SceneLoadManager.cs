@@ -33,7 +33,7 @@ public class SceneLoadManager
 
 		for (i = 0; i < scenes.Length; i++)
 		{
-			if (isLevelScene((SCENE)scenes[i]))
+			if (isLevelScene((SCENE)scenes[i]) || (SCENE)scenes[i] == SCENE.MAIN_MENU)
 			{
 				if ((SCENE)scenes[i] == SCENE.MANAGER)
 				{

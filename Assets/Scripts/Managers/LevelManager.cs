@@ -1,5 +1,4 @@
-﻿using JetBrains.Annotations;
-using System.Collections;
+﻿using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
 using System.Threading.Tasks;
@@ -199,6 +198,7 @@ public class LevelManager : MonoBehaviour
 			if ((SceneDefs.SCENE)levelIndex == SceneDefs.SCENE.LEVEL_ENDING 
 				&& gameManager.playerStats != null && gameManager.playerStats.playerHUD != null)
 			{
+				gameManager.playerStats.playerHUD.disableHud();
 				gameManager.playerStats.playerHUD.disableHudShadow();
 			}
 

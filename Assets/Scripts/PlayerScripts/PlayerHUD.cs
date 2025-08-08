@@ -79,6 +79,7 @@ public class PlayerHUD : MonoBehaviour
 	public Sprite[] itemIcon;
 
 	public GameObject finaleTimerObject;
+	public GameObject finaleTimer;
 
 	private void Start()
 	{
@@ -220,6 +221,30 @@ public class PlayerHUD : MonoBehaviour
 			{
 				musicPlayer.volume = targetVolume;
 				fadeInMusic = false;
+			}
+		}
+	}
+
+	public void disableHud()
+	{
+		foreach (GameObject heart in heartList)
+		{
+			if (heart != null)
+			{
+				Destroy(heart);
+			}
+		}
+
+		for (int i = 0; i < transform.parent.childCount; i ++)
+		{
+			Transform child = transform.parent.GetChild(i);
+			if (child == this.transform)
+			{
+				continue;
+			}
+			else
+			{
+				Destroy(child.gameObject);
 			}
 		}
 	}
@@ -627,9 +652,17 @@ public class PlayerHUD : MonoBehaviour
 
 	public void setFinaleTimer(bool toSet)
 	{
-		if (finaleTimerObject != null)
+		if (finaleTimerObject != null && toSet)
 		{
-			finaleTimerObject.SetActive(toSet);
+			if (finaleTimer == null)
+			{
+				finaleTimer = Instantiate(finaleTimerObject, this.transform.parent);
+			}
+		}
+
+		if (finaleTimer != null)
+		{
+			finaleTimer.SetActive(toSet);
 		}
 	}
 }

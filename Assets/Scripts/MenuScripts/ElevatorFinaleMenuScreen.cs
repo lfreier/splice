@@ -65,4 +65,10 @@ public class ElevatorFinaleMenuScreen : StationScreen
 
 		GameManager.updateCellFontSize(buttonText, 1);
 	}
+
+	public override void onBackButton()
+	{
+		textIndex = 0;
+		base.onBackButton();
+	}
 }
