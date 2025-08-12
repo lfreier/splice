@@ -5,7 +5,6 @@ public class StartEnding : MonoBehaviour
 {
 	public GameObject endingScreenPrefab;
 	private GameObject endingScreen;
-	private bool hasSetActive = false;
 
 	public float initialTimerLength = 20F;
 	private float initialTimer;
@@ -26,7 +25,6 @@ public class StartEnding : MonoBehaviour
 	private void Start()
 	{
 		mainCam = Camera.main;
-		hasSetActive = false;
 	}
 
 	void Update()

@@ -47,7 +47,7 @@ PrefabInstance:
     - target: {fileID: 2023260988043286838, guid: f3bb2ddd86bcc0544af59b764dd961fa, type: 3}
       propertyPath: 'corpseSpriteList.Array.data[0]'
       value: 
-      objectReference: {fileID: 21300000, guid: 6316521f91b47c6468a3d0655addd808, type: 3}
+      objectReference: {fileID: 21300000, guid: 91a4a726ccbf4554095969775eaf9ab6, type: 3}
     - target: {fileID: 4515851072354870145, guid: f3bb2ddd86bcc0544af59b764dd961fa, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0

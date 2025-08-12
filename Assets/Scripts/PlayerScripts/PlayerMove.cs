@@ -125,7 +125,7 @@ public class PlayerMove : MonoBehaviour
 		if (createSoundNext)
 		{
 			createSoundNext = false;
-			SoundDefs.createSound(player.transform.position, footstepScriptable);
+			SoundDefs.createSound(player.transform.position, footstepScriptable, null);
 			nextPosition = Vector2.zero;
 		}
 

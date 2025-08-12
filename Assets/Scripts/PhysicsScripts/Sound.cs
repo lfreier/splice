@@ -4,6 +4,7 @@ using UnityEngine;
 public class Sound : MonoBehaviour
 {
 	public float timer;
+	public Actor origin;
 
 	public SoundScriptable scriptable;
 	public CircleCollider2D soundCollider;
@@ -18,10 +19,11 @@ public class Sound : MonoBehaviour
 		}
 	}
 
-	public void startSound(SoundScriptable scriptable)
+	public void startSound(SoundScriptable scriptable, Actor origin)
 	{
 		this.timer = scriptable.length;
 		this.scriptable = scriptable;
+		this.origin = origin;
 
 		if (scriptable != null && soundCollider != null)
 		{

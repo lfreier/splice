@@ -13,6 +13,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 5154943660721874716, guid: 16aded05e0d6fd34aa3f4d6e93b96eaa, type: 3}
     - target: {fileID: 740460995545239096, guid: f3bb2ddd86bcc0544af59b764dd961fa, type: 3}
+      propertyPath: corpseSprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 0aebbe933412650408bb7a4f628f9d7c, type: 3}
+    - target: {fileID: 740460995545239096, guid: f3bb2ddd86bcc0544af59b764dd961fa, type: 3}
       propertyPath: _actorScriptable
       value: 
       objectReference: {fileID: 11400000, guid: 16f7ba50317fbc64f9b1238e213c50ed, type: 2}

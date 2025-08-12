@@ -124,7 +124,7 @@ public class TurretWeapon : BasicWeapon
 			flashTimer = flashTimerLength;
 		}
 
-		SoundDefs.createSound(this.transform.position, wallHitSound);
+		SoundDefs.createSound(this.transform.position, wallHitSound, actorWielder);
 
 		return true;
 	}

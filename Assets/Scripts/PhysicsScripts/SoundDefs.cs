@@ -22,7 +22,7 @@ public static class SoundDefs
 
 	public static string TAG_WALL_METAL = "WallMetal";
 
-	static public void createSound(Vector2 worldPosition, SoundScriptable scriptable)
+	static public void createSound(Vector2 worldPosition, SoundScriptable scriptable, Actor origin)
 	{
 		if (scriptable == null)
 		{
@@ -37,7 +37,7 @@ public static class SoundDefs
 			Sound script = soundObj.GetComponent<Sound>();
 			if (script != null)
 			{
-				script.startSound(scriptable);
+				script.startSound(scriptable, origin);
 			}
 		}
 	}

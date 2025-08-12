@@ -831,9 +831,14 @@ public class EnemyMove : MonoBehaviour
 				return targetActor;
 			}
 			*/
-			if (soundScript != null && soundScript.scriptable.volume >= loudest)
+			if (soundScript != null && soundScript.scriptable.volume >= loudest && (soundScript.origin == null || soundScript.origin != actor))
 			{
 				loudest = soundScript.scriptable.volume;
+
+				if (soundScript != null && soundScript.origin == actor)
+				{
+					loudest = soundScript.scriptable.volume;
+				}
 
 				switch (soundScript.scriptable.type)
 				{

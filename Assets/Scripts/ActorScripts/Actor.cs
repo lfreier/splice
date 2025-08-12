@@ -71,6 +71,7 @@ public class Actor : MonoBehaviour
 	public GameObject unarmedPrefab;
 
 	public GameObject enableOnDeath;
+	private EnemyMove enemyAi;
 
 	public void Start()
 	{
@@ -79,6 +80,8 @@ public class Actor : MonoBehaviour
 		attackTarget = null;
 		activeSlots = new MutationInterface[MutationDefs.MAX_SLOTS];
 		sprite = GetComponent<SpriteRenderer>();
+
+		enemyAi = this.GetComponentInChildren<EnemyMove>();
 		initActorData();
 		initialized = true;
 	}
@@ -668,6 +671,15 @@ public class Actor : MonoBehaviour
 		{
 			this.sprite.color = newColor;
 		}
+
+		if (enemyAi != null && enemyAi.isTurret)
+		{
+			TurretWeapon weap = this.GetComponentInChildren<TurretWeapon>();
+			if (weap != null)
+			{
+				weap.sprite.color = newColor;
+			}
+		}
 	}
 
 	public void setConstant(bool toggle, constantType type)
@@ -684,10 +696,9 @@ public class Actor : MonoBehaviour
 						gameManager.signalRotationUnlocked();
 					}
 				}
-				EnemyMove enemyMove = GetComponent<EnemyMove>();
-				if (enemyMove != null)
+				if (enemyAi != null)
 				{
-					enemyMove.disableStun();
+					enemyAi.disableStun();
 				}
 				break;
 			case constantType.IFRAME:
@@ -823,12 +834,11 @@ public class Actor : MonoBehaviour
 			else
 			{
 				EffectDefs.effectApply(this, gameManager.effectManager.iFrame0);
-				EnemyMove enemyMove = GetComponent<EnemyMove>();
-				if (enemyMove != null)
+				if (enemyAi != null)
 				{
-					enemyMove.setStunResponse(sourceActor);
-					if (damageTaken >= 1F && (enemyMove._detection == detectMode.idle || enemyMove._detection == detectMode.suspicious || enemyMove._detection == detectMode.wandering)
-						&& !isStunned() && !enemyMove.summoned && !enemyMove.isTurret)
+					enemyAi.setStunResponse(sourceActor);
+					if (damageTaken >= 1F && (enemyAi._detection == detectMode.idle || enemyAi._detection == detectMode.suspicious || enemyAi._detection == detectMode.wandering)
+						&& !isStunned() && !enemyAi.summoned && !enemyAi.isTurret)
 					{
 						EffectDefs.effectApply(this, gameManager.effectManager.stun1);
 					}

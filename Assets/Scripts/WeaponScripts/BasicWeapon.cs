@@ -322,7 +322,7 @@ public abstract class BasicWeapon : MonoBehaviour, WeaponInterface
 		{
 			actorRef.triggerDamageEffects(actorHit);
 			knockbackMult = (1 - actorHit._actorScriptable.knockbackResist) * WeaponDefs.KNOCKBACK_MULT_ACTOR;
-			SoundDefs.createSound(actorHit.transform.position, actorHitSound);
+			SoundDefs.createSound(actorHit.transform.position, actorHitSound, actorWielder);
 			if (_weaponScriptable.soundActorHit != null)
 			{
 				playSound(weaponAudioPlayer, _weaponScriptable.soundActorHit.name, _weaponScriptable.soundActorHitVolume);
@@ -348,7 +348,7 @@ public abstract class BasicWeapon : MonoBehaviour, WeaponInterface
 		{
 			if (collision.tag == SoundDefs.TAG_WALL_METAL)
 			{
-				SoundDefs.createSound(actorRef.transform.position, wallHitSound);
+				SoundDefs.createSound(actorRef.transform.position, wallHitSound, actorWielder);
 				if (_weaponScriptable.soundWallHit != null)
 				{
 					playSound(weaponAudioPlayer, _weaponScriptable.soundWallHit.name, _weaponScriptable.soundWallHitVolume);
