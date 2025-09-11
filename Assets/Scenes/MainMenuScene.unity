@@ -362,6 +362,7 @@ MonoBehaviour:
   - {fileID: 2076662761}
   - {fileID: 316824998}
   - {fileID: 1198068599}
+  - {fileID: 679021801}
   fadeInText: []
   holdToFillImage: {fileID: 0}
   holdTimerLength: 0
