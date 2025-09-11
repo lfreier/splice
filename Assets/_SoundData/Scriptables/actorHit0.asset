@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fb55f236f4211e041aae60ee7c308f35, type: 3}
   m_Name: actorHit0
   m_EditorClassIdentifier: 
-  <audioClip>k__BackingField: {fileID: 8300000, guid: 7b9962d8c29c303479152f1f872feffe, type: 3}
+  <audioClip>k__BackingField: {fileID: 0}
   <length>k__BackingField: 0.5
   <radius>k__BackingField: 1
   <type>k__BackingField: 0

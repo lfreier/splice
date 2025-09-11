@@ -14,8 +14,10 @@ public class Scroll : MonoBehaviour
 
 	void Start()
 	{
-		homeY = rTransform.anchoredPosition.y;
-		span = image.sprite.rect.height * 10;
+		rTransform.offsetMax = new Vector2(0, 0);
+		rTransform.offsetMin = new Vector2(0, -(Screen.height * 2));
+		homeY = rTransform.offsetMax.y;
+		span = Screen.height;
 	}
 
 	void LateUpdate()
@@ -26,7 +28,9 @@ public class Scroll : MonoBehaviour
 
 		if (yPos - homeY >= span)
 		{
-			yPos = homeY;
+			yPos = homeY - span;
+			rTransform.offsetMax = new Vector2(0, 0);
+			rTransform.offsetMin = new Vector2(0, -(Screen.height * 2));
 		}
 
 		rTransform.anchoredPosition = new Vector3(0, yPos, transform.position.z);

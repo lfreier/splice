@@ -12,5 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ef8256f3a9799a945bdcdb0bc9439850, type: 3}
   m_Name: levelOfficeSave
   m_EditorClassIdentifier: 
-  spawnPosition: {x: 33, y: 40}
+  spawnPosition: {x: 0, y: 1}
   spawnRotation: 0
+  elevatorIndex: 0
+  floorName: 
+  sceneIndex: 21
+  spawnIndex: 4

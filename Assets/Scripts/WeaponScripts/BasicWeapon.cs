@@ -1,12 +1,10 @@
 ﻿using Unity.VisualScripting;
 using UnityEngine;
-using static UnityEngine.GraphicsBuffer;
 
+[RequireComponent(typeof(AudioSource))]
 public abstract class BasicWeapon : MonoBehaviour, WeaponInterface
 {
 	[SerializeField] public Animator anim;
-
-	public ActionInterface secondaryAction;
 
 	public Collider2D hitbox;
 	public BoxCollider2D throwBox;
@@ -20,59 +18,60 @@ public abstract class BasicWeapon : MonoBehaviour, WeaponInterface
 	public WeaponScriptable _weaponScriptable;
 	public WeaponPhysics _weaponPhysics;
 
+	public AudioSource weaponAudioPlayer;
+	public AudioSource weaponSwingAudioPlayer;
+
 	public SoundScriptable actorHitSound;
 	public SoundScriptable wallHitSound;
-
-	public AudioClip weaponBreakSound;
-	public AudioClip weaponSwingSound;
 
 	public bool currentSide;
 
 	public bool attackOnlyRight;
 
-	private GameManager gameManager;
+	protected GameManager gameManager;
 
 	public float durability;
 
 	public bool isInit = false;
+	public bool swingActive = false;
 
-	void Start()
+	protected bool soundMade = false;
+
+	void Awake()
 	{
-		gameManager = GameManager.Instance;
+		/* this needs to be done during Awake because of weird behavior with SwingBatteryWeapons and setting durability after loading */
 		if (durability == 0)
 		{
 			durability = _weaponScriptable.durability;
-		}
-		secondaryAction = GetComponent<ActionInterface>();
-		if (secondaryAction == null)
-		{
-			secondaryAction = GetComponentInChildren<ActionInterface>();
 		}
 		if (_weaponPhysics != null)
 		{
 			_weaponPhysics.linkInterface(this);
 		}
+		PickupDefs.setLayer(gameObject);
 		init();
 
 		isInit = true;
 	}
 
+	void Start()
+	{
+		gameManager = GameManager.Instance;
+	}
+
 	virtual public bool attack(LayerMask targetLayer)
 	{
+		swingActive = true;
+		soundMade = false;
 		anim.SetTrigger(WeaponDefs.ANIM_TRIGGER_ATTACK);
 		//lastTargetLayer = targetLayer;
 		actorWielder.invincible = false;
-		//actorWielder.actorAudioSource.PlayOneShot(weaponSwingSound);
+		if (_weaponScriptable.soundSwing != null)
+		{
+			playSound(weaponSwingAudioPlayer, _weaponScriptable.soundSwing.name, _weaponScriptable.soundSwingVolume);
+		}
 
 		return true;
-	}
-
-	public void attackSecondary()
-	{
-		if (secondaryAction != null)
-		{
-			secondaryAction.action();
-		}
 	}
 
 	public bool canBeDropped()
@@ -145,7 +144,12 @@ public abstract class BasicWeapon : MonoBehaviour, WeaponInterface
 			throwActive = _weaponPhysics.isBeingThrown();
 		}
 
-		return !anim.GetCurrentAnimatorStateInfo(0).IsTag("Idle") || throwActive;
+		if (anim == null)
+		{
+			return false;
+		}
+
+		return !anim.GetCurrentAnimatorStateInfo(0).IsTag("Idle") || throwActive || swingActive;
 	}
 
 	virtual public void reduceDurability(float reduction)
@@ -161,12 +165,26 @@ public abstract class BasicWeapon : MonoBehaviour, WeaponInterface
 		{
 			//set to damaged sprite
 			sprite.sprite = damagedSprite;
-			secondaryAction.setDamagedSprite();
 		}
 
 		if (durability <= 0)
 		{
-			this.actorWielder.drop();
+			if (_weaponScriptable.soundBreak != null)
+			{
+				AudioClip toPlay;
+				gameManager.audioManager.soundHash.TryGetValue(_weaponScriptable.soundBreak.name, out toPlay);
+				if (toPlay != null)
+				{
+					if (actorWielder == null)
+					{
+						weaponAudioPlayer.PlayOneShot(toPlay, gameManager.effectsVolume);
+					}
+					else
+					{
+						actorWielder.actorAudioSource.PlayOneShot(toPlay, gameManager.effectsVolume);
+					}
+				}
+			}
 			Debug.Log("Weapon broke: " + this.name);
 			//actorWielder.actorAudioSource.PlayOneShot(weaponBreakSound);
 			//might need to wait for sound to play out
@@ -176,10 +194,6 @@ public abstract class BasicWeapon : MonoBehaviour, WeaponInterface
 	public void setActorToHold(Actor actor)
 	{
 		actorWielder = actor;
-		if (secondaryAction != null || null != (secondaryAction = GetComponentInChildren<ActionInterface>()))
-		{
-			secondaryAction.setActorToHold(actor);
-		}
 		if (attackOnlyRight)
 		{
 			actorWielder.setAttackOnly(WeaponDefs.ANIM_BOOL_ONLY_RIGHT, false);
@@ -192,7 +206,7 @@ public abstract class BasicWeapon : MonoBehaviour, WeaponInterface
 
 	public void setHitbox(bool toggle)
 	{
-		if (hitbox != null)
+		if (hitbox != null && !(attackOnlyRight & !currentSide))
 		{
 			hitbox.enabled = toggle;
 		}
@@ -204,7 +218,7 @@ public abstract class BasicWeapon : MonoBehaviour, WeaponInterface
 		currentSide = (side > 0);
 	}
 
-	public void setStartingPosition(bool side)
+	virtual public void setStartingPosition(bool side)
 	{
 		if (!side)
 		{
@@ -241,11 +255,13 @@ public abstract class BasicWeapon : MonoBehaviour, WeaponInterface
 		transform.parent.SetParent(null);
 
 		_weaponPhysics.startThrow(target, actorWielder);
+		actorWielder = null;
 	}
 
-	public bool toggleCollider(int enable)
+	virtual public bool toggleCollider(int enable)
 	{
-		if (hitbox == null)
+		swingActive = enable > 0;
+		if (hitbox == null || (anim.GetBool(WeaponDefs.ANIM_BOOL_ONLY_RIGHT) && !currentSide))
 		{
 			return false;
 		}
@@ -264,22 +280,27 @@ public abstract class BasicWeapon : MonoBehaviour, WeaponInterface
 		}
 	}
 
-	public bool toggleSecondaryCollider()
-	{
-		return secondaryAction.toggleHitbox();
-	}
-
 	public Actor weaponHit(Collider2D collision)
 	{
 		return weaponHit(collision, getWeaponDamage(), 1F);
+	}
+
+	public virtual void playSound(AudioSource player, string soundName, float volume)
+	{
+		AudioClip toPlay;
+		if (gameManager.audioManager.soundHash.TryGetValue(soundName, out toPlay) && toPlay != null)
+		{
+			player.PlayOneShot(toPlay, volume * gameManager.effectsVolume);
+		}
 	}
 
 	public Actor weaponHit(Collider2D collision, float damage, float durabilityDamage)
 	{
 		float knockbackMult = 1;
 		float maxForce = 10000;
+		Actor actorRef = actorWielder;
 
-		if (this.actorWielder != null && collision.name == actorWielder.name)
+		if (actorRef != null && collision.name == actorRef.name)
 		{
 			Debug.Log("Stop hitting yourself");
 			return null;
@@ -292,23 +313,28 @@ public abstract class BasicWeapon : MonoBehaviour, WeaponInterface
 		}
 
 		Actor actorHit = collision.GetComponent<Actor>();
-		if (actorWielder == null)
+		if (actorRef == null)
 		{
 			return null;
 		}
 
-		if (actorHit != null && actorWielder.isTargetHostile(actorHit) && !actorHit.invincible)
+		if (actorHit != null && actorRef.isTargetHostile(actorHit) && !actorHit.invincible)
 		{
-			actorWielder.triggerDamageEffects(actorHit);
-			if (actorHit.takeDamage(damage, actorWielder) > 0)
+			actorRef.triggerDamageEffects(actorHit);
+			knockbackMult = (1 - actorHit._actorScriptable.knockbackResist) * WeaponDefs.KNOCKBACK_MULT_ACTOR;
+			SoundDefs.createSound(actorHit.transform.position, actorHitSound, actorWielder);
+			if (_weaponScriptable.soundActorHit != null)
+			{
+				playSound(weaponAudioPlayer, _weaponScriptable.soundActorHit.name, _weaponScriptable.soundActorHitVolume);
+			}
+
+			if (actorHit.takeDamage(damage, actorRef) > 0)
 			{
 				reduceDurability(durabilityDamage);
 			}
-			knockbackMult = (1 - actorHit._actorScriptable.knockbackResist) * WeaponDefs.KNOCKBACK_MULT_ACTOR;
-			SoundDefs.createSound(actorHit.transform.position, actorHitSound);
 
 			maxForce = ActorDefs.MAX_HIT_FORCE;
-			if (actorWielder.isStunned())
+			if (actorRef.isStunned())
 			{
 				maxForce = ActorDefs.MAX_PARRY_FORCE;
 			}
@@ -322,21 +348,28 @@ public abstract class BasicWeapon : MonoBehaviour, WeaponInterface
 		{
 			if (collision.tag == SoundDefs.TAG_WALL_METAL)
 			{
-				SoundDefs.createSound(actorWielder.transform.position, wallHitSound);
-			}
-			else
-			{
-				SoundDefs.createSound(actorWielder.transform.position, actorHitSound);
+				SoundDefs.createSound(actorRef.transform.position, wallHitSound, actorWielder);
+				if (_weaponScriptable.soundWallHit != null)
+				{
+					playSound(weaponAudioPlayer, _weaponScriptable.soundWallHit.name, _weaponScriptable.soundWallHitVolume);
+				}
 			}
 			Debug.Log("Hit: " + collision.name + " for no damage");
 
 			Obstacle obstacle = collision.GetComponent<Obstacle>();
 			if (obstacle != null)
 			{
-				reduceDurability(obstacle._obstacleScriptable.weaponDurabilityDamage);
 				knockbackMult = obstacle._obstacleScriptable.weaponHitMult * WeaponDefs.KNOCKBACK_MULT_OBSTACLE;
 				maxForce = obstacle._obstacleScriptable.maxObstacleForce;
 				obstacle.knockOver();
+
+				if (_weaponScriptable.soundObstacleHit != null && !soundMade && knockbackMult != 0)
+				{
+					soundMade = true;
+					playSound(weaponAudioPlayer, _weaponScriptable.soundObstacleHit.name, _weaponScriptable.soundObstacleHitVolume);
+				}
+
+				reduceDurability(obstacle._obstacleScriptable.weaponDurabilityDamage);
 			}
 		}
 
@@ -344,10 +377,15 @@ public abstract class BasicWeapon : MonoBehaviour, WeaponInterface
 		Rigidbody2D hitBody = collision.attachedRigidbody;
 		if (hitBody != null)
 		{
-			Vector3 force = Vector3.ClampMagnitude(hitBody.transform.position - actorWielder.transform.position, 1);
+			Vector3 force = Vector3.ClampMagnitude(hitBody.transform.position - actorRef.transform.position, 1);
 			float forceMult = Mathf.Min(_weaponScriptable.knockbackDamage * knockbackMult, maxForce);
 			Debug.Log("Hit force on " + hitBody.name + ": " + forceMult);
 			hitBody.AddForce(force * forceMult);
+		}
+
+		if (durability <= 0)
+		{
+			actorRef.drop();
 		}
 
 		return actorHit;

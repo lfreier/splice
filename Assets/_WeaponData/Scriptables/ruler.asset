@@ -16,9 +16,24 @@ MonoBehaviour:
   <atkSpeed>k__BackingField: 0.3
   <canBeDropped>k__BackingField: 1
   <damage>k__BackingField: 1
+  <description>k__BackingField: SHORT REACH AND BRITTLE AS A WEAPON.\r\nADVISABLE
+    TO FIND OTHER BLUNT INSTRUMENTS.
   <durability>k__BackingField: 3
+  <icon>k__BackingField: {fileID: 21300000, guid: 35d098ce4c65b63468c128ed5a28fd0d, type: 3}
+  <displayName>k__BackingField: METERSTICK
   <npcAttackRange>k__BackingField: 2.5
+  <prefabIndex>k__BackingField: 0
   <secondaryDamage>k__BackingField: 2
+  <soundActorHit>k__BackingField: {fileID: 8300000, guid: 152261d29304ef5488d53ce1c9eb9bf0, type: 3}
+  <soundActorHitVolume>k__BackingField: 1
+  <soundBreak>k__BackingField: {fileID: 8300000, guid: e59c7e023e0cb8f41baf11a0a41e47a5, type: 3}
+  <soundBreakVolume>k__BackingField: 0.7
+  <soundObstacleHit>k__BackingField: {fileID: 8300000, guid: fad49cc5955cf434c9046ace9b42a7b7, type: 3}
+  <soundObstacleHitVolume>k__BackingField: 1
+  <soundSwing>k__BackingField: {fileID: 8300000, guid: 906f85267add4704b851251eeb89405d, type: 3}
+  <soundSwingVolume>k__BackingField: 1
+  <soundWallHit>k__BackingField: {fileID: 8300000, guid: 4ebf89c51850dc945aeecf8d50d17329, type: 3}
+  <soundWallHitVolume>k__BackingField: 1
   <throwDamage>k__BackingField: 0.5
   <throwDurabilityDamage>k__BackingField: 0.5
   <throwSpeed>k__BackingField: 54

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Reflection;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -14,7 +15,9 @@ public class MutationSelectHUD : MonoBehaviour
 
 	public GameObject mutSelectPrefab;
 
-	public GameObject[] selections; 
+	public GameObject[] selections;
+
+	public GameObject tutorialObject;
 
 	public MutationInterface[] mutArray;
 
@@ -25,9 +28,56 @@ public class MutationSelectHUD : MonoBehaviour
 
 	public float clickProtectSeconds;
 
+	private bool acceptHeld;
+
+	public Image acceptFillImage;
+
+	public Button backButton;
+	public Button acceptButton;
+	public Button nextButton;
+
+	public Image tutorialImage;
+	private Sprite[] currTutorialImages;
+	private int tutorialImageIndex;
+
+	public float holdTimerLength;
+	private float acceptHoldTimer = 0F;
+
+	private int currIndex;
+
 	private float loadInTime = 0.5F;
 
+	public void Update()
+	{
+		/* only used for hold to click menu buttons */
+
+		//increment timer
+		if (acceptHeld && holdTimerLength > 0 && acceptFillImage != null && Time.timeScale <= 0)
+		{
+			acceptHoldTimer += Time.fixedUnscaledDeltaTime;
+			acceptFillImage.fillAmount = acceptHoldTimer / holdTimerLength;
+			if (acceptHoldTimer >= holdTimerLength)
+			{
+				acceptHoldTimer = 0;
+				acceptHeld = false;
+				acceptMutation(currIndex);
+			}
+		}
+		//decrement timer
+		if (acceptHoldTimer > 0 && !acceptHeld)
+		{
+			acceptHoldTimer -= Time.fixedUnscaledDeltaTime;
+			acceptFillImage.fillAmount = acceptHoldTimer / holdTimerLength;
+		}
+	}
+
 	public void selectMutation(int index)
+	{
+		currIndex = index;
+		enableMutationTutorial(mutArray[index].getTutorialSprites());
+	}
+
+	public void acceptMutation(int index)
 	{
 		/* Hacky way to add protection of mashing click */
 		if (Time.unscaledTime - loadInTime < clickProtectSeconds || select == null)
@@ -43,8 +93,93 @@ public class MutationSelectHUD : MonoBehaviour
 		{
 			select.makeSelection(null);
 		}
-
 		menu.resumeGame();
+	}
+
+	public void enableMutationTutorial(Sprite[] mutTutorial)
+	{
+		foreach (GameObject obj in selections)
+		{
+			obj.SetActive(false);
+		}
+
+		tutorialObject.SetActive(true);
+		currTutorialImages = mutTutorial;
+		tutorialImageIndex = 0;
+		if (currTutorialImages != null && currTutorialImages.Length > 0)
+		{
+			tutorialImage.sprite = currTutorialImages[0];
+			if (currTutorialImages.Length > 1)
+			{
+				acceptButton.gameObject.SetActive(false);
+				nextButton.gameObject.SetActive(true);
+			}
+			else
+			{
+				acceptButton.gameObject.SetActive(true);
+				nextButton.gameObject.SetActive(false);
+			}
+		}
+		else
+		{
+			acceptButton.gameObject.SetActive(true);
+			nextButton.gameObject.SetActive(false);
+		}
+		tutorialImage.enabled = true;
+		backButton.interactable = true;
+		nextButton.interactable = true;
+		acceptButton.interactable = true;
+	}
+
+	public void onBackButtonClick()
+	{
+		if (tutorialImageIndex == 0)
+		{
+			foreach (GameObject obj in selections)
+			{
+				obj.SetActive(true);
+			}
+
+			tutorialObject.SetActive(false);
+			currTutorialImages = null;
+			tutorialImageIndex = 0;
+
+			tutorialImage.enabled = false;
+			tutorialImage.sprite = null;
+			acceptButton.interactable = false;
+			backButton.interactable = false;
+			nextButton.interactable = false;
+		}
+		else
+		{
+			tutorialImageIndex--;
+			tutorialImage.sprite = currTutorialImages[tutorialImageIndex];
+			acceptButton.gameObject.SetActive(false);
+			acceptButton.interactable = false;
+			nextButton.gameObject.SetActive(true);
+			nextButton.interactable = true;
+			backButton.interactable = true;
+		}
+	}
+
+	public void nextMutationTutorial()
+	{
+		tutorialImageIndex++;
+		tutorialImage.sprite = currTutorialImages[tutorialImageIndex];
+		if (tutorialImageIndex >= currTutorialImages.Length - 1)
+		{
+			acceptButton.gameObject.SetActive(true);
+			acceptButton.interactable = true;
+			nextButton.gameObject.SetActive(false);
+			nextButton.interactable = false;
+		}
+		else
+		{
+			acceptButton.gameObject.SetActive(false);
+			acceptButton.interactable = false;
+			nextButton.gameObject.SetActive(true);
+			nextButton.interactable = true;
+		}
 	}
 
 	private void setAnchors(RectTransform rect, int index)
@@ -72,6 +207,16 @@ public class MutationSelectHUD : MonoBehaviour
 		rect.offsetMax = Vector2.zero;
 	}
 
+	public void OnPointerDown()
+	{
+		acceptHeld = true;
+	}
+
+	public void OnPointerUp()
+	{
+		acceptHeld = false;
+	}
+
 	public void showMutationSelect(MutationSelect source)
 	{
 		Time.timeScale = 0;
@@ -84,11 +229,17 @@ public class MutationSelectHUD : MonoBehaviour
 		mutArray = new MutationInterface[objArray.Length];
 		gameOver.fadeInImages = new Image[objArray.Length * 3];
 		gameOver.fadeInText = new TextMeshProUGUI[objArray.Length * 2];
-		menu.menuOptions = new Image[objArray.Length * 3];
+		int menuLength = menu.menuOptions.Length;
+		Image[] newMenuOpts = new Image[menuLength + (objArray.Length * 3)];
+		int i = 0;
+		for (i = 0; i < menuLength; i ++)
+		{
+			newMenuOpts[i] = menu.menuOptions[i];
+		}
 		menu.fadeInText = new TextMeshProUGUI[objArray.Length * 2];
 
 		//set icons
-		for (int i = 0; i < objArray.Length; i++)
+		for (i = 0; i < objArray.Length; i++)
 		{
 			MutationInterface mut = objArray[i].GetComponentInChildren<MutationInterface>();
 			mutArray[i] = mut;
@@ -102,9 +253,9 @@ public class MutationSelectHUD : MonoBehaviour
 				gameOver.fadeInImages[i] = panel.selectIcon;
 				gameOver.fadeInImages[i + objArray.Length] = panel.selectBg;
 				gameOver.fadeInImages[i + objArray.Length + objArray.Length] = panel.select;
-				menu.menuOptions[i] = panel.selectIcon;
-				menu.menuOptions[i + objArray.Length] = panel.selectBg;
-				menu.menuOptions[i + objArray.Length + objArray.Length] = panel.select;
+				newMenuOpts[i + menuLength] = panel.selectIcon;
+				newMenuOpts[i + menuLength + objArray.Length] = panel.selectBg;
+				newMenuOpts[i + menuLength + objArray.Length + objArray.Length] = panel.select;
 				panel.selectIcon.sprite = mut.getIcon();
 				panel.mutIndex = i;
 				panel.selectHUD = this;
@@ -118,11 +269,17 @@ public class MutationSelectHUD : MonoBehaviour
 						gameOver.fadeInText[(i * 2) + j] = text;
 						j++;
 					}
+					panel.selectTexts[0].ForceMeshUpdate();
+					panel.selectTexts[1].enableAutoSizing = false;
+					panel.selectTexts[1].fontSize = panel.selectTexts[0].fontSize;
 				}
 			}
 		}
 
+		menu.menuOptions = newMenuOpts;
+		tutorialObject.SetActive(false);
+
 		gameOver.transitioning = true;
-		SceneManager.SetActiveScene(SceneManager.GetSceneByBuildIndex((int)SceneDefs.SCENE.MUTATION_SELECT));
+		SceneManager.SetActiveScene(SceneManager.GetSceneByBuildIndex(SceneDefs.SCENE_INDEX_MASK[(int)SceneDefs.SCENE.MUTATION_SELECT]));
 	}
 }

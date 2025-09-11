@@ -1,16 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
-using Unity.VisualScripting.Antlr3.Runtime.Misc;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using TMPro;
 using static GameManager;
 using static SceneDefs;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
 	private static GameManager instance = null;
 
 	public GameObject startingSelect;
+
+	public delegate void BasicFunc();
 
 	public delegate void CloseMenusEvent();
 	public event CloseMenusEvent closeMenusEvent;
@@ -21,8 +24,8 @@ public class GameManager : MonoBehaviour
 	public delegate void InventoryOpenEvent();
 	public event InventoryOpenEvent inventoryOpenEvent;
 
-	public delegate void MuteEvent();
-	public event MuteEvent muteEvent;
+	public delegate void VolumeChangeEvent(float change);
+	public event VolumeChangeEvent volumeChangeEvent;
 
 	public delegate void MovementLockedEvent();
 	public event MovementLockedEvent movementLockedEvent;
@@ -42,6 +45,14 @@ public class GameManager : MonoBehaviour
 	public event PlayerAbilityEvent playerAbilityEvent;
 	public delegate void PlayerAbilityReleaseEvent();
 	public event PlayerAbilityReleaseEvent playerAbilityReleaseEvent;
+
+	public delegate void PlayerAbilitySecondaryEvent();
+	public event PlayerAbilitySecondaryEvent playerAbilitySecondaryEvent;
+	public delegate void PlayerAbilitySecondaryReleaseEvent();
+	public event PlayerAbilityReleaseEvent playerAbilitySecondaryReleaseEvent;
+
+	public delegate void PlayerSecondaryEvent();
+	public event PlayerSecondaryEvent playerSecondaryEvent;
 
 	public delegate void RotationLockedEvent();
 	public event RotationLockedEvent rotationLockedEvent;
@@ -66,17 +77,9 @@ public class GameManager : MonoBehaviour
 	public AudioManager audioManager;
 	public EffectManager effectManager;
 	public LevelManager levelManager;
+	public PrefabManager prefabManager;
 
 	public LoadingHandler loadingHandler = null;
-
-	public GameObject[] weaponPrefabs;
-
-	public GameObject mutPBeast;
-	public GameObject mutPBladeWing;
-	public GameObject mutPLimb;
-
-	public GameObject weapPBladeArm;
-	public GameObject weapPFist;
 
 	public LayerMask actorLayers;
 	public LayerMask collisionLayer;
@@ -91,9 +94,11 @@ public class GameManager : MonoBehaviour
 	public int[] maxPickups = new int[PickupDefs.MAX_USABLE_ITEM_TYPE + 1];
 
 	public PlayerStats playerStats;
+	public SaveManager saveManager;
 
 	public bool isLoaded = false;
 	public int currentScene = -1;
+	public int currentSaveSlot = 0;
 
 	public static string ACTOR_LAYER					= "Actor";
 	public static string DAMAGE_LAYER					= "Damage";
@@ -120,13 +125,8 @@ public class GameManager : MonoBehaviour
 
 	public List<Type> actorBehaviors = new List<Type>();
 
-	private Dictionary<string, ActorScriptable> actorScriptables = new Dictionary<string, ActorScriptable>();
-	private Dictionary<string, EffectScriptable> effectScriptables = new Dictionary<string, EffectScriptable>();
-	private Dictionary<string, MutationScriptable> mutationScriptables = new Dictionary<string, MutationScriptable>();
-	private Dictionary<string, SoundScriptable> soundScriptables = new Dictionary<string, SoundScriptable>();
-	private Dictionary<string, WeaponScriptable> weaponScriptables = new Dictionary<string, WeaponScriptable>();
-
-	private Dictionary<string, MutationInterface> mutations = new Dictionary<string, MutationInterface>();
+	public float musicVolume = 0.5F;
+	public float effectsVolume = 0.5F;
 
 	private float hitstopLength;
 
@@ -166,7 +166,7 @@ public class GameManager : MonoBehaviour
 		maxPickups[(int)PickupDefs.usableType.REFILL] = pickupMaxScriptable.refillMax;
 
 		/* load necessary background scenes now */
-		await SceneManager.LoadSceneAsync((int)SCENE.LOADING, LoadSceneMode.Additive);
+		await SceneManager.LoadSceneAsync(SCENE_INDEX_MASK[(int)SCENE.LOADING], LoadSceneMode.Additive);
 
 		while (loadingHandler == null){}
 		loadingHandler.reloadHUD = true;
@@ -176,35 +176,45 @@ public class GameManager : MonoBehaviour
 		playerStats = new PlayerStats();
 		playerStats.gameManager = this;
 
+		saveManager = new SaveManager();
+
+		for (int i = 0; i < playerStats.saveStationUses.Length; i ++)
+		{
+			playerStats.saveStationUses[i] = 1;
+		}
+
 		/* This is mainly for debugging - making sure we set the level if we don't load it */
 		for (int i = 0; i < SceneManager.sceneCount; i++)
 		{
 			Scene curr = SceneManager.GetSceneAt(i);
-			if (SceneDefs.isLevelScene(curr.buildIndex))
+			if (SceneDefs.isLevelScene((SCENE)SCENE_BUILD_MASK[curr.buildIndex]))
 			{
-				currentScene = curr.buildIndex;
+				currentScene = SCENE_BUILD_MASK[curr.buildIndex];
 				switch (currentScene)
 				{
 					case (int)SCENE.LEVEL_START:
-						levelManager.lastSavedSpawn = (int)LevelManager.levelSpawnIndex.levelStartSpawn;
+						levelManager.lastSavedSpawn = LevelManager.levelSpawnIndex.levelStartSpawn;
 						break;
 					case (int)SCENE.LEVEL_OFFICE:
-						levelManager.lastSavedSpawn = (int)LevelManager.levelSpawnIndex.levelOfficeSpawn;
+						levelManager.lastSavedSpawn = LevelManager.levelSpawnIndex.levelOfficeSpawn;
 						break;
 					case (int)SCENE.LEVEL_HUB:
-						levelManager.lastSavedSpawn = (int)LevelManager.levelSpawnIndex.levelHubSpawn;
+						levelManager.lastSavedSpawn = LevelManager.levelSpawnIndex.levelHubSpawn;
 						break;
 					case (int)SCENE.LEVEL_WAREHOUSE:
-						levelManager.lastSavedSpawn = (int)LevelManager.levelSpawnIndex.levelWarehouseSpawn;
+						levelManager.lastSavedSpawn = LevelManager.levelSpawnIndex.levelWarehouseSpawn;
 						break;
 					case (int)SCENE.LEVEL_ARCH:
-						levelManager.lastSavedSpawn = (int)LevelManager.levelSpawnIndex.levelArchSpawn;
+						levelManager.lastSavedSpawn = LevelManager.levelSpawnIndex.levelArchSpawn;
+						break;
+					case (int)SCENE.LEVEL_RND:
+						levelManager.lastSavedSpawn = LevelManager.levelSpawnIndex.levelRndSpawn;
 						break;
 					default:
 						break;
 				}
 				levelManager.lastSavedLevelIndex = currentScene;
-				await levelManager.startNewLevel(-1);
+				await levelManager.startNewLevel(-1, -1);
 				break;
 			}
 		}
@@ -226,13 +236,20 @@ public class GameManager : MonoBehaviour
 		}
 	}
 
-	public void gameOver(Actor player)
+	public void gameOver()
 	{
+		Time.timeScale = 1;
 		CameraHandler camHan = Camera.main.GetComponent<CameraHandler>();
-		camHan.enabled = false;
-		Camera.main.transform.position = player.transform.position;
+		if (camHan != null)
+		{
+			camHan.enabled = false;
+		}
+		Camera.main.transform.position = playerStats.player.transform.position;
 		AudioListener audio = Camera.main.GetComponent<AudioListener>();
-		audio.enabled = false;
+		if (audio != null)
+		{
+			audio.enabled = false;
+		}
 		SceneManager.LoadScene((int)SCENE.GAME_OVER, LoadSceneMode.Additive);
 	}
 
@@ -258,7 +275,7 @@ public class GameManager : MonoBehaviour
 		*/
 	}
 
-	public async void nextLevel(Actor player, int nextSceneIndex, int spawnIndex)
+	public async void nextLevel(Actor player, SCENE nextSceneIndex, int spawnIndex)
 	{
 		CameraHandler camHan = Camera.main.GetComponent<CameraHandler>();
 		camHan.enabled = false;
@@ -267,17 +284,19 @@ public class GameManager : MonoBehaviour
 		audio.enabled = false;
 		loadingHandler.reloadHUD = true;
 
+		levelManager.saveLevelState(currentScene);
+		saveManager.levelSaveData[currentScene] = levelManager.currSaveData;
+		
+
 		//TODO: when able to go back to previous levels, this should be the general idea
 		//int lastScene = currentScene;
-		//await levelManager.saveLevelState(lastScene);
-		currentScene = nextSceneIndex;
+		currentScene = (int)nextSceneIndex;
 
 		await loadingHandler.LoadSceneGroup(new int[] { currentScene }, true, true);
 
-		levelManager.lastSavedSpawn = spawnIndex;
-		levelManager.lastSavedLevelIndex = currentScene;
-		levelManager.lastSavedAtStation = false;
-		await levelManager.startNewLevel(spawnIndex);
+		levelManager.currSaveData = null;
+
+		await levelManager.startNewLevel(spawnIndex, (int)nextSceneIndex);
 	}
 
 	public async void loadBackgroundScenes()
@@ -303,17 +322,183 @@ public class GameManager : MonoBehaviour
 		await loadingHandler.LoadSceneGroup(bgScenes.ToArray(), false, false);
 	}
 
-	public async void resetLevel()
+	public void loadPausedScene(Actor playerActor, SCENE toLoad)
 	{
-		playerStats.resetCounts();
-		await levelManager.startNewLevel(levelManager.lastSavedSpawn);
+		Time.timeScale = 0;
+
+		for (int j = 0; j < SceneManager.sceneCount; j++)
+		{
+			Scene curr = SceneManager.GetSceneAt(j);
+			if (curr.buildIndex == SCENE_INDEX_MASK[(int)toLoad])
+			{
+				SceneManager.UnloadSceneAsync(curr.buildIndex);
+				continue;
+			}
+		}
+
+		SceneManager.LoadSceneAsync((int)toLoad, LoadSceneMode.Additive);
+		playerActor.gameManager.levelManager.camHandler.stopCam(true);
+
+		PlayerInputs inputs = playerActor.GetComponentInChildren<PlayerInputs>();
+		if (inputs != null)
+		{
+			inputs.paused = true;
+		}
 	}
 
-	public async void save(Actor player)
+	public void playSound(AudioSource player, string soundName, float volume)
 	{
+		if (player == null)
+		{
+			Debug.Log("Audio player for sound \'" + soundName + " \' is null");
+			return;
+		}
+
+		AudioClip toPlay;
+		if (audioManager.soundHash.TryGetValue(soundName, out toPlay) && toPlay != null)
+		{
+			player.Stop();
+			player.PlayOneShot(toPlay, volume * effectsVolume);
+		}
+	}
+
+	public void save(Actor player, int levelSaveIndex)
+	{
+		levelManager.lastSavedLevelIndex = levelSaveIndex;
 		playerStats.savePlayerData(player);
-		await levelManager.saveLevelState(currentScene);
-		levelManager.lastSavedLevelIndex = currentScene;
+		saveManager.savePlayerDataToDisk(currentSaveSlot);
+
+		levelManager.saveLevelState(currentScene);
+		saveManager.saveDataToDisk(levelManager.currSaveData, currentSaveSlot);
+		saveManager.loadAllData();
+	}
+
+	public static void updateRectSize(RectTransform rect, VerticalLayoutGroup vert, int type)
+	{
+		/* elevator display size*/
+		if (type == 0 && rect != null && vert != null)
+		{
+			// 1366 x 768
+			if (Screen.width < 1920)
+			{
+				rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, rect.rect.width);
+				rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 60F);
+				vert.spacing = 15;
+			}
+			// 1920 x 1080
+			else if (Screen.width < 2560)
+			{
+				rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, rect.rect.width);
+				rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 72F);
+				vert.spacing = 30;
+			}
+			// 2560 x  x 1440
+			else if (Screen.width < 3840)
+			{
+				rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, rect.rect.width);
+				rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 144F);
+				vert.spacing = 0;
+			}
+			// 3840 x 2160
+			else
+			{
+				rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, rect.rect.width);
+				rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 216F);
+				vert.spacing = 0;
+			}
+		}
+	}
+
+	public static void updateCellFontSize(TextMeshProUGUI text, int type)
+	{
+		//this is dumb because my canvas is set to auto-sizing, but w/e. it works
+		if (text == null)
+		{
+			return;
+		}
+
+		/* hud cell text size*/
+		if (type == 0)
+		{
+			// 1366 x 768
+			if (Screen.width < 1920)
+			{
+				text.fontSize = 40.6F;
+			}
+			// 1920 x 1080
+			else if (Screen.width < 2560)
+			{
+				text.fontSize = 48.3047F;
+			}
+			// 2560 x  x 1440
+			else if (Screen.width < 3840)
+			{
+				text.fontSize = 48.3785F;
+			}
+			// 3840 x 2160
+			else
+			{
+				text.fontSize = 48.45235F;
+			}
+		}
+		/* station menu font */
+		else if (type == 1)
+		{
+			// 1366 x 768
+			if (Screen.width < 1920)
+			{
+				text.fontSize = 39.6F;
+			}
+			// 1920 x 1080
+			else if (Screen.width < 2560)
+			{
+				text.fontSize = 55.65F;
+			}
+			// 2560 x  x 1440
+			else if (Screen.width < 3840)
+			{
+				text.fontSize = 74F;
+			}
+			// 3840 x 2160
+			else
+			{
+				text.fontSize = 111.35F;
+			}
+		}
+		/* save slots menu font */
+		else if (type == 2)
+		{
+			// 1366 x 768
+			if (Screen.width < 1920)
+			{
+				text.fontSize = 38F;
+			}
+			// 1920 x 1080
+			else if (Screen.width < 2560)
+			{
+				text.fontSize = 48F;
+			}
+			// 2560 x  x 1440
+			else if (Screen.width < 3840)
+			{
+				text.fontSize = 58F;
+			}
+			// 3840 x 2160
+			else
+			{
+				text.fontSize = 96F;
+			}
+		}
+	}
+
+	public async void quitToMenu()
+	{
+		loadingHandler.reloadHUD = false;
+		await SceneManager.UnloadSceneAsync(SCENE_INDEX_MASK[(int)SCENE.PLAYER_HUD]);
+		loadBackgroundScenes();
+		await loadingHandler.LoadSceneGroup(new int[] { (int)SCENE.MAIN_MENU }, false, true);
+
+		Time.timeScale = 1F;
 	}
 
 	public void signalCloseMenusEvent()
@@ -341,9 +526,9 @@ public class GameManager : MonoBehaviour
 		movementUnlockedEvent?.Invoke();
 	}
 
-	public void signalMuteEvent()
+	public void signalVolumeChangeEvent(float change)
 	{
-		muteEvent?.Invoke();
+		volumeChangeEvent?.Invoke(change);
 	}
 	public void signalPowerChangedEvent(bool powerOn)
 	{
@@ -368,6 +553,21 @@ public class GameManager : MonoBehaviour
 	public void signalPlayerAbilityReleaseEvent()
 	{
 		playerAbilityReleaseEvent?.Invoke();
+	}
+
+	public void signalPlayerAbilitySecondaryReleaseEvent()
+	{
+		playerAbilitySecondaryReleaseEvent?.Invoke();
+	}
+
+	public void signalPlayerAbilitySecondaryEvent()
+	{
+		playerAbilitySecondaryEvent?.Invoke();
+	}
+
+	public void signalPlayerSecondaryEvent()
+	{
+		playerSecondaryEvent?.Invoke();
 	}
 
 	public void signalRotationLocked()

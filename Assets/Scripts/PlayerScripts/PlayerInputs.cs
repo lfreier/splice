@@ -2,6 +2,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
+using UnityEngine.UIElements;
 
 public class PlayerInputs: MonoBehaviour
 {
@@ -9,6 +10,7 @@ public class PlayerInputs: MonoBehaviour
 
 	private float attackAction;
 	private float secondaryAttackAction;
+	private float lastSecondaryAttackAction;
 
 	private float cycleActiveAction;
 	private float lastCycleActiveAction;
@@ -57,6 +59,9 @@ public class PlayerInputs: MonoBehaviour
 
 	public float[] actionInputs() { return specialActions; }
 
+	public bool locked = false;
+	public bool lockWait = false;
+
 	public static short Fshort(float value)
 	{
 		return (short)Mathf.FloorToInt(Mathf.Min(value, 1));
@@ -70,8 +75,18 @@ public class PlayerInputs: MonoBehaviour
 			gameManager = GameManager.Instance;
 		}
 
+		if (lockWait && !locked && attack.action.ReadValue<float>() == 0)
+		{
+			lockWait = false;
+		}
+
 		//attack inputs
-		attackAction = attack.action.ReadValue<float>();
+		if (!lockWait)
+		{
+			attackAction = attack.action.ReadValue<float>();
+		}
+
+		lastSecondaryAttackAction = secondaryAttackAction;
 		secondaryAttackAction = secondaryAttack.action.ReadValue<float>();
 
 		//mouse inputs
@@ -110,7 +125,7 @@ public class PlayerInputs: MonoBehaviour
 			for (int j = 0; j < SceneManager.sceneCount; j++)
 			{
 				Scene curr = SceneManager.GetSceneAt(j);
-				if (curr.buildIndex == (int)SceneDefs.SCENE.PAUSE)
+				if (curr.buildIndex == SceneDefs.SCENE_INDEX_MASK[(int)SceneDefs.SCENE.PAUSE])
 				{
 					SceneManager.UnloadSceneAsync(curr.buildIndex);
 					continue;
@@ -157,12 +172,19 @@ public class PlayerInputs: MonoBehaviour
 		/* send out some signals */
 		if (specialActions[0] != 0 && lastSpecialActions[0] == 0)
 		{
-			Debug.Log("Sending ability event");
 			gameManager.signalPlayerAbilityEvent();
 		}
 		if (specialActions[0] == 0 && lastSpecialActions[0] != 0)
 		{
 			gameManager.signalPlayerAbilityReleaseEvent();
+		}
+		if (specialActions[1] != 0 && lastSpecialActions[1] == 0)
+		{
+			gameManager.signalPlayerAbilitySecondaryEvent();
+		}
+		if (specialActions[1] == 0 && lastSpecialActions[1] != 0)
+		{
+			gameManager.signalPlayerAbilitySecondaryReleaseEvent();
 		}
 		if (interactAction != 0 && lastInteractAction == 0)
 		{
@@ -179,6 +201,10 @@ public class PlayerInputs: MonoBehaviour
 		if (cycleActiveAction != 0 && lastCycleActiveAction == 0)
 		{
 			gameManager.playerStats.cycleActiveItem();
+		}
+		if (secondaryAttackAction != 0 && lastSecondaryAttackAction == 0)
+		{
+			gameManager.signalPlayerSecondaryEvent();
 		}
 	}
 }

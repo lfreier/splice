@@ -51,8 +51,12 @@ public class PlayerCamera : MonoBehaviour
 
 	private void OnDestroy()
 	{
-		player.gameManager.rotationLockedEvent -= lockRotation;
-		player.gameManager.rotationUnlockedEvent -= unlockRotation;
+		GameManager gm = GameManager.Instance;
+		if (gm != null)
+		{
+			gm.rotationLockedEvent -= lockRotation;
+			gm.rotationUnlockedEvent -= unlockRotation;
+		}
 	}
 
 	private void FixedUpdate()

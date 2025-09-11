@@ -153,6 +153,8 @@ MonoBehaviour:
   selectBg: {fileID: 536012971955329466}
   selectIcon: {fileID: 3348240790952970730}
   selectRect: {fileID: 1834641844629169783}
+  textBgRect: {fileID: 3625929133838811199}
+  textBg: {fileID: 1962974237048372171}
   selectHUD: {fileID: 0}
   selectTexts:
   - {fileID: 9040669228048690562}

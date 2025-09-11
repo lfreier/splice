@@ -172,15 +172,16 @@ MonoBehaviour:
   actorWielder: {fileID: 0}
   _weaponScriptable: {fileID: 11400000, guid: 4543a27e6988e4b40b6ae19df036da3c, type: 2}
   _weaponPhysics: {fileID: 0}
+  weaponAudioPlayer: {fileID: 0}
   actorHitSound: {fileID: 11400000, guid: 4ef7172c84fd22b4586d55e87fa9e529, type: 2}
   wallHitSound: {fileID: 11400000, guid: fc7b5a00970e656469c43cf634631693, type: 2}
-  weaponBreakSound: {fileID: 0}
-  weaponSwingSound: {fileID: 0}
   currentSide: 0
+  attackOnlyRight: 0
   durability: 0
+  isInit: 0
   mutScriptable: {fileID: 11400000, guid: 6a03470ba7b1f18479c16587ebf665ee, type: 2}
   icon: {fileID: 21300000, guid: 55ac9cc1c4d19b54fb50fb6ff3e23bed, type: 3}
-  transformLength: 6
+  transformLength: 300
   beastColliderSize: {x: 0.9375, y: 0.625}
   rightArmColl: {fileID: 3334156004800836605}
   leftArmColl: {fileID: 4303333502125013474}
@@ -191,6 +192,13 @@ MonoBehaviour:
   - {fileID: 6618223380454228363}
   dashSpeed: 500
   attackCancelFramesTime: 0.75
+  grabber: {fileID: 5325112250244036910}
+  objectReleaseForce: 20000
+  grabOffset: 0.3125
+  grabPickupRange: 0.75
+  grabLayers:
+    serializedVersion: 2
+    m_Bits: 8448
 --- !u!212 &6098743573064776528
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -276,7 +284,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 5390213244681250038}
   m_Father: {fileID: 5979343240893722680}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &6618223380454228363
@@ -423,7 +432,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 8956510046298249595}
   m_Father: {fileID: 5979343240893722680}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &4791022871976329026
@@ -539,3 +549,90 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   baseBeast: {fileID: 6203558894972166185}
+--- !u!1 &5181734036351284831
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5390213244681250038}
+  m_Layer: 0
+  m_Name: mBeastGrabLeft
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5390213244681250038
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5181734036351284831}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -0.5625, y: 0.5, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1851574204887373167}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &5583382079203241259
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8956510046298249595}
+  - component: {fileID: 5325112250244036910}
+  m_Layer: 0
+  m_Name: mBeastGrabRight
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8956510046298249595
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5583382079203241259}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0.5625, y: 0.3125, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2321140264321804742}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5325112250244036910
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5583382079203241259}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b3915a781b1e56644a0e1098b2e2b564, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  wielder: {fileID: 0}
+  grabOffset: 0
+  mutCost1: 0
+  mutCost2: 0
+  grabbingTransforms:
+  - {fileID: 1851574204887373167}
+  - {fileID: 2321140264321804742}
+  holdingTransform: {fileID: 8956510046298249595}
+  grabbedObject: {fileID: 0}
+  heldRigidbody: {fileID: 0}
+  heldObstacle: {fileID: 0}
+  heldObstacleCollider: {fileID: 0}

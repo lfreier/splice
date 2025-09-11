@@ -9,7 +9,16 @@ public static class WeaponDefs
 		RULER_METAL = 1,
 		SCALPEL = 2,
 		STUN_STICK = 3,
-		WRENCH = 4
+		WRENCH = 4,
+		TURRET = 5
+	}
+
+	public enum atkState
+	{
+		IDLE = 0,
+		RIGHT = 1,
+		LEFT = 2,
+		OVERHEAD = 3
 	}
 
 	public static int MAX_PREFABS = 4;
@@ -83,5 +92,6 @@ public enum WeaponType
 	UNARMED,
 	SWING,
 	STAB,
-	SHOOT
+	SHOOT,
+	CLAW
 };

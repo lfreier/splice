@@ -8,6 +8,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 740460995545239096, guid: f3bb2ddd86bcc0544af59b764dd961fa, type: 3}
+      propertyPath: corpsePrefab
+      value: 
+      objectReference: {fileID: 5154943660721874716, guid: 942159b155f5d1e4997260b9f85b6bf9, type: 3}
+    - target: {fileID: 740460995545239096, guid: f3bb2ddd86bcc0544af59b764dd961fa, type: 3}
+      propertyPath: corpseSprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 91a4a726ccbf4554095969775eaf9ab6, type: 3}
     - target: {fileID: 1722529025439896153, guid: f3bb2ddd86bcc0544af59b764dd961fa, type: 3}
       propertyPath: m_SpriteTilingProperty.newSize.x
       value: 1
@@ -39,7 +47,7 @@ PrefabInstance:
     - target: {fileID: 2023260988043286838, guid: f3bb2ddd86bcc0544af59b764dd961fa, type: 3}
       propertyPath: 'corpseSpriteList.Array.data[0]'
       value: 
-      objectReference: {fileID: 21300000, guid: 6316521f91b47c6468a3d0655addd808, type: 3}
+      objectReference: {fileID: 21300000, guid: 91a4a726ccbf4554095969775eaf9ab6, type: 3}
     - target: {fileID: 4515851072354870145, guid: f3bb2ddd86bcc0544af59b764dd961fa, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -95,6 +103,10 @@ PrefabInstance:
     - target: {fileID: 6162639131189426590, guid: f3bb2ddd86bcc0544af59b764dd961fa, type: 3}
       propertyPath: m_WasSpriteAssigned
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7622839753614861741, guid: f3bb2ddd86bcc0544af59b764dd961fa, type: 3}
+      propertyPath: guid
+      value: manager_e3deeb92-0711-4e19-b9c0-c6d966f03e24
       objectReference: {fileID: 0}
     - target: {fileID: 7904725563872449456, guid: f3bb2ddd86bcc0544af59b764dd961fa, type: 3}
       propertyPath: m_Name

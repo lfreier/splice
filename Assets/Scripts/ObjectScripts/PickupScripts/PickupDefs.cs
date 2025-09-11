@@ -72,4 +72,13 @@ public static class PickupDefs
 				return -1;
 		}
 	}
+
+	public static void setLayer(GameObject gameObj)
+	{
+		SpriteRenderer check = gameObj.GetComponentInChildren<SpriteRenderer>();
+		if (check != null)
+		{
+			WeaponDefs.setObjectLayer(check.sortingLayerName, gameObj);
+		}
+	}
 }

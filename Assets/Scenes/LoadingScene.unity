@@ -164,12 +164,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f686fe564afe6bd45ba05794269203cd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  scenesToLoad: 
   loadingCanvas: {fileID: 798559242}
   menu: {fileID: 751519502}
   loadingBar: {fileID: 1057535118}
-  fillSpeed: 2
+  fillSpeed: 1.5
   reloadHUD: 0
+  resetPlayerData: 0
 --- !u!114 &751519502
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -189,11 +189,15 @@ MonoBehaviour:
   - {fileID: 1413530377}
   - {fileID: 1262930414}
   - {fileID: 1122879508}
+  fadeInText: []
+  holdToFillImage: {fileID: 0}
+  holdTimerLength: 0
   fadeChange: 0.5
   menuCanvas: {fileID: 798559242}
   menuCam: {fileID: 0}
   eventSystem: {fileID: 0}
   audioListener: {fileID: 0}
+  menuMusic: {fileID: 0}
 --- !u!1 &798559239
 GameObject:
   m_ObjectHideFlags: 0

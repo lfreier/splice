@@ -19,6 +19,8 @@ public class CameraHandler : MonoBehaviour
 	float verExtent;
 	float horExtent;
 
+	private bool lockExtents = false;
+
 	[SerializeField]
 	private InputActionReference pointerPosition;
 
@@ -49,9 +51,13 @@ public class CameraHandler : MonoBehaviour
 		Vector3 mousePos = pointerPosition.action.ReadValue<Vector2>();
 		mousePos.z = Camera.main.nearClipPlane;
 		pointerPos = Camera.main.ScreenToWorldPoint(mousePos);
-		verExtent = Camera.main.orthographicSize;
 		widthRatio = (float)Screen.width / (float)Screen.height;
-		horExtent = verExtent * widthRatio;
+
+		if (!lockExtents)
+		{
+			verExtent = Camera.main.orthographicSize;
+			horExtent = verExtent * widthRatio;
+		}
 
 		if (stop || player == null)
 		{
@@ -98,5 +104,10 @@ public class CameraHandler : MonoBehaviour
 		float newXPos = Mathf.Clamp((player.transform.position.x + pointerPos.x) / 2F, player.transform.position.x - horExtent, player.transform.position.x + horExtent);
 		float newYPos = Mathf.Clamp((player.transform.position.y + pointerPos.y) / 2F, player.transform.position.y - verExtent, player.transform.position.y + verExtent);
 		cameraTarget = new Vector3(newXPos, newYPos, this.transform.position.z);
+	}
+
+	public void lockCameraPanAmount()
+	{
+		lockExtents = true;
 	}
 }

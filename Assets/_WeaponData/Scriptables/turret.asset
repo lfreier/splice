@@ -1,0 +1,48 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a24c888a6e975b64caf06be201292806, type: 3}
+  m_Name: turret
+  m_EditorClassIdentifier: 
+  <arc>k__BackingField: 115
+  <atkSpeed>k__BackingField: 0.2
+  <canBeDropped>k__BackingField: 0
+  <damage>k__BackingField: 1
+  <description>k__BackingField: 
+  <durability>k__BackingField: -1
+  <icon>k__BackingField: {fileID: 21300000, guid: 35d098ce4c65b63468c128ed5a28fd0d, type: 3}
+  <displayName>k__BackingField: TURRET
+  <npcAttackRange>k__BackingField: 2.5
+  <prefabIndex>k__BackingField: 5
+  <secondaryDamage>k__BackingField: 0
+  <soundActorHit>k__BackingField: {fileID: 8300000, guid: 152261d29304ef5488d53ce1c9eb9bf0, type: 3}
+  <soundActorHitVolume>k__BackingField: 1
+  <soundBreak>k__BackingField: {fileID: 8300000, guid: e59c7e023e0cb8f41baf11a0a41e47a5, type: 3}
+  <soundBreakVolume>k__BackingField: 0.7
+  <soundObstacleHit>k__BackingField: {fileID: 8300000, guid: fad49cc5955cf434c9046ace9b42a7b7, type: 3}
+  <soundObstacleHitVolume>k__BackingField: 1
+  <soundSwing>k__BackingField: {fileID: 8300000, guid: e5071ca98f3a8324ea6aa2428f55a690, type: 3}
+  <soundSwingVolume>k__BackingField: 0.7
+  <soundWallHit>k__BackingField: {fileID: 8300000, guid: 4ebf89c51850dc945aeecf8d50d17329, type: 3}
+  <soundWallHitVolume>k__BackingField: 1
+  <throwDamage>k__BackingField: 0.5
+  <throwDurabilityDamage>k__BackingField: 0.5
+  <throwSpeed>k__BackingField: 54
+  <throwWeight>k__BackingField: 2
+  <throwHurtSpeed>k__BackingField: 15
+  <weaponType>k__BackingField: 4
+  equipPosX: 0
+  equipPosY: 0
+  equipRotZ: 0
+  equipOtherPosX: 0
+  equipOtherPosY: 0
+  equipOtherRotZ: 0
+  <knockbackDamage>k__BackingField: 3

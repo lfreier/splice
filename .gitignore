@@ -10,6 +10,17 @@
 /[Ll]ogs/
 /[Uu]ser[Ss]ettings/
 
+Assets/0/
+Assets/0.meta
+Assets/1/
+Assets/1.meta
+Assets/2/
+Assets/2.meta
+Assets/splice_options
+Assets/splice_options.bak
+Assets/splice_options.meta
+Assets/splice_options.bak.meta
+
 # MemoryCaptures can get excessive in size.
 # They also could contain extremely sensitive data
 /[Mm]emoryCaptures/

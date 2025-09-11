@@ -1,33 +1,53 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class AudioManager : MonoBehaviour
 {
 	private static AudioManager instance = null;
 
-	private GameManager gameManager;
+	public GameObject soundPrefab;
 
 	public AudioListener listener;
 
-	public AudioClip cellCollectPop;
+	public Dictionary<string, AudioClip> soundHash = new Dictionary<string, AudioClip>();
 
-	public AudioClip actorDeath1;
-	public AudioClip actorDeath2;
-	public AudioClip actorDeath3;
+	public AudioClip[] clipsRef;
 
-	public AudioClip doorClose;
-	public AudioClip doorOpen;
-	public AudioClip doorUnlock;
-
-	public AudioClip footstep;
+	public AudioClip footstepCarpet;
 
 	public AudioClip heartPump;
 
-	public AudioClip parry;
-
 	public AudioClip playerDeath;
 
-	public AudioClip wallMetal;
+	//public AudioClip parrySuccess;
+
+	//zombie noises?
+
+	//(x)obstacle hitting actor
+
+	//spore - summonAttempt, (x)summonSuccess, (x)mineArm, (x)mineTrigger, (x)mineExplosion
+	//spider - (x) web, (x) webHit, (x) fang, (x) fangShred
+	//raptor - (x)pounce, shred
+	//limb - (x)extend, (x)retract, (x)blade
+
+	//foldingChair fall
+	//menu clicks
+
+	public AudioClip batterySound;
+	public AudioClip healthVialSound;
+	public AudioClip refillSound;
+
+	public AudioClip obstacleHit;
+	public AudioClip obstacleActorHit;
+
+	public AudioClip menuClick;
+	public AudioClip errorSound;
+
+	public AudioClip sciDeath1;
+	public AudioClip sciDeath2;
+	public AudioClip sciDeath3;
+	public AudioClip sciDeath4;
 
 	public static AudioManager Instance
 	{
@@ -46,6 +66,11 @@ public class AudioManager : MonoBehaviour
 		else
 		{
 			instance = this;
+		}
+
+		foreach (AudioClip clip in clipsRef)
+		{
+			soundHash.Add(clip.name, clip);
 		}
 	}
 

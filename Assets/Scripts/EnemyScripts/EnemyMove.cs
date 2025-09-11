@@ -21,13 +21,16 @@ public class EnemyMove : MonoBehaviour
 	private float idlePauseTimer;
 	public int pathIndex;
 
+	public float wanderScale = 4F;
+
 	private Vector2 idleLookTarget;
 	private Vector2 eyeStart;
 
 	public detectMode _detection;
 	private detectMode _oldDetection;
-	private detectMode _startingDetection;
-	private detectMode _nextDetection;
+	public detectMode _startingDetection;
+	public detectMode _nextDetection;
+	public detectMode _nextForcedDetection;
 
 	float currentSpeed;
 	private float stateSpeedIncrease;
@@ -39,7 +42,12 @@ public class EnemyMove : MonoBehaviour
 	public Vector3 moveTarget;
 	private Vector3 lastMoveTarget;
 	private Vector3 attackTarget;
-	private Actor attackTargetActor;
+	public Actor attackTargetActor;
+
+	public float turretRotationArc;
+	public float turretRotation1;
+	public float turretRotation2;
+	public float turretRotateTarget;
 
 	private Vector2 moveInput;
 	private Vector2 oldMoveInput;
@@ -50,35 +58,27 @@ public class EnemyMove : MonoBehaviour
 	private float stateTimerReset;
 	private static float HOSTILE_TIMER_LENGTH = 4;
 	private static float LOST_TIMER_LENGTH = 2;
-	private static float PATH_TIMER_LENGTH = 0.3F;
+	private static float TURRET_PAUSE_LENGTH = 3;
 	private static float SUS_TIMER_LENGTH = 5;
+	private int lostCount = 0;
 
 	private float delayTimer;
 	private static float DELAY_TIMER_LENGTH = 0.35F;
 
-	public Pathfinding pathfinder;
-	private bool usingPathfinding;
-
 	private bool showNotice = true;
 	private bool showSus = true;
+	public float forcedTimer = 0;
+
+	public bool summoned = false;
+	public bool isTurret = false;
+	public AudioSource turretRotateSource;
 
 	public GameManager gameManager;
 
 	void Start()
 	{
 		gameManager = GameManager.Instance;
-		pathfinder = new Pathfinding();
-		//pathfinder.grid = new PathGrid();
-		pathfinder.startPathfinding = false;
-		usingPathfinding = false;
 		LevelData levelData = gameManager.levelManager.currLevelData;
-		//pathfinder.grid.init(levelData.gridWorldSize, levelData.nodeRadius);
-		
-		PathColliderHelper colliderHelper = GetComponentInChildren<PathColliderHelper>();
-		if (colliderHelper != null)
-		{
-			colliderHelper.pathfinder = this.pathfinder;
-		}
 
 		/*
 		for (int i = 0; i < idlePath.Length; i ++)
@@ -92,23 +92,75 @@ public class EnemyMove : MonoBehaviour
 		{
 			_detection = detectMode.idle;
 		}
+		lostCount = 0;
 		_startingDetection = _detection;
+		_nextDetection = detectMode.nul;
+		_nextForcedDetection = summoned || _startingDetection != detectMode.wandering ? detectMode.idle : detectMode.wandering;
 		attackTargetActor = null;
+
+		/* set idling to wander after reaching goal */
+		if (_detection == detectMode.wandering && idlePath != null)
+		{
+			_detection = detectMode.idle;
+		}
 
 		pathIndex = 0;
 		idlePauseTimer = 0;
-		pathfinder.pathingTimer = 0;
 		idleLookTarget = transform.position + transform.up * 0.5F;
 
 		moveTarget = lastMoveTarget = actorBody.transform.position;
+
+		if (isTurret)
+		{
+			TurretWeapon weap = this.GetComponentInChildren<TurretWeapon>();
+			if (weap != null)
+			{
+				turretRotation1 = weap.transform.parent.localRotation.eulerAngles.z + turretRotationArc / 2;
+				turretRotation2 = weap.transform.parent.localRotation.eulerAngles.z - (turretRotationArc / 2);
+				if (turretRotation1 < 0)
+				{
+					turretRotation1 += 360;
+				}
+				else if (turretRotation1 >= 360)
+				{
+					turretRotation1 -= 360;
+				}
+
+				if (turretRotation2 < 0)
+				{
+					turretRotation2 += 360;
+				}
+				else if (turretRotation2 >= 360)
+				{
+					turretRotation2 -= 360;
+				}
+				turretRotateTarget = (int)Random.Range(0, 1) == 0 ? turretRotation1 : turretRotation2;
+			}
+		}
 	}
 
 	void FixedUpdate()
 	{
 		_actorData = actor.actorData;
 		attackTargetActor = null;
-		eyeStart = transform.position + transform.up * 0.5F;
+		eyeStart = transform.position + transform.up * 0.25F;
 		_oldDetection = _detection;
+
+		if (forcedTimer != 0)
+		{
+			forcedTimer -= Time.deltaTime;
+			if (forcedTimer <= 0)
+			{
+				_detection = _nextForcedDetection;
+				forcedTimer = 0;
+				idlePathPauseTime[0] = 1;
+				if (!summoned)
+				{
+					idlePath = new Vector2[] { };
+					idlePathPauseTime = new float[] { };
+				}
+			}
+		}
 
 		//functions for noticing hostiles
 		/* IMPORTANT NOTE: 
@@ -120,6 +172,11 @@ public class EnemyMove : MonoBehaviour
 		{
 			hearHostiles();
 			attackTargetActor = seeHostiles();
+			if (attackTargetActor == null && _detection == detectMode.hostile)
+			{
+				Debug.Log("second ears");
+				hearHostiles();
+			}
 		}
 
 		/* if on delay timer, wait to transition */
@@ -132,7 +189,7 @@ public class EnemyMove : MonoBehaviour
 			if (delayTimer < 0 && attackTargetActor != null)
 			{
 				// create a new notice effect
-				if ((actor.displayedEffect == null || actor.displayedEffect.effectScriptable.constantEffectType > EffectDefs.constantType.NOTICE) && showNotice)
+				if ((actor.displayedEffect == null || actor.displayedEffect.effectScriptable.constantEffectType > EffectDefs.constantType.NOTICE) && showNotice && !summoned)
 				{
 					EffectDefs.effectApply(actor, gameManager.effectManager.notice1);
 					showNotice = false;
@@ -156,8 +213,9 @@ public class EnemyMove : MonoBehaviour
 		/*  determine move target based on current state */
 		if ((_detection == detectMode.idle || _detection == detectMode.forced) && idlePath.Length > 0)
 		{
+			bool clearPaths = false;
 			/* If at a path position, go to next */
-			if (((Vector2)actorBody.transform.position -  idlePath[pathIndex]).magnitude < moveTargetError)
+			if (((Vector2)actorBody.transform.position - idlePath[pathIndex]).magnitude < moveTargetError)
 			{
 				if (pathIndex < idlePathPauseTime.Length)
 				{
@@ -169,19 +227,40 @@ public class EnemyMove : MonoBehaviour
 				if (pathIndex >= idlePath.Length)
 				{
 					pathIndex = 0;
-					//this is done to make the forced state work
-					_detection = detectMode.idle;
+					/* zombie specific logic */
+					if (!summoned && _startingDetection == detectMode.wandering)
+					{
+						_detection = detectMode.wandering;
+						clearPaths = true;
+					}
+					else
+					{
+						//this is done to make the forced state work
+						_detection = detectMode.idle;
+					}
+				}
+
+				if (idlePathPauseTime.Length == 1)
+				{
+					/* this is for summoned zombies (i think) */
+					moveTarget = actor.transform.position;
 				}
 			}
 			
 			if (idlePauseTimer <= 0)
 			{
 				moveTarget = idlePath[pathIndex];
-				actorBody.rotation = actor.aimAngle(moveTarget);
+				calcRotation(moveTarget);
 			}
 			else
 			{
 				idlePauseTimer -= Time.deltaTime;
+			}
+
+			if (clearPaths)
+			{
+				idlePath = null;
+				idlePathPauseTime = null;
 			}
 		}
 		else if (_detection != detectMode.idle && _detection != detectMode.forced)
@@ -200,7 +279,7 @@ public class EnemyMove : MonoBehaviour
 		else
 		{
 			moveTarget = actor.transform.position;
-		}
+		}		
 
 		if (_detection == detectMode.frightened)
 		{
@@ -208,7 +287,7 @@ public class EnemyMove : MonoBehaviour
 			if (attackTargetActor != null)
 			{
 				/* face target of fright */
-				actorBody.rotation = actor.aimAngle(attackTargetActor.transform.position);
+				calcRotation(attackTargetActor.transform.position);
 
 				/* move away from target */
 				if (_actorData.frightenedDistance > (attackTargetActor.transform.position - actor.transform.position).magnitude)
@@ -239,7 +318,16 @@ public class EnemyMove : MonoBehaviour
 		setStateMoveSpeed();
 
 		/*  determine move speed based on current state */
-		moveUpdate();
+
+		if (!isTurret)
+		{
+			moveUpdate();
+		}
+		/* turret logic */
+		else if (!actor.movementLocked)
+		{
+			updateTurretRotation();
+		}
 	}
 
 	void moveUpdate()
@@ -267,6 +355,117 @@ public class EnemyMove : MonoBehaviour
 		}
 	}
 
+	private void updateTurretRotation()
+	{
+		float rotateAmount = maxStateSpeed;
+		TurretWeapon weap = this.GetComponentInChildren<TurretWeapon>();
+		if (weap == null)
+		{
+			return;
+		}
+		float actorRotation = weap.transform.parent.localRotation.eulerAngles.z;
+		actorRotation = actorRotation < 0 ? actorRotation + 360 : actorRotation;
+
+		/* set next target if we need to */
+		if (_detection == detectMode.idle)
+		{
+			rotateAmount /= 2;
+
+			if (idlePauseTimer <= 0 && (Mathf.Abs(actorRotation - turretRotation1) < moveTargetError || Mathf.Abs(actorRotation - turretRotation2) < moveTargetError || _detection != _oldDetection))
+			{
+				idlePauseTimer = TURRET_PAUSE_LENGTH;
+			}
+
+			if (idlePauseTimer > 0)
+			{
+				idlePauseTimer -= Time.deltaTime;
+				if (idlePauseTimer <= 0)
+				{
+					idlePauseTimer = 0;
+					if (Mathf.Abs(actorRotation - turretRotation1) > Mathf.Abs(actorRotation - turretRotation2))
+					{
+						turretRotateTarget = turretRotation1;
+					}
+					else
+					{
+						turretRotateTarget = turretRotation2;
+					}
+				}
+			}
+
+			if (actor.displayedEffect != null)
+			{
+				Destroy(actor.displayedEffect.gameObject);
+			}
+		}
+		else if (_detection == detectMode.lost)
+		{
+			if (Mathf.Abs(actorRotation - turretRotation1) > Mathf.Abs(actorRotation - turretRotation2))
+			{
+				turretRotateTarget = turretRotation2;
+			}
+			else
+			{
+				turretRotateTarget = turretRotation1;
+			}
+			
+			_detection = detectMode.idle;
+
+			if (actor.displayedEffect != null && actor.displayedEffect.effectScriptable.constantEffectType == EffectDefs.constantType.SEEKING)
+			{
+				Destroy(actor.displayedEffect.gameObject);
+			}
+		}
+		else if (_detection == detectMode.suspicious || _detection == detectMode.seeking || _detection == detectMode.hostile)
+		{
+			turretRotateTarget = actor.aimAngle(attackTarget);
+			if (turretRotateTarget < 0)
+			{
+				turretRotateTarget += 360;
+			}
+		}
+
+		/* find direction of rotation */
+		int direction = 1;
+		float absDiff = Mathf.Abs(actorRotation - turretRotateTarget);
+
+		if (actorRotation < turretRotateTarget)
+		{
+			direction = absDiff < 180 ? 1 : -1;
+		}
+		else
+		{
+			direction = absDiff < 180 ? -1 : 1;
+		}
+
+		if (Mathf.Abs(actorRotation - turretRotateTarget) < moveTargetError)
+		{
+			rotateAmount = 0;
+		}
+
+		float newRotation = weap.transform.parent.localRotation.eulerAngles.z + (rotateAmount * direction);
+
+		if (newRotation > 360)
+		{
+			newRotation -= 360;
+		}
+
+		if (turretRotateSource != null)
+		{
+			if (rotateAmount == 0 && turretRotateSource.isPlaying && attackTargetActor == null)
+			{
+				turretRotateSource.Pause();
+			}
+			else if (rotateAmount != 0 && !turretRotateSource.isPlaying)
+			{
+				turretRotateSource.Play();
+				turretRotateSource.UnPause();
+			}
+		}
+
+		weap.transform.parent.SetLocalPositionAndRotation(weap.transform.parent.localPosition, Quaternion.Euler(new Vector3(0, 0, newRotation)));
+	}
+
 	private void calcMoveInput()
 	{
 		if (moveTarget == null)
@@ -279,52 +478,7 @@ public class EnemyMove : MonoBehaviour
 		 *
 		 */
 		Vector2 diff;
-		if (pathfinder != null && pathfinder.startPathfinding && pathfinder.pathingTimer <= 0)
-		{
-			Debug.Log("Finding path for: " + gameObject.name);
-			var tempTimer = System.Diagnostics.Stopwatch.StartNew();
-			pathfinder.findPath(actorBody.transform.position, moveTarget);
-			tempTimer.Stop();
-			Debug.Log("Pathfinding took " + tempTimer.ElapsedMilliseconds + " milliseconds");
-			usingPathfinding = true;
-			pathfinder.pathingTimer = PATH_TIMER_LENGTH;
-		}
-
-		if (usingPathfinding)
-		{
-			Vector3 newTarget;
-			/* if move target changes, then stop using pathfinding */
-			if (pathfinder.startPathfinding == false && (lastMoveTarget - moveTarget).magnitude > moveTargetError)
-			{
-				usingPathfinding = false;
-				diff = moveTarget - this.transform.position;
-				moveInput = Vector2.ClampMagnitude(diff, 1F);
-				return;
-			}
-			if (pathfinder.pathingTimer > 0)
-			{
-				pathfinder.pathingTimer -= Time.deltaTime;
-			}
-
-			newTarget = pathfinder.getNextMove(actorBody.transform.position, moveTargetError);
-			if (newTarget == null || (newTarget - actorBody.transform.position).magnitude <= moveTargetError)
-			{
-				diff = moveTarget - this.transform.position;
-				moveInput = Vector2.ClampMagnitude(diff, 1F);
-				return;
-			}
-
-			pathfinder.startPathfinding = false;
-			diff = newTarget - this.transform.position;
-			if (diff.magnitude > moveTargetError)
-			{
-				diff *= 1 / diff.magnitude;
-			}
-		}
-		else
-		{
-			diff = moveTarget - this.transform.position;
-		}
+		diff = moveTarget - this.transform.position;
 
 		moveInput = Vector2.ClampMagnitude(diff, 1F);
 		
@@ -332,6 +486,14 @@ public class EnemyMove : MonoBehaviour
 		if (_detection == detectMode.idle && idlePauseTimer == 0)
 		{
 			moveInput = diff.normalized;
+		}
+	}
+
+	private void calcRotation(Vector2 aimTarget)
+	{
+		if (!isTurret)
+		{
+			actorBody.rotation = actor.aimAngle(aimTarget);
 		}
 	}
 
@@ -384,13 +546,15 @@ public class EnemyMove : MonoBehaviour
 					stateTimer = HOSTILE_TIMER_LENGTH;
 				}
 				return;
+			case detectMode.idle:
+				break;
 			default:
 				break;
 		}
 		switch (_detection)
 		{
 			case detectMode.idle:
-				actorBody.rotation = actor.aimAngle(idleLookTarget);
+				calcRotation(idleLookTarget);
 				break;
 			case detectMode.hostile:
 				showSus = false;
@@ -402,7 +566,7 @@ public class EnemyMove : MonoBehaviour
 				showNotice = true;
 				_actorData.sightAngle = actor._actorScriptable.sightAngle * 1.5F;
 				stateTimer = HOSTILE_TIMER_LENGTH;
-				actorBody.rotation = actor.aimAngle(attackTarget);
+				calcRotation(attackTarget);
 				break;
 			case detectMode.lost:
 				showSus = true;
@@ -410,6 +574,7 @@ public class EnemyMove : MonoBehaviour
 				_actorData.sightAngle = actor._actorScriptable.sightAngle * 1.5F;
 				moveTarget = transform.position + transform.up;
 				stateTimer = LOST_TIMER_LENGTH;
+				lostCount = 0;
 				break;
 			case detectMode.suspicious:
 				_actorData.sightAngle = actor._actorScriptable.sightAngle * 1.5F;
@@ -433,11 +598,11 @@ public class EnemyMove : MonoBehaviour
 			// create a new Sus effect
 			if ((actor.displayedEffect == null || actor.displayedEffect.effectScriptable.constantEffectType > EffectDefs.constantType.SEEKING) && showSus)
 			{
-				if (_detection == detectMode.seeking || _detection == detectMode.lost)
+				if ((_detection == detectMode.seeking || _detection == detectMode.lost) && !summoned)
 				{
 					EffectDefs.effectApply(actor, gameManager.effectManager.seeking1);
 				}
-				else if (actor.displayedEffect == null || actor.displayedEffect.effectScriptable.constantEffectType > EffectDefs.constantType.SUS)
+				else if ((actor.displayedEffect == null || actor.displayedEffect.effectScriptable.constantEffectType > EffectDefs.constantType.SUS) && !summoned)
 				{
 					EffectDefs.effectApply(actor, gameManager.effectManager.sus1);
 				}
@@ -461,7 +626,7 @@ public class EnemyMove : MonoBehaviour
 				{
 					stateTimer -= Time.deltaTime;
 				}
-				actorBody.rotation = actor.aimAngle(moveTarget);
+				calcRotation(moveTarget);
 				break;
 			case detectMode.seeking:
 				/* Keep moving in the direction of the last known location if it's reached */
@@ -479,17 +644,27 @@ public class EnemyMove : MonoBehaviour
 				{
 					stateTimer -= Time.deltaTime;
 				}
-				actorBody.rotation = actor.aimAngle(attackTarget);
+				calcRotation(attackTarget);
 				break;
 			case detectMode.lost:
 			case detectMode.wandering:
 				/* Move in a random direction */
 				if (stateTimer <= 0)
 				{
+					/* specifically for zombies, return them to the wandering state after a while */
+					if (_startingDetection == detectMode.wandering && lostCount > 4)
+					{
+						_detection = _startingDetection;
+						lostCount = 0;
+						if (actor.displayedEffect != null)
+						{
+							Destroy(actor.displayedEffect.gameObject);
+						}
+					}
 					float radAngle = Random.Range(0F, 2F * Mathf.PI);
-					float temp = Random.Range(2F, 4F);
+					float temp = Random.Range(wanderScale / 2, wanderScale);
 					moveTarget = transform.position + new Vector3(temp * Mathf.Sin(radAngle), temp * Mathf.Cos(radAngle), 0);
-					actorBody.rotation = actor.aimAngle(moveTarget);
+					calcRotation(moveTarget);
 					if (_detection == detectMode.wandering)
 					{
 						stateTimer = SUS_TIMER_LENGTH + Random.Range(0, SUS_TIMER_LENGTH);
@@ -499,6 +674,7 @@ public class EnemyMove : MonoBehaviour
 					{
 						stateTimer = LOST_TIMER_LENGTH;
 						stateTimerReset = stateTimer;
+						lostCount++;
 					}
 				}
 				else
@@ -537,7 +713,7 @@ public class EnemyMove : MonoBehaviour
 				{
 					_detection = detectMode.getWeapon;
 					moveTarget = weaponColl.transform.position;
-					actorBody.rotation = actor.aimAngle(moveTarget);
+					calcRotation(moveTarget);
 				}
 				else
 				{
@@ -551,7 +727,7 @@ public class EnemyMove : MonoBehaviour
 					{
 						_detection = detectMode.hostile;
 						/* face attack target */
-						actorBody.rotation = actor.aimAngle(attackTarget);
+						calcRotation(attackTarget);
 					}
 				}
 
@@ -576,8 +752,21 @@ public class EnemyMove : MonoBehaviour
 
 	private void handleSuspiciousState()
 	{
-		moveTarget = actor.transform.position;
-		actorBody.rotation = actor.aimAngle(attackTarget);
+		if (!summoned && _startingDetection == detectMode.wandering && idlePath != null && idlePath.Length > 0)
+		{
+			/* pathed zombies should keep moving */
+			moveTarget = idlePath[pathIndex];
+		}
+		else  if (attackTargetActor == null)
+		{
+			moveTarget = actor.transform.position;
+		}
+		else
+		{
+			moveTarget = attackTargetActor.transform.position;
+		}
+		calcRotation(attackTarget);
+
 		if (stateTimer <= 0)
 		{
 			_detection = _startingDetection;
@@ -598,13 +787,16 @@ public class EnemyMove : MonoBehaviour
 		RaycastHit2D[] heardSound = Physics2D.CircleCastAll(new Vector2(this.transform.position.x, this.transform.position.y), _actorData.hearingRange, Vector2.zero, _actorData.hearingRange, gameManager.soundLayer);
 
 		/* States that should override hearing */
-		if (_detection == detectMode.getWeapon || _detection == detectMode.hostile || _detection == detectMode.frightened || heardSound.Length == 0)
+		if (_detection == detectMode.getWeapon || _detection == detectMode.frightened || heardSound.Length == 0 || summoned)
 		{
 			return;
 		}
 
 		/* by default, handle the edge case since a new sound was heard */
-		_oldDetection = detectMode.idle;
+		if (heardSound.Length > 0)
+		{
+			_oldDetection = _startingDetection;
+		}
 
 		float loudest = 0;
 		foreach (RaycastHit2D target in heardSound)
@@ -639,20 +831,27 @@ public class EnemyMove : MonoBehaviour
 				return targetActor;
 			}
 			*/
-			if (soundScript != null && soundScript.scriptable.volume >= loudest)
+			if (soundScript != null && soundScript.scriptable.volume >= loudest && (soundScript.origin == null || soundScript.origin != actor))
 			{
-				attackTarget = target.transform.position;
 				loudest = soundScript.scriptable.volume;
+
+				if (soundScript != null && soundScript.origin == actor)
+				{
+					loudest = soundScript.scriptable.volume;
+				}
 
 				switch (soundScript.scriptable.type)
 				{
 					case SoundDefs.SoundType.CLANG:
-						_detection = detectMode.seeking;
-						break;
 					case SoundDefs.SoundType.THUD:
 					case SoundDefs.SoundType.TAP:
 					default:
-						if (_detection == detectMode.lost || _detection == detectMode.seeking)
+						if (_detection == detectMode.hostile)
+						{
+							attackTarget = target.transform.position;
+							break;
+						}
+						else if (_detection == detectMode.lost || _detection == detectMode.seeking)
 						{
 							_detection = detectMode.seeking;
 						}
@@ -662,63 +861,93 @@ public class EnemyMove : MonoBehaviour
 							handleEdges();
 							_oldDetection = _detection;
 						}
+						attackTarget = target.transform.position;
 						break;
 				}
 			}
 		}
 	}
 
-	private Actor handleSightRays(Vector2 center, float maxLength, float increment, float sightRange, float index)
+	private Actor handleSightRays(float maxLength, float increment, float sightRange, float index)
 	{
-		Vector2 viewRay = center - (Vector2)((maxLength - (index * increment)) * transform.right);
-		RaycastHit2D rayHit = Physics2D.Raycast(eyeStart, viewRay, sightRange, gameManager.lineOfSightLayers);
+		Transform startingXform = transform;
+		if (isTurret)
+		{
+			TurretWeapon weap = GetComponentInChildren<TurretWeapon>();
+			if (weap != null)
+			{
+				startingXform = weap.transform.parent;
+				eyeStart = startingXform.position + startingXform.up * 0.25F; ;
+			}
+		}
+
+		Vector2 center = startingXform.up * _actorData.sightRange;
+		Vector2 viewRay = center - (Vector2)((maxLength - (index * increment)) * startingXform.right);
+		RaycastHit2D[] rayHit = Physics2D.RaycastAll(eyeStart, viewRay, sightRange, gameManager.lineOfSightLayers);
 		Debug.DrawRay(eyeStart, Vector2.ClampMagnitude(viewRay, 1) * sightRange);
 
-		if (rayHit.rigidbody != null)
+		if (rayHit == null || rayHit.Length == 0)
 		{
-			Actor targetActor = rayHit.rigidbody.gameObject.GetComponent<Actor>();
-			if (targetActor != null && actor.isTargetHostile(targetActor))
+			return null;
+		}
+
+		foreach (RaycastHit2D hit in rayHit)
+		{
+			if (hit.rigidbody != null)
 			{
-				if ((_detection == detectMode.idle || _detection == detectMode.suspicious) && delayTimer <= 0)
+				Actor targetActor = hit.rigidbody.gameObject.GetComponent<Actor>();
+				if (targetActor == null)
 				{
-					delayTimer = DELAY_TIMER_LENGTH;
-					// create a new Sus effect
-					if ((actor.displayedEffect == null || actor.displayedEffect.effectScriptable.constantEffectType > EffectDefs.constantType.SUS) && showSus)
-					{
-						EffectDefs.effectApply(actor, gameManager.effectManager.sus1);
-					}
-					_detection = detectMode.suspicious;
-					handleEdges();
-					_oldDetection = _detection;
+					/* hit a wall, stop looking */
+					break;
 				}
-				else if (_detection == detectMode.seeking)
+				if (actor.isTargetHostile(targetActor))
 				{
-					// create a new notice effect
-					if ((actor.displayedEffect == null || actor.displayedEffect.effectScriptable.constantEffectType > EffectDefs.constantType.NOTICE) && showNotice)
+					if ((_detection == detectMode.idle || _detection == detectMode.wandering || _detection == detectMode.suspicious) && delayTimer <= 0)
 					{
-						EffectDefs.effectApply(actor, gameManager.effectManager.notice1);
-						showNotice = false;
+						delayTimer = DELAY_TIMER_LENGTH;
+						// create a new Sus effect
+						if ((actor.displayedEffect == null || actor.displayedEffect.effectScriptable.constantEffectType > EffectDefs.constantType.SUS) && showSus && !summoned)
+						{
+							EffectDefs.effectApply(actor, gameManager.effectManager.sus1);
+						}
+						_detection = detectMode.suspicious;
+						handleEdges();
+						_oldDetection = _detection;
 					}
-					_detection = detectMode.hostile;
-					handleEdges();
-					_oldDetection = _detection;
-				}
-
-				stateTimer = stateTimerReset;
-				actor.setAttackTarget(targetActor);
-				attackTarget = targetActor.transform.position;
-
-				if (lockWhenSpotted != null)
-				{
-					Collider2D[] actorColliders = new Collider2D[rayHit.rigidbody.attachedColliderCount];
-					rayHit.rigidbody.GetAttachedColliders(actorColliders);
-					if (actorColliders.Length > 0)
+					else if (_detection == detectMode.seeking)
 					{
-						lockWhenSpotted.OnTriggerEnter2D(actorColliders[0]);
+						// create a new notice effect
+						if ((actor.displayedEffect == null || actor.displayedEffect.effectScriptable.constantEffectType > EffectDefs.constantType.NOTICE) && showNotice && !summoned)
+						{
+							EffectDefs.effectApply(actor, gameManager.effectManager.notice1);
+							showNotice = false;
+						}
+						_detection = detectMode.hostile;
+						handleEdges();
+						_oldDetection = _detection;
 					}
-				}
 
-				return targetActor;
+					stateTimer = stateTimerReset;
+					actor.setAttackTarget(targetActor);
+					attackTarget = targetActor.transform.position;
+
+					if (lockWhenSpotted != null)
+					{
+						Collider2D[] actorColliders = new Collider2D[hit.rigidbody.attachedColliderCount];
+						hit.rigidbody.GetAttachedColliders(actorColliders);
+						if (actorColliders.Length > 0)
+						{
+							lockWhenSpotted.OnTriggerEnter2D(actorColliders[0]);
+						}
+					}
+
+					return targetActor;
+				}
+			}
+			else
+			{
+				break;
 			}
 		}
 
@@ -730,19 +959,24 @@ public class EnemyMove : MonoBehaviour
 	 */
 	private Actor seeHostiles()
 	{
-		Vector2 center = transform.up * _actorData.sightRange;
 		float degrees = _actorData.sightRange > 12F ? 2.5F : 5F;
 		float increment = Mathf.Abs((float)Mathf.Tan(degrees * Mathf.PI / 180) * _actorData.sightRange);
 		float numIncrements = _actorData.sightAngle / degrees;
 		float maxLength = numIncrements * increment / 2;
+		Actor currClosest = null;
 
 		for (float i= 0; i < numIncrements + 1; i ++)
 		{
-			Actor returnActor = handleSightRays(center, maxLength, increment, _actorData.sightRange, i);
-			if (returnActor != null)
+			Actor returnActor = handleSightRays(maxLength, increment, _actorData.sightRange, i);
+			if (checkReturnActor(returnActor, currClosest))
 			{
-				return returnActor;
+				currClosest = returnActor;
 			}
+		}
+
+		if (isTurret)
+		{
+			return currClosest;
 		}
 
 		/* Extra peripheral vision */
@@ -753,31 +987,42 @@ public class EnemyMove : MonoBehaviour
 		int peripheralRayCount = ((Mathf.RoundToInt(_actorData.sightAngle) - 100) / 40) + 2;
 		for (float i = -(peripheralRayCount * peripheralMult); i < 0; i += peripheralMult)
 		{
-			Actor returnActor = handleSightRays(center, maxLength, increment, peripheralRange, i);
-			if (returnActor != null)
+			Actor returnActor = handleSightRays(maxLength, increment, peripheralRange, i);
+			if (checkReturnActor(returnActor, currClosest))
 			{
-				return returnActor;
+				currClosest = returnActor;
 			}
 		}
 		for (float i = numIncrements + 1 + peripheralMult; i < numIncrements + 1 + peripheralRayCount + (peripheralRayCount * peripheralMult); i += peripheralMult)
 		{
-			Actor returnActor = handleSightRays(center, maxLength, increment, peripheralRange, i);
-			if (returnActor != null)
+			Actor returnActor = handleSightRays(maxLength, increment, peripheralRange, i);
+			if (checkReturnActor(returnActor, currClosest))
 			{
-				return returnActor;
+				currClosest = returnActor;
 			}
 		}
 
-		return null;
+		return currClosest;
+	}
+
+	private bool checkReturnActor(Actor newActor, Actor closest)
+	{
+		return newActor != null && (closest == null || ((actor.transform.position - newActor.transform.position).magnitude < (actor.transform.position - closest.transform.position).magnitude));
 	}
 
 	public void disableStun()
 	{
 		// create a new Sus effect
-		if (showSus && _detection == detectMode.suspicious)
+		if (showSus && _detection == detectMode.suspicious && !summoned)
 		{
-				EffectDefs.effectApply(actor, gameManager.effectManager.sus1);
+			EffectDefs.effectApply(actor, gameManager.effectManager.sus1);
 		}
+	}
+
+	public void setStunResponse(Vector2 target)
+	{
+		attackTarget = target;
+		_nextDetection = detectMode.seeking;
 	}
 
 	public void setStunResponse(Actor sourceActor)
@@ -790,9 +1035,20 @@ public class EnemyMove : MonoBehaviour
 		_nextDetection = detectMode.seeking;
 		attackTargetActor = sourceActor;
 	}
+	
+	private void clearPathSummon()
+	{
+		idlePath = new Vector2[] { };
+		idlePathPauseTime = new float[] { };
+	}
 
 	private void setStateMoveSpeed()
 	{
+		if (summoned)
+		{
+			return;
+		}
+
 		switch (_detection)
 		{
 			case detectMode.wandering:
@@ -800,8 +1056,8 @@ public class EnemyMove : MonoBehaviour
 				maxStateSpeed /= 4;
 				break;
 			case detectMode.idle:
-				stateSpeedIncrease /= 2;
-				maxStateSpeed /= 2;
+				stateSpeedIncrease /= 2.5F;
+				maxStateSpeed /= 2.5F;
 				break;
 			case detectMode.seeking:
 			case detectMode.suspicious:
@@ -812,6 +1068,24 @@ public class EnemyMove : MonoBehaviour
 			case detectMode.hostile:
 			default:
 				break;
+		}
+	}
+
+	private void OnCollisionEnter2D(Collision2D collision)
+	{
+		if (_detection == detectMode.hostile || _detection == detectMode.getWeapon || _detection == detectMode.frightened)
+		{
+			return;
+		}
+
+		if (collision != null)
+		{
+			Actor actorHit = collision.gameObject.GetComponentInChildren<Actor>();
+			if (actorHit != null && actor.isTargetHostile(actorHit))
+			{
+				_nextDetection = detectMode.suspicious;
+				attackTarget = actorHit.transform.position;
+			}
 		}
 	}
 }

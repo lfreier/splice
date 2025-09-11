@@ -66,7 +66,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: -1, y: 0}
+  m_Offset: {x: -1.0625, y: 0}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -76,7 +76,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 1, y: 1.1}
+  m_Size: {x: 0.875, y: 1.125}
   m_EdgeRadius: 0
 --- !u!1001 &5633825946081958490
 PrefabInstance:
@@ -86,6 +86,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -2692900505047113629, guid: 33e90329716dc92428f06e25edc0f6e5, type: 3}
+      propertyPath: guid
+      value: hidden_file_cabinet1_7e6a7991-8bf2-45e0-ab17-b63489662e1a
+      objectReference: {fileID: 0}
+    - target: {fileID: 490808859570672265, guid: 33e90329716dc92428f06e25edc0f6e5, type: 3}
+      propertyPath: basicPrefabIndex
+      value: 21
+      objectReference: {fileID: 0}
     - target: {fileID: 708756412421474848, guid: 33e90329716dc92428f06e25edc0f6e5, type: 3}
       propertyPath: m_LocalPosition.x
       value: -31.4375
@@ -128,19 +136,23 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3301648032349487571, guid: 33e90329716dc92428f06e25edc0f6e5, type: 3}
       propertyPath: m_Name
-      value: file_cabinet1 Variant
+      value: hidden_file_cabinet1
       objectReference: {fileID: 0}
     - target: {fileID: 4294341438885202313, guid: 33e90329716dc92428f06e25edc0f6e5, type: 3}
       propertyPath: m_Size.x
-      value: 1
+      value: 0.875
       objectReference: {fileID: 0}
     - target: {fileID: 4294341438885202313, guid: 33e90329716dc92428f06e25edc0f6e5, type: 3}
       propertyPath: m_Size.y
-      value: 1.1
+      value: 1.125
       objectReference: {fileID: 0}
     - target: {fileID: 4294341438885202313, guid: 33e90329716dc92428f06e25edc0f6e5, type: 3}
       propertyPath: m_Offset.x
-      value: 1
+      value: 1.0625
+      objectReference: {fileID: 0}
+    - target: {fileID: 5786573321178543111, guid: 33e90329716dc92428f06e25edc0f6e5, type: 3}
+      propertyPath: pickupSendTorque
+      value: 400
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

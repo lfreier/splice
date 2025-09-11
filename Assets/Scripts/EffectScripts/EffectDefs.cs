@@ -13,7 +13,10 @@ public class EffectDefs
 		IFRAME = 2,
 		NOTICE = 3,
 		SEEKING = 4,
-		SUS = 5
+		SUS = 5,
+		TURRET_NOTICE = 6,
+		TURRET_SEEKING = 7,
+		TURRET_SUS = 8
 	}
 
 	public static void effectApply(Actor target, EffectScriptable effectData)

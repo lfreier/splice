@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4760908952865621281}
   - component: {fileID: 8381236731145610160}
-  m_Layer: 13
+  m_Layer: 19
   m_Name: collider2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -144,7 +144,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3301648032349487571, guid: 035edb600a1ccb14c8abd56285f1beaf, type: 3}
       propertyPath: m_Layer
-      value: 13
+      value: 19
       objectReference: {fileID: 0}
     - target: {fileID: 4294341438885202313, guid: 035edb600a1ccb14c8abd56285f1beaf, type: 3}
       propertyPath: m_Size.y

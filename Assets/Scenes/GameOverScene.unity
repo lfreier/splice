@@ -413,11 +413,13 @@ MonoBehaviour:
   - {fileID: 1456761809}
   - {fileID: 1057535118}
   - {fileID: 1729114714}
+  fadeInText: []
   fadeChange: 0.35
   menuCanvas: {fileID: 798559242}
   menuCam: {fileID: 1557585866}
   eventSystem: {fileID: 1808270837}
   audioListener: {fileID: 1557585865}
+  menuMusic: {fileID: 0}
 --- !u!222 &1122879507
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -438,18 +440,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d07dd0f11fee0d24dbdb4140930e1dcc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sceneBuildIndex: 3
+  sceneIndex: 5
   gameOverCam: {fileID: 1557585866}
   deathHeartImage: {fileID: 1729114714}
   fadeInImages:
   - {fileID: 1456761809}
   - {fileID: 1057535118}
   - {fileID: 1729114714}
+  fadeInText: []
   desiredAlpha: 1
   fadeInChange: 0.25
   finalPumpScale: 14.5
   pumpMult: 40
   pumpTimer: 0.5
+  transitioning: 0
 --- !u!1 &1262930412
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6bd7c4db436403340bd60efc568faba0, type: 3}
+  m_Name: bleed1Half
+  m_EditorClassIdentifier: 
+  <constantEffectType>k__BackingField: 0
+  <effectLength>k__BackingField: 1.5
+  effectPrefab: {fileID: 7481581874167313850, guid: 8545dc729432f234a8aa19158292ac1c, type: 3}
+  effectSprite: {fileID: 21300000, guid: 6376ecaf166fdd1478c030cc766b9514, type: 3}
+  <effectStrength>k__BackingField: 0.5
+  <tickLength>k__BackingField: 0.5

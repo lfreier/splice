@@ -10,6 +10,8 @@ public class EnemyData : MonoBehaviour
 	public int cellDropMin = 1;
 	public int cellDropMax = 1;
 
+	public int corpsePrefabOffset = 0;
+
 	public Sprite[] spriteList;
 	public Sprite[] corpseSpriteList;
 
@@ -27,6 +29,10 @@ public class EnemyData : MonoBehaviour
 		if (i < corpseSpriteList.Length)
 		{
 			actor.corpseSprite = corpseSpriteList[i];
+			if (corpseSpriteList.Length > 1)
+			{
+				actor.corpsePrefab = GameManager.Instance.prefabManager.basicPrefabs[i + corpsePrefabOffset];
+			}
 		}
 	}
 }

@@ -11,6 +11,32 @@ public class SwingBatteryWeapon : BasicWeapon
 	public int maxBatteries = 0;
 	public int filledBatteries = 0;
 
+	public AudioClip soundChargedActorHit;
+	public float chargedActorHitVolume = 0.2F;
+	public AudioClip soundChargedSwing;
+	public float chargedSwingVolume = 0.4F;
+
+	public override bool attack(LayerMask layerName)
+	{
+		soundMade = false;
+		anim.SetTrigger(WeaponDefs.ANIM_TRIGGER_ATTACK);
+		//lastTargetLayer = targetLayer;
+		actorWielder.invincible = false;
+
+		string soundName = _weaponScriptable.soundSwing.name;
+		float volume = _weaponScriptable.soundSwingVolume;
+		if (filledBatteries > 0)
+		{
+			soundName = this.soundChargedSwing.name;
+			volume = chargedSwingVolume;
+		}
+		if (soundName != null)
+		{
+			playSound(weaponSwingAudioPlayer, soundName, volume);
+		}
+
+		return true;
+	}
 	public override void reduceDurability(float reduction)
 	{
 		if (durability < 0)
@@ -42,10 +68,31 @@ public class SwingBatteryWeapon : BasicWeapon
 
 		if (durability <= 0)
 		{
-			this.actorWielder.drop();
-			Debug.Log("Weapon broke: " + this.name);
-			//actorWielder.actorAudioSource.PlayOneShot(weaponBreakSound);
-			//might need to wait for sound to play out
+			if (_weaponScriptable.soundBreak != null)
+			{
+				AudioClip toPlay;
+				if (gameManager == null)
+				{
+					gameManager = GameManager.Instance;
+				}
+				gameManager.audioManager.soundHash.TryGetValue(_weaponScriptable.soundBreak.name, out toPlay);
+				if (toPlay != null)
+				{
+					if (actorWielder == null)
+					{
+						weaponAudioPlayer.PlayOneShot(toPlay, gameManager.effectsVolume);
+					}
+					else
+					{
+						actorWielder.actorAudioSource.PlayOneShot(toPlay, gameManager.effectsVolume);
+					}
+				}
+				if (actorWielder != null)
+				{
+					this.actorWielder.drop();
+				}
+			}
+
 			Destroy(this.transform.parent.gameObject);
 		}
 	}
@@ -101,6 +148,10 @@ public class SwingBatteryWeapon : BasicWeapon
 
 	public override void init()
 	{
+		if (durability == 0)
+		{
+			durability = _weaponScriptable.durability;
+		}
 		if (maxBatteries == 0)
 		{
 			maxBatteries = batterySprites.Length;
@@ -108,5 +159,23 @@ public class SwingBatteryWeapon : BasicWeapon
 		setBatteries((int)startingCharge);
 
 		baseSprite = sprite.sprite;
+	}
+
+	public override void playSound(AudioSource player, string soundName, float volume)
+	{
+		if (soundName == _weaponScriptable.soundActorHit.name)
+		{
+			if (filledBatteries > 0)
+			{
+				soundName = this.soundChargedActorHit.name;
+				volume = chargedActorHitVolume;
+			}
+		}
+
+		AudioClip toPlay;
+		if (gameManager.audioManager.soundHash.TryGetValue(soundName, out toPlay) && toPlay != null)
+		{
+			player.PlayOneShot(toPlay, volume * gameManager.effectsVolume);
+		}
 	}
 }

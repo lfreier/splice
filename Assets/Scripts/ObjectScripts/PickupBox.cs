@@ -5,6 +5,9 @@ public class PickupBox : MonoBehaviour
 {
 	public GameObject[] pickup;
 	public Collider2D pickupCollider;
+	public int pickupSendForce = 700;
+
+	public int pickupSendTorque = 400;
 
 	private int pickupIndex;
 
@@ -50,6 +53,25 @@ public class PickupBox : MonoBehaviour
 		}
 
 		checkGlowDisable();
+
+		if (pickupHolder != null)
+		{
+			PickupInterface pickup = pickupHolder.GetComponentInChildren<PickupInterface>();
+			if (pickup != null)
+			{
+				pickupHolder.transform.SetPositionAndRotation(gameObject.transform.position, Quaternion.identity);
+				Rigidbody2D body = pickupHolder.GetComponentInChildren<Rigidbody2D>();
+				if (body != null)
+				{
+					body.bodyType = RigidbodyType2D.Dynamic;
+					Vector2 pushDirection = Vector2.ClampMagnitude((-transform.up) + (transform.right * Random.Range(0, 1F)) + (transform.right * Random.Range(-1F, 0)), 1);
+					Debug.Log("Push direction: " + pushDirection);
+					body.AddForce(pickupSendForce * pushDirection);
+					body.AddTorque(Random.Range(-pickupSendTorque, pickupSendTorque));
+					pickupHolder = null;
+				}
+			}
+		}
 
 		return pickupHolder;
 	}

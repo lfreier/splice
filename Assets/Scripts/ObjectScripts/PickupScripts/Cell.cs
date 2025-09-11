@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Threading.Tasks;
 using Unity.VisualScripting;
 using UnityEngine;
 using static PickupDefs;
@@ -12,14 +13,19 @@ public class Cell : MonoBehaviour, PickupInterface
 	public float attractForce = 100;
 	public Animator animator;
 
+	public AudioClip cellPopSound;
+	public AudioSource cellAudioPlayer;
+
 	[SerializeField]
 	private Sprite icon;
+
+	private bool pickedUp = false;
+
 	GameManager gameManager;
 
 	// Use this for initialization
 	void Start()
 	{
-		gameManager = GameManager.Instance;
 		init();
 	}
 
@@ -87,23 +93,36 @@ public class Cell : MonoBehaviour, PickupInterface
 
 	public void init()
 	{
-
+		pickedUp = false;
+		gameManager = GameManager.Instance;
+		PickupDefs.setLayer(gameObject);
 	}
 
 	public void pickup(Actor actorTarget)
 	{
-		gameManager.playerStats.addItem(this);
+		gameManager = GameManager.Instance;
 		animator.SetTrigger(CELL_ANIM_TRIGGER);
+		gameManager.playerStats.addItem(this);
 	}
 	
 	private void OnTriggerEnter2D(Collider2D collision)
 	{
 		Actor target;
-		if ((target = collision.transform.GetComponent<Actor>()) != null)
+		if ((target = collision.transform.GetComponentInParent<Actor>()) != null)
 		{
-			if (target.tag == ActorDefs.playerTag)
+			if (target.tag == ActorDefs.playerTag && pickedUp == false)
 			{
+				pickedUp = true;
 				pickup(target);
+				AudioClip toPlay;
+				if (cellPopSound != null)
+				{
+					gameManager.audioManager.soundHash.TryGetValue(cellPopSound.name, out toPlay);
+					if (toPlay != null)
+					{
+						cellAudioPlayer.PlayOneShot(toPlay, gameManager.effectsVolume);
+					}
+				}
 			}
 		}
 	}

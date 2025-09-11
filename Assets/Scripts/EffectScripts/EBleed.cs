@@ -10,6 +10,8 @@ public class EBleed : MonoBehaviour, EffectInterface
 
 	public Actor attachedActor;
 
+	public AudioClip bleedSound;
+
 	public EffectScriptable effectScriptable;
 
 	// Use this for initialization
@@ -64,6 +66,11 @@ public class EBleed : MonoBehaviour, EffectInterface
 		attachedActor.takeDamage(bleedDamage);
 		tickTimer = effectScriptable.tickLength;
 
+		if (bleedSound != null)
+		{
+			attachedActor.gameManager.playSound(attachedActor.actorAudioSource, bleedSound.name, 1F);
+		}
+
 		Debug.Log(attachedActor.name + "bleeds for " + bleedDamage + " damage");
 
 		if (timer <= 0)
@@ -78,6 +85,17 @@ public class EBleed : MonoBehaviour, EffectInterface
 
 		timer = effectScriptable.effectLength;
 		tickTimer = effectScriptable.tickLength;
+
+		if (effectScriptable.effectSprite != null)
+		{
+			SpriteRenderer newSprite = gameObject.GetComponentInChildren<SpriteRenderer>();
+			if (newSprite != null)
+			{
+				newSprite.sprite = effectScriptable.effectSprite;
+				newSprite.size = new Vector2(1, 1);
+				newSprite.enabled = true;
+			}
+		}
 
 		bleedDamage = effectScriptable.effectStrength;
 	}

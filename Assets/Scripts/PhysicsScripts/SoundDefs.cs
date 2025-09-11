@@ -1,5 +1,7 @@
 ﻿using System.Collections;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using static SceneDefs;
 
 public static class SoundDefs
 {
@@ -20,22 +22,23 @@ public static class SoundDefs
 
 	public static string TAG_WALL_METAL = "WallMetal";
 
-	static public void createSound(Vector2 worldPosition, SoundScriptable scriptable)
+	static public void createSound(Vector2 worldPosition, SoundScriptable scriptable, Actor origin)
 	{
 		if (scriptable == null)
 		{
 			Debug.Log("No sound defined");
 			return;
 		}
-		GameObject newSound = new GameObject(SOUND_LAYER_NAME);
-		Sound script = newSound.AddComponent<Sound>();
 
-		newSound.transform.position = worldPosition;
-		newSound.layer = LayerMask.NameToLayer(SOUND_LAYER_NAME);
-
-		CircleCollider2D collider = newSound.AddComponent<CircleCollider2D>();
-
-		collider.radius = scriptable.radius;
-		script.start(scriptable);
+		GameManager gm = GameManager.Instance;
+		if (gm != null && gm.audioManager.soundPrefab != null)
+		{
+			GameObject soundObj = GameObject.Instantiate(gm.audioManager.soundPrefab, worldPosition, Quaternion.identity);
+			Sound script = soundObj.GetComponent<Sound>();
+			if (script != null)
+			{
+				script.startSound(scriptable, origin);
+			}
+		}
 	}
 }

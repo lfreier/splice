@@ -5,6 +5,7 @@ using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Audio;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using static GameManager;
 
@@ -24,6 +25,8 @@ public class PlayerHUD : MonoBehaviour
 	public Image mutationOutline;
 
 	public Image activeItemIcon;
+	public Image useKeyIcon;
+	public Image cycleKeyIcon;
 
 	public GameObject heartPrefab;
 	public GameObject shieldPrefab;
@@ -39,7 +42,6 @@ public class PlayerHUD : MonoBehaviour
 	public int pixelSpacing;
 
 	public AudioSource musicPlayer;
-	private float musicVolume;
 
 	private List<GameObject> heartList;
 	private List<GameObject> shieldList;
@@ -57,13 +59,27 @@ public class PlayerHUD : MonoBehaviour
 	private Vector3 shadowStartScale;
 	private Vector3 textStartScale;
 
-	private static float pixelSize = 0.0625F;
+	//private static float pixelSize = 0.0625F;
 	private GameManager gameManager;
 
 	private bool fadeInMusic = false;
 	private float targetVolume;
 
+	public EventSystem mainEventSystem;
+
 	public AudioResource[] bgm;
+
+	public Canvas abilityIconCanvas;
+	public Image abilityIconImage1;
+	public Image abilityIconImage2;
+	public Image abilityBgFill1;
+	public Image abilityBgFill2;
+	public Image abilityIcon3;
+
+	public Sprite[] itemIcon;
+
+	public GameObject finaleTimerObject;
+	public GameObject finaleTimer;
 
 	private void Start()
 	{
@@ -72,7 +88,7 @@ public class PlayerHUD : MonoBehaviour
 		gameManager.startMusicEvent += startNewMusic;
 		gameManager.updateHealthEvent += updateHealth;
 		gameManager.updateShieldEvent += updateShield;
-		gameManager.muteEvent += mute;
+		gameManager.volumeChangeEvent += changeVolume;
 		gameManager.updateCellCount += updateCells;
 		foreach (Canvas canvas in hudCanvas)
 		{
@@ -86,16 +102,21 @@ public class PlayerHUD : MonoBehaviour
 
 	private void OnDestroy()
 	{
-		gameManager.initHudEvent -= init;
-		gameManager.muteEvent -= mute;
-		gameManager.startMusicEvent -= startNewMusic;
-		gameManager.updateHealthEvent -= updateHealth;
-		gameManager.updateShieldEvent -= updateShield;
-		gameManager.updateCellCount -= updateCells;
+		gameManager = GameManager.Instance;
+		if (gameManager != null)
+		{
+			gameManager.initHudEvent -= init;
+			gameManager.volumeChangeEvent -= changeVolume;
+			gameManager.startMusicEvent -= startNewMusic;
+			gameManager.updateHealthEvent -= updateHealth;
+			gameManager.updateShieldEvent -= updateShield;
+			gameManager.updateCellCount -= updateCells;
+		}
 	}
 
 	public void init()
 	{
+		updateCellFontSize(cellText, 0);
 		if (heartList != null)
 		{
 			resetHeartHUD();
@@ -110,6 +131,7 @@ public class PlayerHUD : MonoBehaviour
 				if (gameManager.playerStats.player == null)
 				{
 					gameManager.playerStats.player = actor;
+					gameManager.playerStats.init();
 				}
 				Camera main = Camera.main;
 				foreach (Canvas canvas in hudCanvas)
@@ -138,7 +160,7 @@ public class PlayerHUD : MonoBehaviour
 					else if (gameManager.levelManager.currLevelData != null)
 					{
 						musicPlayer.resource = gameManager.levelManager.currLevelData.sceneMusic.audioClip;
-						musicPlayer.volume = gameManager.levelManager.currLevelData.sceneMusic.volume;
+						musicPlayer.volume = gameManager.levelManager.currLevelData.sceneMusic.volume * gameManager.musicVolume;
 					}
 				}
 
@@ -179,6 +201,8 @@ public class PlayerHUD : MonoBehaviour
 		{
 			canvas.gameObject.SetActive(true);
 		}
+
+		mainEventSystem = EventSystem.current;
 		/*
 		if (musicPlayer != null && musicPlayer.enabled && !musicPlayer.isPlaying)
 		{
@@ -195,42 +219,97 @@ public class PlayerHUD : MonoBehaviour
 			musicPlayer.volume += (targetVolume / 128);
 			if (musicPlayer.volume >= targetVolume)
 			{
-				musicPlayer.Play();
+				musicPlayer.volume = targetVolume;
 				fadeInMusic = false;
 			}
 		}
 	}
 
+	public void disableHud()
+	{
+		foreach (GameObject heart in heartList)
+		{
+			if (heart != null)
+			{
+				Destroy(heart);
+			}
+		}
+
+		for (int i = 0; i < transform.parent.childCount; i ++)
+		{
+			Transform child = transform.parent.GetChild(i);
+			if (child == this.transform)
+			{
+				continue;
+			}
+			else
+			{
+				Destroy(child.gameObject);
+			}
+		}
+	}
+
+	public void disableHudShadow()
+	{
+		if (shadowCanvas != null)
+		{
+			shadowCanvas.gameObject.SetActive(false);
+		}
+	}
+
 	public void startNewMusic(MusicScriptable music)
 	{
-		if (!musicPlayer.resource.name.Equals(music.audioClip.name))
+		if (music == null)
+		{
+			musicPlayer.Stop();
+		}
+		else if (!musicPlayer.resource.name.Equals(music.audioClip.name))
 		{
 			musicPlayer.Stop();
 			musicPlayer.enabled = true;
 			musicPlayer.resource = music.audioClip;
 			musicPlayer.volume = 0;
-			targetVolume = music.volume;
+			targetVolume = music.volume * gameManager.musicVolume;
+			musicPlayer.Play();
 			fadeInMusic = true;
 		}
 	}
-
 	public void updateCells(int count)
 	{
 		cellText.SetText("" + count);
 		mutationFill.fillAmount = ((float)gameManager.playerStats.getMutationBar()) / ((float)gameManager.playerStats.getMaxMutationBar());
 	}
 
-	public void changeActiveItemIcon(Sprite icon)
+	public void setMutAbilityFill(float cost1, float cost2)
+	{
+		abilityBgFill1.fillAmount = Mathf.Min(1F, gameManager.playerStats.getMutationBar() / cost1);
+		abilityBgFill2.fillAmount = Mathf.Min(1F, gameManager.playerStats.getMutationBar() / cost2);
+	}
+
+	public void changeActiveItemIcon(int index)
 	{
 		activeItemIcon.enabled = true;
-		activeItemIcon.sprite = icon;
+		useKeyIcon.enabled = true;
+		cycleKeyIcon.enabled = true;
+		activeItemIcon.sprite = itemIcon[index];
 	}
 
 	private void addHeart()
 	{
 		//TODO: move shield when adding hearts
 		GameObject newHeart = Instantiate(heartPrefab, healthHudObject.transform);
-		newHeart.transform.SetLocalPositionAndRotation(new Vector2(heartList.Count * pixelSpacing * pixelSize, 0), Quaternion.identity);
+		RectTransform heartRect = newHeart.GetComponent<RectTransform>();
+		if (heartRect == null)
+		{
+			return;
+		}
+
+		heartRect.anchorMin = new Vector2(heartList.Count * 0.2F, 0);
+		heartRect.anchorMax = new Vector2((heartList.Count + 1) * 0.2F, 1);
+		heartRect.offsetMax = Vector2.zero;
+		heartRect.offsetMin = Vector2.zero;
+		//newHeart.transform.SetLocalPositionAndRotation(new Vector2(heartList.Count * pixelSpacing * pixelSize, 0), Quaternion.identity);
+		
 		heartList.Add(newHeart);
 
 		if (hudHealth == 0)
@@ -239,10 +318,23 @@ public class PlayerHUD : MonoBehaviour
 		}
 	}
 
+	/* this doesn't work anymore but w/e, shields aren't used */
 	private void addShieldHeart()
 	{
 		GameObject newHeart = Instantiate(shieldPrefab, healthHudObject.transform);
-		newHeart.transform.SetLocalPositionAndRotation(new Vector2((heartList.Count + shieldList.Count) * pixelSpacing * pixelSize, 0), Quaternion.identity);
+		RectTransform heartRect = newHeart.GetComponent<RectTransform>();
+		if (heartRect == null)
+		{
+			return;
+		}
+
+		heartRect.anchorMin = new Vector2((heartList.Count + shieldList.Count) * 0.2F, 0);
+		heartRect.anchorMax = new Vector2((heartList.Count + shieldList.Count + 1) * 0.2F, 1);
+		heartRect.offsetMax = Vector2.zero;
+		heartRect.offsetMin = Vector2.zero;
+
+		//newHeart.transform.SetLocalPositionAndRotation(new Vector2((heartList.Count + shieldList.Count) * pixelSpacing * pixelSize, 0), Quaternion.identity);
+		
 		shieldList.Add(newHeart);
 
 		if (shieldHealth == 0)
@@ -380,7 +472,7 @@ public class PlayerHUD : MonoBehaviour
 			return;
 		}
 		GameObject heartSpriteObj = listHead.transform.GetChild(0).gameObject;
-		SpriteRenderer toChange = heartSpriteObj.GetComponent<SpriteRenderer>();
+		Image toChange = heartSpriteObj.GetComponent<Image>();
 
 		if (toChange != null)
 		{
@@ -411,7 +503,7 @@ public class PlayerHUD : MonoBehaviour
 			}
 
 			toChange.sprite = newHeart;
-			toChange.size = new Vector2(1, 1);
+			toChange.enabled = newHeart == null ? false : true;
 		}
 		
 		updateListHead();
@@ -544,13 +636,33 @@ public class PlayerHUD : MonoBehaviour
 		}
 	}
 
-	public void mute()
+	public void changeVolume(float change)
 	{
-		musicPlayer.mute = !musicPlayer.mute;
-		if (musicPlayer.mute == false)
+		if (musicPlayer.volume == 0 && change != 0)
 		{
-			musicPlayer.Play();
+			musicPlayer.UnPause();
 		}
-		Debug.Log("Setting mute to " + musicPlayer.mute);
+		else if (musicPlayer.volume != 0 && change == 0)
+		{
+			musicPlayer.Pause();
+		}
+		gameManager.musicVolume = change;
+		musicPlayer.volume = change;
+	}
+
+	public void setFinaleTimer(bool toSet)
+	{
+		if (finaleTimerObject != null && toSet)
+		{
+			if (finaleTimer == null)
+			{
+				finaleTimer = Instantiate(finaleTimerObject, this.transform.parent);
+			}
+		}
+
+		if (finaleTimer != null)
+		{
+			finaleTimer.SetActive(toSet);
+		}
 	}
 }

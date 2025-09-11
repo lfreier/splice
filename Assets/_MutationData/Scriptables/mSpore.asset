@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cc8d29f75fe95184cac76ec8fb595f6a, type: 3}
+  m_Name: mSpore
+  m_EditorClassIdentifier: 
+  <damage>k__BackingField: 0
+  <trigger>k__BackingField: 5
+  <tutorialSprites>k__BackingField:
+  - {fileID: 21300000, guid: 223dbe8be83e7f248b6ba5259602bf69, type: 3}
+  - {fileID: 21300000, guid: e9cd579f3781d20489f7071c0ae24b4b, type: 3}
+  <effectScriptable>k__BackingField: {fileID: 0}
+  <mutCost>k__BackingField: 20
+  <startingPosition>k__BackingField: {x: 0, y: 0}
+  <startingRotation>k__BackingField: 0
+  <values>k__BackingField:
+  - 20
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0

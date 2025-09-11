@@ -4,6 +4,7 @@ using static ActorDefs;
 public class ActorDefs
 {
 	public static string actorLayer = "Actor";
+	public static string corpseLayer = "Corpse";
 	public static string npcTag = "NPC";
 	public static string teamMonsterTag = "TeamMonster";
 	public static string teamScienceTag = "TeamScience";
@@ -19,6 +20,8 @@ public class ActorDefs
 
 	public static float MAX_PARRY_FORCE= 1000F;
 	public static float MAX_HIT_FORCE = 1500F;
+
+	[System.Serializable]
 	public struct ActorData
 	{
 		public float armor;
@@ -52,6 +55,12 @@ public class ActorDefs
 		wandering = 7,
 		forced = 8
 	};
+
+	public enum corpseType
+	{
+		HUMAN = 0,
+		TURRET = 1
+	}
 
 	public static ActorData copyData(ActorData toCopy)
 	{

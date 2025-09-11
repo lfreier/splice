@@ -9,6 +9,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 740460995545239096, guid: f3bb2ddd86bcc0544af59b764dd961fa, type: 3}
+      propertyPath: corpsePrefab
+      value: 
+      objectReference: {fileID: 5154943660721874716, guid: 11609515e407e6848a37ae2e3540ea2d, type: 3}
+    - target: {fileID: 740460995545239096, guid: f3bb2ddd86bcc0544af59b764dd961fa, type: 3}
       propertyPath: corpseSprite
       value: 
       objectReference: {fileID: 21300000, guid: 6d997a253b95fe048957ef1c46a5c9c4, type: 3}
@@ -30,11 +34,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2023260988043286838, guid: f3bb2ddd86bcc0544af59b764dd961fa, type: 3}
       propertyPath: cellDropMax
-      value: 5
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 2023260988043286838, guid: f3bb2ddd86bcc0544af59b764dd961fa, type: 3}
       propertyPath: cellDropMin
-      value: 3
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 2023260988043286838, guid: f3bb2ddd86bcc0544af59b764dd961fa, type: 3}
       propertyPath: spriteList.Array.size
@@ -56,6 +60,10 @@ PrefabInstance:
       propertyPath: 'corpseSpriteList.Array.data[0]'
       value: 
       objectReference: {fileID: 21300000, guid: 6d997a253b95fe048957ef1c46a5c9c4, type: 3}
+    - target: {fileID: 3150324268760826422, guid: f3bb2ddd86bcc0544af59b764dd961fa, type: 3}
+      propertyPath: m_PlayOnAwake
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4515851072354870145, guid: f3bb2ddd86bcc0544af59b764dd961fa, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.15514755

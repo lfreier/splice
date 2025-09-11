@@ -22,7 +22,16 @@ public class WeaponScriptable : ScriptableObject
 	public float damage { get; private set; } = 2F;
 
 	[field: SerializeField]
+	public string description { get; private set; } = "";
+
+	[field: SerializeField]
 	public float durability { get; private set; } = 2F;
+
+	[field: SerializeField]
+	public Sprite icon { get; private set; } = null;
+
+	[field: SerializeField]
+	public string displayName { get; private set; } = "";
 
 	[field: SerializeField]
 	public float npcAttackRange { get; private set; } = 2F;
@@ -32,6 +41,36 @@ public class WeaponScriptable : ScriptableObject
 
 	[field: SerializeField]
 	public float secondaryDamage { get; private set; } = 2F;
+
+	[field: SerializeField]
+	public AudioClip soundActorHit { get; private set; } = null;
+
+	[field: SerializeField]
+	public float soundActorHitVolume { get; private set; } = 0.5F;
+
+	[field: SerializeField]
+	public AudioClip soundBreak { get; private set; } = null;
+
+	[field: SerializeField]
+	public float soundBreakVolume { get; private set; } = 0.5F;
+
+	[field: SerializeField]
+	public AudioClip soundObstacleHit { get; private set; } = null;
+
+	[field: SerializeField]
+	public float soundObstacleHitVolume { get; private set; } = 0.5F;
+
+	[field: SerializeField]
+	public AudioClip soundSwing { get; private set; } = null;
+
+	[field: SerializeField]
+	public float soundSwingVolume { get; private set; } = 0.5F;
+
+	[field: SerializeField]
+	public AudioClip soundWallHit { get; private set; } = null;
+
+	[field: SerializeField]
+	public float soundWallHitVolume { get; private set; } = 0.5F;
 
 	/* Throwing fields */
 	[field: SerializeField]

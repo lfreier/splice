@@ -43,14 +43,14 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 1
+  spriteMode: 2
   spriteExtrude: 1
-  spriteMeshType: 0
+  spriteMeshType: 1
   alignment: 0
-  spritePivot: {x: 0.5, y: 0}
+  spritePivot: {x: 0.5, y: 0.5}
   spritePixelsToUnits: 32
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
-  spriteGenerateFallbackPhysicsShape: 0
+  spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
   alphaIsTransparency: 1
   spriteTessellationDetail: 0
@@ -110,22 +110,792 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: blade_arm_0
+      name: hub_sheet_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 0
-        width: 10
-        height: 22
+        x: 1
+        y: 168
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 2b50c94086ca62040800000000000000
-      internalID: 4622571630296303026
+      spriteID: be61f4b52dfff3d4b870950cdb415834
+      internalID: 2057219031
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: hub_sheet_1
+      rect:
+        serializedVersion: 2
+        x: 34
+        y: 168
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2b2f22cb5ae323f4792b219bf9ebbc17
+      internalID: -802746885
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: hub_sheet_2
+      rect:
+        serializedVersion: 2
+        x: 67
+        y: 168
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: aad2a5f5e2d86974a830f638cbf023af
+      internalID: -86947294
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: hub_sheet_3
+      rect:
+        serializedVersion: 2
+        x: 100
+        y: 168
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape:
+      - - {x: -13, y: 9}
+        - {x: -13, y: 16}
+        - {x: -16, y: 16}
+        - {x: -16, y: -16}
+        - {x: -11, y: -16}
+        - {x: -11, y: -12}
+        - {x: -13, y: -7}
+        - {x: -13, y: 0}
+        - {x: -12, y: 4}
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7f427512759ad3643bedf6245bcf280b
+      internalID: 459393702
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: hub_sheet_4
+      rect:
+        serializedVersion: 2
+        x: 1
+        y: 135
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9e3eada7e5c5d8948a0c51509b9f98cf
+      internalID: -1794682302
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: hub_sheet_5
+      rect:
+        serializedVersion: 2
+        x: 34
+        y: 135
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: bc682b59e6f74284eac68ea1bb09ce0f
+      internalID: 79125532
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: hub_sheet_6
+      rect:
+        serializedVersion: 2
+        x: 67
+        y: 135
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3e8f06d07edffc74cb26420086160b1f
+      internalID: -1766598076
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: hub_sheet_7
+      rect:
+        serializedVersion: 2
+        x: 100
+        y: 135
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape:
+      - - {x: -10, y: -10}
+        - {x: -10, y: -4}
+        - {x: -13, y: 0}
+        - {x: -12, y: 4}
+        - {x: -11, y: 9}
+        - {x: -13, y: 16}
+        - {x: -16, y: 16}
+        - {x: -16, y: -16}
+        - {x: -11, y: -16}
+      tessellationDetail: 0
+      bones: []
+      spriteID: a94dad981ec35fc4986954e2a5c1f492
+      internalID: 1382445148
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: hub_sheet_8
+      rect:
+        serializedVersion: 2
+        x: 100
+        y: 102
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape:
+      - - {x: -13, y: -13}
+        - {x: -12, y: -10}
+        - {x: -13, y: -7}
+        - {x: -13, y: -3}
+        - {x: -12, y: 3}
+        - {x: -10, y: 2.975998}
+        - {x: -10, y: 6}
+        - {x: -8, y: 9}
+        - {x: -8, y: 12}
+        - {x: -11, y: 16}
+        - {x: -16, y: 16}
+        - {x: -16, y: -16}
+        - {x: -13, y: -16}
+      tessellationDetail: 0
+      bones: []
+      spriteID: 684e97014baf2894995f49d0109be163
+      internalID: -1352553170
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: hub_sheet_9
+      rect:
+        serializedVersion: 2
+        x: 100
+        y: 69
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape:
+      - - {x: -13, y: 1}
+        - {x: -14, y: 4}
+        - {x: -13, y: 6}
+        - {x: -13, y: 9}
+        - {x: -12, y: 11}
+        - {x: -11, y: 16}
+        - {x: -16, y: 16}
+        - {x: -16, y: -16}
+        - {x: -13, y: -16}
+      tessellationDetail: 0
+      bones: []
+      spriteID: 41edb48d08e68e541be823ce2291d275
+      internalID: -1059274269
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: hub_sheet_10
+      rect:
+        serializedVersion: 2
+        x: 100
+        y: 36
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape:
+      - - {x: -13, y: -4}
+        - {x: -11, y: 4}
+        - {x: -8, y: 9}
+        - {x: -1, y: 9}
+        - {x: 2, y: 14}
+        - {x: 9, y: 14}
+        - {x: 16, y: 12}
+        - {x: 16, y: 16}
+        - {x: -16, y: 16}
+        - {x: -16, y: -16}
+        - {x: -13, y: -16}
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5b0ad2d492c305f4bac1ece4a8da4160
+      internalID: -1037866499
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: hub_sheet_11
+      rect:
+        serializedVersion: 2
+        x: 100
+        y: 3
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape:
+      - - {x: -11, y: 14}
+        - {x: -11, y: 16}
+        - {x: -16, y: 16}
+        - {x: -16, y: 11}
+        - {x: -14, y: 11}
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2770fbabf3ae31d4a92f557cc14a569b
+      internalID: -381922317
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: hub_sheet_12
+      rect:
+        serializedVersion: 2
+        x: 133
+        y: 168
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 374d9c9ad4e3a5340b4afb0542673ffc
+      internalID: -1695402914
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: hub_sheet_13
+      rect:
+        serializedVersion: 2
+        x: 133
+        y: 135
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 70212f3361694c744bdbbabc77f96946
+      internalID: -523694770
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: hub_sheet_14
+      rect:
+        serializedVersion: 2
+        x: 166
+        y: 135
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: aa48f8d8f865bd44ca949b08edac5b6c
+      internalID: 1897479551
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: hub_sheet_15
+      rect:
+        serializedVersion: 2
+        x: 133
+        y: 102
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 508b05388304f294f867d53b65a6dc4a
+      internalID: 1924293876
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: hub_sheet_16
+      rect:
+        serializedVersion: 2
+        x: 166
+        y: 102
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b00851b22f4c7ed4485c3292a71741da
+      internalID: -532335677
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: hub_sheet_17
+      rect:
+        serializedVersion: 2
+        x: 199
+        y: 102
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7bc8a9e1fa03b374d8c9337fc65b7b56
+      internalID: 1436252713
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: hub_sheet_18
+      rect:
+        serializedVersion: 2
+        x: 232
+        y: 102
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2882eb717ab9b6b4b8372601ab744a89
+      internalID: 979408208
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: hub_sheet_19
+      rect:
+        serializedVersion: 2
+        x: 166
+        y: 69
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d2debce57d3249f42a1dd8ec9442e63d
+      internalID: -1377549923
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: hub_sheet_20
+      rect:
+        serializedVersion: 2
+        x: 199
+        y: 69
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 51669e1aa820fbb44a0b128050c3c111
+      internalID: -1083419718
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: hub_sheet_21
+      rect:
+        serializedVersion: 2
+        x: 232
+        y: 69
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ef3049e9981baa74cb50205d76fa5d12
+      internalID: 89337332
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: hub_sheet_22
+      rect:
+        serializedVersion: 2
+        x: 166
+        y: 36
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d38a4142638b81842b0611e612e8201c
+      internalID: 1131576124
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: hub_sheet_23
+      rect:
+        serializedVersion: 2
+        x: 199
+        y: 36
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8efab6a7651543d4c893a79a521cf446
+      internalID: 643046951
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: hub_sheet_24
+      rect:
+        serializedVersion: 2
+        x: 232
+        y: 36
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3cb8e548969b5a0409fe48685d906539
+      internalID: 1993908539
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: hub_sheet_25
+      rect:
+        serializedVersion: 2
+        x: 166
+        y: 3
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 43daad8497111144e88814faab1fb62e
+      internalID: -132947215
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: hub_sheet_26
+      rect:
+        serializedVersion: 2
+        x: 199
+        y: 3
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: af7e4ea000ae37e44b1bc96fcf7aa380
+      internalID: -1353720742
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: hub_sheet_27
+      rect:
+        serializedVersion: 2
+        x: 232
+        y: 3
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7d6824661532e9b41ad72f4ed911615f
+      internalID: 1983794474
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: hub_sheet_28
+      rect:
+        serializedVersion: 2
+        x: 232
+        y: 168
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 46345ae18fc0496448406c9914f48f20
+      internalID: -1309935015
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: hub_sheet_29
+      rect:
+        serializedVersion: 2
+        x: 232
+        y: 135
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d376951464d5f2348ad6b420e894d0a2
+      internalID: 528389937
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: hub_sheet_30
+      rect:
+        serializedVersion: 2
+        x: 199
+        y: 168
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1389004bc4379d14bbca4e3df3d4e44d
+      internalID: 677676081
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: hub_sheet_31
+      rect:
+        serializedVersion: 2
+        x: 199
+        y: 135
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d82d69262a97faf429c30253d9eb4180
+      internalID: -1148850204
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: hub_sheet_32
+      rect:
+        serializedVersion: 2
+        x: 166
+        y: 168
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3c5d4f0092bcf7346a107855f2db45c2
+      internalID: 80169023
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: hub_sheet_33
+      rect:
+        serializedVersion: 2
+        x: 133
+        y: 69
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 04cf982c7e5886d45b57dd039f686760
+      internalID: -2003365105
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: hub_sheet_34
+      rect:
+        serializedVersion: 2
+        x: 133
+        y: 36
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5f26faa63847d044d8a485f064e0db29
+      internalID: -380700835
       vertices: []
       indices: 
       edges: []
@@ -147,7 +917,41 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      blade_arm_0: 4622571630296303026
+      hub_sheet_0: 2057219031
+      hub_sheet_1: -802746885
+      hub_sheet_10: -1037866499
+      hub_sheet_11: -381922317
+      hub_sheet_12: -1695402914
+      hub_sheet_13: -523694770
+      hub_sheet_14: 1897479551
+      hub_sheet_15: 1924293876
+      hub_sheet_16: -532335677
+      hub_sheet_17: 1436252713
+      hub_sheet_18: 979408208
+      hub_sheet_19: -1377549923
+      hub_sheet_2: -86947294
+      hub_sheet_20: -1083419718
+      hub_sheet_21: 89337332
+      hub_sheet_22: 1131576124
+      hub_sheet_23: 643046951
+      hub_sheet_24: 1993908539
+      hub_sheet_25: -132947215
+      hub_sheet_26: -1353720742
+      hub_sheet_27: 1983794474
+      hub_sheet_28: -1309935015
+      hub_sheet_29: 528389937
+      hub_sheet_3: 459393702
+      hub_sheet_30: 677676081
+      hub_sheet_31: -1148850204
+      hub_sheet_32: 80169023
+      hub_sheet_33: -2003365105
+      hub_sheet_34: -380700835
+      hub_sheet_4: -1794682302
+      hub_sheet_5: 79125532
+      hub_sheet_6: -1766598076
+      hub_sheet_7: 1382445148
+      hub_sheet_8: -1352553170
+      hub_sheet_9: -1059274269
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

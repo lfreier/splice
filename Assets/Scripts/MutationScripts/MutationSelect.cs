@@ -14,9 +14,13 @@ public class MutationSelect : MonoBehaviour
 
 	private AsyncOperation op;
 
+	private LockBehind[] locks;
+
 	private void Start()
 	{
 		isActivated = false;
+
+		locks = FindObjectsByType<LockBehind>(FindObjectsSortMode.InstanceID);
 	}
 
 	private void Update()
@@ -41,6 +45,12 @@ public class MutationSelect : MonoBehaviour
 		{
 			camHandler.stopCam(true);
 		}
+		PlayerInputs inputs = interact.player.GetComponentInChildren<PlayerInputs>();
+		if (inputs != null)
+		{
+			inputs.locked = true;
+			inputs.lockWait = true;
+		}
 		op = SceneManager.LoadSceneAsync((int)SceneDefs.SCENE.MUTATION_SELECT, LoadSceneMode.Additive);
 		op.allowSceneActivation = true;
 	}
@@ -60,6 +70,22 @@ public class MutationSelect : MonoBehaviour
 		if (camHandler != null)
 		{
 			camHandler.stopCam(false);
+		}
+
+		foreach (LockBehind doorLock in locks)
+		{
+			if (doorLock != null)
+			{
+				doorLock.doorToLock.doorUnlock();
+				Destroy(doorLock);
+				break;
+			}
+		}
+
+		PlayerInputs inputs = interact.player.GetComponentInChildren<PlayerInputs>();
+		if (inputs != null)
+		{
+			inputs.locked = false;
 		}
 
 		Destroy(this.gameObject);

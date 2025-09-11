@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 5224798683401990904}
   - component: {fileID: 7020444817541321040}
   - component: {fileID: 4899611314252143977}
-  - component: {fileID: 7673185789133365057}
   - component: {fileID: 547074260755315443}
   m_Layer: 11
   m_Name: keycard_glow
@@ -77,7 +76,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 919069219
   m_SortingLayer: 2
-  m_SortingOrder: 0
+  m_SortingOrder: -1
   m_Sprite: {fileID: 21300000, guid: 8f6803beb3f879143b6c94061d5169e2, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -107,33 +106,6 @@ MonoBehaviour:
   glowTimer: 0.7
   glowIncTimer: 0.1
   glowChange: 0.1
---- !u!50 &7673185789133365057
-Rigidbody2D:
-  serializedVersion: 4
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1199839848029944237}
-  m_BodyType: 1
-  m_Simulated: 1
-  m_UseFullKinematicContacts: 0
-  m_UseAutoMass: 0
-  m_Mass: 1
-  m_LinearDrag: 0
-  m_AngularDrag: 0.05
-  m_GravityScale: 1
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_Interpolate: 0
-  m_SleepingMode: 1
-  m_CollisionDetection: 0
-  m_Constraints: 0
 --- !u!61 &547074260755315443
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -254,7 +226,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 919069219
   m_SortingLayer: 2
-  m_SortingOrder: 1
+  m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: e7b8934ed5a65aa4aaf4358c8b633efa, type: 3}
   m_Color: {r: 0.39215687, g: 0.09803922, b: 0.09803922, a: 1}
   m_FlipX: 0
@@ -277,6 +249,7 @@ GameObject:
   - component: {fileID: 647760437655045498}
   - component: {fileID: 4676146276259819351}
   - component: {fileID: -2410750095788609518}
+  - component: {fileID: 1107122252225391945}
   m_Layer: 11
   m_Name: keycard
   m_TagString: ObjectPickup
@@ -332,6 +305,34 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   guid: keycard_7310476c-5d0d-4f27-a7c5-15ecd974b5e9
+  basicPrefabIndex: 12
+--- !u!50 &1107122252225391945
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4190192775242081158}
+  m_BodyType: 2
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 4
+  m_LinearDrag: 6
+  m_AngularDrag: 6
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0
 --- !u!1 &4862851081301821928
 GameObject:
   m_ObjectHideFlags: 0
@@ -406,7 +407,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 919069219
   m_SortingLayer: 2
-  m_SortingOrder: 0
+  m_SortingOrder: -1
   m_Sprite: {fileID: 21300000, guid: 1b1a0eeb7dfb9ef4a9c5523f84df29b2, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -492,7 +493,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 919069219
   m_SortingLayer: 2
-  m_SortingOrder: 0
+  m_SortingOrder: -1
   m_Sprite: {fileID: 21300000, guid: 39c665048fa62904aadc26c167f4a814, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0

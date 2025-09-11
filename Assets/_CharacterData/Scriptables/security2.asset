@@ -13,11 +13,11 @@ MonoBehaviour:
   m_Name: security2
   m_EditorClassIdentifier: 
   <armor>k__BackingField: 0.5
-  <health>k__BackingField: 3.5
+  <health>k__BackingField: 4.5
   <attackTimer>k__BackingField: 0.1
-  <maxSpeed>k__BackingField: 7.5
-  <moveSpeed>k__BackingField: 0.25
-  <acceleration>k__BackingField: 0.4
+  <maxSpeed>k__BackingField: 8
+  <moveSpeed>k__BackingField: 0.3
+  <acceleration>k__BackingField: 0.5
   <deceleration>k__BackingField: 0.2
   <hearingRange>k__BackingField: 6.5
   <sightRange>k__BackingField: 7.5

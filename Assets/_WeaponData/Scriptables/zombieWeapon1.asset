@@ -13,23 +13,36 @@ MonoBehaviour:
   m_Name: zombieWeapon1
   m_EditorClassIdentifier: 
   <arc>k__BackingField: 30
-  <atkSpeed>k__BackingField: 0.8
+  <atkSpeed>k__BackingField: 1.2
   <canBeDropped>k__BackingField: 0
-  <damage>k__BackingField: 1
+  <damage>k__BackingField: 2
+  <description>k__BackingField: 
   <durability>k__BackingField: -1
-  <npcAttackRange>k__BackingField: 2
+  <icon>k__BackingField: {fileID: 0}
+  <displayName>k__BackingField: 
+  <npcAttackRange>k__BackingField: 4
   <prefabIndex>k__BackingField: 0
   <secondaryDamage>k__BackingField: 2
+  <soundActorHit>k__BackingField: {fileID: 8300000, guid: 152261d29304ef5488d53ce1c9eb9bf0, type: 3}
+  <soundActorHitVolume>k__BackingField: 0.7
+  <soundBreak>k__BackingField: {fileID: 0}
+  <soundBreakVolume>k__BackingField: 1
+  <soundObstacleHit>k__BackingField: {fileID: 8300000, guid: c21af221fd44e4b4c9e199fafaf7865b, type: 3}
+  <soundObstacleHitVolume>k__BackingField: 0.5
+  <soundSwing>k__BackingField: {fileID: 8300000, guid: b665489b065df3f499d40bad6949a764, type: 3}
+  <soundSwingVolume>k__BackingField: 1
+  <soundWallHit>k__BackingField: {fileID: 8300000, guid: c21af221fd44e4b4c9e199fafaf7865b, type: 3}
+  <soundWallHitVolume>k__BackingField: 0.5
   <throwDamage>k__BackingField: 0
   <throwDurabilityDamage>k__BackingField: 0
   <throwSpeed>k__BackingField: 0
   <throwWeight>k__BackingField: 0
   <throwHurtSpeed>k__BackingField: 0
-  <weaponType>k__BackingField: 1
+  <weaponType>k__BackingField: 4
   equipPosX: 0
   equipPosY: 0
   equipRotZ: 0
   equipOtherPosX: 0
   equipOtherPosY: 0
   equipOtherRotZ: 0
-  <knockbackDamage>k__BackingField: 1.6
+  <knockbackDamage>k__BackingField: 2.2

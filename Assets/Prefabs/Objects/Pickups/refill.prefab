@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 7895782554266074202}
   - component: {fileID: 5200662748304089391}
-  - component: {fileID: 7711242991723697203}
   - component: {fileID: 7197832005329548315}
   m_Layer: 11
   m_Name: refill_pickup
@@ -78,35 +77,8 @@ BoxCollider2D:
     drawMode: 1
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 0.43125, y: 0.5625}
+  m_Size: {x: 0.5, y: 0.59375}
   m_EdgeRadius: 0
---- !u!50 &7711242991723697203
-Rigidbody2D:
-  serializedVersion: 4
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2667798190910538606}
-  m_BodyType: 1
-  m_Simulated: 1
-  m_UseFullKinematicContacts: 0
-  m_UseAutoMass: 0
-  m_Mass: 1
-  m_LinearDrag: 0
-  m_AngularDrag: 0.05
-  m_GravityScale: 1
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_Interpolate: 0
-  m_SleepingMode: 1
-  m_CollisionDetection: 0
-  m_Constraints: 0
 --- !u!114 &7197832005329548315
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -137,6 +109,7 @@ GameObject:
   - component: {fileID: 2169118679047859684}
   - component: {fileID: 8643042026247529061}
   - component: {fileID: 5008086433226099685}
+  - component: {fileID: 9183919479821334472}
   m_Layer: 11
   m_Name: refill
   m_TagString: ObjectPickup
@@ -243,6 +216,34 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   guid: refill_54eba2e0-9dc8-4939-96fc-4290ff4bdf12
+  basicPrefabIndex: 15
+--- !u!50 &9183919479821334472
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2817554636129167509}
+  m_BodyType: 2
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 4
+  m_LinearDrag: 6
+  m_AngularDrag: 6
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0
 --- !u!1 &6131762416296624868
 GameObject:
   m_ObjectHideFlags: 0

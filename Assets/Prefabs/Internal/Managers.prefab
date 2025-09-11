@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 4654381731306417788}
   - component: {fileID: 4511755820635981177}
   - component: {fileID: 9086022366862896558}
+  - component: {fileID: 3122103705114267649}
   m_Layer: 0
   m_Name: Managers
   m_TagString: Untagged
@@ -51,18 +52,8 @@ MonoBehaviour:
   audioManager: {fileID: 4511755820635981177}
   effectManager: {fileID: 4654381731306417788}
   levelManager: {fileID: 9086022366862896558}
+  prefabManager: {fileID: 3122103705114267649}
   loadingHandler: {fileID: 0}
-  weaponPrefabs:
-  - {fileID: 1192526033329145194, guid: 667ae61a41d03f34bb1259307cf06291, type: 3}
-  - {fileID: 1192526033329145194, guid: e68bd7edcb08749459b30946014ecd34, type: 3}
-  - {fileID: 1192526033329145194, guid: 95f4e5b3291ade544a04604f4830459e, type: 3}
-  - {fileID: 1192526033329145194, guid: a1116bc9fda44684eb2ea2c225fe5c2b, type: 3}
-  - {fileID: 1192526033329145194, guid: 4b343bd6d0e62c94da28557b01dd8918, type: 3}
-  mutPBeast: {fileID: 3279388766364700584, guid: 60c128a3aea613c438eeb70f8c97eee7, type: 3}
-  mutPBladeWing: {fileID: 869377620814106126, guid: f3a8bd5cc9868d34daeeca1cb142e3c4, type: 3}
-  mutPLimb: {fileID: 4878587490104917525, guid: c1e65fecc886f9b49b05444180df6926, type: 3}
-  weapPBladeArm: {fileID: 1192526033329145194, guid: 94cfaef694721d248982433f4c181c99, type: 3}
-  weapPFist: {fileID: 1192526033329145194, guid: 3111e231717f3ba4fb9b5fb229a2e6d3, type: 3}
   actorLayers:
     serializedVersion: 2
     m_Bits: 256
@@ -71,23 +62,26 @@ MonoBehaviour:
     m_Bits: 64
   findWeaponLayers:
     serializedVersion: 2
-    m_Bits: 18496
+    m_Bits: 542784
   lineOfSightLayers:
     serializedVersion: 2
     m_Bits: 16704
   excludeCollisionLayers:
     serializedVersion: 2
-    m_Bits: 123264
+    m_Bits: 647552
   soundLayer:
     serializedVersion: 2
     m_Bits: 262144
   unwalkableLayers:
     serializedVersion: 2
-    m_Bits: 24640
+    m_Bits: 548928
   pickupMaxScriptable: {fileID: 11400000, guid: a26d4bab1861ef84f8bf71a966c96f8c, type: 2}
   maxPickups: 0000000000000000010000000100000001000000
   isLoaded: 0
   currentScene: 0
+  currentSaveSlot: 0
+  musicVolume: 0.5
+  effectsVolume: 0.5
 --- !u!114 &4654381731306417788
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -101,10 +95,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bleed1: {fileID: 11400000, guid: 19c01944902b8b34ebd0f33dad44fc3a, type: 2}
+  bleed1Half: {fileID: 11400000, guid: 92b68de03f01293469c09bc648bec764, type: 2}
+  bleed2Half: {fileID: 11400000, guid: af3eae248447a4947a1f7b76b41614eb, type: 2}
   stunHalf: {fileID: 11400000, guid: d56cb6eaeed347642b2e0dd57748b9e8, type: 2}
   stunThrow: {fileID: 11400000, guid: 7422d2d157bf8b34990fd1d9b5276485, type: 2}
   stunParry: {fileID: 11400000, guid: 865c7d3cf90638f468f04540f7cb4ea0, type: 2}
   stun1: {fileID: 11400000, guid: d92e4d46a82385f4c9f7e376918ad3bc, type: 2}
+  stun1Half: {fileID: 11400000, guid: 75bded2d52fc2f24686cd90f494b3962, type: 2}
+  stun2Half: {fileID: 11400000, guid: bb9b34f7c7a52ea45a1756ac7628779f, type: 2}
   stun3: {fileID: 11400000, guid: 87cc1f8670aa6ef48ad61bc0ba8c6f2d, type: 2}
   stunPermanent: {fileID: 11400000, guid: 5c2f8452a537f96468a2f60eb9ccaba3, type: 2}
   iFrame0: {fileID: 11400000, guid: 9a999b547a817c54bb898f5610914bde, type: 2}
@@ -112,6 +110,9 @@ MonoBehaviour:
   sus1: {fileID: 11400000, guid: da5225351daae8641b0e7826d95b5c77, type: 2}
   seeking1: {fileID: 11400000, guid: 6a2118023e54b0a44812440d4b09ff14, type: 2}
   notice1: {fileID: 11400000, guid: f33396815ac2c3c4ba074c1515df6693, type: 2}
+  turretSus: {fileID: 0}
+  turretSeeking: {fileID: 0}
+  turretNotice: {fileID: 0}
 --- !u!114 &4511755820635981177
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -124,19 +125,83 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1b80ca114488feb40bc2654abc0e764e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  soundPrefab: {fileID: 2250974812238864123, guid: c66734f07c557f84eafe715df431c494, type: 3}
   listener: {fileID: 0}
-  cellCollectPop: {fileID: 0}
-  actorDeath1: {fileID: 0}
-  actorDeath2: {fileID: 0}
-  actorDeath3: {fileID: 0}
-  doorClose: {fileID: 0}
-  doorOpen: {fileID: 0}
-  doorUnlock: {fileID: 0}
-  footstep: {fileID: 8300000, guid: 1d63fcbc8fcf97e4ab818c9c059d8ffe, type: 3}
+  clipsRef:
+  - {fileID: 8300000, guid: e6f6ffe36f325ca4abce64eed89f5918, type: 3}
+  - {fileID: 8300000, guid: 476020a61a2d6c74f9603fe2db63bfd1, type: 3}
+  - {fileID: 8300000, guid: 326b5e0372a1b524981c314e98186593, type: 3}
+  - {fileID: 8300000, guid: 1d63fcbc8fcf97e4ab818c9c059d8ffe, type: 3}
+  - {fileID: 8300000, guid: 00c4d84d13047d54d92519e56b2f9958, type: 3}
+  - {fileID: 8300000, guid: d5e3e1e53722dd9438a90b7f97f937d3, type: 3}
+  - {fileID: 8300000, guid: d625c6e00795a224995b036683d25b38, type: 3}
+  - {fileID: 8300000, guid: 452eb1799a0507345a52ab8cba2f39c2, type: 3}
+  - {fileID: 8300000, guid: b012a217bc286c5449dc4c49a4b9eb49, type: 3}
+  - {fileID: 8300000, guid: 34905a83bc880094284de96e6eafebf0, type: 3}
+  - {fileID: 8300000, guid: 38f20f1eef3c44f45aec8373ffbc1ba8, type: 3}
+  - {fileID: 8300000, guid: 152261d29304ef5488d53ce1c9eb9bf0, type: 3}
+  - {fileID: 8300000, guid: e59c7e023e0cb8f41baf11a0a41e47a5, type: 3}
+  - {fileID: 8300000, guid: fad49cc5955cf434c9046ace9b42a7b7, type: 3}
+  - {fileID: 8300000, guid: 906f85267add4704b851251eeb89405d, type: 3}
+  - {fileID: 8300000, guid: 4ebf89c51850dc945aeecf8d50d17329, type: 3}
+  - {fileID: 8300000, guid: 64fd037e2d68657488f3657381b81080, type: 3}
+  - {fileID: 8300000, guid: 6c9dd0732611a3b4c823bb5ec13774bc, type: 3}
+  - {fileID: 8300000, guid: c21af221fd44e4b4c9e199fafaf7865b, type: 3}
+  - {fileID: 8300000, guid: 619d131918b5d2d479edd3587d18d37c, type: 3}
+  - {fileID: 8300000, guid: f1e1c1d9322f5ea4e8c0109fa1ff9ece, type: 3}
+  - {fileID: 8300000, guid: e23518aefad167d48978ca894e044931, type: 3}
+  - {fileID: 8300000, guid: 4028c7e259e234d4eb8f32b8970150ce, type: 3}
+  - {fileID: 8300000, guid: 572ccdd62b3da2243b9c31e5c3f14cd1, type: 3}
+  - {fileID: 8300000, guid: d4dbe5064b7bf72448795b211025b6ba, type: 3}
+  - {fileID: 8300000, guid: c1cdfb14985e768448b9eb66b41b74da, type: 3}
+  - {fileID: 8300000, guid: 2f108b8b41d33c14cbc4f295d0397c9f, type: 3}
+  - {fileID: 8300000, guid: 1a161614ff3bea444be598482097257e, type: 3}
+  - {fileID: 8300000, guid: a1848634a879e7741bb155573fe3b74b, type: 3}
+  - {fileID: 8300000, guid: 48bf95b0553960948b5997f9338e7c1e, type: 3}
+  - {fileID: 8300000, guid: 14b19a7bd5988434d9a8ea561ac40638, type: 3}
+  - {fileID: 8300000, guid: b665489b065df3f499d40bad6949a764, type: 3}
+  - {fileID: 8300000, guid: d0b896c4df2b296438280b6d24c46d23, type: 3}
+  - {fileID: 8300000, guid: eac6343fba5827743bee029d2975dd18, type: 3}
+  - {fileID: 8300000, guid: aae714ecccec41243b4b1a4cca290089, type: 3}
+  - {fileID: 8300000, guid: b20833c1885084547b58e7d0ebf71cae, type: 3}
+  - {fileID: 8300000, guid: 5651570415544434cb54fae3e9ebbd4e, type: 3}
+  - {fileID: 8300000, guid: 8ad7a3c6e393ad74d8b727e63f9c978e, type: 3}
+  - {fileID: 8300000, guid: 30ca6e7e557a0b44f83c12c345439327, type: 3}
+  - {fileID: 8300000, guid: f7631ad7ccc24d54b8e19257a066c441, type: 3}
+  - {fileID: 8300000, guid: e378c03824c24e343bcd083d61b2e082, type: 3}
+  - {fileID: 8300000, guid: c7a94fe1851ada14280fe050ace4c807, type: 3}
+  - {fileID: 8300000, guid: 9ef3ad8c2d0368849a1dc7bc1c48d2f2, type: 3}
+  - {fileID: 8300000, guid: 39df70fc9ab69d440bc42406ecf103ce, type: 3}
+  - {fileID: 8300000, guid: a1680725f2efd224cb1d369bf76b57dc, type: 3}
+  - {fileID: 8300000, guid: 15be7a20eccb8d140abc3163bc6bb1be, type: 3}
+  - {fileID: 8300000, guid: 1451635b4da578c488aa872777bed1e9, type: 3}
+  - {fileID: 8300000, guid: 13f56cfe5de758e4ea2aed3534254f7b, type: 3}
+  - {fileID: 8300000, guid: 775947623067597409e790d7c921fe9d, type: 3}
+  - {fileID: 8300000, guid: fd6f18c588ae53a4e90a6aa08b33f295, type: 3}
+  - {fileID: 8300000, guid: cadd4112eeda53d429782e0223e9f988, type: 3}
+  - {fileID: 8300000, guid: 18edb78409c27374fb1edb8769df1fdd, type: 3}
+  - {fileID: 8300000, guid: 15b63f29f2a1aa4498e24af250771b67, type: 3}
+  - {fileID: 8300000, guid: 7ce1545ef4f4f744691d680c3b6aa7c9, type: 3}
+  - {fileID: 8300000, guid: f33b22418c10360408f7c36fbfd3d41e, type: 3}
+  - {fileID: 8300000, guid: a41f5b2d7106c0a4d8570134dc263c99, type: 3}
+  - {fileID: 8300000, guid: 16827b4e15ed7b5458b335d282addc46, type: 3}
+  - {fileID: 8300000, guid: e5071ca98f3a8324ea6aa2428f55a690, type: 3}
+  - {fileID: 8300000, guid: 77a0a0e42c7dc2e4f9b233ab4251231d, type: 3}
+  - {fileID: 8300000, guid: ec2e27bc3ba86f64cb57ba9bc0bf795e, type: 3}
+  footstepCarpet: {fileID: 0}
   heartPump: {fileID: 0}
-  parry: {fileID: 8300000, guid: acf0ab68899702345b836a505f63bbe1, type: 3}
   playerDeath: {fileID: 0}
-  wallMetal: {fileID: 0}
+  batterySound: {fileID: 8300000, guid: d0b896c4df2b296438280b6d24c46d23, type: 3}
+  healthVialSound: {fileID: 8300000, guid: eac6343fba5827743bee029d2975dd18, type: 3}
+  refillSound: {fileID: 8300000, guid: aae714ecccec41243b4b1a4cca290089, type: 3}
+  obstacleHit: {fileID: 8300000, guid: 9ef3ad8c2d0368849a1dc7bc1c48d2f2, type: 3}
+  obstacleActorHit: {fileID: 8300000, guid: 152261d29304ef5488d53ce1c9eb9bf0, type: 3}
+  menuClick: {fileID: 8300000, guid: 7ce1545ef4f4f744691d680c3b6aa7c9, type: 3}
+  errorSound: {fileID: 8300000, guid: f33b22418c10360408f7c36fbfd3d41e, type: 3}
+  sciDeath1: {fileID: 0}
+  sciDeath2: {fileID: 0}
+  sciDeath3: {fileID: 0}
+  sciDeath4: {fileID: 0}
 --- !u!114 &9086022366862896558
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -151,15 +216,161 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gridPosition: {x: 0, y: 0, z: 0}
   currLevelData: {fileID: 0}
+  stationShowMut: 0
   playerPrefab: {fileID: 4454810878759323063, guid: ade1a49a0d089d14ab68de3dd80ad968, type: 3}
   lastSavedSpawn: 0
   lastSavedLevelIndex: 0
   levelSpawns:
   - {fileID: 11400000, guid: d005fe9a0a0fcff499c05a01ade00cb0, type: 2}
   - {fileID: 11400000, guid: 4de7098faac9dc340ad110acfe45724a, type: 2}
+  - {fileID: 11400000, guid: 05d12f222020d054295902ce121e924f, type: 2}
   - {fileID: 11400000, guid: cffedb1562eb6c548ac70982e90766f9, type: 2}
   - {fileID: 11400000, guid: e0060532721259a478dd135a6355e1b0, type: 2}
+  - {fileID: 11400000, guid: 33517daee327eb141a36085c4322391c, type: 2}
+  - {fileID: 11400000, guid: 2f5d9256aa6369f46ae54c4e9feb0194, type: 2}
+  - {fileID: 11400000, guid: df03cd5ca9695184d83d7d10f51779f8, type: 2}
+  - {fileID: 11400000, guid: f5f5a14ed8c598c4286ea77f7b686839, type: 2}
+  - {fileID: 11400000, guid: 177d4197158b59c44a9ac1021d3356fa, type: 2}
+  - {fileID: 11400000, guid: c7d0145f0136a28469f05a541c12f099, type: 2}
+  - {fileID: 11400000, guid: 177d4197158b59c44a9ac1021d3356fa, type: 2}
+  - {fileID: 11400000, guid: 177d4197158b59c44a9ac1021d3356fa, type: 2}
+  - {fileID: 11400000, guid: bb4910fd8fca7a84e81d430a29d2a98c, type: 2}
+  - {fileID: 11400000, guid: 28a0e904ac3c0284c8759bec7dca429f, type: 2}
+  - {fileID: 11400000, guid: 1c2015826475bc547b6271cbfd139e5c, type: 2}
+  - {fileID: 11400000, guid: 230fb6dea7208a54098d63ef6dbb65ee, type: 2}
+  - {fileID: 11400000, guid: 0e62a91c33d32fb4e9f9be3e35b38a0e, type: 2}
+  - {fileID: 11400000, guid: f1c7a0d03e8e6694496f2ceb2f987a96, type: 2}
+  - {fileID: 11400000, guid: 4abfe91cd85789443b6033637a0ffcf4, type: 2}
+  - {fileID: 11400000, guid: 3e1680d4c71da574f811151b5b9a1e74, type: 2}
+  - {fileID: 11400000, guid: 6f9d6fd94a6ba2047b342ae4fa2617e5, type: 2}
   lastSavedAtStation: 0
   savedActors: []
-  usedSavedStations: 0000
+  elevatorSpawns:
+  - {fileID: 0}
+  - {fileID: 11400000, guid: 2f5d9256aa6369f46ae54c4e9feb0194, type: 2}
+  - {fileID: 11400000, guid: f5f5a14ed8c598c4286ea77f7b686839, type: 2}
+  - {fileID: 11400000, guid: c7d0145f0136a28469f05a541c12f099, type: 2}
+  - {fileID: 11400000, guid: bb4910fd8fca7a84e81d430a29d2a98c, type: 2}
+  - {fileID: 11400000, guid: 1c2015826475bc547b6271cbfd139e5c, type: 2}
+  - {fileID: 11400000, guid: 05d12f222020d054295902ce121e924f, type: 2}
+  - {fileID: 11400000, guid: 230fb6dea7208a54098d63ef6dbb65ee, type: 2}
+  - {fileID: 11400000, guid: f1c7a0d03e8e6694496f2ceb2f987a96, type: 2}
+  - {fileID: 11400000, guid: cffedb1562eb6c548ac70982e90766f9, type: 2}
+  - {fileID: 11400000, guid: 33517daee327eb141a36085c4322391c, type: 2}
+  - {fileID: 11400000, guid: 4abfe91cd85789443b6033637a0ffcf4, type: 2}
+  - {fileID: 11400000, guid: 3e1680d4c71da574f811151b5b9a1e74, type: 2}
+  - {fileID: 11400000, guid: 6f9d6fd94a6ba2047b342ae4fa2617e5, type: 2}
+  currSaveData:
+    version: v0.3
+    sceneIndex: 0
+    actorTable:
+      keys: []
+      values: []
+    doorTable:
+      keys: []
+      values: []
+    weaponTable:
+      keys: []
+      values: []
+    pickupBoxTable:
+      keys: []
+      values: []
+    saveTable:
+      keys: []
+      values: []
+    basicsTable:
+      keys: []
+      values: []
+  currPlayerSaveData:
+    version: v0.3
+    lastSavedLevel: 0
+    lastSavedSpawn: 0
+    savedMutationData:
+      mutationBar: 0
+      maxMutationBar: 100
+    playerData:
+      armor: 0
+      health: 0
+      maxHealth: 0
+      shield: 0
+      maxSpeed: 0
+      moveSpeed: 0
+      acceleration: 0
+      deceleration: 0
+      hearingRange: 0
+      sightAngle: 0
+      sightRange: 0
+      frightenedDistance: 0
+    savedKeycardCount: 00000000000000000000000000000000
+    savedUsableItemCount: 000000000000000000000000
+    savedUsableItemSprite:
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    savedActiveItemIndex: -1
+    mutationPrefabList: 
+    savedCells: 0
+    equippedWeaponPrefab: -1
+    weaponsScanned: 0000000000
+    limbGrabbedObjectPrefab: -1
+    weaponCharge: 0
+    weaponDurability: 0
+    elevatorAvailable: 000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+    saveStationUses: 00000000000000000000000000000000000000000000000000000000
   camHandler: {fileID: 0}
+--- !u!114 &3122103705114267649
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7906487538385718882}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 159a24809863a2d428f4f50829e06fe8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  basicPrefabs:
+  - {fileID: 2911627580042638205, guid: 9bdd8350a0e30434eaadda3861d39b89, type: 3}
+  - {fileID: 5154943660721874716, guid: 0832ca598afa0004e9784aea94e4f138, type: 3}
+  - {fileID: 5154943660721874716, guid: 114b1030758b8c44083100e773e1b895, type: 3}
+  - {fileID: 5154943660721874716, guid: c4183d0f9c5e8c048affea0841ae0d21, type: 3}
+  - {fileID: 5154943660721874716, guid: 16aded05e0d6fd34aa3f4d6e93b96eaa, type: 3}
+  - {fileID: 5154943660721874716, guid: bc27f21ea7cd69f409408371d5e0ebb7, type: 3}
+  - {fileID: 5154943660721874716, guid: 11609515e407e6848a37ae2e3540ea2d, type: 3}
+  - {fileID: 5154943660721874716, guid: e0be5d8d69acd2a4786385a0ff5cf35a, type: 3}
+  - {fileID: 5154943660721874716, guid: 04de3c618a3e3814d8e15c1fa758ceeb, type: 3}
+  - {fileID: 4718064208568494967, guid: 4180ff820cbdc364dad7f89087822eec, type: 3}
+  - {fileID: 608380240518538002, guid: 16367c997bdbd5e44ae7a5c563f8c28a, type: 3}
+  - {fileID: 7759880110565179527, guid: 5faef6d126fd21c4e924a1c7c05e34bc, type: 3}
+  - {fileID: 7128427971435259476, guid: 804662000644b26429c1c15c0bd5b84f, type: 3}
+  - {fileID: 7011714338143177268, guid: 9ef8a21d6c357f7458ad312c5fc21997, type: 3}
+  - {fileID: 7011714338143177268, guid: 80474d91634d572439a3916ff6fa4649, type: 3}
+  - {fileID: 2817554636129167509, guid: 582acd8aa4deb5444863988866b6f9b0, type: 3}
+  - {fileID: 8516706236069428805, guid: aeccad39213565a4fa09c695bf303d8e, type: 3}
+  - {fileID: 8516706236069428805, guid: df8be071e55c233419871cedfa846ce5, type: 3}
+  - {fileID: 8516706236069428805, guid: 4158f5c6dbfc92c4e9b4fe6f1641691b, type: 3}
+  - {fileID: 2248485062928932828, guid: c8bd0daff5845a247b4c1be2f394b597, type: 3}
+  - {fileID: 3301648032349487571, guid: 33e90329716dc92428f06e25edc0f6e5, type: 3}
+  - {fileID: 7205356695832697737, guid: 033250931ea5b1144987d9bb0c46d192, type: 3}
+  - {fileID: 5485374406139878651, guid: a52b7671e46ffea4180a2e0715f07bf6, type: 3}
+  - {fileID: 67683403601192169, guid: 250cd1389fe9d2c4baf24e8fcabbc860, type: 3}
+  - {fileID: 67683403601192169, guid: 000025519a21dfb45bea7c033397ac82, type: 3}
+  - {fileID: 2248485062928932828, guid: a64550db68892374f900a5a006538169, type: 3}
+  - {fileID: 5154943660721874716, guid: 942159b155f5d1e4997260b9f85b6bf9, type: 3}
+  - {fileID: 2911627580042638205, guid: f528e0288e56f84428a8477bcef07cce, type: 3}
+  weaponPrefabs:
+  - {fileID: 1192526033329145194, guid: 667ae61a41d03f34bb1259307cf06291, type: 3}
+  - {fileID: 1192526033329145194, guid: e68bd7edcb08749459b30946014ecd34, type: 3}
+  - {fileID: 1192526033329145194, guid: 95f4e5b3291ade544a04604f4830459e, type: 3}
+  - {fileID: 1192526033329145194, guid: a1116bc9fda44684eb2ea2c225fe5c2b, type: 3}
+  - {fileID: 1192526033329145194, guid: 4b343bd6d0e62c94da28557b01dd8918, type: 3}
+  - {fileID: 1192526033329145194, guid: 540d35b505322c54faafa3eeb34b96dd, type: 3}
+  zombiePrefabs:
+  - {fileID: 6203879125526305423, guid: 9c960d4f03b2281428f20639255b8420, type: 3}
+  clickPrefab: {fileID: 6059981090291065645, guid: 95ed8de2f7dd80a47ab648332df12f07, type: 3}
+  mutPLimb: {fileID: 4878587490104917525, guid: c1e65fecc886f9b49b05444180df6926, type: 3}
+  mutPRaptor: {fileID: 869377620814106126, guid: 08073d563ac65ee44b7509503d3d448b, type: 3}
+  mutPSpider: {fileID: 869377620814106126, guid: 3d259c0e9b99f3641b8e4c8b085b2223, type: 3}
+  mutPSpore: {fileID: 869377620814106126, guid: b9e71e13dd89afd4081d2401b1c1e187, type: 3}
+  weapPFist: {fileID: 1192526033329145194, guid: 3111e231717f3ba4fb9b5fb229a2e6d3, type: 3}

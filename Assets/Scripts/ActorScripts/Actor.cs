@@ -12,6 +12,7 @@ using static ActorDefs;
 using static EffectDefs;
 using static UnityEngine.GraphicsBuffer;
 using static WeaponDefs;
+using static SceneDefs;
 
 /*
  * Actor class:
@@ -21,6 +22,8 @@ using static WeaponDefs;
 
 public class Actor : MonoBehaviour
 {
+	public bool isDead = false;
+
 	public AudioSource actorAudioSource;
 
 	public ActorScriptable _actorScriptable;
@@ -30,6 +33,7 @@ public class Actor : MonoBehaviour
 	private Actor attackTarget;
 	private Vector3 moveTarget;
 	public bool movementLocked = false;
+	public bool rotationLocked = false;
 	public Vector3 currMoveVector;
 
 	public LayerMask pickupLayer;
@@ -57,7 +61,7 @@ public class Actor : MonoBehaviour
 
 	private SpriteRenderer sprite;
 
-	private float speedCheck;
+	public float speedCheck;
 
 	private string setSide = null;
 	private string oneSidePermanent = null;
@@ -66,6 +70,11 @@ public class Actor : MonoBehaviour
 
 	public bool initialized = false;
 
+	public GameObject unarmedPrefab;
+
+	public GameObject enableOnDeath;
+	private EnemyMove enemyAi;
+
 	public void Start()
 	{
 		initialized = false;
@@ -73,6 +82,8 @@ public class Actor : MonoBehaviour
 		attackTarget = null;
 		activeSlots = new MutationInterface[MutationDefs.MAX_SLOTS];
 		sprite = GetComponent<SpriteRenderer>();
+
+		enemyAi = this.GetComponentInChildren<EnemyMove>();
 		initActorData();
 		initialized = true;
 	}
@@ -159,18 +170,6 @@ public class Actor : MonoBehaviour
 		}
 	}
 
-	public void attackSecondary()
-	{
-		if (equippedWeaponInt == null || !equippedWeaponInt.isActive())
-		{
-			if (speedCheck <= 0)
-			{
-				equippedWeaponInt.attackSecondary();
-				speedCheck = equippedWeaponInt.getSpeed();
-			}
-		}
-	}
-
 	public void drop()
 	{
 		if (equippedWeaponInt == null || !equippedWeaponInt.canBeDropped()) { return; }
@@ -190,6 +189,7 @@ public class Actor : MonoBehaviour
 			equippedWeapon.transform.SetParent(null, true);
 			equippedWeapon.transform.SetPositionAndRotation(this.transform.position + translate, Quaternion.Euler(0, 0, equippedWeapon.transform.rotation.eulerAngles.z + rand));
 			setObjectLayer(WeaponDefs.SORT_LAYER_GROUND, equippedWeapon);
+			setWeaponTag(equippedWeapon, WeaponDefs.OBJECT_WEAPON_TAG);
 
 			WeaponPhysics physics = equippedWeapon.GetComponentInChildren<WeaponPhysics>();
 			if (physics != null)
@@ -199,6 +199,7 @@ public class Actor : MonoBehaviour
 				{
 					BoxCollider2D collider = physics.GetComponent<BoxCollider2D>();
 					moveFromCollider(collider, weap.transform.localPosition, equippedWeapon);
+					weap.actorWielder = null;
 				}
 			}
 
@@ -214,8 +215,6 @@ public class Actor : MonoBehaviour
 			GameObject newDrop = Instantiate(item, droppedPosition, this.transform.rotation, this.transform.parent);
 			newDrop.transform.Rotate(new Vector3(0, 0, Random.Range(-45, 45)), Space.Self);
 
-			setObjectLayer(WeaponDefs.SORT_LAYER_GROUND, newDrop);
-
 			Cell newCell = newDrop.GetComponent<Cell>();
 			if (newCell != null)
 			{
@@ -225,6 +224,12 @@ public class Actor : MonoBehaviour
 					newCell.generateCount(npcData.cellDropMin, npcData.cellDropMax);
 				}
 			}
+			else
+			{
+				/* cells should be on top layer */
+				setObjectLayer(WeaponDefs.SORT_LAYER_GROUND, newDrop);
+			}
+
 			float randX = Random.Range(-0.5F, -.5F);
 			float randY = Random.Range(-0.5F, -.5F);
 			if (!Physics2D.BoxCast(new Vector2(droppedPosition.x + randX, droppedPosition.y + randY), new Vector2(0.01F, 0.01F), 0, Vector2.up, 0.01F, gameManager.unwalkableLayers))
@@ -349,7 +354,7 @@ public class Actor : MonoBehaviour
 				drop();
 			}
 			
-			if (equippedWeaponInt.getType() == WeaponType.UNARMED)
+			if (equippedWeaponInt.getType() == WeaponType.UNARMED || equippedWeaponInt.getType() == WeaponType.CLAW)
 			{
 				/* only destroy copies of the basic fist weapon, not muations */
 				if (equippedWeapon.GetComponentInChildren<MutationInterface>() == null)
@@ -433,7 +438,8 @@ public class Actor : MonoBehaviour
 			return false;
 		}
 
-		if (this.tag.Equals(targetActor.tag))
+		if (this.tag.Equals(targetActor.tag)
+			|| (tag.Contains(playerTag) && targetActor.tag.Contains(playerTag)))
 		{
 			return false;
 		}
@@ -455,6 +461,7 @@ public class Actor : MonoBehaviour
 	 */
 	public void kill()
 	{
+		isDead = true;
 		drop();
 
 		for (int i = 0; i < effectHolder.transform.childCount; i ++)
@@ -470,13 +477,18 @@ public class Actor : MonoBehaviour
 		dropItem();
 		if (corpsePrefab != null)
 		{
+			if (!isLevelScene((SCENE)SCENE_BUILD_MASK[SceneManager.GetActiveScene().buildIndex]))
+			{
+				SceneManager.SetActiveScene(gameObject.scene);
+			}
 			GameObject newCorpse = Instantiate(corpsePrefab, transform.position, transform.rotation);
-			SpriteRenderer newSprite = newCorpse.GetComponent<SpriteRenderer>();
 			newCorpse.transform.Rotate(0, 0, Random.Range(-20, 20));
 
-			if (newSprite != null)
+			Corpse script = newCorpse.GetComponent<Corpse>();
+			if (script != null)
 			{
-				newSprite.sprite = corpseSprite;
+				script.actorData = copyData(this.actorData);
+				script.corpseSprite.sprite = this.corpseSprite;
 			}
 		}
 		
@@ -487,8 +499,14 @@ public class Actor : MonoBehaviour
 			{
 				script.enabled = false;
 			}
-			gameManager.gameOver(this);
+			gameManager.gameOver();
 		}
+		
+		if (enableOnDeath != null)
+		{
+			enableOnDeath.SetActive(true);
+		}
+
 		Destroy(transform.gameObject);
 	}
 
@@ -656,6 +674,15 @@ public class Actor : MonoBehaviour
 		{
 			this.sprite.color = newColor;
 		}
+
+		if (enemyAi != null && enemyAi.isTurret)
+		{
+			TurretWeapon weap = this.GetComponentInChildren<TurretWeapon>();
+			if (weap != null)
+			{
+				weap.sprite.color = newColor;
+			}
+		}
 	}
 
 	public void setConstant(bool toggle, constantType type)
@@ -666,22 +693,29 @@ public class Actor : MonoBehaviour
 				foreach (MonoBehaviour script in behaviorList)
 				{
 					script.enabled = !toggle;
+					if (this.tag == playerTag)
+					{
+						gameManager.signalMovementUnlocked();
+						gameManager.signalRotationUnlocked();
+					}
 				}
-				EnemyMove enemyMove = GetComponent<EnemyMove>();
-				if (enemyMove != null)
+				if (enemyAi != null)
 				{
-					enemyMove.disableStun();
+					enemyAi.disableStun();
 				}
 				break;
 			case constantType.IFRAME:
-				this.invincible = toggle;
+				if (this.tag == playerTag)
+				{
+					this.invincible = toggle;
+				}
 				break;
 			default:
 				break;
 		}
 	}
 
-	public void setActorCollision(bool toSet)
+	public void setActorCollision(bool toSet, string[] excludingLayers)
 	{
 		if (toSet)
 		{
@@ -689,13 +723,18 @@ public class Actor : MonoBehaviour
 		}
 		else
 		{
-			actorBody.excludeLayers = LayerMask.GetMask(new string[] { GameManager.OBJECT_MID_LAYER, GameManager.ACTOR_LAYER });
+			actorBody.excludeLayers = LayerMask.GetMask(excludingLayers);
 		}
 	}
 
 	public void setMovementLocked(bool locked)
 	{
 		movementLocked = locked;
+	}
+
+	public void setRotationLocked(bool locked)
+	{
+		rotationLocked = locked;
 	}
 
 	/* Changes the actor's max speed to the given value.
@@ -724,9 +763,21 @@ public class Actor : MonoBehaviour
 		return takeDamage(damage, null);
 	}
 
+	public void addStun(float sec)
+	{
+		EConstant[] activeEffects = effectHolder.GetComponentsInChildren<EConstant>();
+		foreach (EConstant effect in activeEffects)
+		{
+			if (effect != null && effect.effectScriptable.constantEffectType == EffectDefs.constantType.STUN)
+			{
+				effect.timer += sec;
+			}
+		}
+	}
+
 	public float takeDamage(float damage, Actor sourceActor)
 	{
-		if (this.invincible)
+		if (this.invincible && sourceActor != null)
 		{
 			return 0F;
 		}
@@ -786,11 +837,11 @@ public class Actor : MonoBehaviour
 			else
 			{
 				EffectDefs.effectApply(this, gameManager.effectManager.iFrame0);
-				EnemyMove enemyMove = GetComponent<EnemyMove>();
-				if (enemyMove != null)
+				if (enemyAi != null)
 				{
-					enemyMove.setStunResponse(sourceActor);
-					if (damageTaken >= 1F && (enemyMove._detection == detectMode.idle || enemyMove._detection == detectMode.suspicious || enemyMove._detection == detectMode.wandering) && !isStunned())
+					enemyAi.setStunResponse(sourceActor);
+					if (damageTaken >= 1F && (enemyAi._detection == detectMode.idle || enemyAi._detection == detectMode.suspicious || enemyAi._detection == detectMode.wandering)
+						&& !isStunned() && !enemyAi.summoned && !enemyAi.isTurret)
 					{
 						EffectDefs.effectApply(this, gameManager.effectManager.stun1);
 					}
@@ -866,7 +917,7 @@ public class Actor : MonoBehaviour
 
 	public void throwWeapon(Vector3 throwTargetPos)
 	{
-		if (!equippedWeaponInt.canBeDropped())
+		if (!equippedWeaponInt.canBeDropped() || equippedWeaponInt.isActive())
 		{
 			return;
 		}
@@ -903,8 +954,12 @@ public class Actor : MonoBehaviour
 
 	public void equipEmpty()
 	{
-		GameObject fistPrefab = instantiateWeapon(gameManager.weapPFist);
+		if (unarmedPrefab == null)
+		{
+			unarmedPrefab = gameManager.prefabManager.weapPFist;
+		}
+		GameObject unarmedWeapon = instantiateWeapon(unarmedPrefab);
 
-		equip(fistPrefab.transform.gameObject);
+		equip(unarmedWeapon.transform.gameObject);
 	}
 }

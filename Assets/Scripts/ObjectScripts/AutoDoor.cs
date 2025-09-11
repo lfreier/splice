@@ -1,9 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
+using Unity.VisualScripting.Antlr3.Runtime.Misc;
 using UnityEngine;
 
-public class AutoDoor : MonoBehaviour
+public class AutoDoor : MonoBehaviour, UsableInterface
 {
 	public enum doorType
 	{
@@ -27,6 +28,12 @@ public class AutoDoor : MonoBehaviour
 
 	public float detectSize = 3F;
 
+	public AudioClip doorOpenSound;
+	public AudioClip doorCloseSound;
+	public AudioClip doorUnlockSound;
+
+	public AudioSource doorAudioPlayer;
+
 	private GameManager gameManager;
 
 	private void Start()
@@ -41,7 +48,7 @@ public class AutoDoor : MonoBehaviour
 		}
 		else
 		{
-			doorUnlock();
+			doorUnlockQuiet();
 		}
 
 		gameManager = GameManager.Instance;
@@ -68,8 +75,7 @@ public class AutoDoor : MonoBehaviour
 			{
 				doorOpen();
 			}
-
-			if (open && hit.Length <= 0)
+			else if (open && hit.Length <= 0)
 			{
 				doorClose();
 			}
@@ -79,13 +85,31 @@ public class AutoDoor : MonoBehaviour
 	private void doorOpen()
 	{
 		doorAnimator.SetTrigger("Open");
+		doorAnimator.ResetTrigger("Close");
 		open = true;
+		if (doorAudioPlayer != null && gameManager != null && gameManager.audioManager != null && doorOpenSound != null)
+		{
+			AudioClip toPlay;
+			if (gameManager.audioManager.soundHash.TryGetValue(doorOpenSound.name, out toPlay) && toPlay != null)
+			{
+				doorAudioPlayer.PlayOneShot(toPlay, gameManager.effectsVolume);
+			}
+		}
 	}
 
 	private void doorClose()
 	{
 		doorAnimator.SetTrigger("Close");
+		doorAnimator.ResetTrigger("Open");
 		open = false;
+		if (doorAudioPlayer != null && gameManager != null && gameManager.audioManager != null && doorCloseSound != null)
+		{
+			AudioClip toPlay;
+			if (gameManager.audioManager.soundHash.TryGetValue(doorCloseSound.name, out toPlay) && toPlay != null)
+			{
+				doorAudioPlayer.PlayOneShot(toPlay, gameManager.effectsVolume);
+			}
+		}
 	}
 
 	public void doorToggle(bool force)
@@ -117,6 +141,21 @@ public class AutoDoor : MonoBehaviour
 	{
 		locked = false;
 		lockSprite.color = GameManager.COLOR_GREEN;
+		if (doorAudioPlayer != null && gameManager != null && gameManager.audioManager != null && doorUnlockSound != null)
+		{
+			AudioClip toPlay;
+			if (gameManager.audioManager.soundHash.TryGetValue(doorUnlockSound.name, out toPlay) && toPlay != null)
+			{
+				doorAudioPlayer.PlayOneShot(toPlay, gameManager.effectsVolume);
+			}
+		}
+	}
+
+
+	public void doorUnlockQuiet()
+	{
+		locked = false;
+		lockSprite.color = GameManager.COLOR_GREEN;
 	}
 
 	public bool isOpen()
@@ -130,5 +169,24 @@ public class AutoDoor : MonoBehaviour
 		if (!locked)
 		{
 		}
+	}
+
+	public bool playerHasKey(PlayerStats stats)
+	{
+		return stats.keycardCount[(int)lockType] > 0
+			&& _doorType != AutoDoor.doorType.REMOTE
+			&& locked;
+	}
+
+	public virtual bool use(Actor user)
+	{
+		PlayerStats stats = user.gameManager.playerStats;
+		if (playerHasKey(stats))
+		{
+			doorUnlock();
+			stats.useKeycard((int)lockType);
+			return true;
+		}
+		return false;
 	}
 }

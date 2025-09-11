@@ -74,19 +74,27 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4057087157832032976, guid: 73f47e22e6a312f40ba5aff9c72c4d11, type: 3}
       propertyPath: cellDropMax
-      value: 14
+      value: 17
       objectReference: {fileID: 0}
     - target: {fileID: 4057087157832032976, guid: 73f47e22e6a312f40ba5aff9c72c4d11, type: 3}
       propertyPath: cellDropMin
-      value: 11
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 4057087157832032976, guid: 73f47e22e6a312f40ba5aff9c72c4d11, type: 3}
       propertyPath: 'spriteList.Array.data[0]'
       value: 
       objectReference: {fileID: 21300000, guid: 449b65f794cc14640a40aab913ee5864, type: 3}
+    - target: {fileID: 5292759019534546031, guid: 73f47e22e6a312f40ba5aff9c72c4d11, type: 3}
+      propertyPath: guid
+      value: security2_aa470fe8-a2ee-4da3-983c-31bb1752844d
+      objectReference: {fileID: 0}
     - target: {fileID: 5326210678464735318, guid: 73f47e22e6a312f40ba5aff9c72c4d11, type: 3}
       propertyPath: m_Name
       value: security2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5589105943337623115, guid: 73f47e22e6a312f40ba5aff9c72c4d11, type: 3}
+      propertyPath: guid
+      value: security2_232ab70b-61a1-4c26-9d1c-e22716c10f96
       objectReference: {fileID: 0}
     - target: {fileID: 8205468103219266168, guid: 73f47e22e6a312f40ba5aff9c72c4d11, type: 3}
       propertyPath: m_Size.x

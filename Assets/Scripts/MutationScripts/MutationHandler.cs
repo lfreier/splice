@@ -5,6 +5,7 @@ using UnityEngine;
 public class MutationHandler : MonoBehaviour
 {
 	public List<mutationType> heldMutations;
+	public MutationInterface majorMutation;
 
 	private void Start()
 	{
@@ -15,13 +16,6 @@ public class MutationHandler : MonoBehaviour
 	{
 		switch(type)
 		{
-			case mutationType.mBeast:
-				MBeast beast = GetComponentInChildren<MBeast>();
-				if (beast != null)
-				{
-					return beast;
-				}
-				break;
 			case mutationType.mLimb:
 				MLimb limb = GetComponentInChildren<MLimb>();
 				if (limb != null)
@@ -29,11 +23,25 @@ public class MutationHandler : MonoBehaviour
 					return limb;
 				}
 				break;
-			case mutationType.mWing:
-				MBladeWing wing = GetComponentInChildren<MBladeWing>();
-				if (wing != null)
+			case mutationType.mRaptor:
+				MRaptor raptor = GetComponentInChildren<MRaptor>();
+				if (raptor != null)
 				{
-					return wing;
+					return raptor;
+				}
+				break;
+			case mutationType.mSpider:
+				MSpider spider = GetComponentInChildren<MSpider>();
+				if (spider != null)
+				{
+					return spider;
+				}
+				break;
+			case mutationType.mSpore:
+				MSpore spore = GetComponentInChildren<MSpore>();
+				if (spore != null)
+				{
+					return spore;
 				}
 				break;
 			default:

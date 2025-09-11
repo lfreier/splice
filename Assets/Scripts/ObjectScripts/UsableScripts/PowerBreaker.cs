@@ -5,7 +5,7 @@ public class PowerBreaker : MonoBehaviour, UsableInterface
 {
 	public SpriteRenderer switchSprite;
 
-	public void use(Actor user)
+	public bool use(Actor user)
 	{
 		GameManager gm = GameManager.Instance;
 		if (gm != null)
@@ -20,5 +20,6 @@ public class PowerBreaker : MonoBehaviour, UsableInterface
 				gm.levelManager.setPower(false);
 			}
 		}
+		return true;
 	}
 }

@@ -1,5 +1,4 @@
-﻿using JetBrains.Annotations;
-using System.Collections;
+﻿using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
 using System.Threading.Tasks;
@@ -15,11 +14,11 @@ public class LevelManager : MonoBehaviour
 		ACTOR = 1,
 		DOOR = 2,
 		WEAPON = 3,
-		PICKUP = 4,
-		BOX = 5,
-		SAVE = 6
+		BASIC = 4,
+		BOX = 5
 	}
 
+	[System.Serializable]
 	public struct BasicSaveData
 	{
 		public float xPosition;
@@ -27,8 +26,10 @@ public class LevelManager : MonoBehaviour
 		public float rotation;
 		public bool isPresent;
 		public int option;
+		public int prefabIndex;
 	};
 
+	[System.Serializable]
 	public struct ActorSaveData
 	{
 		public ActorData actorData;
@@ -37,6 +38,7 @@ public class LevelManager : MonoBehaviour
 		public int idlePathIndex;
 	};
 
+	[System.Serializable]
 	public struct WeaponSaveData
 	{
 		public BasicSaveData basicData;
@@ -49,9 +51,11 @@ public class LevelManager : MonoBehaviour
 	public Vector3 gridPosition;
 	public LevelData currLevelData;
 
+	public bool stationShowMut = false;
+
 	public GameObject playerPrefab;
 
-	public int lastSavedSpawn;
+	public levelSpawnIndex lastSavedSpawn;
 	public int lastSavedLevelIndex;
 
 	public PlayerSpawnScriptable[] levelSpawns;
@@ -60,37 +64,84 @@ public class LevelManager : MonoBehaviour
 
 	public GameObject[] savedActors;
 
-	public static int NUM_SAVE_STATIONS = 5;
-	public bool[] usedSavedStations = new bool[NUM_SAVE_STATIONS];
+	public enum saveStationIndex
+	{
+		hub = 0,
+		start = 1,
+		office = 2,
+		warehouse = 3,
+		arch = 4,
+		rnd = 5,
+		iso = 6,
+		final = 7
+	}
+	public static int NUM_SAVE_STATIONS = (int)saveStationIndex.final + 1;
+
+	public PlayerSpawnScriptable[] elevatorSpawns;
+	public enum elevatorIndex
+	{
+		nul = 0,
+		hub = 1,
+		warehouse = 2,
+		warehouseExit = 3,
+		rnd = 4,
+		rndExit = 5,
+		start = 6,
+		iso = 7,
+		isoExit = 8,
+		office = 9,
+		officeExit = 10,
+		final = 11,
+		finalExit = 12,
+		ending = 13,
+		TOTAL = 14
+	}
+	public static int NUM_ELEVATORS = (int)elevatorIndex.TOTAL;
 
 	public Dictionary<string, GUIDWatcher>	guidTable = new Dictionary<string, GUIDWatcher>();
-	Dictionary<string, ActorSaveData>		actorTable = new Dictionary<string, ActorSaveData>();
-	Dictionary<string, BasicSaveData>		doorTable = new Dictionary<string, BasicSaveData>();
-	Dictionary<string, WeaponSaveData>		weaponTable = new Dictionary<string, WeaponSaveData>();
-	Dictionary<string, WeaponSaveData>		weaponSpawnTable = new Dictionary<string, WeaponSaveData>();
-	Dictionary<string, BasicSaveData>		pickupBoxTable = new Dictionary<string, BasicSaveData>();
-	Dictionary<string, BasicSaveData>		pickupTable = new Dictionary<string, BasicSaveData>();
-	Dictionary<string, BasicSaveData>		saveTable = new Dictionary<string, BasicSaveData>();
+	public Dictionary<string, BasicSaveData> basicSpawnTable = new Dictionary<string, BasicSaveData>();
+	public Dictionary<string, WeaponSaveData> weaponSpawnTable = new Dictionary<string, WeaponSaveData>();
+
+	public SaveData currSaveData;
+	public PlayerSaveData currPlayerSaveData;
 
 	public enum levelSpawnIndex
 	{
 		levelStartSpawn = 0,
 		levelStartSaveSpawn = 1,
-		levelOfficeSpawn = 2,
-		levelOfficeSaveSpawn = 3,
-		levelHubSpawn = 4,
-		levelHubSaveSpawn = 5,
-		levelWarehouseSpawn = 6,
-		levelWarehouseSaveSpawn = 7,
-		levelArchSpawn = 8,
-		levelArchSaveSpawn = 9
+		levelStartExitSpawn = 2,
+		levelOfficeSpawn = 3,
+		levelOfficeSaveSpawn = 4,
+		levelOfficeExitSpawn = 5,
+		levelHubSpawn = 6,
+		levelHubSaveSpawn = 7,
+		levelWarehouseSpawn = 8,
+		levelWarehouseSaveSpawn = 9,
+		levelWarehouseExitSpawn = 10,
+		levelArchSpawn = 11,
+		levelArchSaveSpawn = 12,
+		levelRndSpawn = 13,
+		levelRndSaveSpawn = 14,
+		levelRndExitSpawn = 15,
+		levelIsoSpawn = 16,
+		levelIsoSaveSpawn = 17,
+		levelIsoExitSpawn = 18,
+		levelFinale = 19,
+		levelFinaleExit = 20,
+		levelEnding = 21
 	}
 
 	public CameraHandler camHandler;
 
 	private GameManager gameManager;
 
-	public async Task startNewLevel(int spawnIndex)
+	private void Start()
+	{
+		currSaveData = new SaveData();
+		currPlayerSaveData = new PlayerSaveData();
+	}
+
+	public async Task startNewLevel(int spawnIndex, int levelIndex)
 	{
 		if (gameManager == null)
 		{
@@ -111,6 +162,7 @@ public class LevelManager : MonoBehaviour
 			/* spawn player if one isn't there */
 			if (spawnIndex >= 0)
 			{
+				Camera.main.transform.SetPositionAndRotation(new Vector3(levelSpawns[spawnIndex].spawnPosition.x, levelSpawns[spawnIndex].spawnPosition.y, -10), Quaternion.identity);
 				foreach (Actor actor in FindObjectsByType<Actor>(FindObjectsSortMode.None))
 				{
 					if (actor.tag == ActorDefs.playerTag)
@@ -122,7 +174,7 @@ public class LevelManager : MonoBehaviour
 				tempPlayer.transform.SetPositionAndRotation(levelSpawns[spawnIndex].spawnPosition, Quaternion.identity);
 				tempPlayer.transform.Rotate(new Vector3(0, 0, levelSpawns[spawnIndex].spawnRotation));
 				tempPlayer.SetActive(true);
-				
+
 				camHandler.player = tempPlayer;
 
 				playerActor = tempPlayer.GetComponent<Actor>();
@@ -133,15 +185,34 @@ public class LevelManager : MonoBehaviour
 						await Task.Delay(10);
 					}
 					gameManager.playerStats.player = playerActor;
-					await gameManager.playerStats.loadPlayerData(playerActor);
+					gameManager.playerStats.loadPlayerData(playerActor);
 				}
 			}
 
-			if (lastSavedAtStation)
+			/* don't load the level state if it's a new level */
+			if (SceneDefs.isLevelScene((SceneDefs.SCENE)levelIndex) && (lastSavedAtStation || gameManager.saveManager.levelSaveData[levelIndex] != null))
 			{
-				await loadLevelState(lastSavedLevelIndex);
+				await loadLevelState(gameManager.saveManager.levelSaveData[levelIndex]);
 			}
 
+			if ((SceneDefs.SCENE)levelIndex == SceneDefs.SCENE.LEVEL_ENDING 
+				&& gameManager.playerStats != null && gameManager.playerStats.playerHUD != null)
+			{
+				gameManager.playerStats.playerHUD.disableHud();
+				gameManager.playerStats.playerHUD.disableHudShadow();
+			}
+
+			if ((SceneDefs.SCENE)levelIndex == SceneDefs.SCENE.LEVEL_FINAL
+				&& gameManager.playerStats != null && gameManager.playerStats.playerHUD != null)
+			{
+				gameManager.playerStats.playerHUD.setFinaleTimer(true);
+			}
+			else if (gameManager.playerStats != null && gameManager.playerStats.playerHUD != null)
+			{
+				gameManager.playerStats.playerHUD.setFinaleTimer(false);
+			}
+
+			Time.timeScale = 1;
 			return;
 			/*
 			gridPosition = currLevelData.transform.position;
@@ -155,9 +226,10 @@ public class LevelManager : MonoBehaviour
 		}
 	}
 
-	public async Task loadLevelState(int sceneIndex)
+	public async Task loadLevelState(SaveData saveData)
 	{
-		weaponSpawnTable = new Dictionary<string, WeaponSaveData>(weaponTable);
+		weaponSpawnTable = new Dictionary<string, WeaponSaveData>(saveData.weaponTable);
+		basicSpawnTable = new Dictionary<string, BasicSaveData>(saveData.basicsTable);
 
 		//for each GUID
 		//if it has a component that matches a table,
@@ -170,12 +242,19 @@ public class LevelManager : MonoBehaviour
 				case idType.ACTOR:
 					ActorSaveData actorSave = new();
 					Actor actor = item.Value.guid.GetComponent<Actor>();
-					if (actorTable.TryGetValue(item.Key, out actorSave))
+					if (saveData.actorTable.TryGetValue(item.Key, out actorSave))
 					{
 						if (actor != null)
 						{
 							if (!actorSave.basicData.isPresent)
 							{
+								BasicWeapon actorWeap = actor.GetComponentInChildren<BasicWeapon>();
+								if (actorWeap != null && actorWeap.getType() != WeaponType.UNARMED && actorWeap.getType() != WeaponType.CLAW)
+								{
+									actorWeap.transform.parent.SetParent(null, true);
+									WeaponDefs.setWeaponTag(actorWeap.transform.parent.gameObject, WeaponDefs.OBJECT_WEAPON_TAG);
+									WeaponDefs.setObjectLayer(WeaponDefs.SORT_LAYER_GROUND, actorWeap.transform.parent.gameObject);
+								}
 								Destroy(actor.gameObject);
 								continue;
 							}
@@ -188,11 +267,24 @@ public class LevelManager : MonoBehaviour
 							if (ai != null)
 							{
 								ai.pathIndex = actorSave.idlePathIndex;
+								ai._detection = (detectMode)actorSave.detectionState;
+								/* weird loading case to reset */
+								if (ai.isTurret)
+								{
+									ai.turretRotateTarget = ai.turretRotation1;
+								}
 							}
 						}
 					}
 					else
 					{
+						BasicWeapon actorWeap = actor.GetComponentInChildren<BasicWeapon>();
+						if (actorWeap != null && actorWeap.getType() != WeaponType.UNARMED && actorWeap.getType() != WeaponType.CLAW)
+						{
+							actorWeap.transform.parent.SetParent(null, true);
+							WeaponDefs.setWeaponTag(actorWeap.transform.parent.gameObject, WeaponDefs.OBJECT_WEAPON_TAG);
+							WeaponDefs.setObjectLayer(WeaponDefs.SORT_LAYER_GROUND, actorWeap.transform.parent.gameObject);
+						}
 						Destroy(actor.gameObject);
 					}
 					continue;
@@ -200,11 +292,11 @@ public class LevelManager : MonoBehaviour
 					AutoDoor door = item.Value.guid.GetComponent<AutoDoor>();
 					if (door != null)
 					{
-						if (doorTable.TryGetValue(item.Key, out dataSave))
+						if (saveData.doorTable.TryGetValue(item.Key, out dataSave))
 						{
 							if (dataSave.isPresent && door.locked)
 							{
-								door.doorUnlock();
+								door.doorUnlockQuiet();
 							}
 						}
 						else
@@ -219,7 +311,7 @@ public class LevelManager : MonoBehaviour
 					if (weapon != null)
 					{
 						WeaponSaveData weapSave;
-						if (weaponTable.TryGetValue(item.Key, out weapSave))
+						if (saveData.weaponTable.TryGetValue(item.Key, out weapSave))
 						{
 							spawnWeapon(weapon, weapSave);
 							/* necessary for cabinet pickups */
@@ -233,29 +325,11 @@ public class LevelManager : MonoBehaviour
 						}
 					}
 					continue;
-				case idType.PICKUP:
-					PickupInterface pickup = item.Value.guid.GetComponent<PickupInterface>();
-					GameObject pickupObj = item.Value.guid.gameObject;
-					if (pickup != null)
-					{
-						if (pickupTable.TryGetValue(item.Key, out dataSave))
-						{
-							if (!dataSave.isPresent && pickupObj != null)
-							{
-								Destroy(pickupObj);
-							}
-						}
-						else if (pickupObj != null)
-						{
-							Destroy(pickupObj.gameObject);
-						}
-					}
-					continue;
 				case idType.BOX:
 					PickupBox box = item.Value.guid.GetComponentInChildren<PickupBox>();
 					if (box != null)
 					{
-						if (pickupBoxTable.TryGetValue(item.Key, out dataSave))
+						if (saveData.pickupBoxTable.TryGetValue(item.Key, out dataSave))
 						{
 							if (!dataSave.isPresent && box.hasPickup())
 							{
@@ -268,13 +342,25 @@ public class LevelManager : MonoBehaviour
 						}
 					}
 					continue;
-				case idType.SAVE:
-					SaveStation save = item.Value.guid.GetComponentInChildren<SaveStation>();
-					if (save != null)
+				case idType.BASIC:
+					TutorialSceneLoader tut = item.Value.guid.GetComponent<TutorialSceneLoader>();
+					Corpse corpse = item.Value.guid.GetComponentInChildren<Corpse>();
+					PickupInterface pickup = item.Value.guid.GetComponent<PickupInterface>();
+					GameObject basicObj = item.Value.guid.gameObject;
+					if (tut != null || corpse != null || pickup != null)
 					{
-						if (saveTable.TryGetValue(item.Key, out dataSave))
+						if (saveData.basicsTable.TryGetValue(item.Key, out dataSave))
 						{
-							usedSavedStations[dataSave.option] = dataSave.isPresent;
+							if (!dataSave.isPresent && basicObj != null)
+							{
+								Destroy(basicObj);
+							}
+							basicObj.transform.SetPositionAndRotation(new Vector2(dataSave.xPosition, dataSave.yPosition), Quaternion.Euler(0, 0, dataSave.rotation));
+							basicSpawnTable.Remove(item.Key);
+						}
+						else if (basicObj != null)
+						{
+							Destroy(basicObj);
 						}
 					}
 					continue;
@@ -287,7 +373,7 @@ public class LevelManager : MonoBehaviour
 		foreach (var weap in weaponSpawnTable)
 		{
 			/* need to spawn these weapons */
-			GameObject newWeap = Instantiate(gameManager.weaponPrefabs[weap.Value.prefabIndex]);
+			GameObject newWeap = Instantiate(gameManager.prefabManager.weaponPrefabs[weap.Value.prefabIndex]);
 			BasicWeapon weapon = newWeap.GetComponentInChildren<BasicWeapon>();
 
 			while (true)
@@ -315,10 +401,21 @@ public class LevelManager : MonoBehaviour
 				Destroy(weapon.transform.parent.gameObject);
 			}
 		}
+
+		foreach (var basic in basicSpawnTable)
+		{
+			/* need to spawn these objects */
+			GameObject newBasic = Instantiate(gameManager.prefabManager.basicPrefabs[basic.Value.prefabIndex]);
+
+			newBasic.transform.SetPositionAndRotation(new Vector2(basic.Value.xPosition, basic.Value.yPosition), Quaternion.Euler(0, 0, basic.Value.rotation));
+		}
 	}
 
-	public async Task saveLevelState(int sceneIndex)
+	public void saveLevelState(int sceneIndex)
 	{
+		currSaveData = new SaveData();
+		currSaveData.sceneIndex = sceneIndex;
+
 		//clear all component tables
 		//for each GUID
 		//if it has a component that matches a table,
@@ -352,34 +449,28 @@ public class LevelManager : MonoBehaviour
 				if (ai != null)
 				{
 					actorSave.idlePathIndex = ai.pathIndex;
+					actorSave.detectionState = (int)ai._detection;
 				}
 
-				actorTable.Add(item.Key, actorSave);
+				currSaveData.actorTable.Add(item.Key, actorSave);
 				continue;
 			}
 			AutoDoor door = guid.GetComponent<AutoDoor>();
 			if (door != null)
 			{
 				dataSave.isPresent = !door.locked;
-				doorTable.Add(item.Key, dataSave);
+				currSaveData.doorTable.Add(item.Key, dataSave);
 				continue;
 			}
 			PickupBox box = guid.GetComponentInChildren<PickupBox>();
 			if (box != null)
 			{
 				dataSave.isPresent = box.hasPickup();
-				pickupBoxTable.Add(item.Key, dataSave);
-				continue;
-			}
-			PickupInterface pickup = guid.GetComponent<PickupInterface>();
-			if (pickup != null)
-			{
-				dataSave.isPresent = true;
-				pickupTable.Add(item.Key, dataSave);
+				currSaveData.pickupBoxTable.Add(item.Key, dataSave);
 				continue;
 			}
 			BasicWeapon weapon = guid.GetComponentInChildren<BasicWeapon>();
-			if (weapon != null)
+			if (weapon != null && weapon.getType() != WeaponType.UNARMED && weapon.getType() != WeaponType.CLAW)
 			{
 				WeaponSaveData weapSave = new();
 				/* equip weapon to actors */
@@ -405,8 +496,11 @@ public class LevelManager : MonoBehaviour
 
 				Transform parent = weapon.gameObject.transform.parent;
 
-				weapSave.basicData.xPosition = parent.position.x;
-				weapSave.basicData.yPosition = parent.position.y;
+				/* subtract the data object's position
+				 * because if the weapon is on the left side (data obj has a non-zero position)
+				 * it will always load on the right */
+				weapSave.basicData.xPosition = parent.position.x - weapon.transform.localPosition.x;
+				weapSave.basicData.yPosition = parent.position.y - weapon.transform.localPosition.y;
 				weapSave.basicData.rotation = weapon._weaponPhysics.weaponBody.rotation;
 
 				SwingBatteryWeapon swing = weapon.gameObject.GetComponentInChildren<SwingBatteryWeapon>();
@@ -415,15 +509,20 @@ public class LevelManager : MonoBehaviour
 					weapSave.basicData.option = swing.filledBatteries;
 				}
 
-				weaponTable.Add(item.Key, weapSave);
+				currSaveData.weaponTable.Add(item.Key, weapSave);
 				continue;
 			}
-			SaveStation save = guid.GetComponentInChildren<SaveStation>();
-			if (save != null)
+			TutorialSceneLoader tut = guid.GetComponent<TutorialSceneLoader>();
+			Corpse corpse = guid.GetComponent<Corpse>();
+			PickupInterface pickup = guid.GetComponent<PickupInterface>();
+			if (tut != null || corpse != null || pickup != null)
 			{
-				dataSave.isPresent = usedSavedStations[save.saveStationNumIndex];
-				dataSave.option = save.saveStationNumIndex;
-				saveTable.Add(item.Key, dataSave);
+				dataSave.isPresent = true;
+				dataSave.xPosition = guid.transform.position.x;
+				dataSave.yPosition = guid.transform.position.y;
+				dataSave.rotation = guid.transform.rotation.eulerAngles.z;
+				dataSave.prefabIndex = guid.basicPrefabIndex;
+				currSaveData.basicsTable.Add(item.Key, dataSave);
 				continue;
 			}
 		}
@@ -440,8 +539,7 @@ public class LevelManager : MonoBehaviour
 
 		weapon.reduceDurability(weapon._weaponScriptable.durability - weapSave.durability);
 
-		parent.transform.position = new Vector2(weapSave.basicData.xPosition, weapSave.basicData.yPosition);
-		weapon._weaponPhysics.weaponBody.rotation = weapSave.basicData.rotation;
+		parent.transform.SetPositionAndRotation(new Vector2(weapSave.basicData.xPosition, weapSave.basicData.yPosition), Quaternion.Euler(0, 0, weapSave.basicData.rotation));
 
 		/* equip to specified actor */
 		if (!System.String.IsNullOrEmpty(weapSave.actorGUID))

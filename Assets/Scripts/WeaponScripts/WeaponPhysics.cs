@@ -6,7 +6,7 @@ using UnityEngine.InputSystem.XR;
 
 public class WeaponPhysics : MonoBehaviour
 {
-	private WeaponInterface _weapon;
+	private BasicWeapon _weapon;
 	private WeaponScriptable _weaponScriptable;
 
 	private float currentSpeed;
@@ -17,7 +17,7 @@ public class WeaponPhysics : MonoBehaviour
 	public Actor throwingActor;
 
 	public Rigidbody2D weaponBody;
-	public Collider2D throwCollider;
+	public BoxCollider2D throwCollider;
 	public Collider2D pickupCollider;
 
 	public BasicWeapon attachedWeapon;
@@ -133,7 +133,11 @@ public class WeaponPhysics : MonoBehaviour
 				gameObject.layer = LayerMask.NameToLayer(GameManager.OBJECT_LAYER);
 				throwCollider.enabled = false;
 				pickupCollider.enabled = true;
-				WeaponDefs.setObjectLayer(WeaponDefs.SORT_LAYER_GROUND, topObject);
+				Collider2D[] hits = Physics2D.OverlapPointAll(transform.TransformPoint(throwCollider.attachedRigidbody.transform.localPosition), LayerMask.GetMask("ObjectMid"));
+				if (hits == null || hits.Length <= 0)
+				{
+					WeaponDefs.setObjectLayer(WeaponDefs.SORT_LAYER_GROUND, topObject);
+				}
 
 				_lastThrowMove = new Vector3(0, 0, 0);
 				currentSpeed = 0;
@@ -170,12 +174,13 @@ public class WeaponPhysics : MonoBehaviour
 
 	private void OnTriggerEnter2D(Collider2D collision)
 	{
+		bool bouncedOffActor = false;
 		if (_lastThrowMove.magnitude > 0)
 		{
 			Actor actorHit = collision.gameObject.GetComponent<Actor>();
 			if (actorHit != null && currentSpeed > _weaponScriptable.throwHurtSpeed)
 			{
-				if (actorHit.name == throwingActor.name)
+				if (actorHit.name == throwingActor.name || (actorHit.tag.Contains(ActorDefs.playerTag) && throwingActor.tag.Contains(ActorDefs.playerTag)))
 				{
 					Debug.Log("Stop hitting yourself (throw)");
 					return;
@@ -185,11 +190,34 @@ public class WeaponPhysics : MonoBehaviour
 				{	
 					actorHit.drop();
 					_weapon.reduceDurability(_weaponScriptable.throwDurabilityDamage);
+
+					if (_weaponScriptable.soundActorHit != null)
+					{
+						AudioClip toPlay;
+						bouncedOffActor = true;
+						gameManager.audioManager.soundHash.TryGetValue(_weaponScriptable.soundActorHit.name, out toPlay);
+						if (toPlay != null)
+						{
+							_weapon.weaponAudioPlayer.PlayOneShot(toPlay, gameManager.effectsVolume);
+						}
+					}
 				}
 
 				EffectDefs.effectApply(actorHit, actorHit.gameManager.effectManager.stunThrow);
 			}
 
+			if (!bouncedOffActor)
+			{
+				if (_weaponScriptable.soundObstacleHit != null)
+				{
+					AudioClip toPlay;
+					gameManager.audioManager.soundHash.TryGetValue(_weaponScriptable.soundObstacleHit.name, out toPlay);
+					if (toPlay != null)
+					{
+						_weapon.weaponAudioPlayer.PlayOneShot(toPlay, gameManager.effectsVolume);
+					}
+				}
+			}
 			currentSpeed /= 2;
 			_throwMove = _lastThrowMove * (1 + (1/_weaponScriptable.throwWeight)) * -1;
 		}

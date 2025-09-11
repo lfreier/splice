@@ -5,10 +5,11 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using static SceneDefs;
 
 public class GameOver : MonoBehaviour
 {
-	public int sceneBuildIndex;
+	public SCENE sceneIndex;
 
 	public Camera gameOverCam;
 
@@ -41,11 +42,11 @@ public class GameOver : MonoBehaviour
 		{
 			transitioning = true;
 		}
-		Scene mainScene = SceneManager.GetSceneByBuildIndex(gameManager.currentScene);
+		Scene mainScene = SceneManager.GetSceneByBuildIndex(SCENE_INDEX_MASK[gameManager.currentScene]);
 		for (int i = 0; i < SceneManager.sceneCount; i ++)
 		{
 			Scene curr = SceneManager.GetSceneAt(i);
-			if (gameOverCam != null && curr.buildIndex == (int)SceneDefs.SCENE.PLAYER_HUD)
+			if (gameOverCam != null && curr.buildIndex == SCENE_INDEX_MASK[(int)SCENE.PLAYER_HUD])
 			{
 				SceneManager.UnloadSceneAsync(curr.buildIndex);
 			}
@@ -61,7 +62,12 @@ public class GameOver : MonoBehaviour
 				break;
 			}
 		}
-		SceneManager.SetActiveScene(SceneManager.GetSceneByBuildIndex(sceneBuildIndex));
+
+		if ((SCENE)sceneIndex == SCENE.MANAGER)
+		{
+			Debug.Log("ALERT 2");
+		}
+		SceneManager.SetActiveScene(SceneManager.GetSceneByBuildIndex(SCENE_INDEX_MASK[(int)sceneIndex]));
 		currentAlpha = 0;
 		if (deathHeartImage != null)
 		{
