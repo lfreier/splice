@@ -22,6 +22,8 @@ using static SceneDefs;
 
 public class Actor : MonoBehaviour
 {
+	public bool isDead = false;
+
 	public AudioSource actorAudioSource;
 
 	public ActorScriptable _actorScriptable;
@@ -459,6 +461,7 @@ public class Actor : MonoBehaviour
 	 */
 	public void kill()
 	{
+		isDead = true;
 		drop();
 
 		for (int i = 0; i < effectHolder.transform.childCount; i ++)

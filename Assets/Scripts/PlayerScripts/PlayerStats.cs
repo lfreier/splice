@@ -328,6 +328,11 @@ public class PlayerStats
 			gameManager = GameManager.Instance;
 		}
 
+		if (playerActor == null)
+		{
+			return;
+		}
+
 		playerData = playerActor.actorData;
 
 		savedMutationData.maxMutationBar = mutationData.maxMutationBar;

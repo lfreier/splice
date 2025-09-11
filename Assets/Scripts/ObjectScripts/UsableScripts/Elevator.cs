@@ -36,6 +36,11 @@ public class Elevator : MonoBehaviour, UsableInterface
 
 	public bool use(Actor user)
 	{
+		if (user.isDead)
+		{
+			return false;
+		}
+
 		/* unlock elevator for use */
 		stats.elevatorAvailable[index] = 2;
 

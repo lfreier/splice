@@ -61,7 +61,6 @@ MonoBehaviour:
   fadeInImages:
   - {fileID: 6311378942794807588}
   fadeInSpeed: 0.25
-  quitButton: {fileID: 0}
   buttonTimerLength: 5
 --- !u!1 &8292342076983997476
 GameObject:
@@ -128,7 +127,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 0e0c1c7f98575ea4ab77cfea23fba8cc, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 8c9661dfb8a081748bbf7cadcb3e253d, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1

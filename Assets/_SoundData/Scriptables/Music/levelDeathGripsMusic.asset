@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: levelDeathGripsMusic
   m_EditorClassIdentifier: 
   <audioClip>k__BackingField: {fileID: 8300000, guid: 984852c3729933444b7f4d9640a87dbb, type: 3}
-  <volume>k__BackingField: 1
+  <volume>k__BackingField: 0.7

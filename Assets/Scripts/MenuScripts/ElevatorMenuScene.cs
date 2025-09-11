@@ -123,22 +123,26 @@ public class ElevatorMenuScene : StationScreen
 				}
 
 				/* save when moving to the next floor for the first time */
-				if (stats.elevatorAvailable[(int)elevatorSpawnList[i].elevatorIndex] == 1)
+				/* but, not for finale */
+				if (elevatorSpawnList[i].sceneIndex != SceneDefs.SCENE.LEVEL_FINAL)
 				{
-					levelManager.lastSavedSpawn = elevatorSpawnList[i].spawnIndex;
-					levelManager.lastSavedAtStation = false;
-
-					if (menuManager.elevator.isExitElevator)
+					if (stats.elevatorAvailable[(int)elevatorSpawnList[i].elevatorIndex] == 1)
 					{
-						stats.elevatorAvailable[(int)elevatorSpawnList[i].elevatorIndex] = 2;
-					}
+						levelManager.lastSavedSpawn = elevatorSpawnList[i].spawnIndex;
+						levelManager.lastSavedAtStation = false;
 
-					/* save current level and but set last saved level to next */
-					gameManager.save(menuManager.elevator.playerActor, (int)elevatorSpawnList[i].sceneIndex);
-				}
-				else
-				{
-					gameManager.playerStats.savePlayerData(menuManager.elevator.playerActor);
+						if (menuManager.elevator.isExitElevator)
+						{
+							stats.elevatorAvailable[(int)elevatorSpawnList[i].elevatorIndex] = 2;
+						}
+
+						/* save current level and but set last saved level to next */
+						gameManager.save(menuManager.elevator.playerActor, (int)elevatorSpawnList[i].sceneIndex);
+					}
+					else
+					{
+						gameManager.playerStats.savePlayerData(menuManager.elevator.playerActor);
+					}
 				}
 
 				gameManager.nextLevel(menuManager.elevator.playerActor, elevatorSpawnList[i].sceneIndex, (int)elevatorSpawnList[i].spawnIndex);
