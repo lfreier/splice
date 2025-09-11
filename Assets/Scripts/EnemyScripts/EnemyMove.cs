@@ -458,6 +458,7 @@ public class EnemyMove : MonoBehaviour
 			}
 			else if (rotateAmount != 0 && !turretRotateSource.isPlaying)
 			{
+				turretRotateSource.volume = gameManager.effectsVolume;
 				turretRotateSource.Play();
 				turretRotateSource.UnPause();
 			}
