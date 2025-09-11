@@ -361,7 +361,15 @@ public class MenuHandler : MonoBehaviour
 		gManager.currentSaveSlot = saveSlot;
 		gManager.saveManager.loadAllData();
 		PlayerSaveData playerData = SaveManager.loadPlayerDataFromDisk(saveSlot);
-		if (playerData != null)
+		if (playerData == null)
+		{
+			gManager.playerStats = new PlayerStats();
+			gManager.playerStats.gameManager = gManager;
+			gManager.levelManager.lastSavedLevelIndex = 0;
+			nextScene = (int)SCENE.LEVEL_START;
+			gManager.levelManager.lastSavedSpawn = LevelManager.levelSpawnIndex.levelStartSpawn;
+		}
+		else
 		{
 			gManager.playerStats.savePlayerDataToMemory(playerData);
 			gManager.levelManager.lastSavedLevelIndex = playerData.lastSavedLevel;
