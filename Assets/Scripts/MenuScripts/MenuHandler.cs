@@ -365,6 +365,12 @@ public class MenuHandler : MonoBehaviour
 		{
 			gManager.playerStats = new PlayerStats();
 			gManager.playerStats.gameManager = gManager;
+
+			for (int i = 0; i < gManager.playerStats.saveStationUses.Length; i++)
+			{
+				gManager.playerStats.saveStationUses[i] = 1;
+			}
+
 			gManager.levelManager.lastSavedLevelIndex = 0;
 			nextScene = (int)SCENE.LEVEL_START;
 			gManager.levelManager.lastSavedSpawn = LevelManager.levelSpawnIndex.levelStartSpawn;
