@@ -148,7 +148,7 @@ public class MLimb : MonoBehaviour, MutationInterface
 	public void bladeAnimOver()
 	{
 		bladeOver++;
-		if (bladeOver >= 2)
+		if (bladeOver >= 4)
 		{
 			limbState = retracted.IDLE;
 			bladeOver = 0;
@@ -318,6 +318,11 @@ public class MLimb : MonoBehaviour, MutationInterface
 		{
 			bladeCollider.enabled = enable > 0;
 		}
+		else if (bladeCollider != null)
+		{
+			bladeCollider.enabled = false;
+		}
+
 		/*
 		if (!hitbox.enabled)
 		{
